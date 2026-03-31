@@ -1,52 +1,64 @@
-
 <template>
-  <aside class="w-full md:w-64 flex flex-col gap-2">
-    <!-- Info User -->
-    <div class="p-4 bg-white border border-gray-100 rounded-2xl mb-4 shadow-sm">
-      <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Status Akun</p>
-      <p class="font-extrabold text-gray-800 truncate">{{ userName }}</p>
-      <span class="inline-block px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-bold uppercase mt-2">
-        {{ userRole.replace('_', ' ') }}
-      </span>
+  <!-- Desktop Sidebar (Tampil hanya di md ke atas) -->
+  <aside class="hidden md:flex flex-col w-64 min-w-[16rem] space-y-6 sticky top-28 h-fit">
+    <!-- Info Akun -->
+    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden group">
+      <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-600/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+      <div class="relative z-10 space-y-3">
+        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Petugas Aktif</p>
+        <p class="text-xl font-black text-gray-900 tracking-tighter truncate">{{ userName }}</p>
+        <div class="inline-flex px-3 py-1 bg-blue-600 text-white rounded-full text-[9px] font-black uppercase tracking-widest shadow-lg shadow-blue-100">
+          {{ userRole?.replace('_', ' ') || 'User' }}
+        </div>
+      </div>
     </div>
 
     <!-- Menu Navigasi Sidebar -->
-    <nav class="space-y-1">
+    <nav class="space-y-2">
       <router-link 
-        to="/dashboard" 
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all"
-        :class="$route.path === '/dashboard' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-gray-500 hover:bg-white hover:text-blue-600 border border-transparent hover:border-gray-100'"
+        v-for="link in navigationLinks"
+        :key="link.to"
+        :to="link.to"
+        class="flex items-center gap-4 px-6 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all group border-2 border-transparent"
+        :class="isActive(link.to) 
+          ? 'bg-white border-blue-600 text-blue-600 shadow-xl shadow-blue-100/50' 
+          : 'text-gray-400 hover:bg-white hover:text-gray-900 hover:border-gray-100'"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-        Ringkasan
-      </router-link>
-
-      <!-- Menu Khusus Admin/Field Worker -->
-      <router-link 
-        v-if="userRole === 'admin'"
-        to="/dashboard/manage" 
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-gray-500 hover:bg-white hover:text-blue-600 border border-transparent hover:border-gray-100"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
-        Kelola Kampanye
-      </router-link>
-
-      <router-link 
-        v-if="userRole === 'field_worker'"
-        to="/dashboard/reports" 
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-gray-500 hover:bg-white hover:text-blue-600 border border-transparent hover:border-gray-100"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Laporan Lapangan
+        <component :is="link.icon" class="w-5 h-5 transition-transform group-hover:scale-110" />
+        {{ link.label }}
       </router-link>
     </nav>
   </aside>
 </template>
 
 <script setup>
-import { useAuth } from '@/store/auth';
+import { computed, markRaw } from 'vue';
+import { useRoute } from 'vue-router';
 
-const { getUserName, getUserRole } = useAuth();
-const userName = getUserName;
-const userRole = getUserRole;
+const route = useRoute();
+const userName = computed(() => localStorage.getItem('name'));
+const userRole = computed(() => localStorage.getItem('role'));
+
+const isActive = (path) => route.path === path;
+
+// Icons
+const LayoutIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>' };
+const CampaignIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' };
+const UserIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>' };
+
+const navigationLinks = computed(() => {
+  const base = [
+    { to: '/dashboard', label: 'Dashboard', icon: markRaw(LayoutIcon) }
+  ];
+
+  if (userRole.value === 'admin') {
+    base.push({ to: '/dashboard/admin', label: 'Admin', icon: markRaw(UserIcon) });
+  } else if (userRole.value === 'field_worker') {
+    base.push({ to: '/dashboard/field', label: 'Panel', icon: markRaw(CampaignIcon) });
+  } else {
+    base.push({ to: '/dashboard/user', label: 'Profil', icon: markRaw(UserIcon) });
+  }
+
+  return base;
+});
 </script>

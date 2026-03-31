@@ -5,6 +5,9 @@ import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import CampaignDetails from '../views/CampaignDetails.vue';
+import About from '../views/About.vue';
+import Help from '../views/Help.vue';
+import Contact from '../views/Contact.vue';
 
 // Gunakan impor dinamis untuk dashboard agar lebih ringan
 const UserDashboard = () => import('../views/dashboard/User.vue');
@@ -21,6 +24,21 @@ const routes = [
     path: '/campaigns/:id',
     name: 'CampaignDetails',
     component: CampaignDetails
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About
+  },
+  {
+    path: '/help',
+    name: 'Help',
+    component: Help
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: Contact
   },
   {
     path: '/login',

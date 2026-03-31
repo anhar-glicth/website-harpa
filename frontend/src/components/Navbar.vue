@@ -1,31 +1,49 @@
 <template>
-  <nav class="bg-white border-b sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center">
-        <!-- Logo -->
-        <router-link to="/" class="flex items-center gap-2">
-          <div class="bg-blue-600 p-2 rounded-lg text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-          </div>
-          <span class="text-xl font-bold tracking-tight text-blue-600">HumanityCare</span>
-        </router-link>
-        
-        <!-- Menu Navigasi -->
-        <div class="hidden md:flex items-center space-x-8">
-          <router-link to="/" class="text-gray-600 hover:text-blue-600 font-medium transition">Jelajah</router-link>
+  <nav class="bg-white/90 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-[100] transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex justify-between h-16 md:h-20 items-center">
+        <!-- Brand Logo -->
+        <div class="flex items-center">
+          <router-link to="/" class="flex items-center gap-3 group">
+            <div class="bg-blue-600 p-2 md:p-2.5 rounded-xl md:rounded-2xl text-white shadow-lg shadow-blue-100 transform group-hover:rotate-6 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            </div>
+            <span class="text-xl md:text-2xl font-black tracking-tighter text-gray-900">Humanity<span class="text-blue-600">Care</span></span>
+          </router-link>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center gap-8">
+          <router-link v-for="link in desktopMenu" :key="link.to" :to="link.to" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-blue-600 transition-colors">
+            {{ link.label }}
+          </router-link>
           
+          <div class="h-6 w-px bg-gray-100 mx-2"></div>
+
           <template v-if="!isLoggedIn">
-            <router-link to="/login" class="text-gray-600 hover:text-blue-600 font-medium transition">Masuk</router-link>
-            <router-link to="/register" class="bg-blue-600 text-white px-5 py-2.5 rounded-full hover:bg-blue-700 transition shadow-sm font-bold">Daftar</router-link>
+            <router-link to="/login" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-blue-600 transition-colors">Masuk</router-link>
+            <router-link to="/register" class="bg-blue-600 text-white px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition shadow-xl shadow-blue-100">Daftar</router-link>
           </template>
           
           <template v-else>
-            <router-link to="/dashboard" class="text-gray-600 hover:text-blue-600 font-medium transition">Dashboard</router-link>
-            <div class="flex items-center gap-4 pl-4 border-l">
-              <span class="text-sm font-bold text-gray-700">{{ userName }}</span>
-              <button @click="handleLogout" class="text-red-500 hover:text-red-700 text-sm font-bold">Keluar</button>
+            <div class="flex items-center gap-4">
+              <div class="text-right">
+                <p class="text-[10px] font-black uppercase text-gray-900 leading-none mb-1">{{ userName }}</p>
+                <button @click="handleLogout" class="text-[9px] font-bold text-red-500 uppercase tracking-widest hover:underline">Keluar</button>
+              </div>
+              <router-link to="/dashboard" class="w-10 h-10 rounded-full bg-blue-50 border-2 border-white shadow-sm flex items-center justify-center text-blue-600 font-black text-xs">
+                {{ userName?.charAt(0).toUpperCase() }}
+              </router-link>
             </div>
           </template>
+        </div>
+
+        <!-- Mobile Header (Icons only) -->
+        <div class="flex md:hidden items-center gap-4">
+          <router-link v-if="isLoggedIn" to="/dashboard" class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xs">
+            {{ userName?.charAt(0).toUpperCase() }}
+          </router-link>
+          <router-link v-else to="/login" class="text-xs font-black uppercase tracking-widest text-blue-600">Login</router-link>
         </div>
       </div>
     </div>
@@ -37,9 +55,15 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
 const isLoggedIn = computed(() => !!localStorage.getItem('token'));
 const userName = computed(() => localStorage.getItem('name'));
+
+const desktopMenu = [
+  { to: '/', label: 'Jelajah' },
+  { to: '/about', label: 'Tentang' },
+  { to: '/help', label: 'Bantuan' },
+  { to: '/contact', label: 'Kontak' }
+];
 
 const handleLogout = () => {
   localStorage.clear();
