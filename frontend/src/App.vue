@@ -15,6 +15,9 @@
     <!-- Navigasi Bawah Mobile (Tampilan App) -->
     <MobileBottomNav />
 
+    <!-- Pop-up Login & Register -->
+    <AuthModal />
+
     <!-- Footer Premium -->
     <footer v-if="!isDashboard" class="bg-white border-t border-gray-100 py-12 md:py-20 mt-auto">
       <div class="max-w-7xl mx-auto px-6 text-center space-y-4">
@@ -35,6 +38,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import Navbar from './components/Navbar.vue';
 import MobileBottomNav from './components/MobileBottomNav.vue';
+import AuthModal from './components/AuthModal.vue';
 
 const route = useRoute();
 const isDashboard = computed(() => route.path?.startsWith('/dashboard'));

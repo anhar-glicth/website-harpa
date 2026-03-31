@@ -9,7 +9,9 @@ const state = reactive({
     name: localStorage.getItem('name') || null,
     role: localStorage.getItem('role') || null,
     token: localStorage.getItem('token') || null,
-  }
+  },
+  isAuthModalOpen: false,
+  authModalMode: 'login' // 'login' atau 'register'
 });
 
 /**
@@ -23,33 +25,38 @@ const getUserName = computed(() => state.user.name);
  * Actions: Fungsi untuk mengubah state.
  */
 
-/**
- * Menyimpan data autentikasi ke dalam state dan localStorage.
- * @param {Object} userData - Data yang berisi name, role, dan token.
- */
 const setAuth = (userData) => {
   state.user.name = userData.name;
   state.user.role = userData.role;
   state.user.token = userData.token;
 
-  // Simpan ke localStorage agar data tetap ada saat halaman di-refresh
   localStorage.setItem('name', userData.name);
   localStorage.setItem('role', userData.role);
   localStorage.setItem('token', userData.token);
 };
 
-/**
- * Menghapus data autentikasi (Logout).
- */
 const clearAuth = () => {
   state.user.name = null;
   state.user.role = null;
   state.user.token = null;
 
-  // Bersihkan localStorage
   localStorage.removeItem('name');
   localStorage.removeItem('role');
   localStorage.removeItem('token');
+};
+
+const openLogin = () => {
+  state.isAuthModalOpen = true;
+  state.authModalMode = 'login';
+};
+
+const openRegister = () => {
+  state.isAuthModalOpen = true;
+  state.authModalMode = 'register';
+};
+
+const closeAuthModal = () => {
+  state.isAuthModalOpen = false;
 };
 
 /**
@@ -62,6 +69,9 @@ export const useAuth = () => {
     getUserRole,
     getUserName,
     setAuth,
-    clearAuth
+    clearAuth,
+    openLogin,
+    openRegister,
+    closeAuthModal
   };
 };

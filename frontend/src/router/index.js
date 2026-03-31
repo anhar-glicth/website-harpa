@@ -8,6 +8,8 @@ import CampaignDetails from '../views/CampaignDetails.vue';
 import About from '../views/About.vue';
 import Help from '../views/Help.vue';
 import Contact from '../views/Contact.vue';
+import Syahadat from '../views/Syahadat.vue';
+import News from '../views/News.vue';
 
 // Gunakan impor dinamis untuk dashboard agar lebih ringan
 const UserDashboard = () => import('../views/dashboard/User.vue');
@@ -39,6 +41,16 @@ const routes = [
     path: '/contact',
     name: 'Contact',
     component: Contact
+  },
+  {
+    path: '/muallaf',
+    name: 'Syahadat',
+    component: Syahadat
+  },
+  {
+    path: '/news',
+    name: 'News',
+    component: News
   },
   {
     path: '/login',

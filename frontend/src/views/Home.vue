@@ -19,7 +19,7 @@
            <span class="text-[9px] font-black uppercase tracking-[0.2em]">Mitra Terverifikasi</span>
         </div>
         
-        <h1 class="text-[1.75rem] sm:text-5xl md:text-7xl font-black leading-[1.2] tracking-tighter uppercase break-words">
+        <h1 class="text-3xl sm:text-5xl md:text-7xl font-black leading-[1.2] tracking-tighter uppercase break-words">
           Uluran Tangan <br> <span class="text-blue-500">Anda,</span> <br> Harapan <span class="text-blue-500">Mereka</span>
         </h1>
         
@@ -49,7 +49,7 @@
 
         <!-- Kampanye Sukses -->
         <div class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
-          <div class="bg-green-50 w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-green-600 text-2xl md:text-3xl shrink-0">
+          <div class="bg-blue-50 w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-blue-600 text-2xl md:text-3xl shrink-0">
             <i class="fas fa-check-circle"></i>
           </div>
           <div>
@@ -77,39 +77,33 @@
     </section>
 
     <!-- Campaign Section -->
-    <section id="campaigns" ref="campaignSection" class="max-w-7xl mx-auto px-4 py-24">
-      <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
-      <div class="flex-grow">
-          <h2 class="text-3xl md:text-4xl font-black text-slate-900 mb-2 leading-tight uppercase tracking-tighter">Kampanye <span class="text-blue-600">Terverifikasi</span></h2>
-          <p class="text-slate-500 font-bold text-[10px] md:text-sm tracking-wide">Membantu sesama mulai dari hal yang paling kecil</p>
+    <section id="campaigns" ref="campaignSection" class="max-w-7xl mx-auto px-4 py-20 pb-32">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-8 gap-6 items-start">
+        <div class="w-full">
+           <h2 class="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tighter italic">Daftar <span class="text-blue-600">Kampanye</span></h2>
+           <p class="text-slate-400 font-bold text-[9px] md:text-sm tracking-[0.2em] uppercase mt-1">Titipan Kebaikan Anda Terverifikasi</p>
         </div>
         
-        <!-- Search & Filter UI -->
-        <div class="w-full md:w-auto flex flex-col md:flex-row gap-4 items-center">
-          <!-- Search Input -->
-          <div class="relative w-full md:w-80 group">
-            <input 
-              v-model="searchQuery" 
-              type="text" 
-              placeholder="Cari kampanye..." 
-              class="w-full pl-12 pr-6 py-4 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-bold shadow-sm text-sm"
-            />
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
+        <!-- Search -->
+        <div class="w-full md:w-80 group">
+          <input 
+            v-model="searchQuery" 
+            type="text" 
+            placeholder="Cari kampanye..." 
+            class="w-full px-6 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-bold text-xs shadow-sm"
+          />
         </div>
       </div>
 
-      <!-- Category Filter Chips (Scrollable di Mobile) -->
-      <div class="flex overflow-x-auto no-scrollbar gap-3 mb-12 pb-2 -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth">
+      <!-- Category Filter Chips -->
+      <div class="flex overflow-x-auto no-scrollbar gap-2 mb-12 -mx-4 px-4 md:mx-0 md:px-0">
         <button 
           v-for="cat in categories" 
           :key="cat"
           @click="selectedCategory = cat"
           :class="[
-            'px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border whitespace-nowrap',
-            selectedCategory === cat ? 'bg-blue-600 text-white border-blue-600 shadow-xl shadow-blue-100 scale-105' : 'bg-white text-slate-500 border-slate-100 hover:border-blue-200 hover:text-blue-600'
+            'px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-sm border',
+            selectedCategory === cat ? 'bg-blue-600 text-white border-blue-600 scale-105' : 'bg-white text-slate-400 border-slate-50'
           ]"
         >
           {{ cat }}
@@ -158,6 +152,36 @@
         <p class="text-slate-400 font-bold text-sm">Coba kata kunci lain atau pilih kategori yang berbeda.</p>
       </div>
     </section>
+
+    <!-- Social Impact Section (Berita & Syahadat Preview) -->
+    <section class="max-w-7xl mx-auto px-4 py-24 border-t border-slate-100">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <!-- Text Content -->
+        <div class="space-y-8">
+          <div class="inline-flex py-1 px-4 bg-blue-50 rounded-full text-blue-600 text-[10px] font-black uppercase tracking-widest border border-blue-100">Mualaf Center & Berita</div>
+          <h2 class="text-3xl md:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter italic">Langkah Baru, <br> <span class="text-blue-600">Kehidupan Baru</span></h2>
+          <p class="text-slate-500 font-bold text-sm leading-relaxed max-w-md">Selain berdonasi, kami juga membantu saudara-saudara kita yang membutuhkan bimbingan spiritual serta menyajikan kabar warta kebaikan dari lapangan.</p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 pt-4">
+            <button @click="handleSyahadat" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:bg-blue-700 transition inline-block text-center">Ajukan Syahadat</button>
+            <router-link to="/news" class="px-8 py-4 bg-white border-2 border-slate-100 text-slate-900 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:border-blue-600 hover:text-blue-600 transition inline-block text-center">Lihat Berita Terbaru</router-link>
+          </div>
+        </div>
+
+        <!-- Visual Element -->
+        <div class="relative group">
+           <div class="absolute -inset-4 bg-blue-600/5 rounded-[3rem] -rotate-3 group-hover:rotate-0 transition-transform"></div>
+           <div class="relative aspect-video overflow-hidden rounded-[2.5rem] shadow-2xl">
+              <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="News Preview">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div class="absolute bottom-8 left-8 right-8 text-white">
+                 <p class="text-[9px] font-black uppercase tracking-widest mb-2">Terakhir Ditambahkan</p>
+                 <h4 class="text-lg font-black tracking-tight leading-tight uppercase italic line-clamp-2">Penyaluran Ribuan Wakaf Al-Quran ke Pelosok Indonesia Timur</h4>
+              </div>
+           </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -167,7 +191,10 @@ import { useRouter } from 'vue-router';
 import api from '@/api';
 import CampaignCard from '../components/CampaignCard.vue';
 
+import { useAuth } from '../store/auth';
+
 const router = useRouter();
+const { isAuthenticated, openLogin } = useAuth();
 const campaigns = ref([]);
 const stats = ref({
   totalDonation: 0,
@@ -242,7 +269,19 @@ const scrollToCampaign = () => {
 };
 
 const handleDonate = (campaign) => {
+  if (!isAuthenticated.value) {
+    openLogin();
+    return;
+  }
   router.push(`/campaigns/${campaign.id}`);
+};
+
+const handleSyahadat = () => {
+  if (!isAuthenticated.value) {
+    openLogin();
+    return;
+  }
+  router.push('/muallaf');
 };
 
 onMounted(fetchData);

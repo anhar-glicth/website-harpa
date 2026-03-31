@@ -20,19 +20,19 @@
           
           <div class="h-6 w-px bg-gray-100 mx-2"></div>
 
-          <template v-if="!isLoggedIn">
-            <router-link to="/login" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-blue-600 transition-colors">Masuk</router-link>
-            <router-link to="/register" class="bg-blue-600 text-white px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition shadow-xl shadow-blue-100">Daftar</router-link>
+          <template v-if="!isAuthenticated">
+            <button @click="openLogin" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-blue-600 transition-colors">Masuk</button>
+            <button @click="openRegister" class="bg-blue-600 text-white px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-700 transition shadow-xl shadow-blue-100">Daftar</button>
           </template>
           
           <template v-else>
             <div class="flex items-center gap-4">
               <div class="text-right">
-                <p class="text-[10px] font-black uppercase text-gray-900 leading-none mb-1">{{ userName }}</p>
+                <p class="text-[10px] font-black uppercase text-gray-900 leading-none mb-1">{{ getUserName }}</p>
                 <button @click="handleLogout" class="text-[9px] font-bold text-red-500 uppercase tracking-widest hover:underline">Keluar</button>
               </div>
               <router-link to="/dashboard" class="w-10 h-10 rounded-full bg-blue-50 border-2 border-white shadow-sm flex items-center justify-center text-blue-600 font-black text-xs">
-                {{ userName?.charAt(0).toUpperCase() }}
+                {{ getUserName?.charAt(0).toUpperCase() }}
               </router-link>
             </div>
           </template>
@@ -40,10 +40,10 @@
 
         <!-- Mobile Header (Icons only) -->
         <div class="flex md:hidden items-center gap-4">
-          <router-link v-if="isLoggedIn" to="/dashboard" class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xs">
-            {{ userName?.charAt(0).toUpperCase() }}
+          <router-link v-if="isAuthenticated" to="/dashboard" class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-black text-xs">
+            {{ getUserName?.charAt(0).toUpperCase() }}
           </router-link>
-          <router-link v-else to="/login" class="text-xs font-black uppercase tracking-widest text-blue-600">Login</router-link>
+          <button v-else @click="openLogin" class="text-xs font-black uppercase tracking-widest text-blue-600 border border-blue-100 px-4 py-2 rounded-xl">Masuk</button>
         </div>
       </div>
     </div>
@@ -51,22 +51,21 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuth } from '../store/auth';
 
 const router = useRouter();
-const isLoggedIn = computed(() => !!localStorage.getItem('token'));
-const userName = computed(() => localStorage.getItem('name'));
+const { isAuthenticated, getUserName, clearAuth, openLogin, openRegister } = useAuth();
 
 const desktopMenu = [
   { to: '/', label: 'Jelajah' },
-  { to: '/about', label: 'Tentang' },
-  { to: '/help', label: 'Bantuan' },
-  { to: '/contact', label: 'Kontak' }
+  { to: '/news', label: 'Berita' },
+  { to: '/muallaf', label: 'Syahadat' },
+  { to: '/about', label: 'Tentang' }
 ];
 
 const handleLogout = () => {
-  localStorage.clear();
+  clearAuth();
   router.push('/login');
 };
 </script>

@@ -20,9 +20,9 @@
               <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold">1</div>
               <p class="font-bold text-blue-900 italic text-sm">Verifikasi Ketat Setiap Kampanye.</p>
             </div>
-            <div class="flex items-center gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-              <div class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-bold">2</div>
-              <p class="font-bold text-emerald-900 italic text-sm">Transparansi Penyaluran Dana.</p>
+            <div class="flex items-center gap-4 p-4 bg-blue-50 rounded-2xl border border-blue-100">
+              <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold">2</div>
+              <p class="font-bold text-blue-900 italic text-sm">Transparansi Penyaluran Dana.</p>
             </div>
           </div>
         </div>
@@ -40,8 +40,8 @@
               <p class="text-sm text-gray-400 opacity-80 italic">Kejujuran adalah pondasi dari semua kepercayaan donatur kami.</p>
             </div>
             <div class="space-y-4">
-              <div class="text-4xl text-emerald-400 font-black">⚡</div>
-              <p class="font-black text-xs uppercase tracking-widest text-emerald-400">Responsif</p>
+              <div class="text-4xl text-blue-400 font-black">⚡</div>
+              <p class="font-black text-xs uppercase tracking-widest text-blue-400">Responsif</p>
               <p class="text-sm text-gray-400 opacity-80 italic">Bantuan harus dikirimkan secepat mungkin dalam situasi mendesak.</p>
             </div>
             <div class="space-y-4">

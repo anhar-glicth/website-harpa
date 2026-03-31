@@ -26,8 +26,11 @@ app.use(cors());
  */
 
 // Route Spesifik - Pastikan rute admin berada di atas rute global api
+const campaignController = require('./controllers/campaignController');
+app.get('/api/stats', campaignController.getStats);
+
 app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes); // Mengendalikan /api/admin/dashboard-stats
+app.use('/api/admin', adminRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/donations', donationRoutes);
 
