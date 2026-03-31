@@ -4,6 +4,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
+import CampaignDetails from '../views/CampaignDetails.vue';
+
 // Gunakan impor dinamis untuk dashboard agar lebih ringan
 const UserDashboard = () => import('../views/dashboard/User.vue');
 const AdminDashboard = () => import('../views/dashboard/Admin.vue');
@@ -14,6 +16,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/campaigns/:id',
+    name: 'CampaignDetails',
+    component: CampaignDetails
   },
   {
     path: '/login',
@@ -35,7 +42,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const role = localStorage.getItem('role');
       if (role === 'admin') next('/dashboard/admin');
-      else if (role === 'staff') next('/dashboard/field');
+      else if (role === 'field_worker') next('/dashboard/field');
       else next('/dashboard/user');
     }
   },
@@ -50,7 +57,7 @@ const routes = [
     path: '/dashboard/field',
     name: 'FieldDashboard',
     component: FieldDashboard,
-    meta: { requiresAuth: true, role: 'staff' }
+    meta: { requiresAuth: true, role: 'field_worker' }
   },
   {
     path: '/dashboard/admin',

@@ -11,7 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
 const donationRoutes = require('./routes/donationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const apiRoutes = require('./routes/api');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -31,9 +31,6 @@ app.use('/api/admin', adminRoutes); // Mengendalikan /api/admin/dashboard-stats
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/donations', donationRoutes);
 
-// Global API Route (Hanya jika tidak ditangani rute spesifik di atas)
-app.use('/api', apiRoutes);
-
 // Root test route
 app.get('/', (req, res) => {
     res.send('API Humanity Care is Running...');
@@ -44,10 +41,12 @@ app.use((req, res) => {
     console.log(`[404] Request ke: ${req.originalUrl}`);
     res.status(404).json({
         message: `Endpoint ${req.originalUrl} tidak ditemukan di server.`,
-        success: false,
-        hint: "Periksa apakah Anda memanggil /api/admin/dashboard-stats atau /api/admin/stats"
+        success: false
     });
 });
+
+// Global Error Handler
+app.use(errorHandler);
 
 // Port Handling
 const PORT = process.env.PORT || 5000;

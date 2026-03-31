@@ -5,31 +5,28 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 
 // Import Controllers
-const authController = require('../controllers/authController');
-const campaignController = require('../controllers/campaignController');
+const adminController = require('../controllers/adminController');
 
 /**
- * Rute khusus Admin
+ * Rute khusus Admin Dashboard & Management
  */
 
-// 1. Statistik Dashboard (Sokong dua-dua nama untuk elak 404)
-// Frontend mungkin panggil /api/admin/stats ATAU /api/admin/dashboard-stats
-const statsHandler = campaignController.getStats || ((req, res) => {
-    res.json({ 
-        status: 'success', 
-        data: { totalDonation: 0, campaignsSuccess: 0, reach: 0 } 
-    });
-});
+// 1. Statistik Dashboard
+router.get('/stats', auth, auth.isAdmin, adminController.getStats);
+router.get('/dashboard-stats', auth, auth.isAdmin, adminController.getStats);
 
-router.get('/stats', auth, statsHandler);
-router.get('/dashboard-stats', auth, statsHandler);
+// 2. Senarai Pengguna (Team & Donatur)
+router.get('/management-list', auth, auth.isAdmin, adminController.getTeamList);
+router.get('/donors-list', auth, auth.isAdmin, adminController.getDonorList);
 
-// 2. Senarai Pengguna
-router.get('/management-list', auth, authController.getTeamList);
-router.get('/donors-list', auth, authController.getDonorList);
+// 3. Pengurusan Akaun (Add & Delete)
+router.post('/add-account', auth, auth.isAdmin, adminController.addAccount);
+router.delete('/delete-account/:id', auth, auth.isAdmin, adminController.deleteAccount);
 
-// 3. Pengurusan Akaun
-router.post('/add-account', auth, authController.registerStaff);
-router.delete('/delete-account/:id', auth, authController.deleteUser);
+// 4. Verifikasi Kampanye & Donasi (Fitur Baru)
+router.get('/pending-campaigns', auth, auth.isAdmin, adminController.getPendingCampaigns);
+router.put('/approve-campaign/:id', auth, auth.isAdmin, adminController.approveCampaign);
+router.get('/pending-donations', auth, auth.isAdmin, adminController.getPendingDonations);
+router.put('/verify-donation/:id', auth, auth.isAdmin, adminController.verifyDonation);
 
 module.exports = router;

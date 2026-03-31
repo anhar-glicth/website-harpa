@@ -44,8 +44,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { useAuth } from '@/store/auth';
 
-const userName = ref(localStorage.getItem('name') || 'User');
-const userRole = ref(localStorage.getItem('role') || 'user');
+const { getUserName, getUserRole } = useAuth();
+const userName = getUserName;
+const userRole = getUserRole;
 </script>

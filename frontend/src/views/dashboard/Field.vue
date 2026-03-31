@@ -125,7 +125,18 @@
               </svg>
             </div>
             <div class="absolute top-5 right-5">
-              <span class="px-4 py-1.5 bg-white/95 backdrop-blur shadow-xl rounded-full text-[10px] font-black uppercase text-blue-600 tracking-widest">Aktif</span>
+              <span 
+                v-if="c.status === 'pending'"
+                class="px-4 py-1.5 bg-yellow-500 shadow-xl rounded-full text-[10px] font-black uppercase text-white tracking-widest"
+              >
+                Menunggu Approval
+              </span>
+              <span 
+                v-else
+                class="px-4 py-1.5 bg-blue-600 shadow-xl rounded-full text-[10px] font-black uppercase text-white tracking-widest"
+              >
+                Aktif
+              </span>
             </div>
           </div>
 
@@ -296,7 +307,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
-import api from '../../api'; 
+import api from '@/api'; 
 
 const myCampaigns = ref([]);
 const loading = ref(true);
@@ -350,7 +361,7 @@ const handleFileChange = (event) => {
 const fetchData = async () => {
   loading.value = true;
   try {
-    const res = await api.get('/campaigns');
+    const res = await api.get('/campaigns/my-campaigns');
     myCampaigns.value = res.data;
   } catch (error) {
     console.error("Gagal memuat data kampanye:", error);

@@ -14,14 +14,16 @@ const validate = require('../middleware/validate');
  * CAMPAIGNS ROUTES
  */
 
+// Staff: Melihat kampanye milik sendiri
+router.get('/my-campaigns', auth, auth.isStaff, campaignController.getMyCampaigns);
+
 // Public: Melihat daftar kampanye
 router.get('/', campaignController.getAllCampaigns);
 router.get('/:id', campaignController.getCampaignById);
 
-// Private: Admin Only (PENTING: Baris 11 ada di sini)
-// Pastikan menggunakan 'auth' dan 'validate' secara langsung, bukan 'auth.authenticateToken'
-router.post('/', auth, validate, campaignController.createCampaign);
-router.put('/:id', auth, validate, campaignController.updateCampaign);
-router.delete('/:id', auth, campaignController.deleteCampaign);
+// Private: Staff Only (Admin & Field Worker)
+router.post('/', auth, auth.isStaff, validate, campaignController.createCampaign);
+router.put('/:id', auth, auth.isStaff, validate, campaignController.updateCampaign);
+router.delete('/:id', auth, auth.isStaff, campaignController.deleteCampaign);
 
 module.exports = router;

@@ -16,15 +16,17 @@
 <script setup>
 import { computed, defineAsyncComponent } from 'vue';
 import Sidebar from '../components/Sidebar.vue';
+import { useAuth } from '../store/auth';
+
+const { getUserRole } = useAuth();
 
 /**
- * Mengambil data role dari localStorage atau store.
+ * Mengambil data role dari store.
  */
-const userRole = computed(() => localStorage.getItem('role') || 'user');
+const userRole = computed(() => getUserRole.value || 'user');
 
 /**
  * Mengimpor komponen dashboard secara dinamis berdasarkan role.
- * Ini memastikan kita hanya memuat kode yang diperlukan.
  */
 const AdminDashboard = defineAsyncComponent(() => import('./dashboard/Admin.vue'));
 const FieldDashboard = defineAsyncComponent(() => import('./dashboard/Field.vue'));

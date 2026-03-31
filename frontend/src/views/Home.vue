@@ -110,7 +110,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import api from '@/api';
 import CampaignCard from '../components/CampaignCard.vue';
 
 const router = useRouter();
@@ -129,10 +129,9 @@ const fetchData = async () => {
   loading.value = true;
   error.value = null;
   try {
-    // Port disesuaikan ke 5000 sesuai log server Anda
     const [campaignRes, statsRes] = await Promise.all([
-      axios.get('http://localhost:5000/api/campaigns'),
-      axios.get('http://localhost:5000/api/stats')
+      api.get('/campaigns'),
+      api.get('/stats')
     ]);
     
     campaigns.value = campaignRes.data.map(c => ({
@@ -143,7 +142,7 @@ const fetchData = async () => {
 
     stats.value = statsRes.data;
   } catch (err) {
-    error.value = "Gagal mengambil data dari server. Pastikan backend menyala di port 5000.";
+    error.value = "Gagal mengambil data dari server. Pastikan backend menyala.";
     console.error(err);
   } finally {
     loading.value = false;

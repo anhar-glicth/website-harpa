@@ -100,7 +100,7 @@
                 <span class="text-[10px] font-black text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg uppercase">+12.5%</span>
               </div>
               <p class="text-xs text-gray-400 font-black uppercase tracking-widest mb-1">Kutipan Keseluruhan</p>
-              <p class="text-3xl font-black text-gray-900 leading-tight">RM {{ stats.totalDonations ? stats.totalDonations.toLocaleString() : '0.00' }}</p>
+              <p class="text-3xl font-black text-gray-900 leading-tight">Rp {{ stats.totalDonations ? stats.totalDonations.toLocaleString() : '0' }}</p>
             </div>
 
             <!-- Stat 2: Donatur -->
@@ -257,6 +257,106 @@
             </table>
           </div>
         </div>
+
+        <!-- Verify Campaigns Tab -->
+        <div v-if="activeTab === 'verify_campaign'" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+          <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-blue-50/10">
+            <div>
+              <h2 class="text-xl font-black text-blue-600 uppercase tracking-tighter">Approval Kampanye</h2>
+              <p class="text-xs font-bold text-gray-400">Kampanye yang diajukan oleh petugas lapangan dan butuh verifikasi.</p>
+            </div>
+            <span class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest">
+              {{ pendingCampaigns.length }} Menunggu
+            </span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead class="bg-gray-50 text-gray-400 text-[10px] uppercase font-black tracking-[0.15em]">
+                <tr>
+                  <th class="px-8 py-5">Judul Kampanye</th>
+                  <th class="px-8 py-5">Kategori</th>
+                  <th class="px-8 py-5">Target</th>
+                  <th class="px-8 py-5 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-50">
+                <tr v-for="cam in pendingCampaigns" :key="cam.id" class="hover:bg-blue-50/20 transition-all">
+                  <td class="px-8 py-6">
+                    <div class="flex items-center space-x-3">
+                      <div class="w-12 h-12 rounded-xl overflow-hidden bg-gray-100">
+                        <img :src="cam.foto" class="w-full h-full object-cover" />
+                      </div>
+                      <span class="font-bold text-gray-800">{{ cam.title }}</span>
+                    </div>
+                  </td>
+                  <td class="px-8 py-6 text-sm font-bold text-gray-500 uppercase">{{ cam.category }}</td>
+                  <td class="px-8 py-6 font-black text-blue-600">Rp {{ cam.target_amount.toLocaleString() }}</td>
+                  <td class="px-8 py-6 text-center">
+                    <button @click="handleApproveCampaign(cam.id)" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">
+                      Setujui
+                    </button>
+                  </td>
+                </tr>
+                <tr v-if="pendingCampaigns.length === 0">
+                  <td colspan="4" class="px-8 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-xs italic">
+                    Semua kampanye telah diproses.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Verify Donations Tab -->
+        <div v-if="activeTab === 'verify_donation'" class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-emerald-50/10">
+            <div>
+              <h2 class="text-xl font-black text-emerald-600 uppercase tracking-tighter">Verifikasi Donasi</h2>
+              <p class="text-xs font-bold text-gray-400">Verifikasi bukti transfer yang diunggah oleh donatur.</p>
+            </div>
+            <span class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest">
+              {{ pendingDonations.length }} Donasi
+            </span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead class="bg-gray-50 text-gray-400 text-[10px] uppercase font-black tracking-[0.15em]">
+                <tr>
+                  <th class="px-8 py-5">Donatur & Kampanye</th>
+                  <th class="px-8 py-5">Nominal</th>
+                  <th class="px-8 py-5">Bukti Transfer</th>
+                  <th class="px-8 py-5 text-center">Keputusan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-50">
+                <tr v-for="don in pendingDonations" :key="don.id" class="hover:bg-emerald-50/20 transition-all">
+                  <td class="px-8 py-6">
+                    <p class="font-black text-gray-800 tracking-tight">{{ don.donor_name }}</p>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{{ don.campaign_title }}</p>
+                  </td>
+                  <td class="px-8 py-6 font-black text-emerald-600">Rp {{ don.amount.toLocaleString() }}</td>
+                  <td class="px-8 py-6">
+                    <a :href="don.proof_image" target="_blank" class="flex items-center space-x-2 text-blue-600 font-bold text-xs uppercase tracking-widest hover:underline">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                      <span>Lihat Bukti</span>
+                    </a>
+                  </td>
+                  <td class="px-8 py-6">
+                    <div class="flex items-center justify-center space-x-2">
+                      <button @click="handleVerifyDonation(don.id, 'Success')" class="bg-emerald-600 text-white px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-100 hover:bg-emerald-700">Terima</button>
+                      <button @click="handleVerifyDonation(don.id, 'Failed')" class="bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest shadow-lg shadow-red-100 hover:bg-red-600">Tolak</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr v-if="pendingDonations.length === 0">
+                  <td colspan="4" class="px-8 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-xs italic">
+                    Belum ada donasi baru untuk diverifikasi.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </main>
 
@@ -323,26 +423,11 @@
 
 <script setup>
 import { ref, reactive, onMounted, h, computed } from 'vue';
-import axios from 'axios';
+import api from '@/api';
 
 /**
- * PENTING: Jika anda menggunakan Vite Proxy, biarkan '/api/admin'.
- * Sila pastikan server.js telah mendaftarkan: app.use('/api/admin', adminRoutes);
+ * PENTING: Menggunakan api instance dari @/api/index.js
  */
-const API_BASE_URL = 'http://localhost:5000/api/admin'; 
-
-// State Masa Real-time
-const currentTime = computed(() => {
-  return new Date().toLocaleString('ms-MY', { 
-    hour: '2-digit', 
-    minute: '2-digit', 
-    second: '2-digit',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
-});
-
 const adminName = localStorage.getItem('name');
 
 // Icons SVG Internal (Lucide-inspired)
@@ -354,60 +439,89 @@ const activeTab = ref('dashboard');
 const stats = ref({ totalDonations: 0, totalDonors: 0, activeCampaigns: 0 });
 const teamList = ref([]);
 const donorList = ref([]);
+const pendingCampaigns = ref([]);
+const pendingDonations = ref([]);
 const loading = ref(true);
 const showAddModal = ref(false);
 const errorMsg = ref('');
 const errorCode = ref(null);
 const lastAttemptedUrl = ref('');
 
+const ShieldCheckIcon = () => h('svg', { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5 }, [h('path', { d: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10' }), h('path', { d: 'm9 12 2 2 4-4' })]);
+const BellIcon = () => h('svg', { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 2.5 }, [h('path', { d: 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9' }), h('path', { d: 'M10.3 21a1.94 1.94 0 0 0 3.4 0' })]);
+
 const tabs = [
-  { id: 'dashboard', label: 'Dashboard Utama', icon: LayoutIcon },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutIcon },
   { id: 'team', label: 'Pengurusan Tim', icon: UsersIcon },
-  { id: 'donors', label: 'Pengkalan Donatur', icon: HeartIcon }
+  { id: 'donors', label: 'Pangkalan Donatur', icon: HeartIcon },
+  { id: 'verify_campaign', label: 'Approval Kampanye', icon: ShieldCheckIcon },
+  { id: 'verify_donation', label: 'Verifikasi Donasi', icon: BellIcon }
 ];
 
 const formData = reactive({ name: '', email: '', password: '', role: 'field_worker' });
 const formLoading = ref(false);
 const message = reactive({ text: '', type: '' });
 
+// State Masa Real-time
+const currentTime = computed(() => {
+  return new Date().toLocaleString('id-ID', { 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+});
+
 const fetchData = async () => {
   loading.value = true;
   errorMsg.value = '';
   errorCode.value = null;
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-    errorMsg.value = "Sesi pengesahan tamat. Sila log masuk semula.";
-    loading.value = false;
-    return;
-  }
-
-  const config = { headers: { Authorization: `Bearer ${token}` } };
-  lastAttemptedUrl.value = `${API_BASE_URL}/stats`;
 
   try {
-    const [resStats, resTeam, resDonors] = await Promise.all([
-      axios.get(`${API_BASE_URL}/stats`, config),
-      axios.get(`${API_BASE_URL}/management-list`, config),
-      axios.get(`${API_BASE_URL}/donors-list`, config)
+    const [resStats, resTeam, resDonors, resPCam, resPDon] = await Promise.all([
+      api.get('/admin/stats'),
+      api.get('/admin/management-list'),
+      api.get('/admin/donors-list'),
+      api.get('/admin/pending-campaigns'),
+      api.get('/admin/pending-donations')
     ]);
     
     stats.value = resStats.data;
     teamList.value = resTeam.data;
     donorList.value = resDonors.data;
+    pendingCampaigns.value = resPCam.data;
+    pendingDonations.value = resPDon.data;
   } catch (error) {
     console.error("DEBUG API ERROR:", error);
     errorCode.value = error.response?.status || '503';
-    
-    if (error.response?.status === 404) {
-      errorMsg.value = "Ralat 404: Endpoint tidak ditemui di Backend. Sila pastikan anda telah menambah 'app.use(\"/api/admin\", adminRoutes)' di dalam fail server.js backend anda.";
-    } else if (error.code === 'ERR_NETWORK') {
-      errorMsg.value = "Sambungan ke pelayan gagal. Sila pastikan Backend Node.js sedang aktif.";
-    } else {
-      errorMsg.value = error.response?.data?.message || "Ralat sistem dikesan semasa memproses data.";
-    }
+    errorMsg.value = error.response?.data?.message || "Ralat sistem dikesan semasa memproses data.";
+    lastAttemptedUrl.value = error.config?.url || '';
   } finally {
     loading.value = false;
+  }
+};
+
+const handleApproveCampaign = async (id) => {
+  if (!confirm('Setujui kampanye ini untuk dipublikasikan?')) return;
+  try {
+    await api.put(`/admin/approve-campaign/${id}`);
+    fetchData();
+  } catch (error) {
+    alert('Gagal menyetujui kampanye');
+  }
+};
+
+const handleVerifyDonation = async (id, status) => {
+  const action = status === 'Success' ? 'MENYETUJUI' : 'MENOLAK';
+  if (!confirm(`Apakah Anda yakin ingin ${action} donasi ini?`)) return;
+  
+  try {
+    await api.put(`/admin/verify-donation/${id}`, { status });
+    fetchData();
+  } catch (error) {
+    alert('Gagal memproses verifikasi donasi');
   }
 };
 
@@ -418,12 +532,9 @@ onMounted(() => {
 const handleAddUser = async () => {
   formLoading.value = true;
   message.text = '';
-  const token = localStorage.getItem('token');
   
   try {
-    const res = await axios.post(`${API_BASE_URL}/add-account`, formData, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const res = await api.post('/admin/add-account', formData);
     
     message.text = res.data.message;
     message.type = 'success';
@@ -445,11 +556,8 @@ const handleAddUser = async () => {
 
 const handleDelete = async (id) => {
   if (!confirm("Padam akaun ini? Data yang dipadam tidak boleh dikembalikan.")) return;
-  const token = localStorage.getItem('token');
   try {
-    await axios.delete(`${API_BASE_URL}/delete-account/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    await api.delete(`/admin/delete-account/${id}`);
     fetchData();
   } catch (error) {
     alert(error.response?.data?.message || "Kegagalan operasi pemadaman.");

@@ -29,6 +29,21 @@ const auth = (req, res, next) => {
 };
 
 /**
+ * Middleware: Opsional Verifikasi Token (Tidak gagal jika tidak ada token)
+ */
+auth.optional = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return next();
+
+    jwt.verify(token, process.env.JWT_SECRET || 'supersecret', (err, user) => {
+        if (!err) req.user = user;
+        next();
+    });
+};
+
+/**
  * Jika Anda butuh fitur Role, kita tambahkan sebagai properti dari fungsi auth
  */
 auth.authorizeRole = (...roles) => {
@@ -43,9 +58,10 @@ auth.authorizeRole = (...roles) => {
     };
 };
 
-// Aliases
+// Aliases khusus
 auth.isAdmin = auth.authorizeRole('admin');
+auth.isStaff = auth.authorizeRole('admin', 'field_worker'); // Gabungan akses
 auth.isUser = auth.authorizeRole('user');
 
-// EKSPOR UTAMA (Agar variabel 'auth' di api.js menjadi fungsi)
+// EKSPOR UTAMA
 module.exports = auth;

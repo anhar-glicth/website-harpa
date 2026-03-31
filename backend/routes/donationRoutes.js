@@ -14,11 +14,13 @@ const validate = require('../middleware/validate');
  * DONATIONS ROUTES
  */
 
-// Public: Orang bisa mengirim donasi
-// Baris 7: Pastikan 'validate' dan 'donationController.createDonation' adalah fungsi
-router.post('/', validate, donationController.createDonation);
+// Public: Orang bisa mengirim donasi (Opsional: simpan user_id jika login)
+router.post('/', auth.optional, validate, donationController.createDonation);
+
+// Private: User melihat riwayat donasi mereka sendiri
+router.get('/my-donations', auth, donationController.getMyDonations);
 
 // Private: Admin bisa melihat riwayat semua donasi
-router.get('/', auth, donationController.getAllDonations);
+router.get('/', auth, auth.isAdmin, donationController.getAllDonations);
 
 module.exports = router;

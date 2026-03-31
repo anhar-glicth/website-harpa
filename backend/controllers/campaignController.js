@@ -1,11 +1,24 @@
 const db = require('../config/db');
 
 /**
- * 1. Mengambil semua data kampanye
+ * 1. Mengambil semua data kampanye (Public)
  */
 const getAllCampaigns = async (req, res, next) => {
     try {
-        const [rows] = await db.query('SELECT * FROM campaigns');
+        const [rows] = await db.query('SELECT * FROM campaigns WHERE status = "approved"');
+        res.json(rows);
+    } catch (err) { 
+        next(err); 
+    }
+};
+
+/**
+ * 1.5 Mengambil kampanye milik user tertentu (Staff)
+ */
+const getMyCampaigns = async (req, res, next) => {
+    try {
+        const user_id = req.user.id;
+        const [rows] = await db.query('SELECT * FROM campaigns WHERE user_id = ?', [user_id]);
         res.json(rows);
     } catch (err) { 
         next(err); 
@@ -63,10 +76,20 @@ const getStats = async (req, res, next) => {
  */
 const createCampaign = async (req, res, next) => {
     try {
-        const { title, description, target_amount, start_date, end_date, category } = req.body;
-        const sql = `INSERT INTO campaigns (title, description, target_amount, current_amount, start_date, end_date, category) 
-                     VALUES (?, ?, ?, 0, ?, ?, ?)`;
-        const [result] = await db.query(sql, [title, description, target_amount, start_date, end_date, category]);
+        const { title, description, target_amount, start_date, end_date, category, foto, bank_name, account_number, account_holder } = req.body;
+        const user_id = req.user.id; // Diambil dari middleware auth
+
+        const sql = `INSERT INTO campaigns 
+                     (title, description, target_amount, current_amount, start_date, end_date, category, foto, bank_name, account_number, account_holder, user_id, status) 
+                     VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`;
+        
+        const [result] = await db.query(sql, [
+            title, description, target_amount, 
+            start_date || new Date(), end_date || null, 
+            category || 'Bantuan', foto || null, 
+            bank_name || null, account_number || null, account_holder || null, 
+            user_id
+        ]);
         
         res.status(201).json({ 
             status: 'success',
@@ -84,11 +107,15 @@ const createCampaign = async (req, res, next) => {
 const updateCampaign = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { title, target_amount, end_date } = req.body;
+        const { title, description, target_amount, end_date, category, foto, bank_name, account_number, account_holder } = req.body;
         
         await db.query(
-            'UPDATE campaigns SET title = ?, target_amount = ?, end_date = ? WHERE id = ?', 
-            [title, target_amount, end_date, id]
+            `UPDATE campaigns SET 
+                title = ?, description = ?, target_amount = ?, 
+                end_date = ?, category = ?, foto = ?, 
+                bank_name = ?, account_number = ?, account_holder = ? 
+             WHERE id = ?`, 
+            [title, description, target_amount, end_date, category, foto, bank_name, account_number, account_holder, id]
         );
         
         res.json({ 
@@ -117,9 +144,10 @@ const deleteCampaign = async (req, res, next) => {
     }
 };
 
-// EKSPOR SEMUA FUNGSI (Pastikan getCampaignById ada di sini)
+// EKSPOR SEMUA FUNGSI
 module.exports = { 
     getAllCampaigns, 
+    getMyCampaigns,
     getCampaignById, 
     getStats, 
     createCampaign, 
