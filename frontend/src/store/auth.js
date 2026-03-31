@@ -9,6 +9,7 @@ const state = reactive({
     name: localStorage.getItem('name') || null,
     role: localStorage.getItem('role') || null,
     token: localStorage.getItem('token') || null,
+    photo: localStorage.getItem('photo') || null,
   },
   isAuthModalOpen: false,
   authModalMode: 'login' // 'login' atau 'register'
@@ -20,6 +21,7 @@ const state = reactive({
 const isAuthenticated = computed(() => !!state.user.token);
 const getUserRole = computed(() => state.user.role);
 const getUserName = computed(() => state.user.name);
+const getUserPhoto = computed(() => state.user.photo);
 
 /**
  * Actions: Fungsi untuk mengubah state.
@@ -28,21 +30,34 @@ const getUserName = computed(() => state.user.name);
 const setAuth = (userData) => {
   state.user.name = userData.name;
   state.user.role = userData.role;
-  state.user.token = userData.token;
+  state.user.token = userData.token || state.user.token;
+  state.user.photo = userData.photo || null;
 
   localStorage.setItem('name', userData.name);
   localStorage.setItem('role', userData.role);
-  localStorage.setItem('token', userData.token);
+  if (userData.token) localStorage.setItem('token', userData.token);
+  if (userData.photo) localStorage.setItem('photo', userData.photo);
+  else localStorage.removeItem('photo');
+};
+
+const updateUserData = (name, photo) => {
+  state.user.name = name;
+  state.user.photo = photo;
+  localStorage.setItem('name', name);
+  if (photo) localStorage.setItem('photo', photo);
+  else localStorage.removeItem('photo');
 };
 
 const clearAuth = () => {
   state.user.name = null;
   state.user.role = null;
   state.user.token = null;
+  state.user.photo = null;
 
   localStorage.removeItem('name');
   localStorage.removeItem('role');
   localStorage.removeItem('token');
+  localStorage.removeItem('photo');
 };
 
 const openLogin = () => {
@@ -68,7 +83,9 @@ export const useAuth = () => {
     isAuthenticated,
     getUserRole,
     getUserName,
+    getUserPhoto,
     setAuth,
+    updateUserData,
     clearAuth,
     openLogin,
     openRegister,

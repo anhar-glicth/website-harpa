@@ -11,6 +11,10 @@ const authRoutes = require('./routes/authRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
 const donationRoutes = require('./routes/donationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const newsRoutes = require('./routes/newsRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
+const zakatRoutes = require('./routes/zakatRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -33,6 +37,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/donations', donationRoutes);
+app.use('/api/news', newsRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/zakats', zakatRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Root test route
 app.get('/', (req, res) => {

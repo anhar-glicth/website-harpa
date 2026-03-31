@@ -29,10 +29,15 @@
             <div class="flex items-center gap-4">
               <div class="text-right">
                 <p class="text-[10px] font-black uppercase text-gray-900 leading-none mb-1">{{ getUserName }}</p>
-                <button @click="handleLogout" class="text-[9px] font-bold text-red-500 uppercase tracking-widest hover:underline">Keluar</button>
+                <div class="flex gap-2 justify-end">
+                   <router-link to="/profile" class="text-[9px] font-bold text-blue-500 uppercase tracking-widest hover:underline">Profil</router-link>
+                   <span class="text-[9px] text-gray-200">|</span>
+                   <button @click="handleLogout" class="text-[9px] font-bold text-red-500 uppercase tracking-widest hover:underline">Keluar</button>
+                </div>
               </div>
-              <router-link to="/dashboard" class="w-10 h-10 rounded-full bg-blue-50 border-2 border-white shadow-sm flex items-center justify-center text-blue-600 font-black text-xs">
-                {{ getUserName?.charAt(0).toUpperCase() }}
+              <router-link to="/dashboard" class="w-10 h-10 rounded-full bg-blue-50 border-2 border-white shadow-sm flex items-center justify-center text-blue-600 font-black text-xs overflow-hidden">
+                <img v-if="getUserPhoto" :src="getUserPhoto" class="w-full h-full object-cover" />
+                <span v-else>{{ getUserName?.charAt(0).toUpperCase() }}</span>
               </router-link>
             </div>
           </template>
@@ -55,17 +60,18 @@ import { useRouter } from 'vue-router';
 import { useAuth } from '../store/auth';
 
 const router = useRouter();
-const { isAuthenticated, getUserName, clearAuth, openLogin, openRegister } = useAuth();
+const { isAuthenticated, getUserName, getUserPhoto, clearAuth, openLogin, openRegister } = useAuth();
 
 const desktopMenu = [
   { to: '/', label: 'Jelajah' },
   { to: '/news', label: 'Berita' },
+  { to: '/zakat', label: 'Zakat' },
   { to: '/muallaf', label: 'Syahadat' },
   { to: '/about', label: 'Tentang' }
 ];
 
 const handleLogout = () => {
   clearAuth();
-  router.push('/login');
+  router.push('/');
 };
 </script>

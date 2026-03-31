@@ -10,6 +10,7 @@ import Help from '../views/Help.vue';
 import Contact from '../views/Contact.vue';
 import Syahadat from '../views/Syahadat.vue';
 import News from '../views/News.vue';
+import Zakat from '../views/Zakat.vue';
 
 // Gunakan impor dinamis untuk dashboard agar lebih ringan
 const UserDashboard = () => import('../views/dashboard/User.vue');
@@ -53,6 +54,11 @@ const routes = [
     component: News
   },
   {
+    path: '/zakat',
+    name: 'Zakat',
+    component: Zakat
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login,
@@ -94,6 +100,12 @@ const routes = [
     name: 'AdminDashboard',
     component: AdminDashboard,
     meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Profile.vue'),
+    meta: { requiresAuth: true }
   }
 ];
 

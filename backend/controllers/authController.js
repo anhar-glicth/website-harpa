@@ -57,6 +57,7 @@ exports.login = async (req, res) => {
             token,
             role: user.role,
             name: user.name,
+            photo: user.profile_photo,
             message: `Selamat datang kembali, ${user.name}!`
         });
     } catch (error) {

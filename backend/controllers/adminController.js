@@ -25,17 +25,17 @@ exports.getStats = async (req, res) => {
 };
 
 /**
- * Manajemen Tim: List Admin dan Petugas Lapangan
+ * Manajemen Pengguna: List Seluruh Akun Terdaftar
  */
 exports.getTeamList = async (req, res) => {
     try {
         const [rows] = await db.query(
-            'SELECT id, name, email, role, created_at FROM users WHERE role IN ("admin", "field_worker") ORDER BY role ASC, created_at DESC'
+            'SELECT id, name, email, role, created_at FROM users ORDER BY role ASC, created_at DESC'
         );
         res.json(rows);
     } catch (error) {
         console.error('Error getTeamList:', error.message);
-        res.status(500).json({ message: 'Gagal memuat daftar tim operasional' });
+        res.status(500).json({ message: 'Gagal memuat database pengguna' });
     }
 };
 
@@ -157,7 +157,7 @@ exports.getPendingDonations = async (req, res) => {
  */
 exports.verifyDonation = async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body; // 'Success' atau 'Failed'
+    const { status, admin_note } = req.body; // 'Success' atau 'Failed' + Note
 
     try {
         const [[donation]] = await db.query('SELECT * FROM donations WHERE id = ?', [id]);
@@ -168,11 +168,11 @@ exports.verifyDonation = async (req, res) => {
         }
 
         if (status === 'Success') {
-            await db.query('UPDATE donations SET payment_status = "Success" WHERE id = ?', [id]);
+            await db.query('UPDATE donations SET payment_status = "Success", admin_note = ? WHERE id = ?', [admin_note, id]);
             await db.query('UPDATE campaigns SET current_amount = current_amount + ? WHERE id = ?', [donation.amount, donation.campaign_id]);
             res.json({ message: 'Donasi berhasil diverifikasi' });
         } else {
-            await db.query('UPDATE donations SET payment_status = "Failed" WHERE id = ?', [id]);
+            await db.query('UPDATE donations SET payment_status = "Failed", admin_note = ? WHERE id = ?', [admin_note, id]);
             res.json({ message: 'Donasi ditolak' });
         }
     } catch (error) {
@@ -199,10 +199,10 @@ exports.getMualafRequests = async (req, res) => {
  */
 exports.verifyMualafRequest = async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body; // 'approved' atau 'rejected'
+    const { status, admin_note } = req.body; // 'approved' atau 'rejected'
 
     try {
-        await db.query('UPDATE mualaf_requests SET status = ? WHERE id = ?', [status, id]);
+        await db.query('UPDATE mualaf_requests SET status = ?, admin_note = ? WHERE id = ?', [status, admin_note, id]);
         res.json({ message: `Pengajuan syahadat telah ${status === 'approved' ? 'disetujui' : 'ditolak'}` });
     } catch (error) {
         console.error('Verify Mualaf Error:', error);

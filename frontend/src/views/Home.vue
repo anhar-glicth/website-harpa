@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen bg-slate-50">
     <!-- Hero Section -->
-    <section class="relative min-h-[90vh] flex items-center justify-center text-center text-white overflow-hidden py-32 px-6 sm:px-10">
+    <section class="relative min-h-[60vh] md:min-h-[90vh] flex items-center justify-center text-center text-white overflow-hidden py-20 sm:py-32 px-6 sm:px-10">
       <!-- Background Image -->
       <div class="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop" 
+          :src="siteSettings.hero_image || 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop'" 
           class="w-full h-full object-cover scale-110"
           alt="Charity"
         />
@@ -19,12 +19,12 @@
            <span class="text-[9px] font-black uppercase tracking-[0.2em]">Mitra Terverifikasi</span>
         </div>
         
-        <h1 class="text-3xl sm:text-5xl md:text-7xl font-black leading-[1.2] tracking-tighter uppercase break-words">
-          Uluran Tangan <br> <span class="text-blue-500">Anda,</span> <br> Harapan <span class="text-blue-500">Mereka</span>
+        <h1 class="text-2xl sm:text-5xl md:text-7xl font-black leading-tight tracking-tighter uppercase break-words">
+           {{ siteSettings.hero_title || 'Uluran Tangan Anda, Harapan Mereka' }}
         </h1>
         
-        <p class="text-[10px] sm:text-sm md:text-base text-white/80 max-w-lg mx-auto font-bold leading-relaxed break-words px-2">
-          Kami menghubungkan kebaikan hati Anda dengan mereka yang benar-benar membutuhkan bantuan di seluruh pelosok negeri.
+        <p class="text-[9px] sm:text-sm md:text-base text-white/90 max-w-lg mx-auto font-bold leading-relaxed break-words px-4">
+           {{ siteSettings.hero_subtitle || 'Kami menghubungkan kebaikan hati Anda dengan mereka yang benar-benar membutuhkan bantuan di seluruh pelosok negeri.' }}
         </p>
        
       </div>
@@ -32,44 +32,44 @@
 
     <!-- Stats Floating Section -->
     <section class="max-w-7xl mx-auto px-4 -mt-10 sm:-mt-20 relative z-20">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div class="grid grid-cols-3 gap-2 md:gap-6">
         
         <!-- Total Donasi -->
-        <div class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
-          <div class="bg-blue-50 w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-blue-600 text-2xl md:text-3xl shrink-0">
+        <div class="bg-white p-3 md:p-8 rounded-2xl md:rounded-3xl shadow-xl flex flex-col md:flex-row items-center md:items-center text-center md:text-left md:space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
+          <div class="bg-blue-50 w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-blue-600 text-sm md:text-3xl shrink-0 mb-2 md:mb-0">
             <i class="fas fa-hand-holding-heart"></i>
           </div>
           <div>
-            <h4 class="text-2xl md:text-3xl font-black tracking-tighter text-slate-900">
+            <h4 class="text-xs md:text-3xl font-black tracking-tighter text-slate-900 leading-tight">
               {{ formatCompact(stats.totalDonation) }}
             </h4>
-            <p class="text-slate-500 font-bold text-[8px] md:text-xs uppercase tracking-widest mt-1">Total Donas</p>
+            <p class="text-slate-500 font-bold text-[6px] md:text-xs uppercase tracking-widest mt-0.5 md:mt-1">Total Donasi</p>
           </div>
         </div>
 
         <!-- Kampanye Sukses -->
-        <div class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
-          <div class="bg-blue-50 w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-blue-600 text-2xl md:text-3xl shrink-0">
+        <div class="bg-white p-3 md:p-8 rounded-2xl md:rounded-3xl shadow-xl flex flex-col md:flex-row items-center md:items-center text-center md:text-left md:space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
+          <div class="bg-blue-50 w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-blue-600 text-sm md:text-3xl shrink-0 mb-2 md:mb-0">
             <i class="fas fa-check-circle"></i>
           </div>
           <div>
-            <h4 class="text-2xl md:text-3xl font-black tracking-tighter text-slate-900">
+            <h4 class="text-xs md:text-3xl font-black tracking-tighter text-slate-900 leading-tight">
               {{ stats.campaignsSuccess }}+
             </h4>
-            <p class="text-slate-500 font-bold text-[8px] md:text-xs uppercase tracking-widest mt-1">Kampanye Sukses</p>
+            <p class="text-slate-500 font-bold text-[6px] md:text-xs uppercase tracking-widest mt-0.5 md:mt-1">KMPY Sukses</p>
           </div>
         </div>
 
         <!-- Jangkauan / Kategori -->
-        <div class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300 sm:col-span-2 lg:col-span-1">
-          <div class="bg-amber-50 w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-amber-600 text-2xl md:text-3xl shrink-0">
+        <div class="bg-white p-3 md:p-8 rounded-2xl md:rounded-3xl shadow-xl flex flex-col md:flex-row items-center md:items-center text-center md:text-left md:space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
+          <div class="bg-amber-50 w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-amber-600 text-sm md:text-3xl shrink-0 mb-2 md:mb-0">
             <i class="fas fa-globe-asia"></i>
           </div>
           <div>
-            <h4 class="text-2xl md:text-3xl font-black tracking-tighter text-slate-900">
-              {{ stats.reach }} Kategori
+            <h4 class="text-xs md:text-3xl font-black tracking-tighter text-slate-900 leading-tight">
+              {{ stats.reach }}
             </h4>
-            <p class="text-slate-500 font-bold text-[8px] md:text-xs uppercase tracking-widest mt-1">Jangkauan Luas</p>
+            <p class="text-slate-500 font-bold text-[6px] md:text-xs uppercase tracking-widest mt-0.5 md:mt-1">Kategori</p>
           </div>
         </div>
 
@@ -102,7 +102,7 @@
           :key="cat"
           @click="selectedCategory = cat"
           :class="[
-            'px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-sm border',
+            'px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl text-[8px] md:text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-sm border',
             selectedCategory === cat ? 'bg-blue-600 text-white border-blue-600 scale-105' : 'bg-white text-slate-400 border-slate-50'
           ]"
         >
@@ -132,7 +132,7 @@
       </div>
 
       <!-- Dynamic Campaign Cards -->
-      <div v-else-if="filteredCampaigns.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <div v-else-if="filteredCampaigns.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mb-20 animate-in fade-in slide-in-from-bottom-8 duration-700">
         <CampaignCard 
           v-for="campaign in filteredCampaigns" 
           :key="campaign.id" 
@@ -172,11 +172,11 @@
         <div class="relative group">
            <div class="absolute -inset-4 bg-blue-600/5 rounded-[3rem] -rotate-3 group-hover:rotate-0 transition-transform"></div>
            <div class="relative aspect-video overflow-hidden rounded-[2.5rem] shadow-2xl">
-              <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="News Preview">
+              <img :src="siteSettings.impact_image || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1000&auto=format&fit=crop'" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="News Preview">
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div class="absolute bottom-8 left-8 right-8 text-white">
                  <p class="text-[9px] font-black uppercase tracking-widest mb-2">Terakhir Ditambahkan</p>
-                 <h4 class="text-lg font-black tracking-tight leading-tight uppercase italic line-clamp-2">Penyaluran Ribuan Wakaf Al-Quran ke Pelosok Indonesia Timur</h4>
+                 <h4 class="text-lg font-black tracking-tight leading-tight uppercase italic line-clamp-2">{{ siteSettings.impact_title || 'Penyaluran Ribuan Wakaf Al-Quran ke Pelosok Indonesia Timur' }}</h4>
               </div>
            </div>
         </div>
@@ -196,6 +196,7 @@ import { useAuth } from '../store/auth';
 const router = useRouter();
 const { isAuthenticated, openLogin } = useAuth();
 const campaigns = ref([]);
+const siteSettings = ref({});
 const stats = ref({
   totalDonation: 0,
   campaignsSuccess: 0,
@@ -208,7 +209,7 @@ const campaignSection = ref(null);
 // State Pencarian & Filter (BARU)
 const searchQuery = ref('');
 const selectedCategory = ref('Semua');
-const categories = ['Semua', 'Medis', 'Pendidikan', 'Bencana', 'Lingkungan', 'Sosial'];
+const categories = ['Semua', 'Sosial', 'Medis', 'Pendidikan', 'Bencana', 'Lingkungan', 'Yatim'];
 
 // Logika Filter (BARU)
 const filteredCampaigns = computed(() => {
@@ -220,14 +221,15 @@ const filteredCampaigns = computed(() => {
   });
 });
 
-// Fungsi Ambil Data Dinamis (Campaigns + Stats)
+// Fungsi Ambil Data Dinamis (Campaigns + Stats + Settings)
 const fetchData = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const [campaignRes, statsRes] = await Promise.all([
+    const [campaignRes, statsRes, settingsRes] = await Promise.all([
       api.get('/campaigns'),
-      api.get('/stats')
+      api.get('/stats'),
+      api.get('/settings')
     ]);
     
     campaigns.value = campaignRes.data.map(c => ({
@@ -237,6 +239,7 @@ const fetchData = async () => {
     }));
 
     stats.value = statsRes.data;
+    siteSettings.value = settingsRes.data;
   } catch (err) {
     error.value = "Gagal mengambil data dari server. Pastikan backend menyala.";
     console.error(err);
