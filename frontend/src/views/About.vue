@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen bg-white">
-    <div class="max-w-4xl mx-auto px-4 py-24 space-y-16">
+    <div class="max-w-4xl mx-auto px-4 py-12 md:py-24 space-y-12 md:space-y-16">
       <!-- Header -->
-      <header class="text-center space-y-4">
-        <h1 class="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter uppercase">Tentang <span class="text-blue-600">HumanityCare</span></h1>
-        <p class="text-sm md:text-xl text-gray-400 font-medium max-w-2xl mx-auto">Membangun jembatan kebaikan antara mereka yang ingin membantu dan mereka yang membutuhkan bantuan.</p>
+      <header class="text-center space-y-3">
+        <h1 class="text-xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase">Tentang <span class="text-blue-600">HumanityCare</span></h1>
+        <p class="text-[11px] md:text-base text-gray-400 font-bold max-w-2xl mx-auto tracking-normal leading-relaxed">Membangun jembatan kebaikan antara mereka yang ingin membantu dan mereka yang membutuhkan bantuan.</p>
       </header>
 
       <!-- Content -->
@@ -12,9 +12,9 @@
         <div class="rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl rotate-2">
           <img :src="siteSettings.about_image || 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop'" class="w-full h-full object-cover" alt="Mission" />
         </div>
-        <div class="space-y-6">
-          <h2 class="text-2xl md:text-3xl font-black text-gray-800 tracking-tight">Misi Kami</h2>
-          <p class="text-sm md:text-base text-gray-500 leading-relaxed italic">{{ siteSettings.about_mission || 'HumanityCare adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses. Kami percaya bahwa setiap bantuan, sekecil apapun, memiliki dampak besar jika disalurkan kepada orang yang tepat dengan cara yang benar.' }}</p>
+        <div class="space-y-4">
+          <h2 class="text-lg md:text-2xl font-black text-gray-800 tracking-tight uppercase italic">Misi Kami</h2>
+          <p class="text-[10px] md:text-sm text-gray-500 leading-relaxed italic font-medium">{{ siteSettings.about_mission || 'HumanityCare adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses.' }}</p>
           <div class="space-y-4">
             <div class="flex items-center gap-4 p-4 bg-blue-50 rounded-2xl border border-blue-100">
               <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-bold">1</div>
@@ -29,10 +29,10 @@
       </section>
 
       <!-- Values -->
-      <section class="bg-gray-900 rounded-[3rem] md:rounded-[4rem] p-8 md:p-20 text-white text-center space-y-12 shadow-2xl relative overflow-hidden">
+      <section class="bg-gray-900 rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-20 text-white text-center space-y-8 md:space-y-12 shadow-2xl relative overflow-hidden">
         <div class="absolute -top-20 -left-20 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl"></div>
         <div class="relative z-10">
-          <h2 class="text-2xl md:text-4xl font-black tracking-tighter mb-8 md:mb-12 uppercase italic">NILAI-NILAI UTAMA</h2>
+          <h2 class="text-xl md:text-3xl font-black tracking-tighter mb-8 md:mb-12 uppercase italic">NILAI-NILAI UTAMA</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             <div class="space-y-4">
               <div class="text-4xl text-blue-400 font-black">🔥</div>

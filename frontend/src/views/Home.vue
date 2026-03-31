@@ -13,17 +13,17 @@
       </div>
 
       <!-- Hero Content -->
-      <div class="relative z-10 w-full max-w-2xl mx-auto space-y-6">
-        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full">
+      <div class="relative z-10 w-full max-w-2xl mx-auto space-y-4 md:space-y-6">
+        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full">
            <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping"></span>
-           <span class="text-[9px] font-black uppercase tracking-[0.2em]">Mitra Terverifikasi</span>
+           <span class="text-[8px] font-black uppercase tracking-[0.2em]">Mitra Terverifikasi</span>
         </div>
         
-        <h1 class="text-2xl sm:text-5xl md:text-7xl font-black leading-tight tracking-tighter uppercase break-words">
+        <h1 class="text-xl sm:text-4xl md:text-7xl font-black leading-tight tracking-tighter uppercase break-words">
            {{ siteSettings.hero_title || 'Uluran Tangan Anda, Harapan Mereka' }}
         </h1>
         
-        <p class="text-[9px] sm:text-sm md:text-base text-white/90 max-w-lg mx-auto font-bold leading-relaxed break-words px-4">
+        <p class="text-[10px] sm:text-xs md:text-base text-white/90 max-w-lg mx-auto font-bold leading-relaxed break-words px-4">
            {{ siteSettings.hero_subtitle || 'Kami menghubungkan kebaikan hati Anda dengan mereka yang benar-benar membutuhkan bantuan di seluruh pelosok negeri.' }}
         </p>
        
@@ -77,11 +77,11 @@
     </section>
 
     <!-- Campaign Section -->
-    <section id="campaigns" ref="campaignSection" class="max-w-7xl mx-auto px-4 py-20 pb-32">
-      <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-8 gap-6 items-start">
+    <section id="campaigns" ref="campaignSection" class="max-w-7xl mx-auto px-4 py-12 md:py-20 pb-24 md:pb-32">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-8 gap-4 items-start">
         <div class="w-full">
-           <h2 class="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tighter italic">Daftar <span class="text-blue-600">Kampanye</span></h2>
-           <p class="text-slate-400 font-bold text-[9px] md:text-sm tracking-[0.2em] uppercase mt-1">Titipan Kebaikan Anda Terverifikasi</p>
+           <h2 class="text-lg sm:text-2xl md:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tighter italic">Daftar <span class="text-blue-600">Kampanye</span></h2>
+           <p class="text-slate-400 font-bold text-[8px] md:text-sm tracking-[0.2em] uppercase mt-1">Titipan Kebaikan Anda Terverifikasi</p>
         </div>
         
         <!-- Search -->
@@ -154,13 +154,13 @@
     </section>
 
     <!-- Social Impact Section (Berita & Syahadat Preview) -->
-    <section class="max-w-7xl mx-auto px-4 py-24 border-t border-slate-100">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <section class="max-w-7xl mx-auto px-4 py-12 md:py-24 border-t border-slate-100">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
         <!-- Text Content -->
-        <div class="space-y-8">
-          <div class="inline-flex py-1 px-4 bg-blue-50 rounded-full text-blue-600 text-[10px] font-black uppercase tracking-widest border border-blue-100">Mualaf Center & Berita</div>
-          <h2 class="text-3xl md:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter italic">Langkah Baru, <br> <span class="text-blue-600">Kehidupan Baru</span></h2>
-          <p class="text-slate-500 font-bold text-sm leading-relaxed max-w-md">Selain berdonasi, kami juga membantu saudara-saudara kita yang membutuhkan bimbingan spiritual serta menyajikan kabar warta kebaikan dari lapangan.</p>
+        <div class="space-y-6 md:space-y-8">
+          <div class="inline-flex py-1 px-4 bg-blue-50 rounded-full text-blue-600 text-[9px] font-black uppercase tracking-widest border border-blue-100">Mualaf Center & Berita</div>
+          <h2 class="text-xl md:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter italic">Langkah Baru, <br> <span class="text-blue-600">Kehidupan Baru</span></h2>
+          <p class="text-slate-500 font-bold text-[11px] md:text-sm leading-relaxed max-w-md italic">Selain berdonasi, kami juga membantu saudara-saudara kita yang membutuhkan bimbingan spiritual serta menyajikan kabar warta kebaikan dari lapangan.</p>
           
           <div class="flex flex-col sm:flex-row gap-4 pt-4">
             <button @click="handleSyahadat" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:bg-blue-700 transition inline-block text-center">Ajukan Syahadat</button>
