@@ -1,53 +1,157 @@
 <template>
   <div class="min-h-screen bg-gray-50/50">
     <div class="max-w-7xl mx-auto px-4 py-6 md:py-10">
-      <div class="flex flex-col lg:flex-row gap-6 md:gap-8 items-start">
+      <div class="flex flex-col lg:flex-row gap-8 items-start">
         
-        <Sidebar class="flex-shrink-0 w-full lg:w-64" />
+        <!-- Sidebar Kiri: Admin Specific -->
+        <div class="w-full lg:w-72 space-y-6 flex-shrink-0 sticky top-28">
+           <!-- Info Admin -->
+           <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
+              <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-600/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+              <div class="relative z-10 space-y-4 text-center">
+                 <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+                    <i class="fas fa-user-shield"></i>
+                 </div>
+                 <div class="space-y-1">
+                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Super Admin</p>
+                    <p class="text-lg font-black text-gray-900 tracking-tighter truncate">Administrator</p>
+                 </div>
+                 <div class="flex gap-2 justify-center pt-2">
+                    <button @click="activeTab = 'settings'" class="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm">
+                       <i class="fas fa-cog"></i>
+                    </button>
+                    <button @click="showAddModal = true" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">
+                       + Staff
+                    </button>
+                 </div>
+              </div>
+           </div>
 
-        <main class="flex-grow space-y-8 md:space-y-10 animate-in fade-in slide-in-from-right-4 duration-700 w-full overflow-hidden">
-          <header class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+           <!-- Menu Navigasi Admin -->
+           <nav class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+              <div class="p-3 space-y-1">
+                 <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest pl-5 py-3">Menu Utama</p>
+                 <button
+                   v-for="tab in tabs"
+                   :key="tab.id"
+                   @click="activeTab = tab.id"
+                   class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all group border-2 border-transparent text-left"
+                   :class="activeTab === tab.id 
+                     ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-100' 
+                     : 'text-gray-400 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-100'"
+                 >
+                   <div :class="['w-8 h-8 rounded-lg flex items-center justify-center transition-all', activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-white']">
+                      <i :class="[tab.icon, 'text-[10px]']"></i>
+                   </div>
+                   {{ tab.label }}
+                 </button>
+              </div>
+
+              <!-- Admin Management Group (Collapsible) -->
+              <div class="mt-2 border-t border-gray-100">
+                 <div 
+                   @click="isAdminManagementOpen = !isAdminManagementOpen"
+                   class="bg-blue-600 px-6 py-4 flex justify-between items-center text-white cursor-pointer hover:bg-blue-700 transition-colors"
+                 >
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Admin Management</span>
+                    <i :class="['fas fa-chevron-up text-[10px] transition-transform duration-300', !isAdminManagementOpen ? 'rotate-180' : '']"></i>
+                 </div>
+                 <div v-show="isAdminManagementOpen" class="max-h-80 overflow-y-auto p-2 bg-white custom-scrollbar animate-in slide-in-from-top-2 duration-300">
+                    <button
+                      v-for="tab in managementTabs"
+                      :key="tab.id"
+                      @click="activeTab = tab.id"
+                      class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
+                      :class="activeTab === tab.id 
+                        ? 'text-blue-600 bg-blue-50/50 border-blue-600' 
+                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
+                    >
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', activeTab === tab.id ? 'text-blue-600' : 'text-gray-400']"></i>
+                      {{ tab.label }}
+                    </button>
+                 </div>
+              </div>
+              <!-- Distribution Management Group (Collapsible) -->
+              <div class="mt-2 border-t border-gray-100">
+                 <div 
+                   @click="isDistributionManagementOpen = !isDistributionManagementOpen"
+                   class="bg-blue-600 px-6 py-4 flex justify-between items-center text-white cursor-pointer hover:bg-blue-700 transition-colors"
+                 >
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Distribution Management</span>
+                    <i :class="['fas fa-chevron-up text-[10px] transition-transform duration-300', !isDistributionManagementOpen ? 'rotate-180' : '']"></i>
+                 </div>
+                 <div v-show="isDistributionManagementOpen" class="p-2 bg-white animate-in slide-in-from-top-2 duration-300">
+                    <button
+                      v-for="tab in distributionTabs"
+                      :key="tab.id"
+                      @click="activeTab = tab.id"
+                      class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
+                      :class="activeTab === tab.id 
+                        ? 'text-blue-600 bg-blue-50/50 border-blue-600' 
+                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
+                    >
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', activeTab === tab.id ? 'text-blue-600' : 'text-gray-400']"></i>
+                      {{ tab.label }}
+                    </button>
+                 </div>
+              </div>
+              <!-- Transaction Management Group (Collapsible) -->
+              <div class="mt-2 border-t border-gray-100">
+                 <div 
+                   @click="isTransactionManagementOpen = !isTransactionManagementOpen"
+                   class="bg-blue-600 px-6 py-4 flex justify-between items-center text-white cursor-pointer hover:bg-blue-700 transition-colors"
+                 >
+                    <span class="text-[11px] font-bold uppercase tracking-wider">Transaction Management</span>
+                    <i :class="['fas fa-chevron-up text-[10px] transition-transform duration-300', !isTransactionManagementOpen ? 'rotate-180' : '']"></i>
+                 </div>
+                 <div v-show="isTransactionManagementOpen" class="p-2 bg-white animate-in slide-in-from-top-2 duration-300 max-h-72 overflow-y-auto custom-scrollbar">
+                    <button
+                      v-for="tab in transactionTabs"
+                      :key="tab.id"
+                      @click="activeTab = tab.id"
+                      class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
+                      :class="activeTab === tab.id 
+                        ? 'text-blue-600 bg-blue-50/50 border-blue-600' 
+                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
+                    >
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', activeTab === tab.id ? 'text-blue-600' : 'text-gray-400']"></i>
+                      {{ tab.label }}
+                    </button>
+                 </div>
+              </div>
+           </nav>
+
+           <!-- Link Kembali -->
+           <router-link to="/dashboard" class="flex items-center justify-center gap-3 w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-600 transition-all shadow-lg">
+              <i class="fas fa-arrow-left text-[8px]"></i>
+              Dashboard Utama
+           </router-link>
+        </div>
+
+        <main class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full overflow-hidden">
+          <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="space-y-1 text-center md:text-left">
               <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">ADMIN <span class="text-blue-600">PANEL</span></h1>
               <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">Pusat Kendali & CMS HumanityCare</p>
             </div>
             
-            <div class="flex gap-3 w-full md:w-auto">
-                <button 
-                  @click="activeTab = 'settings'"
-                  class="flex-1 md:flex-none flex items-center justify-center gap-3 bg-white border-2 border-gray-100 text-gray-900 px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-blue-600 transition-all shadow-sm"
-                >
-                  Edit Tampilan
-                </button>
-                <button 
-                  @click="showAddModal = true"
-                  class="flex-1 md:flex-none flex items-center justify-center gap-3 bg-blue-600 text-white px-6 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-100"
-                >
-                  Tambah Staff
-                </button>
+            <div class="flex gap-4">
+               <div class="text-right hidden md:block">
+                  <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Status Sistem</p>
+                  <div class="flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase">
+                     <span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span>
+                     Berjalan Normal
+                  </div>
+               </div>
             </div>
           </header>
-
-          <!-- Tabs Navigation -->
-          <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-2xl w-full overflow-x-auto no-scrollbar">
-            <button
-              v-for="tab in tabs"
-              :key="tab.id"
-              @click="activeTab = tab.id"
-              class="whitespace-nowrap flex items-center gap-2 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
-              :class="activeTab === tab.id ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600'"
-            >
-              <component :is="tab.icon" class="w-4 h-4" />
-              {{ tab.label }}
-            </button>
-          </div>
 
           <div v-if="loading" class="py-24 md:py-40 text-center bg-white rounded-[2rem] md:rounded-[3rem] border border-dashed border-gray-200">
             <div class="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p class="text-gray-400 font-black text-[10px] uppercase tracking-widest">Sinkronisasi Data...</p>
           </div>
 
-          <div v-else class="space-y-6 md:space-y-8 animate-in zoom-in-95 duration-500 pb-20 lg:pb-0">
+          <div v-else class="space-y-8 animate-in zoom-in-95 duration-500 pb-20 lg:pb-0">
             
             <!-- Dashboard Tab -->
             <div v-if="activeTab === 'dashboard'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -63,6 +167,22 @@
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Zakat Pending</p>
                 <p class="text-3xl font-black text-blue-600 tracking-tighter">{{ pendingZakats.length }}</p>
               </div>
+            </div>
+
+            <!-- Catch-all for New Management Tabs -->
+            <div v-if="managementTabs.some(t => t.id === activeTab) || distributionTabs.some(t => t.id === activeTab) || transactionTabs.some(t => t.id === activeTab)" class="py-24 text-center bg-white rounded-[3rem] border border-gray-100 shadow-sm space-y-6">
+               <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center text-3xl mx-auto shadow-sm">
+                  <i :class="managementTabs.find(t => t.id === activeTab)?.icon || distributionTabs.find(t => t.id === activeTab)?.icon || transactionTabs.find(t => t.id === activeTab)?.icon"></i>
+               </div>
+               <div class="space-y-2">
+                  <h3 class="text-xl font-black uppercase italic tracking-tighter">Modul <span class="text-blue-600">{{ managementTabs.find(t => t.id === activeTab)?.label || distributionTabs.find(t => t.id === activeTab)?.label || transactionTabs.find(t => t.id === activeTab)?.label }}</span></h3>
+                  <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Fitur ini sedang dalam tahap pengembangan intensif</p>
+               </div>
+               <div class="flex justify-center gap-3">
+                  <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></span>
+                  <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                  <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+               </div>
             </div>
 
             <!-- User Management Tab -->
@@ -328,25 +448,53 @@ import { ref, reactive, onMounted, markRaw } from 'vue';
 import api from '@/api';
 import Sidebar from '@/components/Sidebar.vue';
 
-// Icons
-const LayoutIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>' };
-const UsersIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' };
-const HammerIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a2 2 0 0 1-2.79-2.79L14.7 6.3Z"/><path d="M5 21a2 2 0 0 0 4 0l3-3a6 6 0 0 1 5-1V8M9 15.5 4.5 11M11 15l-3-3M22 22l-2-2"/></svg>' };
-const ZakatIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>' };
-const VerifyIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>' };
-const HeartIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>' };
-
-
 const tabs = [
-  { id: 'dashboard', label: 'Ringkasan', icon: markRaw(LayoutIcon) },
-  { id: 'users', label: 'Manajemen User', icon: markRaw(UsersIcon) },
-  { id: 'verify_zakat', label: 'Verifikasi Zakat', icon: markRaw(ZakatIcon) },
-  { id: 'settings', label: 'CMS Tampilan', icon: markRaw(HammerIcon) },
-  { id: 'verify_campaign', label: 'Approval Kampanye', icon: markRaw(VerifyIcon) },
-  { id: 'verify_donation', label: 'Verifikasi Donasi', icon: markRaw(HeartIcon) },
+  { id: 'dashboard', label: 'Ringkasan', icon: 'fas fa-chart-pie' },
+  { id: 'users', label: 'Manajemen User', icon: 'fas fa-users-cog' },
+  { id: 'verify_zakat', label: 'Verifikasi Zakat', icon: 'fas fa-hand-holding-heart' },
+  { id: 'settings', label: 'CMS Tampilan', icon: 'fas fa-paint-roller' },
+  { id: 'verify_campaign', label: 'Approval Kampanye', icon: 'fas fa-check-double' },
+  { id: 'verify_donation', label: 'Verifikasi Donasi', icon: 'fas fa-donate' },
+];
+
+const managementTabs = [
+  { id: 'profile', label: 'Profil Lembaga', icon: 'fas fa-building' },
+  { id: 'users_mgt', label: 'Users', icon: 'fas fa-user-friends' },
+  { id: 'office', label: 'Kantor', icon: 'fas fa-map-marked-alt' },
+  { id: 'employees', label: 'Karyawan', icon: 'fas fa-id-badge' },
+  { id: 'donation_channels', label: 'Channel Donasi', icon: 'fas fa-network-wired' },
+  { id: 'program_clusters', label: 'Rumpun Program', icon: 'fas fa-layer-group' },
+  { id: 'programs', label: 'Program', icon: 'fas fa-project-diagram' },
+  { id: 'payment_methods', label: 'Via Bayar', icon: 'fas fa-credit-card' },
+  { id: 'prospect_media', label: 'Media Prospek', icon: 'fas fa-photo-video' },
+  { id: 'prospect_methods', label: 'Metode Prospek', icon: 'fas fa-bullhorn' },
+  { id: 'prospect_types', label: 'Jenis Prospek', icon: 'fas fa-filter' },
+  { id: 'fundraisers', label: 'Fundraiser', icon: 'fas fa-user-tie' },
+  { id: 'prospect_responses', label: 'Respon Prospek', icon: 'fas fa-comment-dots' },
+  { id: 'targets', label: 'Target', icon: 'fas fa-bullseye' },
+];
+
+const distributionTabs = [
+  { id: 'distribution_list', label: 'List Penyaluran', icon: 'fas fa-clipboard-list' },
+  { id: 'distribution_dashboard', label: 'Dashboard Penyaluran', icon: 'fas fa-chart-line' },
+];
+
+const transactionTabs = [
+  { id: 'donors', label: 'List Donatur', icon: 'fas fa-users' },
+  { id: 'transactions', label: 'List Transaksi', icon: 'fas fa-exchange-alt' },
+  { id: 'prospects', label: 'List Prospek', icon: 'fas fa-search-dollar' },
+  { id: 'potential_donors', label: 'List Calon Donatur', icon: 'fas fa-user-plus' },
+  { id: 'transaction_dashboard', label: 'Dashboard Transaksi', icon: 'fas fa-chart-bar' },
+  { id: 'donor_dashboard', label: 'Dashboard Donatur', icon: 'fas fa-user-chart' },
+  { id: 'prospect_dashboard', label: 'Dashboard Prospek', icon: 'fas fa-funnel-dollar' },
+  { id: 'target_vs_achievement', label: 'Dashboard Target Vs Capaian', icon: 'fas fa-tasks' },
+  { id: 'rfm_dashboard', label: 'Dashboard RFM', icon: 'fas fa-brain' },
 ];
 
 const activeTab = ref('dashboard');
+const isAdminManagementOpen = ref(true);
+const isDistributionManagementOpen = ref(true);
+const isTransactionManagementOpen = ref(true);
 const loading = ref(true);
 const stats = ref({});
 const users = ref([]);
@@ -462,4 +610,18 @@ onMounted(fetchData);
 <style scoped>
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 </style>

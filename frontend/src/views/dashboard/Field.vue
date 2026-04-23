@@ -26,6 +26,9 @@
         <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-2xl w-full overflow-x-auto no-scrollbar">
            <button @click="activeTab = 'campaigns'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'campaigns' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Proyek Saya</button>
            <button @click="activeTab = 'news'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'news' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Arsip Berita</button>
+           <button @click="activeTab = 'todo'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'todo' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">To-Do List</button>
+           <button @click="activeTab = 'attendance'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'attendance' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Absensi</button>
+           <button @click="activeTab = 'stats'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'stats' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Statistik</button>
         </div>
 
         <!-- Tab: Campaigns -->
@@ -54,6 +57,8 @@
                           <p class="font-black text-blue-600 text-lg tracking-tighter italic">Rp {{ formatCurrency(c.current_amount) }}</p>
                        </div>
                     </div>
+                    <!-- Update Button -->
+                    <button @click="openUpdateModal(c)" class="w-full mt-6 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg active:scale-95">Kirim Kabar Terbaru</button>
                  </div>
               </div>
            </div>
@@ -65,34 +70,176 @@
 
         <!-- Tab: News -->
         <div v-if="activeTab === 'news'" class="space-y-8">
-           <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-              <div class="p-8 border-b border-gray-50 bg-blue-50/20">
-                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Berita <span class="text-blue-600">Kebaikan</span></h3>
+           <div v-if="myNews.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div v-for="n in myNews" :key="n.id" class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+                 <div class="relative h-40 rounded-[1.5rem] overflow-hidden mb-6">
+                    <img :src="n.image" class="w-full h-full object-cover">
+                    <button @click="handleDeleteNews(n.id)" class="absolute top-4 right-4 p-2 bg-red-500/20 backdrop-blur-md text-red-100 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white">✕</button>
+                 </div>
+                 <p class="text-[8px] font-black text-blue-600 uppercase tracking-[0.2em] mb-2">{{ formatDate(n.created_at) }}</p>
+                 <h4 class="font-black text-gray-900 uppercase italic text-sm line-clamp-1 mb-4">{{ n.title }}</h4>
+                 <p class="text-[10px] text-gray-400 font-medium line-clamp-3 leading-relaxed mb-6">{{ n.content }}</p>
+              </div>
+           </div>
+           <div v-else class="py-20 text-center bg-white rounded-[3rem] border border-dashed border-gray-100">
+              <p class="text-gray-400 font-bold italic uppercase tracking-widest text-xs">Belum ada berita yang Anda terbitkan.</p>
+           </div>
+        </div>
+
+        <!-- Tab: To Do List -->
+        <div v-if="activeTab === 'todo'" class="space-y-6">
+           <div class="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm space-y-6">
+              <div class="flex justify-between items-center">
+                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Daftar <span class="text-blue-600">Tugas</span></h3>
+                 <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ todos.length }} Tugas</span>
+              </div>
+              
+              <div class="flex gap-3">
+                 <input v-model="newTodo" @keyup.enter="handleAddTodo" placeholder="Ketik tugas baru..." class="flex-grow p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold text-xs transition-all">
+                 <button @click="handleAddTodo" class="px-6 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-700 transition-all">Tambah</button>
+              </div>
+
+              <div class="space-y-3">
+                 <div v-for="t in todos" :key="t.id" class="flex items-center justify-between p-5 bg-gray-50/50 rounded-2xl border border-transparent hover:border-blue-100 hover:bg-white transition-all group">
+                    <div class="flex items-center gap-4">
+                       <button @click="handleToggleTodo(t.id)" :class="['w-6 h-6 rounded-lg flex items-center justify-center transition-all', t.status === 'completed' ? 'bg-blue-600 text-white' : 'bg-white border-2 border-gray-100 text-transparent hover:border-blue-600']">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4"><path d="M5 13l4 4L19 7"/></svg>
+                       </button>
+                       <span :class="['font-bold text-xs transition-all uppercase tracking-tight', t.status === 'completed' ? 'text-gray-300 line-through' : 'text-gray-700']">{{ t.task }}</span>
+                    </div>
+                    <button @click="handleDeleteTodo(t.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all p-2">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                 </div>
+                 <div v-if="todos.length === 0" class="py-12 text-center">
+                    <p class="text-gray-400 font-bold italic uppercase tracking-widest text-[10px]">Semua tugas sudah selesai!</p>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- Tab: Absensi -->
+        <div v-if="activeTab === 'attendance'" class="space-y-8">
+           <!-- Kartu Absensi Hari Ini -->
+           <div class="bg-white p-10 rounded-[3.5rem] border border-gray-100 shadow-2xl shadow-blue-900/5 text-center space-y-10 relative overflow-hidden">
+              <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl animate-pulse"></div>
+              <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-indigo-600/5 rounded-full blur-3xl animate-pulse"></div>
+              
+              <div class="space-y-3 relative z-10">
+                 <div class="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full mb-2">
+                    <span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span>
+                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Sistem Absensi Digital</p>
+                 </div>
+                 <h3 class="text-4xl font-black text-gray-900 uppercase tracking-tighter italic leading-none">Presensi <span class="text-blue-600">Kehadiran</span></h3>
+                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ todayDate }}</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                 <div v-for="item in attendanceTypes" :key="item.type" 
+                   :class="['group p-8 rounded-[2.5rem] border transition-all duration-500 hover:scale-[1.02]', 
+                   getAttendanceClass(item.type)]">
+                    <div :class="['w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-6 text-xl shadow-lg transition-transform group-hover:rotate-12', item.iconClass]">
+                       <i :class="item.icon"></i>
+                    </div>
+                    <div class="space-y-1 mb-6">
+                       <p class="text-[10px] font-black opacity-60 uppercase tracking-widest">{{ item.label }}</p>
+                       <p class="text-lg font-black italic tracking-tight">{{ getAttendanceTime(item.type) }}</p>
+                    </div>
+                    <button 
+                      @click="item.action()" 
+                      :disabled="isButtonDisabled(item.type)" 
+                      :class="['w-full py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl active:scale-95', getButtonClass(item.type)]">
+                       {{ getButtonLabel(item.type) }}
+                    </button>
+                 </div>
+              </div>
+
+              <div class="pt-10 border-t border-gray-100 space-y-3">
+                 <div class="flex items-center justify-center gap-2 text-blue-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em]">{{ currentLocationName || 'Mendeteksi Lokasi...' }}</p>
+                 </div>
+                 <p v-if="coords" class="text-[8px] text-gray-300 font-mono tracking-widest">GPS: {{ coords.latitude.toFixed(6) }}, {{ coords.longitude.toFixed(6) }}</p>
+              </div>
+           </div>
+
+           <!-- Riwayat Absensi -->
+           <div class="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden">
+              <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
+                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Riwayat <span class="text-blue-600">Presensi</span></h3>
+                 <span class="px-4 py-1.5 bg-white border border-gray-100 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest shadow-sm">30 Hari Terakhir</span>
               </div>
               <div class="overflow-x-auto">
                  <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-[10px] uppercase font-black text-gray-400 tracking-widest italic">
-                      <tr>
-                        <th class="px-8 py-4">Judul Berita</th>
-                        <th class="px-8 py-4">Tanggal Terbit</th>
-                        <th class="px-8 py-4 text-center">Tindakan</th>
-                      </tr>
+                    <thead class="bg-gray-50/50 text-[10px] uppercase font-black text-gray-400 tracking-widest">
+                       <tr>
+                          <th class="px-8 py-5">Tanggal</th>
+                          <th class="px-8 py-5">Status</th>
+                          <th class="px-8 py-5">Jam</th>
+                          <th class="px-8 py-5">Lokasi</th>
+                          <th class="px-8 py-5 text-center">Lampiran</th>
+                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                      <tr v-for="n in myNews" :key="n.id" class="hover:bg-gray-50/50 group">
-                        <td class="px-8 py-6 font-bold text-gray-800 line-clamp-1 max-w-sm">{{ n.title }}</td>
-                        <td class="px-8 py-6 text-[11px] text-gray-500 font-medium italic">{{ formatDate(n.created_at) }}</td>
-                        <td class="px-8 py-6 text-center">
-                           <button @click="handleDeleteNews(n.id)" class="text-red-500 hover:scale-110 transition-transform p-2 bg-red-50 rounded-xl">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                           </button>
-                        </td>
-                      </tr>
-                      <tr v-if="myNews.length === 0">
-                        <td colspan="3" class="px-8 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-xs italic">Belum ada berita yang diterbitkan.</td>
-                      </tr>
+                       <tr v-for="log in allAttendanceLogs" :key="log.id" class="hover:bg-blue-50/20 transition-colors group">
+                          <td class="px-8 py-6 font-bold text-gray-800 text-xs">{{ formatDate(log.created_at) }}</td>
+                          <td class="px-8 py-6">
+                             <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm', getStatusBadgeClass(log.type)]">
+                                {{ log.type.replace('_', ' ') }}
+                             </span>
+                          </td>
+                          <td class="px-8 py-6 font-mono text-[11px] text-gray-500">{{ formatTime(log.created_at) }}</td>
+                          <td class="px-8 py-6 text-[10px] font-medium text-gray-400 italic line-clamp-1 max-w-[200px]" :title="log.location">{{ log.location }}</td>
+                          <td class="px-8 py-6 text-center">
+                             <a v-if="log.attachment" :href="log.attachment" target="_blank" class="inline-flex p-2 bg-blue-50 text-blue-600 rounded-xl hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                             </a>
+                             <span v-else class="text-[10px] text-gray-300 italic font-medium">None</span>
+                          </td>
+                       </tr>
+                       <tr v-if="allAttendanceLogs.length === 0">
+                          <td colspan="5" class="px-8 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-xs italic">Belum ada riwayat presensi.</td>
+                       </tr>
                     </tbody>
                  </table>
+              </div>
+           </div>
+        </div>
+
+        <!-- Tab: Statistik Kinerja -->
+        <div v-if="activeTab === 'stats'" class="space-y-8 animate-in zoom-in duration-500">
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div v-for="s in statCards" :key="s.label" class="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative">
+                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors"></div>
+                 <div class="relative z-10 space-y-4">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
+                       <i :class="s.icon"></i>
+                    </div>
+                    <div class="space-y-1">
+                       <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ s.label }}</p>
+                       <p class="text-2xl font-black text-gray-900 italic tracking-tighter">{{ s.value }}</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
+
+           <!-- Pesan Motivasi -->
+           <div class="bg-slate-900 p-12 rounded-[4rem] text-white relative overflow-hidden group">
+              <div class="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-transparent to-transparent"></div>
+              <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10">
+                 <div class="space-y-6 text-center md:text-left">
+                    <div class="inline-block px-4 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-[10px] font-black uppercase tracking-widest text-blue-400">Pahlawan Kebaikan</div>
+                    <h3 class="text-4xl font-black uppercase italic tracking-tighter leading-tight">Terus Tebarkan <br><span class="text-blue-500">Kebaikan!</span></h3>
+                    <p class="text-sm text-gray-400 font-medium max-w-sm leading-relaxed">Setiap langkah Anda di lapangan adalah harapan bagi mereka. Pertahankan kinerja terbaik Anda untuk umat.</p>
+                 </div>
+                 <div class="p-12 bg-white/5 backdrop-blur-3xl rounded-[3.5rem] border border-white/10 text-center space-y-3 shadow-2xl shadow-black/20">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-400">Efektivitas Kerja</p>
+                    <p class="text-5xl font-black italic tracking-tighter text-white">92<span class="text-2xl text-blue-500">%</span></p>
+                    <div class="w-40 h-2 bg-white/10 rounded-full mx-auto overflow-hidden">
+                       <div class="h-full bg-blue-500 w-[92%] shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                    </div>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest pt-2">Sangat Baik</p>
+                 </div>
               </div>
            </div>
         </div>
@@ -200,11 +347,97 @@
           </div>
        </Transition>
     </Teleport>
+    <!-- Modal: Sakit / Izin -->
+    <Teleport to="body">
+       <Transition name="fade">
+          <div v-if="showLeaveModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showLeaveModal = false"></div>
+             <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in duration-300">
+                <div :class="['p-8 text-white flex justify-between items-center', leaveType === 'sakit' ? 'bg-amber-500' : 'bg-emerald-500']">
+                   <h3 class="text-xl font-black uppercase tracking-tighter italic">Form Keterangan <span class="opacity-60">{{ leaveType }}</span></h3>
+                   <button @click="showLeaveModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
+                </div>
+                
+                <div class="p-8 space-y-6">
+                   <div class="space-y-4">
+                      <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">Harap unggah surat keterangan resmi</p>
+                      
+                      <div 
+                        class="relative w-full h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-gray-100 transition-all"
+                        @click="$refs.leaveFileInput.click()"
+                      >
+                         <img v-if="leaveForm.attachment" :src="leaveForm.attachment" class="w-full h-full object-cover">
+                         <div v-else class="text-center p-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg>
+                            <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Upload Surat Keterangan</p>
+                         </div>
+                      </div>
+                      <input ref="leaveFileInput" type="file" @change="handleLeaveFileChange" class="hidden" accept="image/*,application/pdf">
+                   </div>
+
+                   <button 
+                     @click="handleAttendance(leaveType)" 
+                     :disabled="!leaveForm.attachment || submitting" 
+                     :class="['w-full py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] transition-all', leaveType === 'sakit' ? 'bg-amber-500 text-white shadow-amber-100' : 'bg-emerald-500 text-white shadow-emerald-100', (!leaveForm.attachment || submitting) ? 'opacity-50' : 'hover:scale-[1.02] active:scale-95 shadow-xl']"
+                   >
+                      {{ submitting ? 'Mengirim...' : 'Kirim Sekarang' }}
+                   </button>
+                </div>
+             </div>
+          </div>
+       </Transition>
+    </Teleport>
+    <!-- Modal: Kabar Terbaru (Impact Stories) -->
+    <Teleport to="body">
+       <Transition name="fade">
+          <div v-if="showUpdateModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showUpdateModal = false"></div>
+             <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in duration-300">
+                <div class="p-8 bg-slate-900 text-white flex justify-between items-center shrink-0">
+                   <div class="space-y-1">
+                      <h3 class="text-xl font-black uppercase tracking-tighter italic">Update <span class="text-blue-500">Dampak</span></h3>
+                      <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{{ selectedCampaign?.title }}</p>
+                   </div>
+                   <button @click="showUpdateModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
+                </div>
+                
+                <form @submit.prevent="handleCreateUpdate" class="p-8 space-y-6 overflow-y-auto no-scrollbar">
+                   <div class="space-y-4">
+                      <div class="space-y-1">
+                         <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Informasi Update</label>
+                         <input v-model="updateForm.title" placeholder="Judul Update (Misal: Penyaluran Tahap 1)" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold transition-all" required>
+                         <textarea v-model="updateForm.content" placeholder="Deskripsikan apa yang terjadi di lapangan secara detail..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium resize-none transition-all" required></textarea>
+                      </div>
+
+                      <div class="space-y-2">
+                         <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Foto Bukti Penyaluran</label>
+                         <div 
+                           class="relative w-full h-40 bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-gray-100 transition-all"
+                           @click="$refs.updateFileInput.click()"
+                         >
+                            <img v-if="updateForm.image" :src="updateForm.image" class="w-full h-full object-cover">
+                            <div v-else class="text-center p-4">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                               <p class="text-[9px] font-black uppercase text-gray-400 tracking-widest">Upload Foto Dokumentasi</p>
+                            </div>
+                         </div>
+                         <input ref="updateFileInput" type="file" @change="handleUpdateFileChange" class="hidden" accept="image/*">
+                      </div>
+                   </div>
+
+                   <button type="submit" :disabled="submitting" class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95 disabled:opacity-50">
+                      {{ submitting ? 'Mengirim...' : 'Kirim Kabar Baik' }}
+                   </button>
+                </form>
+             </div>
+          </div>
+       </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import api from '@/api';
 import Sidebar from '@/components/Sidebar.vue';
 
@@ -213,6 +446,26 @@ const loading = ref(true);
 const submitting = ref(false);
 const myCampaigns = ref([]);
 const myNews = ref([]);
+const todos = ref([]);
+const newTodo = ref('');
+const attendanceLogs = ref([]);
+const allAttendanceLogs = ref([]);
+const fieldStats = ref({});
+const showLeaveModal = ref(false);
+const showUpdateModal = ref(false);
+const selectedCampaign = ref(null);
+const leaveType = ref('');
+const leaveForm = reactive({ attachment: '' });
+const updateForm = reactive({ title: '', content: '', image: '' });
+const coords = ref(null);
+const currentLocationName = ref('');
+
+const attendanceTypes = [
+  { type: 'check_in', label: 'Masuk', icon: 'fas fa-sign-in-alt', iconClass: 'bg-blue-100 text-blue-600', action: () => handleAttendance('check_in') },
+  { type: 'check_out', label: 'Pulang', icon: 'fas fa-sign-out-alt', iconClass: 'bg-red-100 text-red-500', action: () => handleAttendance('check_out') },
+  { type: 'sakit', label: 'Sakit', icon: 'fas fa-briefcase-medical', iconClass: 'bg-amber-100 text-amber-600', action: () => openLeaveModal('sakit') },
+  { type: 'izin', label: 'Izin', icon: 'fas fa-calendar-check', iconClass: 'bg-emerald-100 text-emerald-600', action: () => openLeaveModal('izin') }
+];
 
 const showCampaignModal = ref(false);
 const showNewsModal = ref(false);
@@ -225,18 +478,201 @@ const newsForm = reactive({ title: '', content: '', image: '' });
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [campRes, newsRes] = await Promise.all([
+    const [campRes, newsRes, todoRes, attendRes, allAttendRes, statsRes] = await Promise.all([
       api.get('/campaigns/my-campaigns'),
-      api.get('/news/my-news')
+      api.get('/news/my-news'),
+      api.get('/field/todos'),
+      api.get('/field/attendance'),
+      api.get('/field/attendance/recap'),
+      api.get('/field/stats')
     ]);
     myCampaigns.value = campRes.data;
     myNews.value = newsRes.data;
+    todos.value = todoRes.data;
+    attendanceLogs.value = attendRes.data;
+    allAttendanceLogs.value = allAttendRes.data;
+    fieldStats.value = statsRes.data;
   } catch (err) {
     console.error(err);
   } finally {
     loading.value = false;
   }
 };
+
+const handleAddTodo = async () => {
+  if (!newTodo.value.trim()) return;
+  try {
+    await api.post('/field/todos', { task: newTodo.value });
+    newTodo.value = '';
+    fetchData();
+  } catch (err) {
+    alert('Gagal menambah tugas');
+  }
+};
+
+const handleToggleTodo = async (id) => {
+  try {
+    await api.put(`/field/todos/${id}`);
+    fetchData();
+  } catch (err) {
+    alert('Gagal memperbarui tugas');
+  }
+};
+
+const handleDeleteTodo = async (id) => {
+  try {
+    await api.delete(`/field/todos/${id}`);
+    fetchData();
+  } catch (err) {
+    alert('Gagal menghapus tugas');
+  }
+};
+
+const handleAttendance = async (type) => {
+  submitting.value = true;
+  try {
+    const payload = {
+      type,
+      location: currentLocationName.value || 'Lokasi Tidak Diketahui',
+      latitude: coords.value?.latitude || null,
+      longitude: coords.value?.longitude || null,
+      attachment: (type === 'sakit' || type === 'izin') ? leaveForm.attachment : null
+    };
+    
+    await api.post('/field/attendance', payload);
+    showLeaveModal.value = false;
+    leaveForm.attachment = '';
+    fetchData();
+  } catch (err) {
+    alert('Gagal melakukan absensi: ' + (err.response?.data?.message || err.message));
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const openLeaveModal = (type) => {
+  leaveType.value = type;
+  leaveForm.attachment = '';
+  showLeaveModal.value = true;
+};
+
+const handleLeaveFileChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    leaveForm.attachment = event.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const getMyLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        coords.value = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
+        await reverseGeocode(coords.value.latitude, coords.value.longitude);
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        currentLocationName.value = "Akses Lokasi Ditolak";
+      }
+    );
+  } else {
+    currentLocationName.value = "Geolocation tidak didukung browser";
+  }
+};
+
+const reverseGeocode = async (lat, lon) => {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+    const data = await res.json();
+    currentLocationName.value = data.display_name.split(',').slice(0, 3).join(',');
+  } catch (err) {
+    currentLocationName.value = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  }
+};
+
+const getAttendanceClass = (type) => {
+  const map = {
+    check_in: 'bg-blue-50/30 border-blue-100 shadow-blue-900/5',
+    check_out: 'bg-red-50/30 border-red-100 shadow-red-900/5',
+    sakit: 'bg-amber-50/30 border-amber-100 shadow-amber-900/5',
+    izin: 'bg-emerald-50/30 border-emerald-100 shadow-emerald-900/5'
+  };
+  return map[type];
+};
+
+const getButtonClass = (type) => {
+  if (isButtonDisabled(type)) return 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none';
+  const map = {
+    check_in: 'bg-blue-600 text-white shadow-blue-100 hover:bg-blue-700',
+    check_out: 'bg-red-500 text-white shadow-red-100 hover:bg-red-600',
+    sakit: 'bg-amber-500 text-white shadow-amber-100 hover:bg-amber-600',
+    izin: 'bg-emerald-500 text-white shadow-emerald-100 hover:bg-emerald-600'
+  };
+  return map[type];
+};
+
+const isButtonDisabled = (type) => {
+  if (type === 'check_in') return isAlreadyCheckedIn.value || isAbsent.value;
+  if (type === 'check_out') return isAlreadyCheckedOut.value || !isAlreadyCheckedIn.value || isAbsent.value;
+  return isAnyAttendanceToday.value;
+};
+
+const getButtonLabel = (type) => {
+  if (type === 'check_in') return isAlreadyCheckedIn.value ? 'Selesai' : 'Check-In';
+  if (type === 'check_out') return isAlreadyCheckedOut.value ? 'Selesai' : 'Check-Out';
+  return isAnyAttendanceToday.value ? 'Sudah Terisi' : type.charAt(0).toUpperCase() + type.slice(1);
+};
+
+const getAttendanceTime = (type) => {
+  const log = attendanceLogs.value.find(l => l.type === type);
+  return log ? new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+};
+
+const getStatusBadgeClass = (type) => {
+  const map = {
+    check_in: 'bg-blue-100 text-blue-600',
+    check_out: 'bg-red-100 text-red-600',
+    sakit: 'bg-amber-100 text-amber-600',
+    izin: 'bg-emerald-100 text-emerald-600'
+  };
+  return map[type];
+};
+
+const formatTime = (dateStr) => {
+  return new Date(dateStr).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+};
+
+const isAlreadyCheckedIn = computed(() => attendanceLogs.value.some(l => l.type === 'check_in'));
+const isAlreadyCheckedOut = computed(() => attendanceLogs.value.some(l => l.type === 'check_out'));
+const isAbsent = computed(() => attendanceLogs.value.some(l => l.type === 'sakit' || l.type === 'izin'));
+const isAnyAttendanceToday = computed(() => attendanceLogs.value.length > 0);
+
+const getCheckInTime = computed(() => {
+  const log = attendanceLogs.value.find(l => l.type === 'check_in');
+  return log ? new Date(log.created_at).toLocaleTimeString('id-ID') : '--:--';
+});
+const getCheckOutTime = computed(() => {
+  const log = attendanceLogs.value.find(l => l.type === 'check_out');
+  return log ? new Date(log.created_at).toLocaleTimeString('id-ID') : '--:--';
+});
+const getSakitStatus = computed(() => {
+  const log = attendanceLogs.value.find(l => l.type === 'sakit');
+  return log ? 'Terdaftar' : '-';
+});
+const getIzinStatus = computed(() => {
+  const log = attendanceLogs.value.find(l => l.type === 'izin');
+  return log ? 'Terdaftar' : '-';
+});
+
+const todayDate = computed(() => {
+  return new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+});
 
 const openCampaignModal = () => {
   form.title = '';
@@ -303,13 +739,59 @@ const handleDeleteNews = async (id) => {
   }
 };
 
+const openUpdateModal = (campaign) => {
+  selectedCampaign.value = campaign;
+  updateForm.title = '';
+  updateForm.content = '';
+  updateForm.image = '';
+  showUpdateModal.value = true;
+};
+
+const handleUpdateFileChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    updateForm.image = event.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const handleCreateUpdate = async () => {
+  if (!updateForm.image) return alert('Harap unggah foto dokumentasi!');
+  submitting.value = true;
+  try {
+    await api.post('/field/updates', {
+      campaign_id: selectedCampaign.value.id,
+      ...updateForm
+    });
+    showUpdateModal.value = false;
+    alert('Kabar terbaru berhasil dikirim!');
+    fetchData();
+  } catch (err) {
+    alert('Gagal mengirim update');
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const statCards = computed(() => [
+  { label: 'Kampanye Saya', value: fieldStats.value.totalCampaigns || 0, icon: 'fas fa-hand-holding-heart' },
+  { label: 'Update Dampak', value: fieldStats.value.totalContent || 0, icon: 'fas fa-newspaper' },
+  { label: 'Dana Terkumpul', value: 'Rp ' + formatCurrency(fieldStats.value.totalFunds), icon: 'fas fa-coins' },
+  { label: 'Kehadiran (Bln)', value: fieldStats.value.presentDays + ' Hari', icon: 'fas fa-user-check' }
+]);
+
 const formatCurrency = (val) => new Intl.NumberFormat('id-ID').format(val || 0);
 const formatDate = (dateStr) => {
   if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
-onMounted(fetchData);
+onMounted(() => {
+  fetchData();
+  getMyLocation();
+});
 </script>
 
 <style scoped>

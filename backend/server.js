@@ -15,6 +15,7 @@ const newsRoutes = require('./routes/newsRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 const zakatRoutes = require('./routes/zakatRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const fieldRoutes = require('./routes/fieldRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/api/news', newsRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/zakats', zakatRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/field', fieldRoutes);
 
 // Root test route
 app.get('/', (req, res) => {

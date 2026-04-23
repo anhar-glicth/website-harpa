@@ -24,7 +24,7 @@
           ? 'bg-white border-blue-600 text-blue-600 shadow-xl shadow-blue-100/50' 
           : 'text-gray-400 hover:bg-white hover:text-gray-900 hover:border-gray-100'"
       >
-        <component :is="link.icon" class="w-5 h-5 transition-transform group-hover:scale-110" />
+        <i :class="[link.icon, 'w-5 text-center transition-transform group-hover:scale-110']"></i>
         {{ link.label }}
       </router-link>
     </nav>
@@ -41,22 +41,17 @@ const userRole = computed(() => localStorage.getItem('role'));
 
 const isActive = (path) => route.path === path;
 
-// Icons
-const LayoutIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>' };
-const CampaignIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' };
-const UserIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>' };
-
 const navigationLinks = computed(() => {
   const base = [
-    { to: '/dashboard', label: 'Dashboard', icon: markRaw(LayoutIcon) }
+    { to: '/dashboard', label: 'Dashboard', icon: 'fas fa-th-large' }
   ];
 
   if (userRole.value === 'admin') {
-    base.push({ to: '/dashboard/admin', label: 'Admin', icon: markRaw(UserIcon) });
+    base.push({ to: '/dashboard/admin', label: 'Admin', icon: 'fas fa-user-shield' });
   } else if (userRole.value === 'field_worker') {
-    base.push({ to: '/dashboard/field', label: 'Panel', icon: markRaw(CampaignIcon) });
+    base.push({ to: '/dashboard/field', label: 'Panel', icon: 'fas fa-briefcase' });
   } else {
-    base.push({ to: '/dashboard/user', label: 'Profil', icon: markRaw(UserIcon) });
+    base.push({ to: '/dashboard/user', label: 'Profil', icon: 'fas fa-user-circle' });
   }
 
   return base;

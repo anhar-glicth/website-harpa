@@ -95,6 +95,42 @@ CREATE TABLE IF NOT EXISTS zakats (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- 8. To Do List Table
+CREATE TABLE IF NOT EXISTS todo_list (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    task TEXT NOT NULL,
+    status ENUM('pending', 'completed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 9. Attendance Table
+CREATE TABLE IF NOT EXISTS attendance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    type ENUM('check_in', 'check_out', 'sakit', 'izin') NOT NULL,
+    location VARCHAR(255),
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
+    attachment LONGTEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 10. Campaign Updates (Impact Stories)
+CREATE TABLE IF NOT EXISTS campaign_updates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    campaign_id INT NOT NULL,
+    user_id INT NOT NULL,
+    title VARCHAR(255),
+    content TEXT NOT NULL,
+    image LONGTEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- SEED DATA
 -- Default password: password123 (hashed using bcrypt)
 -- Note: You should run the seed.js script to generate correct hashes, 
