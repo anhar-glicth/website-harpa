@@ -93,25 +93,29 @@ Backend HumanityCare dibangun menggunakan Node.js dan Express.js dengan arsitekt
 
 ---
 
-## 5. Akun Masuk untuk Role Mahasiswa
+## 5. Akun Default & Role Sistem
 
-Gunakan akun ini untuk menguji fitur pelaporan masalah:
+Gunakan akun ini untuk menguji fungsionalitas sistem berdasarkan peran masing-masing. Semua akun menggunakan password: **`password123`**
 
-* **Nama Lengkap:** `Yusri Abdi`
-* **Email:** `yusriabdi837@gmail.com`
-* **Password:** `12345`
-*** note: bisa mendaftar akun baru yang dapat disesuaikan.***
+### 🔐 Admin
+Akses penuh ke semua fitur manajemen dan CMS.
+* **Email:** `admin@humanity.org`
+* **Password:** `password123`
+
+### 👷 Field Worker (Petugas Lapangan)
+Akses untuk mengelola kampanye dan update berita lapangan.
+* **Email:** `petugas@humanity.org`
+* **Password:** `password123`
+
+### 👤 User (Donatur)
+Akses untuk berdonasi, zakat, dan melihat riwayat donasi.
+* **Email:** `donatur@humanity.org`
+* **Password:** `password123`
+
 ---
 
-## 6. Akun Masuk untuk Role Admin
 
-Gunakan akun ini untuk menguji fitur memproses laporan dan update status:
 
-* **Nama Lengkap:** `admin`
-* **Email:** `admin@gmail.com`
-* **Password:** `123456`
-
----
 
 ## 7. Daftar Endpoint API
 
