@@ -169,20 +169,123 @@
               </div>
             </div>
 
-            <!-- Catch-all for New Management Tabs -->
-            <div v-if="managementTabs.some(t => t.id === activeTab) || distributionTabs.some(t => t.id === activeTab) || transactionTabs.some(t => t.id === activeTab)" class="py-24 text-center bg-white rounded-[3rem] border border-gray-100 shadow-sm space-y-6">
-               <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center text-3xl mx-auto shadow-sm">
-                  <i :class="managementTabs.find(t => t.id === activeTab)?.icon || distributionTabs.find(t => t.id === activeTab)?.icon || transactionTabs.find(t => t.id === activeTab)?.icon"></i>
-               </div>
-               <div class="space-y-2">
-                  <h3 class="text-xl font-black uppercase italic tracking-tighter">Modul <span class="text-blue-600">{{ managementTabs.find(t => t.id === activeTab)?.label || distributionTabs.find(t => t.id === activeTab)?.label || transactionTabs.find(t => t.id === activeTab)?.label }}</span></h3>
-                  <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Fitur ini sedang dalam tahap pengembangan intensif</p>
-               </div>
-               <div class="flex justify-center gap-3">
-                  <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></span>
-                  <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                  <span class="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-               </div>
+            <!-- Generic Module Renderer -->
+            <template v-if="managementTabs.some(t => t.id === activeTab) || distributionTabs.some(t => t.id === activeTab) || transactionTabs.some(t => t.id === activeTab)">
+              <div v-if="activeModule" class="space-y-6">
+                <!-- Module Header -->
+                <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col md:flex-row justify-between items-center gap-5">
+                  <div class="flex items-center gap-5">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-sm"><i :class="activeModule.icon"></i></div>
+                    <div>
+                      <h2 class="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">{{ activeModule.title }}</h2>
+                      <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{{ activeModule.description }}</p>
+                    </div>
+                  </div>
+                  <button @click="moduleFormData = {}; showModuleModal = true" class="flex items-center gap-3 bg-blue-600 text-white px-7 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 whitespace-nowrap">
+                    <i class="fas fa-plus text-[8px]"></i> Tambah {{ activeModule.entity }}
+                  </button>
+                </div>
+
+                <!-- Stats Row -->
+                <div v-if="activeModule.stats" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div v-for="s in activeModule.stats" :key="s.label" class="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+                    <div :class="['w-10 h-10 rounded-xl flex items-center justify-center text-sm', s.color]">
+                      <i :class="s.icon"></i>
+                    </div>
+                    <div>
+                      <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ s.label }}</p>
+                      <p class="text-xl font-black tracking-tighter text-gray-900">{{ s.value }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Table -->
+                <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+                  <div class="p-6 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-blue-600 to-indigo-600">
+                    <div class="relative w-full sm:w-72">
+                      <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-xs"></i>
+                      <input v-model="moduleSearchQuery" :placeholder="`Cari ${activeModule.entity}...`"
+                        class="w-full pl-10 pr-4 py-3 bg-white/20 rounded-2xl text-xs font-semibold text-white placeholder-white/60 outline-none focus:bg-white/30 border-none transition-all" />
+                    </div>
+                    <span class="text-[9px] font-black text-white/70 uppercase tracking-widest whitespace-nowrap">{{ filteredModuleData.length }} Data</span>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="w-full">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-6 py-4 text-left text-[9px] font-black text-gray-400 uppercase tracking-widest">#</th>
+                          <th v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4 text-left text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ col.label }}</th>
+                          <th class="px-6 py-4 text-center text-[9px] font-black text-gray-400 uppercase tracking-widest">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-50">
+                        <tr v-for="(row, idx) in filteredModuleData.slice(0, 10)" :key="idx" class="hover:bg-blue-50/20 transition-colors group">
+                          <td class="px-6 py-4 text-[10px] font-black text-gray-300">{{ String(idx+1).padStart(2,'0') }}</td>
+                          <td v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4">
+                            <span v-if="col.type==='badge'" :class="['inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', col.badgeClass?.(row[col.key]) || 'bg-blue-50 text-blue-600']">{{ row[col.key]||'-' }}</span>
+                            <span v-else-if="col.type==='currency'" class="text-[11px] font-black text-blue-600">Rp {{ Number(row[col.key]||0).toLocaleString('id-ID') }}</span>
+                            <span v-else class="text-[11px] font-semibold text-gray-700">{{ row[col.key]||'-' }}</span>
+                          </td>
+                          <td class="px-6 py-4">
+                            <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button @click="editModuleData(row, idx)" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center"><i class="fas fa-pen text-[9px]"></i></button>
+                              <button @click="handleDeleteModuleData(idx)" class="w-8 h-8 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center justify-center"><i class="fas fa-trash text-[9px]"></i></button>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr v-if="filteredModuleData.length === 0">
+                          <td :colspan="activeModule.columns.length+2" class="py-20 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                              <div class="w-16 h-16 bg-gray-50 text-gray-200 rounded-3xl flex items-center justify-center text-3xl"><i :class="activeModule.icon"></i></div>
+                              <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Belum ada data — klik Tambah untuk memulai</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="px-6 py-4 border-t border-gray-50 flex justify-between items-center">
+                    <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest">1–{{ Math.min(10, filteredModuleData.length) }} dari {{ filteredModuleData.length }}</p>
+                    <div class="flex gap-2">
+                      <button class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 text-[10px] font-black hover:bg-blue-600 hover:text-white transition-all">‹</button>
+                      <button class="w-8 h-8 rounded-xl bg-blue-600 text-white text-[10px] font-black shadow-lg shadow-blue-100">1</button>
+                      <button class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 text-[10px] font-black hover:bg-blue-600 hover:text-white transition-all">›</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- Module Add Modal -->
+            <div v-if="showModuleModal && activeModule" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
+              <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in duration-300">
+                <div class="p-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex justify-between items-center">
+                  <div>
+                    <p class="text-[9px] font-black uppercase tracking-widest text-blue-200">Tambah Data Baru</p>
+                    <h3 class="text-xl font-black uppercase tracking-tighter">{{ activeModule.entity }}</h3>
+                  </div>
+                  <button @click="showModuleModal = false" class="text-white/60 hover:text-white text-xl">✕</button>
+                </div>
+                <div class="p-8 space-y-5 max-h-[60vh] overflow-y-auto">
+                  <div v-for="field in activeModule.fields" :key="field.key" class="space-y-2">
+                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ field.label }}</label>
+                    <textarea v-if="field.type==='textarea'" v-model="moduleFormData[field.key]" rows="3"
+                      class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-xs font-semibold border-none transition-all resize-none"></textarea>
+                    <select v-else-if="field.type==='select'" v-model="moduleFormData[field.key]"
+                      class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-xs font-semibold border-none transition-all">
+                      <option value="">-- Pilih --</option>
+                      <option v-for="opt in field.options" :key="opt" :value="opt">{{ opt }}</option>
+                    </select>
+                    <input v-else :type="field.type||'text'" v-model="moduleFormData[field.key]" :placeholder="field.placeholder||field.label"
+                      class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-xs font-semibold border-none transition-all" />
+                  </div>
+                </div>
+                <div class="p-8 pt-0">
+                  <button @click="showModuleModal = false" class="w-full py-5 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95">
+                    Simpan Data
+                  </button>
+                </div>
+              </div>
             </div>
 
             <!-- User Management Tab -->
@@ -440,13 +543,43 @@
          </form>
        </div>
     </div>
+
+    <!-- Generic Module Modal -->
+    <div v-if="showModuleModal && activeModule" class="fixed inset-0 bg-gray-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+       <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300">
+         <div class="p-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex justify-between items-center">
+           <div>
+             <h3 class="text-xl font-black uppercase tracking-tighter italic">Form <span class="text-blue-200">{{ activeModule.entity }}</span></h3>
+             <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mt-1">Input Data Baru</p>
+           </div>
+           <button @click="showModuleModal = false" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-colors">✕</button>
+         </div>
+         <div class="p-8 space-y-5 max-h-[60vh] overflow-y-auto custom-scrollbar">
+            <div v-for="field in activeModule.fields" :key="field.key" class="space-y-2">
+              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">{{ field.label }}</label>
+              
+              <select v-if="field.type === 'select'" v-model="moduleFormData[field.key]" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold text-sm">
+                <option v-for="opt in field.options" :key="opt" :value="opt">{{ opt }}</option>
+              </select>
+
+              <textarea v-else-if="field.type === 'textarea'" v-model="moduleFormData[field.key]" :placeholder="field.label" rows="3" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold text-sm"></textarea>
+
+              <input v-else :type="field.type || 'text'" v-model="moduleFormData[field.key]" :placeholder="field.label" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-blue-500 font-bold text-sm" />
+            </div>
+         </div>
+         <div class="p-8 pt-4">
+           <button @click="handleSaveModuleData" class="w-full py-5 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-blue-700 shadow-xl shadow-blue-100 active:scale-95 transition-all">
+             {{ moduleFormData._index !== undefined ? 'Update' : 'Simpan' }} Data {{ activeModule.entity }}
+           </button>
+         </div>
+       </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, markRaw } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import api from '@/api';
-import Sidebar from '@/components/Sidebar.vue';
 
 const tabs = [
   { id: 'dashboard', label: 'Ringkasan', icon: 'fas fa-chart-pie' },
@@ -462,13 +595,13 @@ const managementTabs = [
   { id: 'users_mgt', label: 'Users', icon: 'fas fa-user-friends' },
   { id: 'office', label: 'Kantor', icon: 'fas fa-map-marked-alt' },
   { id: 'employees', label: 'Karyawan', icon: 'fas fa-id-badge' },
-  { id: 'donation_channels', label: 'Channel Donasi', icon: 'fas fa-network-wired' },
-  { id: 'program_clusters', label: 'Rumpun Program', icon: 'fas fa-layer-group' },
+  { id: 'donor_channel', label: 'Channel Donasi', icon: 'fas fa-network-wired' },
+  { id: 'program_group', label: 'Rumpun Program', icon: 'fas fa-layer-group' },
   { id: 'programs', label: 'Program', icon: 'fas fa-project-diagram' },
-  { id: 'payment_methods', label: 'Via Bayar', icon: 'fas fa-credit-card' },
+  { id: 'payment_via', label: 'Via Bayar', icon: 'fas fa-credit-card' },
   { id: 'prospect_media', label: 'Media Prospek', icon: 'fas fa-photo-video' },
-  { id: 'prospect_methods', label: 'Metode Prospek', icon: 'fas fa-bullhorn' },
-  { id: 'prospect_types', label: 'Jenis Prospek', icon: 'fas fa-filter' },
+  { id: 'prospect_method', label: 'Metode Prospek', icon: 'fas fa-bullhorn' },
+  { id: 'prospect_type', label: 'Jenis Prospek', icon: 'fas fa-filter' },
   { id: 'fundraisers', label: 'Fundraiser', icon: 'fas fa-user-tie' },
   { id: 'prospect_responses', label: 'Respon Prospek', icon: 'fas fa-comment-dots' },
   { id: 'targets', label: 'Target', icon: 'fas fa-bullseye' },
@@ -495,6 +628,178 @@ const activeTab = ref('dashboard');
 const isAdminManagementOpen = ref(true);
 const isDistributionManagementOpen = ref(true);
 const isTransactionManagementOpen = ref(true);
+const showModuleModal = ref(false);
+const moduleSearchQuery = ref('');
+const moduleFormData = ref({});
+const moduleData = ref({});
+
+// Module Configs — drives the generic CRUD renderer
+
+const moduleConfigs = {
+  profile:     { title: 'Profil Lembaga', entity: 'Profil', description: 'Data resmi & identitas lembaga', icon: 'fas fa-building',
+    stats: [{ label: 'Dokumen', value: '4', icon: 'fas fa-file-alt', color: 'bg-blue-50 text-blue-600' }],
+    columns: [{ key: 'field', label: 'Field' }, { key: 'value', label: 'Nilai' }],
+    fields: [{ key: 'field', label: 'Nama Field' }, { key: 'value', label: 'Nilai', type: 'textarea' }] },
+
+  users_mgt:   { title: 'Users', entity: 'User', description: 'Manajemen seluruh akun pengguna', icon: 'fas fa-user-friends',
+    stats: [{ label: 'Total User', value: '0', icon: 'fas fa-users', color: 'bg-indigo-50 text-indigo-600' }, { label: 'Aktif', value: '0', icon: 'fas fa-check-circle', color: 'bg-green-50 text-green-600' }],
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'role', label: 'Peran', type: 'badge', badgeClass: (v) => v === 'admin' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600' }],
+    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'role', label: 'Peran', type: 'select', options: ['admin', 'field_worker', 'user'] }] },
+
+  office:      { title: 'Kantor', entity: 'Kantor', description: 'Data seluruh lokasi kantor', icon: 'fas fa-map-marked-alt',
+    columns: [{ key: 'name', label: 'Nama Kantor' }, { key: 'city', label: 'Kota' }, { key: 'phone', label: 'Telepon' }],
+    fields: [{ key: 'name', label: 'Nama Kantor' }, { key: 'address', label: 'Alamat', type: 'textarea' }, { key: 'city', label: 'Kota' }, { key: 'phone', label: 'Telepon' }] },
+
+  employees:   { title: 'Karyawan', entity: 'Karyawan', description: 'Data SDM & personel aktif', icon: 'fas fa-id-badge',
+    stats: [{ label: 'Total Staf', value: '0', icon: 'fas fa-user-tie', color: 'bg-purple-50 text-purple-600' }, { label: 'Field Worker', value: '0', icon: 'fas fa-briefcase', color: 'bg-blue-50 text-blue-600' }],
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'position', label: 'Jabatan' }, { key: 'department', label: 'Divisi' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'position', label: 'Jabatan' }, { key: 'department', label: 'Divisi' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Nonaktif'] }] },
+
+  donor_channel: { title: 'Channel Donasi', entity: 'Channel', description: 'Saluran penerimaan donasi', icon: 'fas fa-network-wired',
+    columns: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe' }, { key: 'account', label: 'No. Rekening/Akun' }],
+    fields: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe', type: 'select', options: ['Bank Transfer', 'E-Wallet', 'QRIS', 'Tunai'] }, { key: 'account', label: 'No. Rekening/Akun' }] },
+
+  program_group: { title: 'Rumpun Program', entity: 'Rumpun', description: 'Klaster pengelompokan program', icon: 'fas fa-layer-group',
+    columns: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode' }, { key: 'description', label: 'Deskripsi' }],
+    fields: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode' }, { key: 'description', label: 'Deskripsi', type: 'textarea' }] },
+
+  programs:    { title: 'Program', entity: 'Program', description: 'Program sosial & kemanusiaan aktif', icon: 'fas fa-project-diagram',
+    stats: [{ label: 'Aktif', value: '0', icon: 'fas fa-play-circle', color: 'bg-green-50 text-green-600' }, { label: 'Selesai', value: '0', icon: 'fas fa-check-circle', color: 'bg-blue-50 text-blue-600' }],
+    columns: [{ key: 'name', label: 'Nama Program' }, { key: 'cluster', label: 'Rumpun' }, { key: 'target', label: 'Target Dana', type: 'currency' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Program' }, { key: 'cluster', label: 'Rumpun' }, { key: 'target', label: 'Target Dana', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Selesai', 'Draft'] }] },
+
+  payment_via: { title: 'Via Bayar', entity: 'Metode Bayar', description: 'Metode pembayaran yang diterima', icon: 'fas fa-credit-card',
+    columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'fee', label: 'Biaya Admin' }],
+    fields: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'fee', label: 'Biaya Admin (%)' }] },
+
+  prospect_media: { title: 'Media Prospek', entity: 'Media', description: 'Kanal pemasaran & akuisisi donatur', icon: 'fas fa-photo-video',
+    columns: [{ key: 'name', label: 'Nama Media' }, { key: 'type', label: 'Tipe' }],
+    fields: [{ key: 'name', label: 'Nama Media' }, { key: 'type', label: 'Tipe', type: 'select', options: ['Sosial Media', 'Email', 'Telepon', 'Tatap Muka', 'Website'] }] },
+
+  prospect_method: { title: 'Metode Prospek', entity: 'Metode', description: 'Teknik pendekatan calon donatur', icon: 'fas fa-bullhorn',
+    columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'description', label: 'Deskripsi' }],
+    fields: [{ key: 'name', label: 'Nama Metode' }, { key: 'description', label: 'Deskripsi', type: 'textarea' }] },
+
+  prospect_type: { title: 'Jenis Prospek', entity: 'Jenis', description: 'Segmentasi tipe calon donatur', icon: 'fas fa-filter',
+    columns: [{ key: 'name', label: 'Jenis Prospek' }, { key: 'priority', label: 'Prioritas', type: 'badge', badgeClass: (v) => v === 'Tinggi' ? 'bg-red-50 text-red-600' : v === 'Sedang' ? 'bg-yellow-50 text-yellow-600' : 'bg-green-50 text-green-600' }],
+    fields: [{ key: 'name', label: 'Nama Jenis' }, { key: 'priority', label: 'Prioritas', type: 'select', options: ['Tinggi', 'Sedang', 'Rendah'] }] },
+
+  fundraisers:  { title: 'Fundraiser', entity: 'Fundraiser', description: 'Tim penggalangan dana aktif', icon: 'fas fa-user-tie',
+    stats: [{ label: 'Total', value: '0', icon: 'fas fa-users', color: 'bg-blue-50 text-blue-600' }, { label: 'Target Bulanan', value: 'Rp 0', icon: 'fas fa-bullseye', color: 'bg-orange-50 text-orange-500' }],
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'target', label: 'Target', type: 'currency' }, { key: 'achievement', label: 'Capaian', type: 'currency' }],
+    fields: [{ key: 'name', label: 'Nama Fundraiser' }, { key: 'email', label: 'Email' }, { key: 'target', label: 'Target Dana', type: 'number' }] },
+
+  prospect_responses: { title: 'Respon Prospek', entity: 'Respon', description: 'Tindak lanjut & hasil pendekatan', icon: 'fas fa-comment-dots',
+    columns: [{ key: 'prospect', label: 'Prospek' }, { key: 'response', label: 'Respon' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tertarik' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'prospect', label: 'Nama Prospek' }, { key: 'response', label: 'Respon', type: 'textarea' }, { key: 'status', label: 'Status', type: 'select', options: ['Tertarik', 'Tidak Tertarik', 'Follow Up'] }] },
+
+  targets:      { title: 'Target', entity: 'Target', description: 'Target pencapaian per periode', icon: 'fas fa-bullseye',
+    stats: [{ label: 'Periode Aktif', value: '0', icon: 'fas fa-calendar', color: 'bg-blue-50 text-blue-600' }, { label: 'Total Target', value: 'Rp 0', icon: 'fas fa-bullseye', color: 'bg-orange-50 text-orange-500' }],
+    columns: [{ key: 'period', label: 'Periode' }, { key: 'program', label: 'Program' }, { key: 'amount', label: 'Target', type: 'currency' }, { key: 'achievement', label: 'Capaian', type: 'currency' }],
+    fields: [{ key: 'period', label: 'Periode (Bulan/Tahun)' }, { key: 'program', label: 'Program' }, { key: 'amount', label: 'Target Dana', type: 'number' }] },
+
+  distribution_list: { title: 'List Penyaluran', entity: 'Penyaluran', description: 'Histori distribusi bantuan ke penerima', icon: 'fas fa-clipboard-list',
+    stats: [{ label: 'Total Penyaluran', value: '0', icon: 'fas fa-box-open', color: 'bg-blue-50 text-blue-600' }, { label: 'Total Dana', value: 'Rp 0', icon: 'fas fa-donate', color: 'bg-green-50 text-green-600' }],
+    columns: [{ key: 'recipient', label: 'Penerima' }, { key: 'program', label: 'Program' }, { key: 'amount', label: 'Nilai', type: 'currency' }, { key: 'date', label: 'Tanggal' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tersalur' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
+    fields: [{ key: 'recipient', label: 'Nama Penerima' }, { key: 'program', label: 'Program' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'date', label: 'Tanggal', type: 'date' }] },
+
+  distribution_dashboard: { title: 'Dashboard Penyaluran', entity: 'Laporan', description: 'Statistik & visualisasi distribusi bantuan', icon: 'fas fa-chart-line',
+    stats: [{ label: 'Total Tersalur', value: 'Rp 0', icon: 'fas fa-donate', color: 'bg-blue-50 text-blue-600' }, { label: 'Penerima', value: '0', icon: 'fas fa-users', color: 'bg-green-50 text-green-600' }, { label: 'Program Aktif', value: '0', icon: 'fas fa-layer-group', color: 'bg-purple-50 text-purple-600' }, { label: 'Realisasi', value: '0%', icon: 'fas fa-chart-pie', color: 'bg-orange-50 text-orange-500' }],
+    columns: [{ key: 'program', label: 'Program' }, { key: 'total_recipient', label: 'Penerima' }, { key: 'total_amount', label: 'Total Dana', type: 'currency' }, { key: 'realization', label: 'Realisasi' }],
+    fields: [] },
+
+  donors:       { title: 'List Donatur', entity: 'Donatur', description: 'Database seluruh donatur terdaftar', icon: 'fas fa-users',
+    stats: [{ label: 'Total Donatur', value: '0', icon: 'fas fa-users', color: 'bg-blue-50 text-blue-600' }, { label: 'Donatur Baru', value: '0', icon: 'fas fa-user-plus', color: 'bg-green-50 text-green-600' }, { label: 'Donasi Rata-rata', value: 'Rp 0', icon: 'fas fa-chart-bar', color: 'bg-purple-50 text-purple-600' }],
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Telepon' }, { key: 'total_donation', label: 'Total Donasi', type: 'currency' }, { key: 'last_donation', label: 'Donasi Terakhir' }],
+    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'phone', label: 'Telepon' }, { key: 'address', label: 'Alamat', type: 'textarea' }] },
+
+  transactions: { title: 'List Transaksi', entity: 'Transaksi', description: 'Riwayat seluruh transaksi donasi', icon: 'fas fa-exchange-alt',
+    stats: [{ label: 'Total Transaksi', value: '0', icon: 'fas fa-receipt', color: 'bg-blue-50 text-blue-600' }, { label: 'Total Dana', value: 'Rp 0', icon: 'fas fa-donate', color: 'bg-green-50 text-green-600' }, { label: 'Pending', value: '0', icon: 'fas fa-clock', color: 'bg-yellow-50 text-yellow-600' }],
+    columns: [{ key: 'donor', label: 'Donatur' }, { key: 'amount', label: 'Jumlah', type: 'currency' }, { key: 'method', label: 'Metode' }, { key: 'date', label: 'Tanggal' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Success' ? 'bg-green-50 text-green-600' : v === 'Pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
+    fields: [] },
+
+  prospects:    { title: 'List Prospek', entity: 'Prospek', description: 'Database calon donatur yang diprospek', icon: 'fas fa-search-dollar',
+    stats: [{ label: 'Total Prospek', value: '0', icon: 'fas fa-user-plus', color: 'bg-blue-50 text-blue-600' }, { label: 'Konversi', value: '0%', icon: 'fas fa-chart-line', color: 'bg-green-50 text-green-600' }],
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'media', label: 'Sumber' }, { key: 'fundraiser', label: 'Fundraiser' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Konversi' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600' }],
+    fields: [{ key: 'name', label: 'Nama Prospek' }, { key: 'phone', label: 'No. Telepon' }, { key: 'media', label: 'Sumber Media' }, { key: 'fundraiser', label: 'Fundraiser PIC' }] },
+
+  potential_donors: { title: 'List Calon Donatur', entity: 'Calon Donatur', description: 'Prospek tervalidasi siap dikonversi', icon: 'fas fa-user-plus',
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'potential', label: 'Potensi', type: 'currency' }, { key: 'pic', label: 'PIC' }, { key: 'priority', label: 'Prioritas', type: 'badge', badgeClass: (v) => v === 'Tinggi' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600' }],
+    fields: [{ key: 'name', label: 'Nama Calon Donatur' }, { key: 'potential', label: 'Estimasi Potensi', type: 'number' }, { key: 'pic', label: 'PIC Fundraiser' }, { key: 'priority', label: 'Prioritas', type: 'select', options: ['Tinggi', 'Sedang', 'Rendah'] }] },
+
+  transaction_dashboard: { title: 'Dashboard Transaksi', entity: 'Laporan', description: 'Analitik & ringkasan transaksi keuangan', icon: 'fas fa-chart-bar',
+    stats: [{ label: 'Bulan Ini', value: 'Rp 0', icon: 'fas fa-calendar', color: 'bg-blue-50 text-blue-600' }, { label: 'Total YTD', value: 'Rp 0', icon: 'fas fa-donate', color: 'bg-green-50 text-green-600' }, { label: 'Rata-rata/Transaksi', value: 'Rp 0', icon: 'fas fa-chart-pie', color: 'bg-purple-50 text-purple-600' }, { label: 'Transaksi Gagal', value: '0', icon: 'fas fa-times-circle', color: 'bg-red-50 text-red-600' }],
+    columns: [{ key: 'period', label: 'Periode' }, { key: 'count', label: 'Transaksi' }, { key: 'total', label: 'Total Dana', type: 'currency' }, { key: 'growth', label: 'Pertumbuhan' }],
+    fields: [] },
+
+  donor_dashboard: { title: 'Dashboard Donatur', entity: 'Laporan', description: 'Analitik perilaku & segmentasi donatur', icon: 'fas fa-user-chart',
+    stats: [{ label: 'Total Donatur', value: '0', icon: 'fas fa-users', color: 'bg-blue-50 text-blue-600' }, { label: 'Donatur Aktif', value: '0', icon: 'fas fa-check-circle', color: 'bg-green-50 text-green-600' }, { label: 'Donatur Baru', value: '0', icon: 'fas fa-user-plus', color: 'bg-purple-50 text-purple-600' }, { label: 'Churn', value: '0%', icon: 'fas fa-user-times', color: 'bg-red-50 text-red-600' }],
+    columns: [{ key: 'segment', label: 'Segmen' }, { key: 'count', label: 'Jumlah' }, { key: 'avg_donation', label: 'Rata-rata Donasi', type: 'currency' }, { key: 'frequency', label: 'Frekuensi' }],
+    fields: [] },
+
+  prospect_dashboard: { title: 'Dashboard Prospek', entity: 'Laporan', description: 'Analitik pipeline & konversi prospek', icon: 'fas fa-funnel-dollar',
+    stats: [{ label: 'Total Pipeline', value: '0', icon: 'fas fa-stream', color: 'bg-blue-50 text-blue-600' }, { label: 'Konversi', value: '0%', icon: 'fas fa-chart-line', color: 'bg-green-50 text-green-600' }, { label: 'Dalam Proses', value: '0', icon: 'fas fa-clock', color: 'bg-yellow-50 text-yellow-600' }, { label: 'Drop', value: '0', icon: 'fas fa-arrow-down', color: 'bg-red-50 text-red-600' }],
+    columns: [{ key: 'stage', label: 'Tahap' }, { key: 'count', label: 'Jumlah' }, { key: 'conversion', label: 'Konversi' }, { key: 'avg_time', label: 'Rata-rata Waktu' }],
+    fields: [] },
+
+  target_vs_achievement: { title: 'Target vs Capaian', entity: 'Laporan', description: 'Perbandingan target & realisasi per periode', icon: 'fas fa-tasks',
+    stats: [{ label: 'Target Tahunan', value: 'Rp 0', icon: 'fas fa-bullseye', color: 'bg-blue-50 text-blue-600' }, { label: 'Total Capaian', value: 'Rp 0', icon: 'fas fa-trophy', color: 'bg-green-50 text-green-600' }, { label: 'Persentase', value: '0%', icon: 'fas fa-percent', color: 'bg-purple-50 text-purple-600' }, { label: 'Sisa Target', value: 'Rp 0', icon: 'fas fa-minus-circle', color: 'bg-orange-50 text-orange-500' }],
+    columns: [{ key: 'period', label: 'Periode' }, { key: 'target', label: 'Target', type: 'currency' }, { key: 'achievement', label: 'Capaian', type: 'currency' }, { key: 'percentage', label: '%' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tercapai' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600' }],
+    fields: [] },
+
+  rfm_dashboard: { title: 'Dashboard RFM', entity: 'Laporan', description: 'Analitik Recency, Frequency, Monetary donatur', icon: 'fas fa-brain',
+    stats: [{ label: 'Champions', value: '0', icon: 'fas fa-crown', color: 'bg-yellow-50 text-yellow-600' }, { label: 'Loyal', value: '0', icon: 'fas fa-heart', color: 'bg-red-50 text-red-600' }, { label: 'At Risk', value: '0', icon: 'fas fa-exclamation-triangle', color: 'bg-orange-50 text-orange-500' }, { label: 'Lost', value: '0', icon: 'fas fa-user-times', color: 'bg-gray-100 text-gray-500' }],
+    columns: [{ key: 'segment', label: 'Segmen RFM' }, { key: 'count', label: 'Donatur' }, { key: 'avg_rfm', label: 'Skor Rata-rata' }, { key: 'total_value', label: 'Total Nilai', type: 'currency' }],
+    fields: [] },
+
+  distribution_dashboard: { title: 'Dashboard Penyaluran', entity: 'Laporan', description: 'Analitik sebaran dan dampak bantuan', icon: 'fas fa-chart-pie',
+    stats: [{ label: 'Tersalurkan', value: 'Rp 0', icon: 'fas fa-hand-holding-heart', color: 'bg-blue-50 text-blue-600' }, { label: 'Penerima', value: '0', icon: 'fas fa-users', color: 'bg-green-50 text-green-600' }],
+    columns: [{ key: 'program', label: 'Program' }, { key: 'total', label: 'Dana Tersalur', type: 'currency' }, { key: 'recipients', label: 'Penerima' }],
+    fields: [] },
+
+  prospect_media: { title: 'Media Prospek', entity: 'Media', description: 'Saluran perolehan data prospek', icon: 'fas fa-icons',
+    columns: [{ key: 'name', label: 'Nama Media' }, { key: 'status', label: 'Status', type: 'badge' }],
+    fields: [{ key: 'name', label: 'Nama Media' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
+
+  prospect_method: { title: 'Metode Prospek', entity: 'Metode', description: 'Teknik pendekatan ke prospek', icon: 'fas fa-magic',
+    columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'desc', label: 'Keterangan' }],
+    fields: [{ key: 'name', label: 'Nama Metode' }, { key: 'desc', label: 'Keterangan', type: 'textarea' }] },
+
+  prospect_type: { title: 'Jenis Prospek', entity: 'Jenis', description: 'Klasifikasi tipe calon donatur', icon: 'fas fa-tags',
+    columns: [{ key: 'name', label: 'Nama Jenis' }, { key: 'priority', label: 'Prioritas', type: 'badge' }],
+    fields: [{ key: 'name', label: 'Nama Jenis' }, { key: 'priority', label: 'Prioritas', type: 'select', options: ['Tinggi', 'Sedang', 'Rendah'] }] },
+
+  donor_channel: { title: 'Channel Donasi', entity: 'Channel', description: 'Saluran masuknya donatur baru', icon: 'fas fa-door-open',
+    columns: [{ key: 'name', label: 'Nama Channel' }, { key: 'code', label: 'Kode' }],
+    fields: [{ key: 'name', label: 'Nama Channel' }, { key: 'code', label: 'Kode Unik' }] },
+
+  program_group: { title: 'Rumpun Program', entity: 'Rumpun', description: 'Kelompok besar program humanity', icon: 'fas fa-sitemap',
+    columns: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode' }],
+    fields: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode Rumpun' }] },
+
+  payment_via: { title: 'Via Bayar', entity: 'Via', description: 'Media pembayaran transaksi', icon: 'fas fa-university',
+    columns: [{ key: 'name', label: 'Nama Media' }, { key: 'provider', label: 'Provider' }],
+    fields: [{ key: 'name', label: 'Nama Media' }, { key: 'provider', label: 'Nama Bank/Provider' }] },
+
+  target_vs_achievement_dashboard: { title: 'Target Vs Capaian', entity: 'Laporan', description: 'Monitoring realisasi target per periode', icon: 'fas fa-tasks',
+    stats: [{ label: 'Target', value: 'Rp 0', icon: 'fas fa-bullseye', color: 'bg-blue-50 text-blue-600' }, { label: 'Capaian', value: 'Rp 0', icon: 'fas fa-check-double', color: 'bg-green-50 text-green-600' }],
+    columns: [{ key: 'period', label: 'Periode' }, { key: 'target', label: 'Target', type: 'currency' }, { key: 'achievement', label: 'Capaian', type: 'currency' }],
+    fields: [] }
+};
+
+const activeModule = computed(() => moduleConfigs[activeTab.value] || null);
+const filteredModuleData = computed(() => {
+  const data = moduleData.value[activeTab.value] || [];
+  if (!moduleSearchQuery.value) return data;
+  
+  const query = moduleSearchQuery.value.toLowerCase();
+  return data.filter(item => 
+    Object.values(item).some(val => 
+      String(val).toLowerCase().includes(query)
+    )
+  );
+});
+
 const loading = ref(true);
 const stats = ref({});
 const users = ref([]);
@@ -513,6 +818,55 @@ const showNoteModal = ref(false);
 const processingDecision = ref(false);
 const noteData = reactive({ type: '', id: null, status: '', note: '' });
 
+const handleSaveModuleData = async () => {
+  const tab = activeTab.value;
+  const payload = { ...moduleFormData.value };
+  const id = payload.id;
+  delete payload._index;
+  delete payload.id;
+  
+  try {
+    if (id) {
+      await api.put(`/admin/master/${tab}/${id}`, payload);
+    } else {
+      await api.post(`/admin/master/${tab}`, payload);
+    }
+    showModuleModal.value = false;
+    moduleFormData.value = {};
+    fetchModuleData();
+  } catch (e) {
+    alert('Gagal menyimpan data modul.');
+  }
+};
+
+const editModuleData = (row, index) => {
+  moduleFormData.value = { ...row, _index: index };
+  showModuleModal.value = true;
+};
+
+const handleDeleteModuleData = async (id) => {
+  if (confirm(`Yakin ingin menghapus data ini?`)) {
+    try {
+      await api.delete(`/admin/master/${activeTab.value}/${id}`);
+      fetchModuleData();
+    } catch (e) {
+      alert('Gagal menghapus data.');
+    }
+  }
+};
+
+const fetchModuleData = async () => {
+  const tab = activeTab.value;
+  if (!moduleConfigs[tab] || moduleConfigs[tab].isDashboard) return;
+  
+  try {
+    const res = await api.get(`/admin/master/${tab}`);
+    moduleData.value[tab] = res.data;
+  } catch (e) {
+    console.error(`Error fetching module ${tab}:`, e);
+  }
+};
+
 const fetchData = async () => {
   loading.value = true;
   try {
@@ -530,12 +884,23 @@ const fetchData = async () => {
     pendingDonations.value = donRes.data;
     settingsData.value = settingsRes.data;
     pendingZakats.value = zakatRes.data;
+    
+    // Fetch initial module data if applicable
+    fetchModuleData();
   } catch (error) {
     console.error(error);
   } finally {
     loading.value = false;
   }
 };
+
+// Watch for tab changes to fetch specific module data
+import { watch } from 'vue';
+watch(activeTab, (newTab) => {
+  if (moduleConfigs[newTab]) {
+    fetchModuleData();
+  }
+});
 
 const handleApproveCampaign = async (id) => {
   if (confirm('Setujui kampanye ini?')) {

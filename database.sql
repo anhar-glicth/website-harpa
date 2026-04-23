@@ -131,20 +131,130 @@ CREATE TABLE IF NOT EXISTS campaign_updates (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- SEED DATA
--- Default password: password123 (hashed using bcrypt)
--- Note: You should run the seed.js script to generate correct hashes, 
--- or use these placeholders which will need to be updated.
-INSERT IGNORE INTO users (id, name, email, password, role) VALUES 
-(1, 'Admin Utama', 'admin@humanity.org', '$2a$10$7zD7W6X3Z8W8W8W8W8W8W.W8W8W8W8W8W8W8W8W8W8W8W8W8W8W8W', 'admin'),
-(2, 'Petugas Lapangan', 'petugas@humanity.org', '$2a$10$7zD7W6X3Z8W8W8W8W8W8W.W8W8W8W8W8W8W8W8W8W8W8W8W8W8W8W', 'field_worker'),
-(3, 'Donatur Setia', 'donatur@humanity.org', '$2a$10$7zD7W6X3Z8W8W8W8W8W8W.W8W8W8W8W8W8W8W8W8W8W8W8W8W8W8W', 'user');
+-- 11. Offices Table
+CREATE TABLE IF NOT EXISTS offices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    address TEXT,
+    phone VARCHAR(20),
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-INSERT IGNORE INTO site_settings (setting_key, setting_value) VALUES
-('hero_title', 'Uluran Tangan Anda, Harapan Mereka'),
-('hero_subtitle', 'Kami menghubungkan kebaikan hati Anda dengan mereka yang benar-benar membutuhkan bantuan di seluruh pelosok negeri.'),
-('hero_image', 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop'),
-('about_mission', 'HumanityCare adalah platform donasi digital yang berfokus na transparansi dan kemudahan akses. Kami percaya bahwa setiap bantuan, sekecil apapun, memiliki dampak besar jika disalurkan kepada orang yang tepat dengan cara yang benar.'),
-('about_image', 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop'),
-('impact_image', 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1000&auto=format&fit=crop'),
-('impact_title', 'Penyaluran Ribuan Wakaf Al-Quran ke Pelosok Indonesia Timur');
+-- 12. Employees Table
+CREATE TABLE IF NOT EXISTS employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    office_id INT NULL,
+    name VARCHAR(255) NOT NULL,
+    position VARCHAR(100),
+    phone VARCHAR(20),
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (office_id) REFERENCES offices(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 13. Donor Channels
+CREATE TABLE IF NOT EXISTS donor_channels (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(50) UNIQUE,
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
+);
+
+-- 14. Program Groups
+CREATE TABLE IF NOT EXISTS program_groups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(50) UNIQUE,
+    description TEXT
+);
+
+-- 15. Payment Via
+CREATE TABLE IF NOT EXISTS payment_via (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    provider VARCHAR(255),
+    account_no VARCHAR(100),
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
+);
+
+-- 16. Prospect Media
+CREATE TABLE IF NOT EXISTS prospect_media (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
+);
+
+-- 17. Prospect Methods
+CREATE TABLE IF NOT EXISTS prospect_methods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
+-- 18. Prospect Types
+CREATE TABLE IF NOT EXISTS prospect_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    priority ENUM('Tinggi', 'Sedang', 'Rendah') DEFAULT 'Sedang'
+);
+
+-- 19. Fundraisers
+CREATE TABLE IF NOT EXISTS fundraisers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    name VARCHAR(255) NOT NULL,
+    type ENUM('Internal', 'Mitra', 'Volunteer') DEFAULT 'Internal',
+    target DECIMAL(15, 2) DEFAULT 0,
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- 20. Prospect Responses
+CREATE TABLE IF NOT EXISTS prospect_responses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    prospect_id INT NULL,
+    response TEXT,
+    status ENUM('Tertarik', 'Tidak Tertarik', 'Follow Up') DEFAULT 'Follow Up',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 21. Targets
+CREATE TABLE IF NOT EXISTS targets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    period VARCHAR(50) NOT NULL,
+    program_id INT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    achievement DECIMAL(15, 2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (program_id) REFERENCES campaigns(id) ON DELETE SET NULL
+);
+
+-- 22. Distributions
+CREATE TABLE IF NOT EXISTS distributions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    recipient_name VARCHAR(255) NOT NULL,
+    program_id INT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    distribution_date DATE,
+    status ENUM('Tersalur', 'Proses') DEFAULT 'Proses',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (program_id) REFERENCES campaigns(id) ON DELETE SET NULL
+);
+
+-- SEED DATA UPDATE
+INSERT IGNORE INTO offices (name, address, phone) VALUES 
+('Kantor Pusat Jakarta', 'Jl. Sudirman No. 123', '021-123456'),
+('Cabang Bandung', 'Jl. Asia Afrika No. 45', '022-765432');
+
+INSERT IGNORE INTO donor_channels (name, code) VALUES 
+('Website Utama', 'WEB-01'),
+('Social Media Ads', 'SOC-ADS'),
+('Event Offline', 'EVT-OFF');
+
+INSERT IGNORE INTO program_groups (name, code) VALUES 
+('Pendidikan & Dakwah', 'EDU-DAK'),
+('Kesehatan Masyarakat', 'HEALTH'),
+('Bencana & Emergency', 'EMR');

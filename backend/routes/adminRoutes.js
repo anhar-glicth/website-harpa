@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 
 // Import Controllers
 const adminController = require('../controllers/adminController');
+const masterController = require('../controllers/adminMasterController');
 
 /**
  * Rute khusus Admin Dashboard & Management
@@ -27,6 +28,10 @@ router.post('/approve-campaign/:id', auth, auth.isAdmin, adminController.approve
 router.get('/pending-donations', auth, auth.isAdmin, adminController.getPendingDonations);
 router.post('/verify-donation/:id', auth, auth.isAdmin, adminController.verifyDonation);
 
-
+// 5. Generic Master Data Management
+router.get('/master/:module', auth, auth.isAdmin, masterController.getData);
+router.post('/master/:module', auth, auth.isAdmin, masterController.createData);
+router.put('/master/:module/:id', auth, auth.isAdmin, masterController.updateData);
+router.delete('/master/:module/:id', auth, auth.isAdmin, masterController.deleteData);
 
 module.exports = router;
