@@ -10,7 +10,7 @@
         <header class="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
           <div class="text-center md:text-left">
             <h1 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight leading-none mb-1 uppercase italic">User <span class="text-blue-600">Profile</span></h1>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Pantau kontribusi & perjalanan spiritual Anda</p>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Pantau kontribusi Anda di HumanityCare</p>
           </div>
           <router-link to="/" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-700 transition shadow-xl shadow-blue-100">Jelajah Kampanye</router-link>
         </header>
@@ -18,7 +18,6 @@
         <!-- Navigasi Tab Internal -->
         <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-2xl w-full overflow-x-auto no-scrollbar">
            <button @click="activeTab = 'donations'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'donations' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500']">Riwayat Donasi</button>
-           <button @click="activeTab = 'mualaf'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'mualaf' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500']">Status Syahadat</button>
         </div>
 
         <!-- Tab: Riwayat Donasi -->
@@ -50,37 +49,7 @@
            </div>
         </div>
 
-        <!-- Tab: Status Syahadat -->
-        <div v-if="activeTab === 'mualaf'" class="space-y-6">
-           <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-              <div class="p-8 border-b border-gray-50 bg-blue-50/20">
-                 <h2 class="font-black text-lg text-blue-600 uppercase tracking-tighter">Pengajuan Ikrar Syahadat</h2>
-              </div>
-              <div class="overflow-x-auto no-scrollbar">
-                 <table class="w-full text-left">
-                   <thead class="bg-gray-50 text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">
-                      <tr>
-                         <th class="px-8 py-4">Nama</th>
-                         <th class="px-8 py-4">Jadwal</th>
-                         <th class="px-8 py-4 text-center">Status</th>
-                      </tr>
-                   </thead>
-                   <tbody class="divide-y divide-gray-50">
-                      <tr v-for="m in mualafLogs" :key="m.id">
-                         <td class="px-8 py-6 font-bold text-slate-800">{{ m.name }}</td>
-                         <td class="px-8 py-6 text-xs text-slate-500 italic">{{ m.desired_date }}</td>
-                         <td class="px-8 py-6 text-center">
-                            <span :class="['px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest', m.status === 'approved' ? 'bg-blue-600 text-white shadow-lg' : 'bg-amber-50 text-amber-600']">{{ m.status }}</span>
-                         </td>
-                      </tr>
-                      <tr v-if="mualafLogs.length === 0">
-                         <td colspan="3" class="px-8 py-20 text-center text-slate-400 italic font-bold uppercase tracking-widest text-[10px]">Belum ada pengajuan mualaf.</td>
-                      </tr>
-                   </tbody>
-                 </table>
-              </div>
-           </div>
-        </div>
+
 
       </div>
     </div>
@@ -94,7 +63,6 @@ import Sidebar from '@/components/Sidebar.vue';
 
 const activeTab = ref('donations');
 const donations = ref([]);
-const mualafLogs = ref([]);
 const loading = ref(true);
 
 const formatCurrency = (val) => new Intl.NumberFormat('id-ID').format(val || 0);
@@ -102,12 +70,10 @@ const formatCurrency = (val) => new Intl.NumberFormat('id-ID').format(val || 0);
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [donRes, mualafRes] = await Promise.all([
+    const [donRes] = await Promise.all([
       api.get('/donations/my-donations'),
-      api.get('/muallaf/my-requests')
     ]);
     donations.value = donRes.data;
-    mualafLogs.value = mualafRes.data;
   } catch (err) {
     console.error(err);
   } finally {

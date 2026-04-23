@@ -180,32 +180,4 @@ exports.verifyDonation = async (req, res) => {
         res.status(500).json({ message: 'Gagal memproses verifikasi' });
     }
 };
-
-/**
- * List Pengajuan Mualaf yang Menunggu Persetujuan
- */
-exports.getMualafRequests = async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT * FROM mualaf_requests WHERE status = "pending" ORDER BY created_at DESC');
-        res.json(rows);
-    } catch (error) {
-        console.error('Error getMualafRequests:', error.message);
-        res.status(500).json({ message: 'Gagal memuat pengajuan mualaf' });
-    }
-};
-
-/**
- * Memproses Pengajuan Mualaf (Approve/Reject)
- */
-exports.verifyMualafRequest = async (req, res) => {
-    const { id } = req.params;
-    const { status, admin_note } = req.body; // 'approved' atau 'rejected'
-
-    try {
-        await db.query('UPDATE mualaf_requests SET status = ?, admin_note = ? WHERE id = ?', [status, admin_note, id]);
-        res.json({ message: `Pengajuan syahadat telah ${status === 'approved' ? 'disetujui' : 'ditolak'}` });
-    } catch (error) {
-        console.error('Verify Mualaf Error:', error);
-        res.status(500).json({ message: 'Gagal memproses verifikasi syahadat' });
-    }
-};
+

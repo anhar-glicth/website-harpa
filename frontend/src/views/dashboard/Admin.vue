@@ -60,8 +60,8 @@
                 <p class="text-3xl font-black text-blue-600 tracking-tighter">{{ stats.activeCampaigns || 0 }}</p>
               </div>
               <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Zakat & Syahadat</p>
-                <p class="text-3xl font-black text-blue-600 tracking-tighter">{{ pendingZakats.length + mualafRequests.length }} Pending</p>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Zakat Pending</p>
+                <p class="text-3xl font-black text-blue-600 tracking-tighter">{{ pendingZakats.length }}</p>
               </div>
             </div>
 
@@ -250,34 +250,7 @@
                </div>
             </div>
 
-            <div v-if="activeTab === 'verify_mualaf'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-               <div class="p-8 border-b border-gray-50 bg-blue-50/20">
-                  <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Persetujuan <span class="text-blue-600">Syahadat</span></h3>
-               </div>
-               <div class="overflow-x-auto">
-                  <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-[10px] uppercase font-black text-gray-400 tracking-widest">
-                      <tr>
-                        <th class="px-8 py-4">Calon Mualaf</th>
-                        <th class="px-8 py-4">Jadwal Permintaan</th>
-                        <th class="px-8 py-4 text-center">Keputusan</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-50 uppercase text-[10px] font-black tracking-tight">
-                      <tr v-for="req in mualafRequests" :key="req.id">
-                        <td class="px-8 py-6">{{ req.name }}</td>
-                        <td class="px-8 py-6 italic text-slate-500">{{ req.desired_date }}</td>
-                        <td class="px-8 py-6 text-center">
-                           <div class="flex gap-2 justify-center">
-                              <button @click="triggerNoteModal('mualaf', req.id, 'approved')" class="px-4 py-2 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest rounded-xl transition hover:scale-105">Terima</button>
-                              <button @click="triggerNoteModal('mualaf', req.id, 'rejected')" class="px-4 py-2 bg-red-500 text-white text-[9px] font-black uppercase tracking-widest rounded-xl transition hover:scale-105">Tolak</button>
-                           </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-               </div>
-            </div>
+
 
           </div>
         </main>
@@ -362,7 +335,7 @@ const HammerIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="cur
 const ZakatIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>' };
 const VerifyIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>' };
 const HeartIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>' };
-const MualafIcon = { template: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>' };
+
 
 const tabs = [
   { id: 'dashboard', label: 'Ringkasan', icon: markRaw(LayoutIcon) },
@@ -371,7 +344,6 @@ const tabs = [
   { id: 'settings', label: 'CMS Tampilan', icon: markRaw(HammerIcon) },
   { id: 'verify_campaign', label: 'Approval Kampanye', icon: markRaw(VerifyIcon) },
   { id: 'verify_donation', label: 'Verifikasi Donasi', icon: markRaw(HeartIcon) },
-  { id: 'verify_mualaf', label: 'Verifikasi Syahadat', icon: markRaw(MualafIcon) },
 ];
 
 const activeTab = ref('dashboard');
@@ -380,7 +352,7 @@ const stats = ref({});
 const users = ref([]);
 const pendingCampaigns = ref([]);
 const pendingDonations = ref([]);
-const mualafRequests = ref([]);
+
 const pendingZakats = ref([]);
 const settingsData = ref({});
 const savingSettings = ref(false);
@@ -396,12 +368,11 @@ const noteData = reactive({ type: '', id: null, status: '', note: '' });
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [statsRes, usersRes, campRes, donRes, mualafRes, settingsRes, zakatRes] = await Promise.all([
+    const [statsRes, usersRes, campRes, donRes, settingsRes, zakatRes] = await Promise.all([
       api.get('/admin/stats'),
       api.get('/admin/users'),
       api.get('/admin/pending-campaigns'),
       api.get('/admin/pending-donations'),
-      api.get('/admin/mualaf-requests'),
       api.get('/settings'),
       api.get('/zakats/pending')
     ]);
@@ -409,7 +380,6 @@ const fetchData = async () => {
     users.value = usersRes.data;
     pendingCampaigns.value = campRes.data;
     pendingDonations.value = donRes.data;
-    mualafRequests.value = mualafRes.data;
     settingsData.value = settingsRes.data;
     pendingZakats.value = zakatRes.data;
   } catch (error) {
@@ -439,8 +409,7 @@ const submitDecisionWithNote = async () => {
    try {
       if (noteData.type === 'donation') {
          await api.post(`/admin/verify-donation/${noteData.id}`, { status: noteData.status, admin_note: noteData.note });
-      } else if (noteData.type === 'mualaf') {
-         await api.post(`/admin/verify-mualaf/${noteData.id}`, { status: noteData.status, admin_note: noteData.note });
+
       } else if (noteData.type === 'zakat') {
          await api.post(`/zakats/verify/${noteData.id}`, { status: noteData.status, admin_note: noteData.note });
       }

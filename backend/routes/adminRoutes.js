@@ -27,8 +27,6 @@ router.post('/approve-campaign/:id', auth, auth.isAdmin, adminController.approve
 router.get('/pending-donations', auth, auth.isAdmin, adminController.getPendingDonations);
 router.post('/verify-donation/:id', auth, auth.isAdmin, adminController.verifyDonation);
 
-// 5. Verifikasi Mualaf
-router.get('/mualaf-requests', auth, auth.isAdmin, adminController.getMualafRequests);
-router.post('/verify-mualaf/:id', auth, auth.isAdmin, adminController.verifyMualafRequest);
+
 
 module.exports = router;

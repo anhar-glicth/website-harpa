@@ -8,7 +8,7 @@ import CampaignDetails from '../views/CampaignDetails.vue';
 import About from '../views/About.vue';
 import Help from '../views/Help.vue';
 import Contact from '../views/Contact.vue';
-import Syahadat from '../views/Syahadat.vue';
+
 import News from '../views/News.vue';
 import Zakat from '../views/Zakat.vue';
 
@@ -43,11 +43,7 @@ const routes = [
     name: 'Contact',
     component: Contact
   },
-  {
-    path: '/muallaf',
-    name: 'Syahadat',
-    component: Syahadat
-  },
+
   {
     path: '/news',
     name: 'News',

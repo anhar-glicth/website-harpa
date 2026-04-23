@@ -24,7 +24,6 @@ const navLinks = computed(() => {
   return [
     { to: '/', label: 'Beranda', type: 'home' },
     { to: '/news', label: 'Berita', type: 'news' },
-    { to: '/muallaf', label: 'Mualaf', type: 'info' },
     { to: isAuthenticated.value ? '/dashboard' : null, label: isAuthenticated.value ? 'Akun' : 'Masuk', type: 'profile', action: !isAuthenticated.value ? 'login' : null }
   ];
 });

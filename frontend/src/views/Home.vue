@@ -153,18 +153,17 @@
       </div>
     </section>
 
-    <!-- Social Impact Section (Berita & Syahadat Preview) -->
+    <!-- Social Impact Section (Berita Preview) -->
     <section class="max-w-7xl mx-auto px-4 py-12 md:py-24 border-t border-slate-100">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
         <!-- Text Content -->
         <div class="space-y-6 md:space-y-8">
-          <div class="inline-flex py-1 px-4 bg-blue-50 rounded-full text-blue-600 text-[9px] font-black uppercase tracking-widest border border-blue-100">Mualaf Center & Berita</div>
-          <h2 class="text-xl md:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter italic">Langkah Baru, <br> <span class="text-blue-600">Kehidupan Baru</span></h2>
-          <p class="text-slate-500 font-bold text-[11px] md:text-sm leading-relaxed max-w-md italic">Selain berdonasi, kami juga membantu saudara-saudara kita yang membutuhkan bimbingan spiritual serta menyajikan kabar warta kebaikan dari lapangan.</p>
+          <div class="inline-flex py-1 px-4 bg-blue-50 rounded-full text-blue-600 text-[9px] font-black uppercase tracking-widest border border-blue-100">Berita Kebaikan</div>
+          <h2 class="text-xl md:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter italic">Kabar Warta, <br> <span class="text-blue-600">Aksi Nyata</span></h2>
+          <p class="text-slate-500 font-bold text-[11px] md:text-sm leading-relaxed max-w-md italic">Kami menyajikan kabar warta kebaikan dan laporan penyaluran donasi langsung dari lapangan untuk transparansi Anda.</p>
           
           <div class="flex flex-col sm:flex-row gap-4 pt-4">
-            <button @click="handleSyahadat" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:bg-blue-700 transition inline-block text-center">Ajukan Syahadat</button>
-            <router-link to="/news" class="px-8 py-4 bg-white border-2 border-slate-100 text-slate-900 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:border-blue-600 hover:text-blue-600 transition inline-block text-center">Lihat Berita Terbaru</router-link>
+            <router-link to="/news" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:bg-blue-700 transition inline-block text-center">Lihat Berita Terbaru</router-link>
           </div>
         </div>
 
@@ -279,13 +278,7 @@ const handleDonate = (campaign) => {
   router.push(`/campaigns/${campaign.id}`);
 };
 
-const handleSyahadat = () => {
-  if (!isAuthenticated.value) {
-    openLogin();
-    return;
-  }
-  router.push('/muallaf');
-};
+
 
 onMounted(fetchData);
 </script>

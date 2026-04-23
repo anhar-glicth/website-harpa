@@ -66,7 +66,6 @@ const desktopMenu = [
   { to: '/', label: 'Jelajah' },
   { to: '/news', label: 'Berita' },
   { to: '/zakat', label: 'Zakat' },
-  { to: '/muallaf', label: 'Syahadat' },
   { to: '/about', label: 'Tentang' }
 ];
 
