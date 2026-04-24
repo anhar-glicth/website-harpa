@@ -5,11 +5,19 @@
     <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
       <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-600/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
       <div class="relative z-10 space-y-4 text-center">
-        <div class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
-           <i :class="userRole === 'admin' ? 'fas fa-user-shield' : (userRole === 'field_worker' ? 'fas fa-id-badge' : 'fas fa-heart')"></i>
+        <div class="w-20 h-20 bg-white p-1 rounded-2xl shadow-xl shadow-slate-200/50 mx-auto relative group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+           <img 
+             v-if="userPhoto" 
+             :src="userPhoto" 
+             class="w-full h-full object-cover rounded-xl"
+             alt="Profile"
+           />
+           <div v-else class="w-full h-full bg-green-50 text-green-600 flex items-center justify-center text-3xl rounded-xl">
+              <i :class="role === 'admin' ? 'fas fa-user-shield' : (role === 'field_worker' || role === 'petugas' ? 'fas fa-id-badge' : 'fas fa-heart')"></i>
+           </div>
         </div>
         <div class="space-y-1">
-           <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{{ userRole?.replace('_', ' ') || 'User' }}</p>
+           <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">{{ role?.replace('_', ' ') || 'User' }}</p>
            <p class="text-lg font-black text-gray-900 tracking-tighter truncate">{{ userName }}</p>
         </div>
       </div>
@@ -97,10 +105,16 @@ import { useAuth } from '../store/auth';
 
 const route = useRoute();
 const router = useRouter();
-const { getUserName: storeUserName, getUserRole: storeUserRole, clearAuth } = useAuth();
+const { 
+  getUserName: storeUserName, 
+  getUserRole: storeUserRole, 
+  getUserPhoto: storeUserPhoto,
+  clearAuth 
+} = useAuth();
 
 const userName = computed(() => storeUserName.value || localStorage.getItem('name') || 'Guest');
-const userRole = computed(() => storeUserRole.value || localStorage.getItem('role'));
+const userPhoto = computed(() => storeUserPhoto.value || localStorage.getItem('photo'));
+const role = computed(() => (storeUserRole.value || localStorage.getItem('role') || 'user').trim().toLowerCase());
 
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
@@ -130,15 +144,15 @@ const handleLogout = async () => {
 };
 
 const navigationLinks = computed(() => {
-  const role = (userRole.value || '').trim().toLowerCase();
+  const currentRole = role.value;
   
   const base = [
     { to: '/dashboard', label: 'Ringkasan', icon: 'fas fa-th-large' }
   ];
 
-  if (role === 'admin') {
+  if (currentRole === 'admin') {
     base.push({ to: '/dashboard/admin', label: 'CMS Admin', icon: 'fas fa-user-shield' });
-  } else if (role === 'field_worker' || role === 'petugas') {
+  } else if (currentRole === 'field_worker' || currentRole === 'petugas') {
     base.push({ to: '/dashboard/field', label: 'Panel Staff', icon: 'fas fa-briefcase' });
   } else {
     base.push({ to: '/dashboard/user', label: 'Donasi & Riwayat', icon: 'fas fa-heart' });
