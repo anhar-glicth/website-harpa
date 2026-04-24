@@ -167,94 +167,173 @@
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Zakat Pending</p>
                 <p class="text-3xl font-black text-green-600 tracking-tighter">{{ pendingZakats.length }}</p>
               </div>
+
+              <!-- Recent Activities -->
+              <div class="col-span-1 sm:col-span-2 lg:col-span-3 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mt-6">
+                <div class="px-8 py-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+                  <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">Aktivitas Terbaru</h3>
+                  <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase">Live Update</span>
+                </div>
+                <div class="divide-y divide-gray-50">
+                  <div v-for="(act, idx) in stats.recent_activities" :key="idx" class="px-8 py-5 flex items-center justify-between hover:bg-gray-50/30 transition-colors">
+                    <div class="flex items-center gap-5">
+                      <div :class="['w-10 h-10 rounded-xl flex items-center justify-center text-xs', act.type === 'Donasi' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600']">
+                        <i :class="act.type === 'Donasi' ? 'fas fa-hand-holding-usd' : 'fas fa-bullhorn'"></i>
+                      </div>
+                      <div>
+                        <p class="text-[12px] font-black text-gray-900 leading-tight">{{ act.name }}</p>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{{ act.type }} • {{ act.detail }}</p>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-[10px] font-black text-gray-900">{{ formatDate(act.date) }}</p>
+                      <p class="text-[9px] text-gray-400 font-medium">{{ formatTime(act.date) }}</p>
+                    </div>
+                  </div>
+                  <div v-if="!stats.recent_activities?.length" class="py-12 text-center text-gray-400 text-[10px] font-black uppercase tracking-widest">Belum ada aktivitas hari ini</div>
+                </div>
+              </div>
             </div>
 
-            <!-- Generic Module Renderer -->
+            <!-- Generic Module Renderer (Table or Dashboard) -->
             <template v-if="managementTabs.some(t => t.id === currentAdminTab) || distributionTabs.some(t => t.id === currentAdminTab) || transactionTabs.some(t => t.id === currentAdminTab)">
               <div v-if="activeModule" class="space-y-6">
-                <!-- Module Header -->
-                <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col md:flex-row justify-between items-center gap-5">
-                  <div class="flex items-center gap-5">
-                    <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl shadow-sm"><i :class="activeModule.icon"></i></div>
-                    <div>
-                      <h2 class="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">{{ activeModule.title }}</h2>
-                      <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{{ activeModule.description }}</p>
+                
+                <!-- Dashboard View -->
+                <div v-if="activeModule.isDashboard" class="space-y-8">
+                  <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col md:flex-row justify-between items-center gap-5">
+                    <div class="flex items-center gap-5">
+                      <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl shadow-sm"><i :class="activeModule.icon"></i></div>
+                      <div>
+                        <h2 class="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">{{ activeModule.title }}</h2>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{{ activeModule.description }}</p>
+                      </div>
+                    </div>
+                    <div class="flex gap-3">
+                       <button @click="exportToCSV" class="px-5 py-3 bg-gray-50 text-gray-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:text-green-600 transition-all">Export CSV</button>
+                       <button class="px-5 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-gray-200">Filter Periode</button>
                     </div>
                   </div>
-                  <button @click="moduleFormData = {}; showModuleModal = true" class="flex items-center gap-3 bg-green-600 text-white px-7 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100 whitespace-nowrap">
-                    <i class="fas fa-plus text-[8px]"></i> Tambah {{ activeModule.entity }}
-                  </button>
+
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 h-[400px] flex flex-col items-center justify-center relative overflow-hidden">
+                       <div class="absolute inset-0 bg-gradient-to-br from-green-50/20 to-transparent pointer-events-none"></div>
+                       <i :class="activeModule.icon" class="text-6xl text-green-100 mb-6"></i>
+                       <p class="text-lg font-black text-gray-900 tracking-tight">Visualisasi Data {{ activeModule.title }}</p>
+                       <p class="text-xs text-gray-400 font-medium">Grafik analitik akan muncul di sini setelah sinkronisasi data selesai.</p>
+                       
+                       <!-- Mock Chart Bars -->
+                       <div class="flex gap-4 items-end mt-10 h-32">
+                          <div v-for="i in 8" :key="i" :style="{ height: (20 + Math.random() * 80) + '%' }" class="w-6 bg-green-500/20 rounded-t-lg hover:bg-green-500 transition-all duration-500"></div>
+                       </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                       <div v-for="(kpi, i) in moduleStats.kpis" :key="i" class="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6">
+                          <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">{{ kpi.label }}</p>
+                          <p class="text-2xl font-black text-gray-900 tracking-tighter">{{ kpi.value }}</p>
+                          <div class="w-full h-1.5 bg-gray-50 rounded-full mt-3">
+                             <div class="h-full bg-green-600 rounded-full transition-all duration-1000" :style="{ width: kpi.percentage + '%' }"></div>
+                          </div>
+                       </div>
+                    </div>
+                  </div>
                 </div>
 
-                <!-- Stats Row -->
-                <div v-if="activeModule.stats" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div v-for="s in activeModule.stats" :key="s.label" class="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm p-5 flex items-center gap-4">
-                    <div :class="['w-10 h-10 rounded-xl flex items-center justify-center text-sm', s.color]">
-                      <i :class="s.icon"></i>
+                <!-- Table View -->
+                <div v-else class="space-y-6">
+                  <!-- Module Header -->
+                  <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col md:flex-row justify-between items-center gap-5">
+                    <div class="flex items-center gap-5">
+                      <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl shadow-sm"><i :class="activeModule.icon"></i></div>
+                      <div>
+                        <h2 class="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">{{ activeModule.title }}</h2>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{{ activeModule.description }}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ s.label }}</p>
-                      <p class="text-xl font-black tracking-tighter text-gray-900">{{ s.value }}</p>
+                    <div class="flex items-center gap-3">
+                      <button @click="exportToCSV" class="w-12 h-12 bg-gray-50 text-gray-400 rounded-2xl hover:text-green-600 transition-all flex items-center justify-center shadow-sm" title="Export CSV"><i class="fas fa-file-csv"></i></button>
+                      <button @click="moduleFormData = {}; showModuleModal = true" class="flex items-center gap-3 bg-green-600 text-white px-7 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100 whitespace-nowrap">
+                        <i class="fas fa-plus text-[8px]"></i> Tambah {{ activeModule.entity }}
+                      </button>
                     </div>
                   </div>
-                </div>
 
-                <!-- Table -->
-                <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-                  <div class="p-6 border-b border-gray-50 flex flex-col sm:row justify-between items-center gap-4 bg-gradient-to-r from-green-600 to-emerald-600">
-                    <div class="relative w-full sm:w-72">
-                      <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-xs"></i>
-                      <input v-model="moduleSearchQuery" :placeholder="`Cari ${activeModule.entity}...`"
-                        class="w-full pl-10 pr-4 py-3 bg-white/20 rounded-2xl text-xs font-semibold text-white placeholder-white/60 outline-none focus:bg-white/30 border-none transition-all" />
+                  <!-- Stats Row -->
+                  <div v-if="activeModule.stats" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div v-for="s in activeModule.stats" :key="s.label" class="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+                      <div :class="['w-10 h-10 rounded-xl flex items-center justify-center text-sm', s.color]">
+                        <i :class="s.icon"></i>
+                      </div>
+                      <div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ s.label }}</p>
+                        <p class="text-xl font-black tracking-tighter text-gray-900">{{ s.value }}</p>
+                      </div>
                     </div>
-                    <span class="text-[9px] font-black text-white/70 uppercase tracking-widest whitespace-nowrap">{{ filteredModuleData.length }} Data</span>
                   </div>
-                  <div class="overflow-x-auto">
-                    <table class="w-full">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th class="px-6 py-4 text-left text-[9px] font-black text-gray-400 uppercase tracking-widest">#</th>
-                          <th v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4 text-left text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ col.label }}</th>
-                          <th class="px-6 py-4 text-center text-[9px] font-black text-gray-400 uppercase tracking-widest">Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody class="divide-y divide-gray-50">
-                        <tr v-for="(row, idx) in filteredModuleData.slice(0, 10)" :key="idx" class="hover:bg-green-50/20 transition-colors group">
-                          <td class="px-6 py-4 text-[10px] font-black text-gray-300">{{ String(idx+1).padStart(2,'0') }}</td>
-                          <td v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4">
-                            <span v-if="col.type==='badge'" :class="['inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', col.badgeClass?.(row[col.key]) || 'bg-green-50 text-green-600']">{{ row[col.key]||'-' }}</span>
-                            <span v-else-if="col.type==='currency'" class="text-[11px] font-black text-green-600">Rp {{ Number(row[col.key]||0).toLocaleString('id-ID') }}</span>
-                            <span v-else class="text-[11px] font-semibold text-gray-700">{{ row[col.key]||'-' }}</span>
-                          </td>
-                          <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button @click="editModuleData(row, idx)" class="w-8 h-8 bg-green-50 text-green-600 rounded-xl hover:bg-green-600 hover:text-white transition-all flex items-center justify-center"><i class="fas fa-pen text-[9px]"></i></button>
-                              <button @click="handleDeleteModuleData(row.id)" class="w-8 h-8 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center justify-center"><i class="fas fa-trash text-[9px]"></i></button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr v-if="filteredModuleData.length === 0">
-                          <td :colspan="activeModule.columns.length+2" class="py-20 text-center">
-                            <div class="flex flex-col items-center gap-3">
-                              <div class="w-16 h-16 bg-gray-50 text-gray-200 rounded-3xl flex items-center justify-center text-3xl"><i :class="activeModule.icon"></i></div>
-                              <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Belum ada data — klik Tambah untuk memulai</p>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="px-6 py-4 border-t border-gray-50 flex justify-between items-center">
-                    <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest">1–{{ Math.min(10, filteredModuleData.length) }} dari {{ filteredModuleData.length }}</p>
-                    <div class="flex gap-2">
-                      <button class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 text-[10px] font-black hover:bg-green-600 hover:text-white transition-all">‹</button>
-                      <button class="w-8 h-8 rounded-xl bg-green-600 text-white text-[10px] font-black shadow-lg shadow-green-100">1</button>
-                      <button class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 text-[10px] font-black hover:bg-green-600 hover:text-white transition-all">›</button>
+
+                  <!-- Table -->
+                  <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-50 flex flex-col sm:row justify-between items-center gap-4 bg-gradient-to-r from-green-600 to-emerald-600">
+                      <div class="relative w-full sm:w-72">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-xs"></i>
+                        <input v-model="moduleSearchQuery" :placeholder="`Cari ${activeModule.entity}...`"
+                          class="w-full pl-10 pr-4 py-3 bg-white/20 rounded-2xl text-xs font-semibold text-white placeholder-white/60 outline-none focus:bg-white/30 border-none transition-all" />
+                      </div>
+                      <span class="text-[9px] font-black text-white/70 uppercase tracking-widest whitespace-nowrap">{{ filteredModuleData.length }} Data</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                      <table class="w-full">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th class="px-6 py-4 text-left text-[9px] font-black text-gray-400 uppercase tracking-widest">#</th>
+                            <th v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4 text-left text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ col.label }}</th>
+                            <th class="px-6 py-4 text-center text-[9px] font-black text-gray-400 uppercase tracking-widest">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+                          <tr v-for="(row, idx) in filteredModuleData.slice(0, 10)" :key="idx" class="hover:bg-green-50/20 transition-colors group">
+                            <td class="px-6 py-4 text-[10px] font-black text-gray-300">{{ String(idx+1).padStart(2,'0') }}</td>
+                            <td v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4">
+                              <span v-if="col.type==='badge'" :class="['inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', col.badgeClass?.(row[col.key]) || 'bg-green-50 text-green-600']">{{ row[col.key]||'-' }}</span>
+                              <span v-else-if="col.type==='currency'" class="text-[11px] font-black text-green-600">Rp {{ Number(row[col.key]||0).toLocaleString('id-ID') }}</span>
+                              <span v-else class="text-[11px] font-semibold text-gray-700">{{ row[col.key]||'-' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                              <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <template v-if="activeModule.actions">
+                                  <button v-for="action in activeModule.actions" :key="action.icon" v-show="!action.show || action.show(row)" @click="action.click(row) === 'printReceipt' ? printReceipt(row) : null" :class="['w-8 h-8 rounded-xl hover:text-white transition-all flex items-center justify-center', action.class]">
+                                    <i :class="action.icon" class="text-[9px]"></i>
+                                  </button>
+                                </template>
+                                <button @click="editModuleData(row, idx)" class="w-8 h-8 bg-green-50 text-green-600 rounded-xl hover:bg-green-600 hover:text-white transition-all flex items-center justify-center"><i class="fas fa-pen text-[9px]"></i></button>
+                                <button @click="handleDeleteModuleData(row)" class="w-8 h-8 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center justify-center"><i class="fas fa-trash text-[9px]"></i></button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr v-if="filteredModuleData.length === 0">
+                            <td :colspan="activeModule.columns.length+2" class="py-20 text-center">
+                              <div class="flex flex-col items-center gap-3">
+                                <div class="w-16 h-16 bg-gray-50 text-gray-200 rounded-3xl flex items-center justify-center text-3xl"><i :class="activeModule.icon"></i></div>
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Belum ada data — klik Tambah untuk memulai</p>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-50 flex justify-between items-center">
+                      <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest">1–{{ Math.min(10, filteredModuleData.length) }} dari {{ filteredModuleData.length }}</p>
+                      <div class="flex gap-2">
+                        <button class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 text-[10px] font-black hover:bg-green-600 hover:text-white transition-all">‹</button>
+                        <button class="w-8 h-8 rounded-xl bg-green-600 text-white text-[10px] font-black shadow-lg shadow-green-100">1</button>
+                        <button class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 text-[10px] font-black hover:bg-green-600 hover:text-white transition-all">›</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </template>
+            </template>emplate>
 
             <!-- Module Add Modal -->
             <div v-if="showModuleModal && activeModule" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
@@ -636,12 +715,12 @@
 
     <!-- Modal: Add Staff/User (Existing) -->
     <div v-if="showAddModal" class="fixed inset-0 bg-gray-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
-       <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300">
-         <div class="p-8 bg-green-600 text-white flex justify-between items-center">
+       <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in duration-300">
+         <div class="p-8 bg-green-600 text-white flex justify-between items-center shrink-0">
            <h3 class="text-xl font-black uppercase tracking-tighter italic">Pendaftaran <span class="text-green-200">Personel</span></h3>
            <button @click="showAddModal = false" class="text-white/60 hover:text-white">✕</button>
          </div>
-         <form @submit.prevent="handleAddUser" class="p-8 space-y-5">
+         <form @submit.prevent="handleAddUser" class="p-8 space-y-5 overflow-y-auto custom-scrollbar">
            <input v-model="formData.name" placeholder="Nama Lengkap" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
            <input v-model="formData.email" type="email" placeholder="Alamat Email" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
            <input v-model="formData.password" type="password" placeholder="Kata Sandi Akses" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
@@ -650,35 +729,35 @@
              <option value="admin">Admin</option>
              <option value="user">User</option>
            </select>
-           <button type="submit" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-green-700">Aktifkan Akun</button>
+           <button type="submit" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-100 active:scale-95 transition-all">Aktifkan Akun</button>
          </form>
        </div>
     </div>
 
     <!-- Generic Module Modal -->
     <div v-if="showModuleModal && activeModule" class="fixed inset-0 bg-gray-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
-       <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300">
-         <div class="p-8 bg-gradient-to-br from-green-600 to-emerald-700 text-white flex justify-between items-center">
+       <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in duration-300">
+         <div class="p-8 bg-gradient-to-br from-green-600 to-emerald-700 text-white flex justify-between items-center shrink-0">
            <div>
              <h3 class="text-xl font-black uppercase tracking-tighter italic">Form <span class="text-green-200">{{ activeModule.entity }}</span></h3>
              <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mt-1">Input Data Baru</p>
            </div>
            <button @click="showModuleModal = false" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-colors">✕</button>
          </div>
-         <div class="p-8 space-y-5 max-h-[60vh] overflow-y-auto custom-scrollbar">
+         <div class="p-8 space-y-5 overflow-y-auto custom-scrollbar">
             <div v-for="field in activeModule.fields" :key="field.key" class="space-y-2">
               <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">{{ field.label }}</label>
               
               <select v-if="field.type === 'select'" v-model="moduleFormData[field.key]" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm">
                 <option v-for="opt in field.options" :key="opt" :value="opt">{{ opt }}</option>
               </select>
-
+ 
               <textarea v-else-if="field.type === 'textarea'" v-model="moduleFormData[field.key]" :placeholder="field.label" rows="3" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm"></textarea>
-
+ 
               <input v-else :type="field.type || 'text'" v-model="moduleFormData[field.key]" :placeholder="field.label" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" />
             </div>
          </div>
-         <div class="p-8 pt-4">
+         <div class="p-8 pt-4 shrink-0">
            <button @click="handleSaveModuleData" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-100 active:scale-95 transition-all">
              {{ moduleFormData._index !== undefined ? 'Update' : 'Simpan' }} Data {{ activeModule.entity }}
            </button>
@@ -688,38 +767,38 @@
 
     <!-- Modal: Assign Task -->
     <div v-if="showAssignModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
-       <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300">
-         <div class="p-8 bg-gradient-to-br from-slate-900 to-slate-800 text-white flex justify-between items-center">
-           <div>
-             <h3 class="text-xl font-black uppercase tracking-tighter italic">Beri <span class="text-green-400">Tugas</span></h3>
-             <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mt-1">PIC: {{ assignTaskForm.worker_name }}</p>
-           </div>
-           <button @click="showAssignModal = false" class="text-white/60 hover:text-white">✕</button>
-         </div>
-         <form @submit.prevent="handleAssignTask" class="p-8 space-y-5">
-           <div v-if="!assignTaskForm.user_id" class="space-y-2">
-             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Pilih Pegawai</label>
-             <select v-model="assignTaskForm.user_id" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required>
-               <option v-for="w in workerPerformance" :key="w.id" :value="w.id">{{ w.name }} ({{ w.role }})</option>
-             </select>
-           </div>
-           <div class="space-y-2">
-             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Judul Tugas</label>
-             <input v-model="assignTaskForm.task" placeholder="Contoh: Distribusi Sembako" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
-           </div>
-           <div class="space-y-2">
-             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Deskripsi Detail</label>
-             <textarea v-model="assignTaskForm.description" rows="3" placeholder="Jelaskan detail tugas di sini..." class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm resize-none"></textarea>
-           </div>
-           <div class="space-y-2">
-             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Tenggat Waktu</label>
-             <input v-model="assignTaskForm.deadline" type="datetime-local" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
-           </div>
-           <button type="submit" :disabled="assigning" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-100 active:scale-95 transition-all">
-             {{ assigning ? 'Mengirim...' : 'Kirim Tugas Sekarang' }}
-           </button>
-         </form>
-       </div>
+        <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in duration-300">
+          <div class="p-8 bg-gradient-to-br from-slate-900 to-slate-800 text-white flex justify-between items-center shrink-0">
+            <div>
+              <h3 class="text-xl font-black uppercase tracking-tighter italic">Beri <span class="text-green-400">Tugas</span></h3>
+              <p class="text-[9px] font-bold text-white/60 uppercase tracking-widest mt-1">PIC: {{ assignTaskForm.worker_name }}</p>
+            </div>
+            <button @click="showAssignModal = false" class="text-white/60 hover:text-white">✕</button>
+          </div>
+          <form @submit.prevent="handleAssignTask" class="p-8 space-y-5 overflow-y-auto custom-scrollbar">
+            <div v-if="!assignTaskForm.user_id" class="space-y-2">
+              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Pilih Pegawai</label>
+              <select v-model="assignTaskForm.user_id" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required>
+                <option v-for="w in workerPerformance" :key="w.id" :value="w.id">{{ w.name }} ({{ w.role }})</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Judul Tugas</label>
+              <input v-model="assignTaskForm.task" placeholder="Contoh: Distribusi Sembako" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
+            </div>
+            <div class="space-y-2">
+              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Deskripsi Detail</label>
+              <textarea v-model="assignTaskForm.description" rows="3" placeholder="Jelaskan detail tugas di sini..." class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm resize-none"></textarea>
+            </div>
+            <div class="space-y-2">
+              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Tenggat Waktu</label>
+              <input v-model="assignTaskForm.deadline" type="datetime-local" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
+            </div>
+            <button type="submit" :disabled="assigning" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-100 active:scale-95 transition-all">
+              {{ assigning ? 'Mengirim...' : 'Kirim Tugas Sekarang' }}
+            </button>
+          </form>
+        </div>
     </div>
 
     <!-- Modal: View Attachment (Image/Proof) -->
@@ -743,12 +822,13 @@ const sidebarTabs = ref([
   { id: 'users', label: 'Manajemen User V2', icon: 'fas fa-users-cog' },
   { id: 'verify_zakat', label: 'Verifikasi Zakat V2', icon: 'fas fa-hand-holding-heart' },
   { id: 'settings', label: 'CMS Tampilan V2', icon: 'fas fa-paint-roller' },
+  { id: 'news_mgt', label: 'Manajemen Warta V2', icon: 'fas fa-newspaper' },
   { id: 'verify_campaign', label: 'Approval Kampanye V2', icon: 'fas fa-check-double' },
   { id: 'verify_donation', label: 'Verifikasi Donasi V2', icon: 'fas fa-donate' },
   { id: 'monitoring', label: 'Monitoring & Tugas V2', icon: 'fas fa-tasks' },
 ]);
 
-const currentAdminTab = ref('monitoring');
+const currentAdminTab = ref('dashboard');
 const managementTabs = [
   { id: 'profile', label: 'Profil Lembaga', icon: 'fas fa-building' },
   { id: 'users_mgt', label: 'Users', icon: 'fas fa-user-friends' },
@@ -789,12 +869,13 @@ const isTransactionManagementOpen = ref(true);
 const showModuleModal = ref(false);
 const moduleSearchQuery = ref('');
 const moduleFormData = ref({});
-const moduleData = ref({});
+const moduleData = ref([]);
+const moduleStats = ref({ kpis: [] });
 
 // Module Configs — drives the generic CRUD renderer
 
 const moduleConfigs = {
-  profile:     { title: 'Profil Lembaga', entity: 'Profil', description: 'Data resmi & identitas lembaga', icon: 'fas fa-building',
+  profile:     { title: 'Profil Lembaga', entity: 'Profil', description: 'Data resmi & identitas lembaga', icon: 'fas fa-building', pk: 'setting_key',
     columns: [{ key: 'setting_key', label: 'Field' }, { key: 'setting_value', label: 'Nilai' }],
     fields: [{ key: 'setting_key', label: 'Nama Field' }, { key: 'setting_value', label: 'Nilai', type: 'textarea' }] },
 
@@ -820,7 +901,7 @@ const moduleConfigs = {
 
   programs:    { title: 'Program (Kampanye)', entity: 'Program', description: 'Program sosial & kemanusiaan aktif', icon: 'fas fa-project-diagram',
     columns: [{ key: 'title', label: 'Nama Program' }, { key: 'category', label: 'Kategori' }, { key: 'target_amount', label: 'Target Dana', type: 'currency' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
-    fields: [{ key: 'title', label: 'Nama Program' }, { key: 'category', label: 'Kategori' }, { key: 'description', label: 'Deskripsi', type: 'textarea' }, { key: 'target_amount', label: 'Target Dana', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] }] },
+    fields: [{ key: 'title', label: 'Nama Program' }, { key: 'category', label: 'Kategori', type: 'select', options: ['Kemanusiaan', 'Pendidikan', 'Kesehatan', 'Dakwah', 'Umum'] }, { key: 'description', label: 'Deskripsi', type: 'textarea' }, { key: 'target_amount', label: 'Target Dana', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] }] },
 
   payment_via: { title: 'Via Bayar', entity: 'Metode Bayar', description: 'Metode pembayaran yang diterima', icon: 'fas fa-credit-card',
     columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'fee', label: 'Biaya Admin (%)' }],
@@ -864,10 +945,11 @@ const moduleConfigs = {
 
   transactions: { title: 'List Transaksi', entity: 'Transaksi', description: 'Riwayat seluruh transaksi donasi', icon: 'fas fa-exchange-alt',
     columns: [{ key: 'donor_name', label: 'Donatur' }, { key: 'amount', label: 'Jumlah', type: 'currency' }, { key: 'payment_status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Success' ? 'bg-green-50 text-green-600' : v === 'Pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
+    actions: [{ icon: 'fas fa-print', class: 'bg-blue-50 text-blue-600 hover:bg-blue-600', click: (row) => 'printReceipt', show: (row) => row.payment_status === 'Success' }],
     fields: [] },
 
   potential_donors: { title: 'List Calon Donatur', entity: 'Calon Donatur', description: 'Prospek tervalidasi siap dikonversi', icon: 'fas fa-user-plus',
-    columns: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'status', label: 'Status', type: 'badge' }],
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Konversi' ? 'bg-green-50 text-green-600' : v === 'Lost' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600' }],
     fields: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'status', label: 'Status', type: 'select', options: ['Prospek', 'Calon Donatur', 'Konversi', 'Lost'] }] },
 
   distribution_dashboard: { title: 'Dashboard Penyaluran', entity: 'Laporan', description: 'Statistik & visualisasi distribusi bantuan', icon: 'fas fa-chart-line', isDashboard: true, fields: [] },
@@ -876,6 +958,10 @@ const moduleConfigs = {
   prospect_dashboard: { title: 'Dashboard Prospek', entity: 'Laporan', description: 'Analitik pipeline & konversi prospek', icon: 'fas fa-funnel-dollar', isDashboard: true, fields: [] },
   target_vs_achievement: { title: 'Target vs Capaian', entity: 'Laporan', description: 'Perbandingan target & realisasi per periode', icon: 'fas fa-tasks', isDashboard: true, fields: [] },
   rfm_dashboard: { title: 'Dashboard RFM', entity: 'Laporan', description: 'Analitik Recency, Frequency, Monetary donatur', icon: 'fas fa-brain', isDashboard: true, fields: [] },
+  
+  news_mgt: { title: 'Manajemen Warta', entity: 'Berita', description: 'Publikasi artikel dan laporan lapangan', icon: 'fas fa-newspaper',
+    columns: [{ key: 'title', label: 'Judul Berita' }, { key: 'created_at', label: 'Tanggal', type: 'date' }],
+    fields: [{ key: 'title', label: 'Judul Berita' }, { key: 'content', label: 'Isi Berita', type: 'textarea' }, { key: 'image', label: 'URL Gambar', type: 'text' }] },
 };
 
 const activeModule = computed(() => moduleConfigs[currentAdminTab.value] || null);
@@ -922,14 +1008,20 @@ const noteData = reactive({ type: '', id: null, status: '', note: '' });
 
 const handleSaveModuleData = async () => {
   const tab = currentAdminTab.value;
-  const payload = { ...moduleFormData.value };
-  const id = payload.id;
-  delete payload._index;
-  delete payload.id;
+  const config = activeModule.value;
+  const pkField = config?.pk || 'id';
   
+  const payload = { ...moduleFormData.value };
+  const pkValue = payload[pkField];
+  const isEditing = payload._index !== undefined;
+
+  delete payload._index;
+  // We keep the PK in the payload if it's not 'id' or if it's being created
+  // but for 'id' tables, we usually don't send id in POST
+
   try {
-    if (id) {
-      await api.put(`/admin/master/${tab}/${id}`, payload);
+    if (isEditing && pkValue) {
+      await api.put(`/admin/master/${tab}/${pkValue}`, payload);
     } else {
       await api.post(`/admin/master/${tab}`, payload);
     }
@@ -946,10 +1038,44 @@ const editModuleData = (row, index) => {
   showModuleModal.value = true;
 };
 
-const handleDeleteModuleData = async (id) => {
+const exportToCSV = () => {
+  const tab = currentAdminTab.value;
+  const config = moduleConfigs[tab];
+  const data = moduleData.value[tab] || [];
+  
+  if (data.length === 0) {
+    alert('Tidak ada data untuk di-export.');
+    return;
+  }
+
+  const headers = config.columns.map(c => c.label).join(',');
+  const rows = data.map(row => 
+    config.columns.map(c => {
+      let val = row[c.key] || '';
+      // Escape commas and quotes for CSV
+      if (typeof val === 'string') val = `"${val.replace(/"/g, '""')}"`;
+      return val;
+    }).join(',')
+  ).join('\n');
+
+  const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows;
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", `Laporan_${tab}_${new Date().toISOString().split('T')[0]}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const handleDeleteModuleData = async (row) => {
+  const config = activeModule.value;
+  const pkField = config?.pk || 'id';
+  const pkValue = row[pkField];
+
   if (confirm(`Yakin ingin menghapus data ini?`)) {
     try {
-      await api.delete(`/admin/master/${currentAdminTab.value}/${id}`);
+      await api.delete(`/admin/master/${currentAdminTab.value}/${pkValue}`);
       fetchModuleData();
     } catch (e) {
       alert('Gagal menghapus data.');
@@ -957,9 +1083,73 @@ const handleDeleteModuleData = async (id) => {
   }
 };
 
+const printReceipt = (row) => {
+  const receiptHtml = `
+    <html>
+    <head>
+      <title>Kwitansi Donasi - ${row.id}</title>
+      <style>
+        body { font-family: 'Inter', sans-serif; padding: 40px; color: #334155; }
+        .receipt { border: 2px solid #f1f5f9; padding: 40px; border-radius: 24px; max-width: 600px; margin: auto; position: relative; }
+        .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; }
+        .logo { font-size: 24px; font-weight: 900; font-style: italic; color: #16a34a; text-transform: uppercase; }
+        .title { font-size: 18px; font-weight: 800; margin-top: 10px; color: #1e293b; }
+        .item { display: flex; justify-between: space-between; margin: 15px 0; font-size: 14px; }
+        .label { color: #94a3b8; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; }
+        .value { color: #1e293b; font-weight: 700; text-align: right; flex-grow: 1; }
+        .amount { font-size: 24px; color: #16a34a; font-weight: 900; margin-top: 30px; text-align: center; background: #f0fdf4; padding: 15px; border-radius: 12px; }
+        .footer { text-align: center; font-size: 10px; color: #94a3b8; margin-top: 40px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
+        @media print { .no-print { display: none; } }
+      </style>
+    </head>
+    <body>
+      <div class="receipt">
+        <div class="header">
+          <div class="logo">HUMANITY<span style="color:#334155">CARE</span></div>
+          <div class="title">KWITANSI DONASI RESMI</div>
+        </div>
+        <div class="item"><span class="label">No. Transaksi</span> <span class="value">#TXN-${row.id}-${new Date().getFullYear()}</span></div>
+        <div class="item"><span class="label">Nama Donatur</span> <span class="value">${row.donor_name}</span></div>
+        <div class="item"><span class="label">Tanggal</span> <span class="value">${new Date(row.donation_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}</span></div>
+        <div class="item"><span class="label">Metode Bayar</span> <span class="value">${row.payment_method || 'Transfer Bank'}</span></div>
+        <div class="item"><span class="label">Status</span> <span class="value" style="color: #16a34a">TERVERIFIKASI</span></div>
+        
+        <div class="amount">Rp ${Number(row.amount).toLocaleString('id-ID')}</div>
+        
+        <div class="footer">
+          <p>Terima kasih atas bantuan Anda. Semoga menjadi amal jariyah yang tak terputus.</p>
+          <p style="font-weight: 800; color: #1e293b; margin-top: 10px;">HumanityCare - Digital Donation System</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top: 20px;" class="no-print">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #16a34a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 800;">CETAK SEKARANG</button>
+      </div>
+    </body>
+    </html>
+  `;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(receiptHtml);
+  printWindow.document.close();
+};
+
+const fetchModuleStats = async () => {
+  try {
+    const { data } = await api.get(`/admin/master/stats/${currentAdminTab.value}`);
+    moduleStats.value = data;
+  } catch (e) {
+    console.error('Gagal mengambil statistik modul');
+  }
+};
+
 const fetchModuleData = async () => {
   const tab = currentAdminTab.value;
-  if (!moduleConfigs[tab] || moduleConfigs[tab].isDashboard) return;
+  const config = moduleConfigs[tab];
+  if (!config) return;
+  
+  if (config.isDashboard) {
+    await fetchModuleStats();
+    return;
+  }
   
   try {
     const res = await api.get(`/admin/master/${tab}`);

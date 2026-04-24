@@ -181,6 +181,50 @@
         </div>
       </div>
     </section>
+
+    <!-- Prayer Wall (NEW) -->
+    <section class="bg-slate-900 py-24 md:py-32 overflow-hidden relative">
+      <div class="absolute inset-0 opacity-10 pointer-events-none">
+         <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-green-600 via-transparent to-transparent"></div>
+      </div>
+      
+      <div class="max-w-7xl mx-auto px-4 relative z-10">
+         <div class="text-center space-y-6 mb-20">
+            <div class="inline-flex py-1 px-4 bg-white/5 rounded-full text-white/40 text-[9px] font-black uppercase tracking-widest border border-white/5 italic">Community Prayers</div>
+            <h2 class="text-3xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none">
+               Tembok <span class="text-green-500">Doa</span> <br> <span class="text-white/20">Harapan & Berkah</span>
+            </h2>
+         </div>
+
+         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div 
+              v-for="p in prayers" :key="p.id" 
+              class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6 flex flex-col justify-between hover:bg-white/10 transition duration-500 group"
+            >
+               <div class="space-y-4">
+                  <div class="flex items-center gap-3">
+                     <div class="w-8 h-8 rounded-full bg-green-600/20 text-green-500 flex items-center justify-center text-[10px] font-black">
+                        {{ p.name?.[0]?.toUpperCase() || 'H' }}
+                     </div>
+                     <p class="text-[10px] font-black text-white/40 uppercase tracking-widest">{{ p.is_anonymous ? 'Hamba Allah' : p.name }}</p>
+                  </div>
+                  <p class="text-sm md:text-base font-bold text-white/80 leading-relaxed italic line-clamp-3">"{{ p.message }}"</p>
+               </div>
+               
+               <div class="flex justify-between items-center pt-4 border-t border-white/5">
+                  <button 
+                    @click="handleAamiin(p.id)"
+                    class="flex items-center gap-2 px-5 py-2.5 bg-green-600/10 text-green-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-green-600/20 hover:bg-green-600 hover:text-white transition active:scale-95 shadow-lg shadow-green-600/5"
+                  >
+                    <i class="fas fa-praying-hands text-[10px]"></i>
+                    Aamiin <span class="opacity-50">({{ p.aamiin_count || 0 }})</span>
+                  </button>
+                  <span class="text-[8px] text-white/20 font-black uppercase tracking-widest">{{ formatDate(p.created_at) }}</span>
+               </div>
+            </div>
+         </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -196,6 +240,7 @@ const router = useRouter();
 const { isAuthenticated, openLogin } = useAuth();
 const campaigns = ref([]);
 const siteSettings = ref({});
+const prayers = ref([]);
 const stats = ref({
   totalDonation: 0,
   campaignsSuccess: 0,
@@ -225,10 +270,11 @@ const fetchData = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const [campaignRes, statsRes, settingsRes] = await Promise.all([
+    const [campaignRes, statsRes, settingsRes, prayersRes] = await Promise.all([
       api.get('/campaigns'),
       api.get('/stats'),
-      api.get('/settings')
+      api.get('/settings'),
+      api.get('/prayers')
     ]);
     
     campaigns.value = campaignRes.data.map(c => ({
@@ -239,6 +285,7 @@ const fetchData = async () => {
 
     stats.value = statsRes.data;
     siteSettings.value = settingsRes.data;
+    prayers.value = prayersRes.data;
   } catch (err) {
     error.value = "Gagal mengambil data dari server. Pastikan backend menyala.";
     console.error(err);
@@ -278,7 +325,21 @@ const handleDonate = (campaign) => {
   router.push(`/campaigns/${campaign.id}`);
 };
 
+const handleAamiin = async (id) => {
+   try {
+      await api.post(`/prayers/${id}/aamiin`);
+      // Update local state
+      const prayer = prayers.value.find(p => p.id === id);
+      if (prayer) prayer.aamiin_count++;
+   } catch (e) {
+      console.error(e);
+   }
+};
 
+const formatDate = (dateStr) => {
+   if (!dateStr) return '';
+   return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+};
 
 onMounted(fetchData);
 </script>

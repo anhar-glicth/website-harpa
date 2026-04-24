@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
         });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET || 'supersecret', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
             return res.status(403).json({ 
                 status: 'error',
@@ -37,7 +37,7 @@ auth.optional = (req, res, next) => {
 
     if (!token) return next();
 
-    jwt.verify(token, process.env.JWT_SECRET || 'supersecret', (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (!err) req.user = user;
         next();
     });

@@ -8,15 +8,24 @@ const bcrypt = require('bcryptjs');
 exports.getStats = async (req, res) => {
     try {
         const [[donations]] = await db.query('SELECT SUM(amount) as total FROM donations WHERE payment_status = "Success"');
-        const [[donors]] = await db.query('SELECT COUNT(DISTINCT user_id) as total FROM donations');
+        const [[donors]] = await db.query('SELECT COUNT(DISTINCT donor_name) as total FROM donations');
         const [[campaigns]] = await db.query('SELECT COUNT(*) as total FROM campaigns');
         const [[successCampaigns]] = await db.query('SELECT COUNT(*) as total FROM campaigns WHERE current_amount >= target_amount');
+
+        // Fetch Recent Activities
+        const [recentDonations] = await db.query('SELECT donor_name as name, "Donasi" as type, amount as detail, donation_date as date FROM donations ORDER BY donation_date DESC LIMIT 3');
+        const [recentCampaigns] = await db.query('SELECT title as name, "Kampanye" as type, category as detail, created_at as date FROM campaigns ORDER BY created_at DESC LIMIT 2');
+        
+        const recent_activities = [...recentDonations, ...recentCampaigns]
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice(0, 5);
 
         res.json({
             totalDonations: donations.total || 0,
             totalDonors: donors.total || 0,
             activeCampaigns: campaigns.total || 0,
-            successCampaigns: successCampaigns.total || 0
+            successCampaigns: successCampaigns.total || 0,
+            recent_activities
         });
     } catch (error) {
         console.error('Error getStats:', error.message);

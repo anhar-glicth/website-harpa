@@ -1,7 +1,3 @@
-/**
- * Entry Point Utama - Website Donasi Kemanusiaan
- * PERBAIKAN: Menyeimbangkan rute API dan memastikan limit payload cukup untuk foto Base64.
- */
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
