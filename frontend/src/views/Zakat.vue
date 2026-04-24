@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen bg-slate-50 pt-24 pb-20">
+  <div class="min-h-screen bg-transparent pt-24 pb-20 text-slate-900">
     <div class="max-w-7xl mx-auto px-4">
       
       <!-- Header -->
       <div class="text-center space-y-4 mb-20 animate-in fade-in slide-in-from-top-4 duration-700">
-        <div class="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full border border-blue-100">
-          <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest italic">Rukun Islam ke-3</span>
+        <div class="inline-flex items-center gap-2 bg-green-600/10 px-4 py-2 rounded-full border border-green-600/20">
+          <span class="text-[10px] font-black text-green-600 uppercase tracking-widest italic">Rukun Islam ke-3</span>
         </div>
         <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase italic line-clamp-2">
-          Sucikan Harta <br> Lewat <span class="text-blue-600">Zakat</span>
+          Sucikan Harta <br> Lewat <span class="text-green-600">Zakat</span>
         </h1>
-        <p class="text-slate-400 font-bold text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
+        <p class="text-slate-500 font-bold text-sm md:text-lg max-w-2xl mx-auto leading-relaxed italic">
           Zakat adalah bentuk ketaatan, kepedulian sosial, dan jembatan menuju keberkahan hidup yang hakiki.
         </p>
       </div>
@@ -19,13 +19,13 @@
         
         <!-- Calculator Section -->
         <div class="lg:col-span-2 space-y-8">
-          <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden group">
-             <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+          <div class="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden group">
+             <div class="absolute -top-10 -right-10 w-40 h-40 bg-green-600/5 rounded-full blur-3xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
              
              <div class="relative z-10 space-y-10">
                 <div class="space-y-4">
-                  <h3 class="text-2xl font-black text-slate-900 uppercase tracking-tighter italic">Kalkulator <span class="text-blue-600">Zakat</span></h3>
-                  <p class="text-slate-400 text-sm font-bold opacity-80">Pilih jenis zakat dan masukkan jumlahnya untuk menghitung kewajiban Anda.</p>
+                  <h3 class="text-2xl font-black text-slate-900 uppercase tracking-tighter italic">Kalkulator <span class="text-green-600">Zakat</span></h3>
+                  <p class="text-slate-500 text-sm font-bold opacity-80">Pilih jenis zakat dan masukkan jumlahnya untuk menghitung kewajiban Anda.</p>
                 </div>
 
                 <!-- Tabs -->
@@ -35,7 +35,7 @@
                     :key="tab.id"
                     @click="activeCalcTab = tab.id"
                     class="px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm border"
-                    :class="activeCalcTab === tab.id ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-50 text-slate-400 border-slate-100 hover:border-blue-200'"
+                    :class="activeCalcTab === tab.id ? 'bg-green-600 text-white border-green-600 shadow-lg shadow-green-500/20' : 'bg-white text-slate-400 border-slate-100 hover:border-green-500/50'"
                   >
                     {{ tab.label }}
                   </button>
@@ -50,23 +50,23 @@
                        <input 
                         v-model="calcValue"
                         type="number" 
-                        class="w-full p-6 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-blue-600 outline-none font-black text-lg transition-all"
+                        class="w-full p-6 bg-white rounded-2xl border-2 border-slate-100 focus:border-green-600 outline-none font-black text-lg transition-all text-slate-900 shadow-sm"
                         :class="activeCalcTab !== 'fitrah' ? 'pl-14' : 'pl-6'"
                         :placeholder="activeCalcTab === 'fitrah' ? 'Contoh: 4' : '0'"
                        />
                     </div>
                   </div>
 
-                  <div v-if="activeCalcTab !== 'fitrah'" class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-center justify-between">
+                  <div v-if="activeCalcTab !== 'fitrah'" class="p-6 bg-green-600/5 rounded-2xl border border-green-500/10 flex items-center justify-between">
                      <div>
-                        <p class="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">Nisab Saat Ini (Per-Tahun)</p>
+                        <p class="text-[9px] font-black text-green-600 uppercase tracking-widest mb-1">Nisab Saat Ini (Per-Tahun)</p>
                         <p class="text-xs font-black text-slate-900">Rp 81.945.667 <span class="text-[8px] text-slate-400 font-medium normal-case">(Setara 85g Emas)</span></p>
                      </div>
-                     <i class="fas fa-info-circle text-blue-200 text-xl"></i>
+                     <i class="fas fa-info-circle text-green-600 opacity-50 text-xl"></i>
                   </div>
 
                   <!-- Result -->
-                  <div class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-[2rem] p-8 md:p-12 text-white shadow-xl shadow-blue-100">
+                  <div class="bg-gradient-to-r from-green-600 to-green-500 rounded-[2rem] p-8 md:p-12 text-white shadow-xl shadow-green-500/30">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 text-center md:text-left">
                        <div class="space-y-1">
                           <p class="text-[11px] font-black uppercase tracking-widest opacity-80">Estimasi Zakat Anda</p>
@@ -74,7 +74,7 @@
                        </div>
                        <button 
                         @click="handleStartZakat" 
-                        class="px-10 py-5 bg-white text-blue-600 rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-slate-50 transition active:scale-95 shadow-lg shadow-black/10"
+                        class="px-10 py-5 bg-white text-green-600 rounded-[1.5rem] font-black uppercase tracking-widest text-xs hover:bg-slate-50 transition active:scale-95 shadow-lg shadow-black/5"
                        >
                         Bersihkan Sekarang
                        </button>
@@ -86,15 +86,15 @@
 
           <!-- Why Zakat Info -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-             <div class="p-8 bg-blue-600 rounded-[2rem] text-white space-y-4">
+             <div class="p-8 bg-green-600 rounded-[2rem] text-white space-y-4 shadow-xl shadow-green-500/20 border border-green-500">
                 <i class="fas fa-seedling text-3xl opacity-50"></i>
                 <h4 class="text-xl font-black uppercase tracking-tighter">Keberkahan</h4>
                 <p class="text-xs font-medium opacity-80 leading-relaxed italic">"Harta tidak akan berkurang karena sedekah." Sebaliknya, Allah akan melipatgandakan bagi siapa yang Ia kehendaki.</p>
              </div>
-             <div class="p-8 bg-slate-900 rounded-[2rem] text-white space-y-4">
-                <i class="fas fa-users text-3xl opacity-50"></i>
-                <h4 class="text-xl font-black uppercase tracking-tighter">Kepedulian</h4>
-                <p class="text-xs font-medium opacity-80 leading-relaxed italic">Zakat memastikan roda ekonomi berputar dan mereka yang kekurangan mendapatkan haknya untuk hidup layak.</p>
+             <div class="p-8 bg-white/70 backdrop-blur-xl rounded-[2rem] text-slate-900 space-y-4 border border-slate-100 shadow-xl shadow-slate-200/20">
+                <i class="fas fa-users text-3xl opacity-50 text-green-600"></i>
+                <h4 class="text-xl font-black uppercase tracking-tighter text-slate-900">Kepedulian</h4>
+                <p class="text-xs font-medium text-slate-500 leading-relaxed italic">Zakat memastikan roda ekonomi berputar dan mereka yang kekurangan mendapatkan haknya untuk hidup layak.</p>
              </div>
           </div>
         </div>
@@ -102,37 +102,37 @@
         <!-- Right Side: Recent activity / Instruction -->
         <div class="space-y-8">
            <!-- Instruction Card -->
-           <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 space-y-8 shadow-sm">
+           <div class="bg-white/70 backdrop-blur-xl p-8 rounded-[2.5rem] border border-slate-100 space-y-8 shadow-2xl shadow-slate-200/20">
               <h4 class="text-sm font-black text-slate-900 uppercase tracking-widest italic flex items-center gap-3">
-                 <span class="w-2 h-8 bg-blue-600 rounded-full"></span>
+                 <span class="w-2 h-8 bg-green-600 rounded-full shadow-lg shadow-green-500/50"></span>
                  Cara Berzakat
               </h4>
 
               <div class="space-y-6">
                  <div v-for="(step, i) in steps" :key="i" class="flex gap-4 group">
-                    <div class="text-lg font-black text-blue-600 group-hover:scale-125 transition">0{{ i+1 }}</div>
+                    <div class="text-lg font-black text-green-600 group-hover:scale-125 transition">0{{ i+1 }}</div>
                     <div class="space-y-1">
                        <p class="text-xs font-black text-slate-900 uppercase tracking-tight">{{ step.title }}</p>
-                       <p class="text-[11px] text-slate-400 font-medium leading-relaxed">{{ step.desc }}</p>
+                       <p class="text-[11px] text-slate-400 font-medium leading-relaxed italic">{{ step.desc }}</p>
                     </div>
                  </div>
               </div>
            </div>
 
            <!-- My Recent Zakat (If logged in) -->
-           <div v-if="isAuthenticated && myZakats.length > 0" class="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm">
+           <div v-if="isAuthenticated && myZakats.length > 0" class="bg-white/70 backdrop-blur-xl rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/20">
               <div class="p-8 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
                  <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-widest">Riwayat Zakat</h4>
-                 <span class="text-[9px] text-blue-600 font-bold italic">{{ myZakats.length }} Transaksi</span>
+                 <span class="text-[9px] text-green-600 font-bold italic">{{ myZakats.length }} Transaksi</span>
               </div>
-              <div class="divide-y divide-slate-50">
-                 <div v-for="z in myZakats" :key="z.id" class="p-6 hover:bg-slate-50/50 transition">
+              <div class="divide-y divide-slate-100">
+                 <div v-for="z in myZakats" :key="z.id" class="p-6 hover:bg-slate-50 transition">
                     <div class="flex justify-between items-start mb-2">
                        <span class="text-[10px] font-black text-slate-900 uppercase tracking-tight">{{ z.zakat_type }}</span>
                        <span :class="{
-                          'text-blue-600': z.payment_status === 'Success',
-                          'text-amber-500': z.payment_status === 'Pending',
-                          'text-red-500': z.payment_status === 'Failed'
+                          'text-green-600': z.payment_status === 'Success',
+                          'text-amber-600': z.payment_status === 'Pending',
+                          'text-red-600': z.payment_status === 'Failed'
                        }" class="text-[8px] font-black uppercase tracking-widest">{{ z.payment_status }}</span>
                     </div>
                     <p class="text-sm font-black text-slate-900">Rp {{ Number(z.amount).toLocaleString() }}</p>
@@ -147,10 +147,10 @@
     <!-- Payment Modal (Hidden by default) -->
     <div v-if="showPaymentModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-[100]">
        <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-300">
-          <div class="p-8 bg-blue-600 text-white flex justify-between items-center relative overflow-hidden">
+          <div class="p-8 bg-green-600 text-white flex justify-between items-center relative overflow-hidden">
              <div class="absolute -top-10 -right-10 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
              <div class="relative z-10">
-                <h3 class="text-xl font-black uppercase tracking-tighter italic">Formulir <span class="text-blue-200">Zakat</span></h3>
+                <h3 class="text-xl font-black uppercase tracking-tighter italic">Formulir <span class="text-green-200">Zakat</span></h3>
                 <p class="text-[9px] font-bold text-white/70 uppercase tracking-widest">Sucikan Harta Anda</p>
              </div>
              <button @click="showPaymentModal = false" class="text-white/60 hover:text-white transition">✕</button>
@@ -158,9 +158,9 @@
 
           <form @submit.prevent="submitZakat" class="p-8 space-y-6">
              <div class="space-y-4">
-                <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100 flex justify-between items-center">
+                <div class="p-5 bg-green-50 rounded-2xl border border-green-100 flex justify-between items-center">
                    <div>
-                      <p class="text-[8px] font-black text-blue-600 uppercase tracking-widest">Total Bayar</p>
+                      <p class="text-[8px] font-black text-green-600 uppercase tracking-widest">Total Bayar</p>
                       <p class="text-xl font-black text-slate-900 italic tracking-tighter">Rp {{ calculatedAmount.toLocaleString() }}</p>
                    </div>
                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-l border-slate-200 pl-4">{{ activeCalcTab }}</span>
@@ -168,7 +168,7 @@
 
                 <div class="space-y-2">
                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Metode Penyaluran</label>
-                   <select v-model="paymentForm.method" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold text-xs uppercase tracking-widest">
+                   <select v-model="paymentForm.method" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-bold text-xs uppercase tracking-widest">
                       <option value="Transfer Bank">Transfer Bank / Virtual Account</option>
                       <option value="E-Wallet">E-Wallet (OVO/Gopay/QRIS)</option>
                       <option value="Tunai">Jemput Zakat (Lokal Area)</option>
@@ -180,7 +180,7 @@
                 <p class="text-[10px] font-bold text-amber-900 leading-relaxed text-center">Niati dengan ikhlas: "Saya berniat menunaikan zakat saya karena Allah Ta'ala."</p>
              </div>
 
-             <button :disabled="submitting" class="w-full py-5 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95 disabled:opacity-50">
+             <button :disabled="submitting" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50">
                 {{ submitting ? 'Memproses...' : 'Tunaikan Sekarang' }}
              </button>
           </form>

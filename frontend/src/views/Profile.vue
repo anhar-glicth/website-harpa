@@ -5,7 +5,7 @@
       <!-- Header -->
       <div class="mb-12 space-y-2 text-center md:text-left animate-in fade-in slide-in-from-top-4 duration-700">
         <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase italic">
-          Pengaturan <span class="text-blue-600">Profil</span>
+          Pengaturan <span class="text-green-600">Profil</span>
         </h1>
         <p class="text-slate-400 font-bold text-[10px] md:text-xs uppercase tracking-widest leading-relaxed">
           Kelola informasi pribadi dan keamanan akun Anda di satu tempat.
@@ -14,12 +14,12 @@
 
       <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-500">
         <!-- Banner/Background -->
-        <div class="h-32 bg-gradient-to-r from-blue-600 to-blue-400 relative">
+        <div class="h-32 bg-gradient-to-r from-green-600 to-green-400 relative">
            <div class="absolute -bottom-12 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0">
               <div class="relative group">
                  <div class="w-24 h-24 md:w-32 md:h-32 rounded-[2rem] bg-white p-1.5 shadow-xl">
                     <img 
-                      :src="profileData.profile_photo || 'https://ui-avatars.com/api/?name=' + profileData.name + '&background=0D8ABC&color=fff'" 
+                      :src="profileData.profile_photo || 'https://ui-avatars.com/api/?name=' + profileData.name + '&background=10B981&color=fff'" 
                       class="w-full h-full object-cover rounded-[1.5rem]" 
                     />
                  </div>
@@ -35,7 +35,7 @@
            <!-- Basic Info -->
            <div class="space-y-6">
               <div class="flex items-center gap-3 mb-2">
-                 <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                 <span class="w-1.5 h-6 bg-green-600 rounded-full"></span>
                  <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800">Identitas Publik</h3>
               </div>
               
@@ -44,7 +44,7 @@
                     <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Nama Lengkap</label>
                     <input 
                       v-model="profileData.name" 
-                      class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-blue-600 outline-none font-bold text-xs"
+                      class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-green-600 outline-none font-bold text-xs"
                       placeholder="Nama Anda"
                     />
                  </div>
@@ -53,7 +53,7 @@
                     <input 
                       v-model="profileData.email" 
                       type="email"
-                      class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-blue-600 outline-none font-bold text-xs"
+                      class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-green-600 outline-none font-bold text-xs"
                       placeholder="email@anda.com"
                     />
                  </div>
@@ -63,20 +63,20 @@
            <!-- Security -->
            <div class="space-y-6 pt-6 border-t border-slate-50">
               <div class="flex items-center gap-3 mb-2">
-                 <span class="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                 <span class="w-1.5 h-6 bg-green-600 rounded-full"></span>
                  <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800">Keamanan Akun</h3>
               </div>
 
               <div class="space-y-2">
-                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Kata Sandi Baru <span class="text-blue-400 normal-case font-medium italic">(Kosongkan jika tidak diganti)</span></label>
+                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Kata Sandi Baru <span class="text-green-400 normal-case font-medium italic">(Kosongkan jika tidak diganti)</span></label>
                  <div class="relative">
                     <input 
                       v-model="profileData.password" 
                       :type="showPass ? 'text' : 'password'"
-                      class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-blue-600 outline-none font-bold text-xs"
+                      class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-green-600 outline-none font-bold text-xs"
                       placeholder="••••••••"
                     />
-                    <button @click="showPass = !showPass" class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600">
+                    <button @click="showPass = !showPass" class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-green-600">
                        <i :class="showPass ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                     </button>
                  </div>
@@ -87,7 +87,7 @@
               <button 
                 @click="handleSave"
                 :disabled="saving"
-                class="w-full py-5 bg-blue-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3"
+                class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3"
               >
                  <svg v-if="saving" class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                  {{ saving ? 'Menyimpan Perubahan...' : 'Simpan Pembaruan Profil' }}
@@ -103,7 +103,7 @@
                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Level Akses</p>
                <p class="text-lg font-black text-slate-900 uppercase italic tracking-tighter">{{ profileData.role }}</p>
             </div>
-            <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
+            <div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600">
                <i class="fas fa-shield-alt"></i>
             </div>
          </div>

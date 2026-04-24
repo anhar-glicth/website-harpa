@@ -2,13 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 // Impor halaman-halaman utama
 import Home from '../views/Home.vue';
+import Landing3D from '../views/Landing3D.vue';
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import CampaignDetails from '../views/CampaignDetails.vue';
 import About from '../views/About.vue';
 import Help from '../views/Help.vue';
 import Contact from '../views/Contact.vue';
-
 import News from '../views/News.vue';
 import Zakat from '../views/Zakat.vue';
 
@@ -21,6 +21,11 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    component: Landing3D
+  },
+  {
+    path: '/classic',
+    name: 'ClassicHome',
     component: Home
   },
   {

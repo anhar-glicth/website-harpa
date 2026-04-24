@@ -10,31 +10,31 @@
         <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
           <div class="space-y-2 relative z-10 text-center md:text-left">
             <div class="flex items-center justify-center md:justify-start gap-3">
-              <h1 class="text-3xl font-black text-gray-900 tracking-tight leading-none uppercase italic">Panel <span class="text-blue-600">Staff</span></h1>
-              <span class="bg-blue-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-blue-100">Live</span>
+              <h1 class="text-3xl font-black text-gray-900 tracking-tight leading-none uppercase italic">Panel <span class="text-green-600">Staff</span></h1>
+              <span class="bg-green-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-green-100">Live</span>
             </div>
             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Manajemen Lapangan & Warta Kebaikan</p>
           </div>
           
           <div class="flex flex-col md:flex-row gap-3">
-            <button @click="openNewsModal" class="px-6 py-3.5 bg-blue-50 text-blue-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-100 transition-all border border-blue-100">Tulis Berita</button>
-            <button @click="openCampaignModal" class="px-6 py-3.5 bg-blue-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-100">Kampanye Baru</button>
+            <button @click="openNewsModal" class="px-6 py-3.5 bg-green-50 text-green-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-100 transition-all border border-green-100">Tulis Berita</button>
+            <button @click="openCampaignModal" class="px-6 py-3.5 bg-green-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100">Kampanye Baru</button>
           </div>
         </header>
 
         <!-- Navigasi Tab Intern -->
         <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-2xl w-full overflow-x-auto no-scrollbar">
-           <button @click="activeTab = 'campaigns'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'campaigns' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Proyek Saya</button>
-           <button @click="activeTab = 'news'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'news' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Arsip Berita</button>
-           <button @click="activeTab = 'todo'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'todo' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">To-Do List</button>
-           <button @click="activeTab = 'attendance'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'attendance' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Absensi</button>
-           <button @click="activeTab = 'stats'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'stats' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-blue-600']">Statistik</button>
+           <button @click="activeTab = 'campaigns'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'campaigns' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Proyek Saya</button>
+           <button @click="activeTab = 'news'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'news' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Arsip Berita</button>
+           <button @click="activeTab = 'todo'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'todo' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">To-Do List</button>
+           <button @click="activeTab = 'attendance'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'attendance' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Absensi</button>
+           <button @click="activeTab = 'stats'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'stats' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Statistik</button>
         </div>
 
         <!-- Tab: Campaigns -->
         <div v-if="activeTab === 'campaigns'" class="space-y-8">
            <div v-if="loading" class="py-20 text-center bg-white rounded-[2.5rem] border border-dashed border-gray-200">
-              <div class="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+              <div class="animate-spin h-8 w-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p class="text-gray-400 font-black text-[10px] uppercase tracking-widest">Sinkronisasi Proyek...</p>
            </div>
            
@@ -46,19 +46,19 @@
                     <span class="absolute top-6 left-6 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[9px] font-black uppercase rounded-full border border-white/20">{{ c.category || 'Umum' }}</span>
                  </div>
                  <div class="p-8">
-                    <h3 class="font-black text-gray-900 uppercase italic mb-4 line-clamp-1 group-hover:text-blue-600 transition-colors">{{ c.title }}</h3>
+                    <h3 class="font-black text-gray-900 uppercase italic mb-4 line-clamp-1 group-hover:text-green-600 transition-colors">{{ c.title }}</h3>
                     <div class="flex justify-between items-end border-t border-gray-50 pt-4">
                        <div class="space-y-1">
                           <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Status Verifikasi</p>
-                          <span :class="['text-[10px] font-black uppercase px-3 py-1 rounded-lg', c.status === 'approved' ? 'bg-blue-50 text-blue-600' : 'bg-amber-50 text-amber-600']">{{ c.status }}</span>
+                          <span :class="['text-[10px] font-black uppercase px-3 py-1 rounded-lg', c.status === 'approved' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600']">{{ c.status }}</span>
                        </div>
                        <div class="text-right">
                           <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Terkumpul</p>
-                          <p class="font-black text-blue-600 text-lg tracking-tighter italic">Rp {{ formatCurrency(c.current_amount) }}</p>
+                          <p class="font-black text-green-600 text-lg tracking-tighter italic">Rp {{ formatCurrency(c.current_amount) }}</p>
                        </div>
                     </div>
                     <!-- Update Button -->
-                    <button @click="openUpdateModal(c)" class="w-full mt-6 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-lg active:scale-95">Kirim Kabar Terbaru</button>
+                    <button @click="openUpdateModal(c)" class="w-full mt-6 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-green-600 transition-all shadow-lg active:scale-95">Kirim Kabar Terbaru</button>
                  </div>
               </div>
            </div>
@@ -76,7 +76,7 @@
                     <img :src="n.image" class="w-full h-full object-cover">
                     <button @click="handleDeleteNews(n.id)" class="absolute top-4 right-4 p-2 bg-red-500/20 backdrop-blur-md text-red-100 rounded-xl opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white">✕</button>
                  </div>
-                 <p class="text-[8px] font-black text-blue-600 uppercase tracking-[0.2em] mb-2">{{ formatDate(n.created_at) }}</p>
+                 <p class="text-[8px] font-black text-green-600 uppercase tracking-[0.2em] mb-2">{{ formatDate(n.created_at) }}</p>
                  <h4 class="font-black text-gray-900 uppercase italic text-sm line-clamp-1 mb-4">{{ n.title }}</h4>
                  <p class="text-[10px] text-gray-400 font-medium line-clamp-3 leading-relaxed mb-6">{{ n.content }}</p>
               </div>
@@ -90,26 +90,41 @@
         <div v-if="activeTab === 'todo'" class="space-y-6">
            <div class="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm space-y-6">
               <div class="flex justify-between items-center">
-                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Daftar <span class="text-blue-600">Tugas</span></h3>
+                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Daftar <span class="text-green-600">Tugas</span></h3>
                  <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ todos.length }} Tugas</span>
               </div>
               
               <div class="flex gap-3">
-                 <input v-model="newTodo" @keyup.enter="handleAddTodo" placeholder="Ketik tugas baru..." class="flex-grow p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold text-xs transition-all">
-                 <button @click="handleAddTodo" class="px-6 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-700 transition-all">Tambah</button>
+                 <input v-model="newTodo" @keyup.enter="handleAddTodo" placeholder="Ketik tugas baru..." class="flex-grow p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-bold text-xs transition-all">
+                 <button @click="handleAddTodo" class="px-6 py-4 bg-green-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-700 transition-all">Tambah</button>
               </div>
 
-              <div class="space-y-3">
-                 <div v-for="t in todos" :key="t.id" class="flex items-center justify-between p-5 bg-gray-50/50 rounded-2xl border border-transparent hover:border-blue-100 hover:bg-white transition-all group">
-                    <div class="flex items-center gap-4">
-                       <button @click="handleToggleTodo(t.id)" :class="['w-6 h-6 rounded-lg flex items-center justify-center transition-all', t.status === 'completed' ? 'bg-blue-600 text-white' : 'bg-white border-2 border-gray-100 text-transparent hover:border-blue-600']">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4"><path d="M5 13l4 4L19 7"/></svg>
-                       </button>
-                       <span :class="['font-bold text-xs transition-all uppercase tracking-tight', t.status === 'completed' ? 'text-gray-300 line-through' : 'text-gray-700']">{{ t.task }}</span>
+              <div class="space-y-4">
+                 <div v-for="t in todos" :key="t.id" class="p-6 bg-gray-50/50 rounded-[2rem] border border-transparent hover:border-green-100 hover:bg-white transition-all group">
+                    <div class="flex items-start justify-between gap-4">
+                       <div class="flex gap-4">
+                          <div :class="['w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-sm', t.status === 'completed' ? 'bg-green-600 text-white' : 'bg-white text-gray-400']">
+                             <i :class="t.status === 'completed' ? 'fas fa-check' : 'fas fa-tasks'"></i>
+                          </div>
+                          <div class="space-y-1">
+                             <h4 :class="['font-black text-xs uppercase tracking-tight', t.status === 'completed' ? 'text-gray-300 line-through' : 'text-gray-700']">{{ t.task }}</h4>
+                             <p v-if="t.description" class="text-[10px] text-gray-400 font-medium line-clamp-2">{{ t.description }}</p>
+                             <div class="flex items-center gap-3 pt-2">
+                                <span v-if="t.deadline" class="text-[8px] font-black uppercase tracking-widest text-red-400">
+                                   <i class="fas fa-clock mr-1"></i> Deadline: {{ formatDate(t.deadline) }}
+                                </span>
+                                <span v-if="t.assigned_by" class="text-[8px] font-black uppercase tracking-widest text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Admin Assigned</span>
+                             </div>
+                          </div>
+                       </div>
+                       
+                       <div class="flex flex-col gap-2">
+                          <button v-if="t.status !== 'completed'" @click="openTaskResultModal(t)" class="px-4 py-2 bg-green-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-105 transition-all">Selesaikan</button>
+                          <span v-else class="text-[9px] font-black uppercase tracking-widest text-green-600 flex items-center gap-1 justify-center"><i class="fas fa-check-double"></i> Selesai</span>
+                          
+                          <button v-if="!t.assigned_by" @click="handleDeleteTodo(t.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all text-[10px] font-bold uppercase tracking-widest mt-2">Hapus</button>
+                       </div>
                     </div>
-                    <button @click="handleDeleteTodo(t.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all p-2">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
                  </div>
                  <div v-if="todos.length === 0" class="py-12 text-center">
                     <p class="text-gray-400 font-bold italic uppercase tracking-widest text-[10px]">Semua tugas sudah selesai!</p>
@@ -121,16 +136,16 @@
         <!-- Tab: Absensi -->
         <div v-if="activeTab === 'attendance'" class="space-y-8">
            <!-- Kartu Absensi Hari Ini -->
-           <div class="bg-white p-10 rounded-[3.5rem] border border-gray-100 shadow-2xl shadow-blue-900/5 text-center space-y-10 relative overflow-hidden">
-              <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/5 rounded-full blur-3xl animate-pulse"></div>
-              <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-indigo-600/5 rounded-full blur-3xl animate-pulse"></div>
+           <div class="bg-white p-10 rounded-[3.5rem] border border-gray-100 shadow-2xl shadow-green-900/5 text-center space-y-10 relative overflow-hidden">
+              <div class="absolute -right-20 -top-20 w-64 h-64 bg-green-600/5 rounded-full blur-3xl animate-pulse"></div>
+              <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-emerald-600/5 rounded-full blur-3xl animate-pulse"></div>
               
               <div class="space-y-3 relative z-10">
-                 <div class="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full mb-2">
-                    <span class="w-2 h-2 bg-blue-600 rounded-full animate-ping"></span>
-                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Sistem Absensi Digital</p>
+                 <div class="inline-flex items-center gap-2 bg-green-50 px-4 py-2 rounded-full mb-2">
+                    <span class="w-2 h-2 bg-green-600 rounded-full animate-ping"></span>
+                    <p class="text-[10px] font-black text-green-600 uppercase tracking-widest">Sistem Absensi Digital</p>
                  </div>
-                 <h3 class="text-4xl font-black text-gray-900 uppercase tracking-tighter italic leading-none">Presensi <span class="text-blue-600">Kehadiran</span></h3>
+                 <h3 class="text-4xl font-black text-gray-900 uppercase tracking-tighter italic leading-none">Presensi <span class="text-green-600">Kehadiran</span></h3>
                  <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ todayDate }}</p>
               </div>
 
@@ -155,7 +170,7 @@
               </div>
 
               <div class="pt-10 border-t border-gray-100 space-y-3">
-                 <div class="flex items-center justify-center gap-2 text-blue-600">
+                 <div class="flex items-center justify-center gap-2 text-green-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     <p class="text-[10px] font-black uppercase tracking-[0.2em]">{{ currentLocationName || 'Mendeteksi Lokasi...' }}</p>
                  </div>
@@ -166,7 +181,7 @@
            <!-- Riwayat Absensi -->
            <div class="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden">
               <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
-                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Riwayat <span class="text-blue-600">Presensi</span></h3>
+                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Riwayat <span class="text-green-600">Presensi</span></h3>
                  <span class="px-4 py-1.5 bg-white border border-gray-100 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest shadow-sm">30 Hari Terakhir</span>
               </div>
               <div class="overflow-x-auto">
@@ -181,7 +196,7 @@
                        </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                       <tr v-for="log in allAttendanceLogs" :key="log.id" class="hover:bg-blue-50/20 transition-colors group">
+                       <tr v-for="log in allAttendanceLogs" :key="log.id" class="hover:bg-green-50/20 transition-colors group">
                           <td class="px-8 py-6 font-bold text-gray-800 text-xs">{{ formatDate(log.created_at) }}</td>
                           <td class="px-8 py-6">
                              <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm', getStatusBadgeClass(log.type)]">
@@ -191,7 +206,7 @@
                           <td class="px-8 py-6 font-mono text-[11px] text-gray-500">{{ formatTime(log.created_at) }}</td>
                           <td class="px-8 py-6 text-[10px] font-medium text-gray-400 italic line-clamp-1 max-w-[200px]" :title="log.location">{{ log.location }}</td>
                           <td class="px-8 py-6 text-center">
-                             <a v-if="log.attachment" :href="log.attachment" target="_blank" class="inline-flex p-2 bg-blue-50 text-blue-600 rounded-xl hover:scale-110 transition-transform">
+                             <a v-if="log.attachment" :href="log.attachment" target="_blank" class="inline-flex p-2 bg-green-50 text-green-600 rounded-xl hover:scale-110 transition-transform">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
                              </a>
                              <span v-else class="text-[10px] text-gray-300 italic font-medium">None</span>
@@ -210,9 +225,9 @@
         <div v-if="activeTab === 'stats'" class="space-y-8 animate-in zoom-in duration-500">
            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div v-for="s in statCards" :key="s.label" class="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative">
-                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors"></div>
+                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-50 rounded-full blur-2xl group-hover:bg-green-100 transition-colors"></div>
                  <div class="relative z-10 space-y-4">
-                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
+                    <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition-transform">
                        <i :class="s.icon"></i>
                     </div>
                     <div class="space-y-1">
@@ -225,18 +240,18 @@
 
            <!-- Pesan Motivasi -->
            <div class="bg-slate-900 p-12 rounded-[4rem] text-white relative overflow-hidden group">
-              <div class="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-transparent to-transparent"></div>
+              <div class="absolute inset-0 bg-gradient-to-br from-green-600/30 via-transparent to-transparent"></div>
               <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10">
                  <div class="space-y-6 text-center md:text-left">
-                    <div class="inline-block px-4 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-[10px] font-black uppercase tracking-widest text-blue-400">Pahlawan Kebaikan</div>
-                    <h3 class="text-4xl font-black uppercase italic tracking-tighter leading-tight">Terus Tebarkan <br><span class="text-blue-500">Kebaikan!</span></h3>
+                    <div class="inline-block px-4 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-[10px] font-black uppercase tracking-widest text-green-400">Pahlawan Kebaikan</div>
+                    <h3 class="text-4xl font-black uppercase italic tracking-tighter leading-tight">Terus Tebarkan <br><span class="text-green-500">Kebaikan!</span></h3>
                     <p class="text-sm text-gray-400 font-medium max-w-sm leading-relaxed">Setiap langkah Anda di lapangan adalah harapan bagi mereka. Pertahankan kinerja terbaik Anda untuk umat.</p>
                  </div>
                  <div class="p-12 bg-white/5 backdrop-blur-3xl rounded-[3.5rem] border border-white/10 text-center space-y-3 shadow-2xl shadow-black/20">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-400">Efektivitas Kerja</p>
-                    <p class="text-5xl font-black italic tracking-tighter text-white">92<span class="text-2xl text-blue-500">%</span></p>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-green-400">Efektivitas Kerja</p>
+                    <p class="text-5xl font-black italic tracking-tighter text-white">92<span class="text-2xl text-green-500">%</span></p>
                     <div class="w-40 h-2 bg-white/10 rounded-full mx-auto overflow-hidden">
-                       <div class="h-full bg-blue-500 w-[92%] shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                       <div class="h-full bg-green-500 w-[92%] shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                     </div>
                     <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest pt-2">Sangat Baik</p>
                  </div>
@@ -253,7 +268,7 @@
           <div v-if="showCampaignModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
              <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showCampaignModal = false"></div>
              <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in duration-300">
-                <div class="p-8 bg-blue-600 text-white flex justify-between items-center shrink-0">
+                <div class="p-8 bg-green-600 text-white flex justify-between items-center shrink-0">
                    <h3 class="text-xl font-black uppercase tracking-tighter italic">Buat <span class="opacity-60">Kampanye</span></h3>
                    <button @click="showCampaignModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
                 </div>
@@ -262,8 +277,8 @@
                    <div class="space-y-4">
                       <div class="space-y-1">
                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Informasi Dasar</label>
-                         <input v-model="form.title" placeholder="Judul Kampanye" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold transition-all" required>
-                         <textarea v-model="form.description" placeholder="Ceritakan urgensi kampanye ini..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium resize-none transition-all" required></textarea>
+                         <input v-model="form.title" placeholder="Judul Kampanye" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-bold transition-all" required>
+                         <textarea v-model="form.description" placeholder="Ceritakan urgensi kampanye ini..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-medium resize-none transition-all" required></textarea>
                       </div>
 
                       <div class="grid grid-cols-2 gap-4">
@@ -275,7 +290,7 @@
                          </div>
                          <div class="space-y-1">
                             <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Target Dana</label>
-                            <input v-model="form.target_amount" type="number" placeholder="Rp 0" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-black" required>
+                            <input v-model="form.target_amount" type="number" placeholder="Rp 0" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-black" required>
                          </div>
                       </div>
 
@@ -295,7 +310,7 @@
                       </div>
                    </div>
 
-                   <button type="submit" :disabled="submitting" class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95 disabled:opacity-50">
+                   <button type="submit" :disabled="submitting" class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50">
                       {{ submitting ? 'Memproses...' : 'Publikasikan Sekarang' }}
                    </button>
                 </form>
@@ -310,7 +325,7 @@
           <div v-if="showNewsModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
              <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showNewsModal = false"></div>
              <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in duration-300">
-                <div class="p-8 bg-blue-600 text-white flex justify-between items-center shrink-0">
+                <div class="p-8 bg-green-600 text-white flex justify-between items-center shrink-0">
                    <h3 class="text-xl font-black uppercase tracking-tighter italic">Kabar <span class="opacity-60">Lapangan</span></h3>
                    <button @click="showNewsModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
                 </div>
@@ -319,8 +334,8 @@
                    <div class="space-y-4">
                       <div class="space-y-1">
                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Judul & Isi Berita</label>
-                         <input v-model="newsForm.title" placeholder="Judul Berita" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold transition-all" required>
-                         <textarea v-model="newsForm.content" placeholder="Deskripsikan perkembangan terbaru di lapangan..." class="w-full h-48 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium resize-none transition-all" required></textarea>
+                         <input v-model="newsForm.title" placeholder="Judul Berita" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-bold transition-all" required>
+                         <textarea v-model="newsForm.content" placeholder="Deskripsikan perkembangan terbaru di lapangan..." class="w-full h-48 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-medium resize-none transition-all" required></textarea>
                       </div>
 
                       <div class="space-y-2">
@@ -339,7 +354,7 @@
                       </div>
                    </div>
 
-                   <button type="submit" :disabled="submitting" class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95 disabled:opacity-50">
+                   <button type="submit" :disabled="submitting" class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50">
                       {{ submitting ? 'Menerbitkan...' : 'Terbitkan Berita' }}
                    </button>
                 </form>
@@ -395,7 +410,7 @@
              <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in duration-300">
                 <div class="p-8 bg-slate-900 text-white flex justify-between items-center shrink-0">
                    <div class="space-y-1">
-                      <h3 class="text-xl font-black uppercase tracking-tighter italic">Update <span class="text-blue-500">Dampak</span></h3>
+                      <h3 class="text-xl font-black uppercase tracking-tighter italic">Update <span class="text-green-500">Dampak</span></h3>
                       <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{{ selectedCampaign?.title }}</p>
                    </div>
                    <button @click="showUpdateModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
@@ -405,8 +420,8 @@
                    <div class="space-y-4">
                       <div class="space-y-1">
                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Informasi Update</label>
-                         <input v-model="updateForm.title" placeholder="Judul Update (Misal: Penyaluran Tahap 1)" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold transition-all" required>
-                         <textarea v-model="updateForm.content" placeholder="Deskripsikan apa yang terjadi di lapangan secara detail..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium resize-none transition-all" required></textarea>
+                         <input v-model="updateForm.title" placeholder="Judul Update (Misal: Penyaluran Tahap 1)" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-bold transition-all" required>
+                         <textarea v-model="updateForm.content" placeholder="Deskripsikan apa yang terjadi di lapangan secara detail..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-medium resize-none transition-all" required></textarea>
                       </div>
 
                       <div class="space-y-2">
@@ -425,10 +440,53 @@
                       </div>
                    </div>
 
-                   <button type="submit" :disabled="submitting" class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-100 hover:bg-blue-700 transition active:scale-95 disabled:opacity-50">
+                   <button type="submit" :disabled="submitting" class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50">
                       {{ submitting ? 'Mengirim...' : 'Kirim Kabar Baik' }}
                    </button>
                 </form>
+             </div>
+          </div>
+       </Transition>
+    </Teleport>
+
+    <!-- Modal: Upload Hasil Tugas -->
+    <Teleport to="body">
+       <Transition name="fade">
+          <div v-if="showTaskResultModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showTaskResultModal = false"></div>
+             <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in duration-300">
+                <div class="p-8 bg-slate-900 text-white flex justify-between items-center shrink-0">
+                   <div class="space-y-1">
+                      <h3 class="text-xl font-black uppercase tracking-tighter italic">Upload <span class="text-green-500">Hasil</span></h3>
+                      <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Tugas: {{ selectedTask?.task }}</p>
+                   </div>
+                   <button @click="showTaskResultModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
+                </div>
+                
+                <div class="p-8 space-y-6">
+                   <div class="space-y-2">
+                      <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Bukti Hasil Pekerjaan</label>
+                      <div 
+                        class="relative w-full h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-gray-100 transition-all"
+                        @click="$refs.taskResultFileInput.click()"
+                      >
+                         <img v-if="taskResultForm.attachment" :src="taskResultForm.attachment" class="w-full h-full object-cover">
+                         <div v-else class="text-center p-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest leading-tight">Ambil Foto Hasil / <br> Bukti Pekerjaan</p>
+                         </div>
+                      </div>
+                      <input ref="taskResultFileInput" type="file" @change="handleTaskResultFileChange" class="hidden" accept="image/*">
+                   </div>
+
+                   <button 
+                     @click="handleCompleteTask" 
+                     :disabled="!taskResultForm.attachment || submitting" 
+                     class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-green-100 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                   >
+                      {{ submitting ? 'Mengirim...' : 'Selesaikan Tugas' }}
+                   </button>
+                </div>
              </div>
           </div>
        </Transition>
@@ -453,15 +511,18 @@ const allAttendanceLogs = ref([]);
 const fieldStats = ref({});
 const showLeaveModal = ref(false);
 const showUpdateModal = ref(false);
+const showTaskResultModal = ref(false);
 const selectedCampaign = ref(null);
+const selectedTask = ref(null);
 const leaveType = ref('');
 const leaveForm = reactive({ attachment: '' });
 const updateForm = reactive({ title: '', content: '', image: '' });
+const taskResultForm = reactive({ attachment: '' });
 const coords = ref(null);
 const currentLocationName = ref('');
 
 const attendanceTypes = [
-  { type: 'check_in', label: 'Masuk', icon: 'fas fa-sign-in-alt', iconClass: 'bg-blue-100 text-blue-600', action: () => handleAttendance('check_in') },
+  { type: 'check_in', label: 'Masuk', icon: 'fas fa-sign-in-alt', iconClass: 'bg-green-100 text-green-600', action: () => handleAttendance('check_in') },
   { type: 'check_out', label: 'Pulang', icon: 'fas fa-sign-out-alt', iconClass: 'bg-red-100 text-red-500', action: () => handleAttendance('check_out') },
   { type: 'sakit', label: 'Sakit', icon: 'fas fa-briefcase-medical', iconClass: 'bg-amber-100 text-amber-600', action: () => openLeaveModal('sakit') },
   { type: 'izin', label: 'Izin', icon: 'fas fa-calendar-check', iconClass: 'bg-emerald-100 text-emerald-600', action: () => openLeaveModal('izin') }
@@ -598,7 +659,7 @@ const reverseGeocode = async (lat, lon) => {
 
 const getAttendanceClass = (type) => {
   const map = {
-    check_in: 'bg-blue-50/30 border-blue-100 shadow-blue-900/5',
+    check_in: 'bg-green-50/30 border-green-100 shadow-green-900/5',
     check_out: 'bg-red-50/30 border-red-100 shadow-red-900/5',
     sakit: 'bg-amber-50/30 border-amber-100 shadow-amber-900/5',
     izin: 'bg-emerald-50/30 border-emerald-100 shadow-emerald-900/5'
@@ -609,7 +670,7 @@ const getAttendanceClass = (type) => {
 const getButtonClass = (type) => {
   if (isButtonDisabled(type)) return 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none';
   const map = {
-    check_in: 'bg-blue-600 text-white shadow-blue-100 hover:bg-blue-700',
+    check_in: 'bg-green-600 text-white shadow-green-100 hover:bg-green-700',
     check_out: 'bg-red-500 text-white shadow-red-100 hover:bg-red-600',
     sakit: 'bg-amber-500 text-white shadow-amber-100 hover:bg-amber-600',
     izin: 'bg-emerald-500 text-white shadow-emerald-100 hover:bg-emerald-600'
@@ -636,7 +697,7 @@ const getAttendanceTime = (type) => {
 
 const getStatusBadgeClass = (type) => {
   const map = {
-    check_in: 'bg-blue-100 text-blue-600',
+    check_in: 'bg-green-100 text-green-600',
     check_out: 'bg-red-100 text-red-600',
     sakit: 'bg-amber-100 text-amber-600',
     izin: 'bg-emerald-100 text-emerald-600'
@@ -652,23 +713,6 @@ const isAlreadyCheckedIn = computed(() => attendanceLogs.value.some(l => l.type 
 const isAlreadyCheckedOut = computed(() => attendanceLogs.value.some(l => l.type === 'check_out'));
 const isAbsent = computed(() => attendanceLogs.value.some(l => l.type === 'sakit' || l.type === 'izin'));
 const isAnyAttendanceToday = computed(() => attendanceLogs.value.length > 0);
-
-const getCheckInTime = computed(() => {
-  const log = attendanceLogs.value.find(l => l.type === 'check_in');
-  return log ? new Date(log.created_at).toLocaleTimeString('id-ID') : '--:--';
-});
-const getCheckOutTime = computed(() => {
-  const log = attendanceLogs.value.find(l => l.type === 'check_out');
-  return log ? new Date(log.created_at).toLocaleTimeString('id-ID') : '--:--';
-});
-const getSakitStatus = computed(() => {
-  const log = attendanceLogs.value.find(l => l.type === 'sakit');
-  return log ? 'Terdaftar' : '-';
-});
-const getIzinStatus = computed(() => {
-  const log = attendanceLogs.value.find(l => l.type === 'izin');
-  return log ? 'Terdaftar' : '-';
-});
 
 const todayDate = computed(() => {
   return new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
@@ -770,6 +814,39 @@ const handleCreateUpdate = async () => {
     fetchData();
   } catch (err) {
     alert('Gagal mengirim update');
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const openTaskResultModal = (task) => {
+  selectedTask.value = task;
+  taskResultForm.attachment = '';
+  showTaskResultModal.value = true;
+};
+
+const handleTaskResultFileChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    taskResultForm.attachment = event.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+const handleCompleteTask = async () => {
+  if (!taskResultForm.attachment) return alert('Harap unggah bukti hasil pekerjaan!');
+  submitting.value = true;
+  try {
+    await api.post(`/field/todos/${selectedTask.value.id}/complete`, {
+      result_attachment: taskResultForm.attachment
+    });
+    showTaskResultModal.value = false;
+    alert('Tugas berhasil diselesaikan!');
+    fetchData();
+  } catch (err) {
+    alert('Gagal menyelesaikan tugas.');
   } finally {
     submitting.value = false;
   }

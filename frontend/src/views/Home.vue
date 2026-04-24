@@ -15,7 +15,7 @@
       <!-- Hero Content -->
       <div class="relative z-10 w-full max-w-2xl mx-auto space-y-4 md:space-y-6">
         <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full">
-           <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping"></span>
+           <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-ping"></span>
            <span class="text-[8px] font-black uppercase tracking-[0.2em]">Mitra Terverifikasi</span>
         </div>
         
@@ -36,7 +36,7 @@
         
         <!-- Total Donasi -->
         <div class="bg-white p-3 md:p-8 rounded-2xl md:rounded-3xl shadow-xl flex flex-col md:flex-row items-center md:items-center text-center md:text-left md:space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
-          <div class="bg-blue-50 w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-blue-600 text-sm md:text-3xl shrink-0 mb-2 md:mb-0">
+          <div class="bg-green-50 w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-green-600 text-sm md:text-3xl shrink-0 mb-2 md:mb-0">
             <i class="fas fa-hand-holding-heart"></i>
           </div>
           <div>
@@ -49,7 +49,7 @@
 
         <!-- Kampanye Sukses -->
         <div class="bg-white p-3 md:p-8 rounded-2xl md:rounded-3xl shadow-xl flex flex-col md:flex-row items-center md:items-center text-center md:text-left md:space-x-6 border border-slate-100 transform hover:-translate-y-2 transition duration-300">
-          <div class="bg-blue-50 w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-blue-600 text-sm md:text-3xl shrink-0 mb-2 md:mb-0">
+          <div class="bg-green-50 w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl flex items-center justify-center text-green-600 text-sm md:text-3xl shrink-0 mb-2 md:mb-0">
             <i class="fas fa-check-circle"></i>
           </div>
           <div>
@@ -80,7 +80,7 @@
     <section id="campaigns" ref="campaignSection" class="max-w-7xl mx-auto px-4 py-12 md:py-20 pb-24 md:pb-32">
       <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-8 gap-4 items-start">
         <div class="w-full">
-           <h2 class="text-lg sm:text-2xl md:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tighter italic">Daftar <span class="text-blue-600">Kampanye</span></h2>
+           <h2 class="text-lg sm:text-2xl md:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tighter italic">Daftar <span class="text-green-600">Kampanye</span></h2>
            <p class="text-slate-400 font-bold text-[8px] md:text-sm tracking-[0.2em] uppercase mt-1">Titipan Kebaikan Anda Terverifikasi</p>
         </div>
         
@@ -90,7 +90,7 @@
             v-model="searchQuery" 
             type="text" 
             placeholder="Cari kampanye..." 
-            class="w-full px-6 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-600/5 focus:border-blue-600 transition-all font-bold text-xs shadow-sm"
+            class="w-full px-6 py-4 bg-white border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-green-600/5 focus:border-green-600 transition-all font-bold text-xs shadow-sm"
           />
         </div>
       </div>
@@ -103,7 +103,7 @@
           @click="selectedCategory = cat"
           :class="[
             'px-4 md:px-6 py-2 md:py-3 rounded-lg md:rounded-xl text-[8px] md:text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap shadow-sm border',
-            selectedCategory === cat ? 'bg-blue-600 text-white border-blue-600 scale-105' : 'bg-white text-slate-400 border-slate-50'
+            selectedCategory === cat ? 'bg-green-600 text-white border-green-600 scale-105' : 'bg-white text-slate-400 border-slate-50'
           ]"
         >
           {{ cat }}
@@ -158,18 +158,18 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
         <!-- Text Content -->
         <div class="space-y-6 md:space-y-8">
-          <div class="inline-flex py-1 px-4 bg-blue-50 rounded-full text-blue-600 text-[9px] font-black uppercase tracking-widest border border-blue-100">Berita Kebaikan</div>
-          <h2 class="text-xl md:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter italic">Kabar Warta, <br> <span class="text-blue-600">Aksi Nyata</span></h2>
+          <div class="inline-flex py-1 px-4 bg-green-50 rounded-full text-green-600 text-[9px] font-black uppercase tracking-widest border border-green-100">Berita Kebaikan</div>
+          <h2 class="text-xl md:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter italic">Kabar Warta, <br> <span class="text-green-600">Aksi Nyata</span></h2>
           <p class="text-slate-500 font-bold text-[11px] md:text-sm leading-relaxed max-w-md italic">Kami menyajikan kabar warta kebaikan dan laporan penyaluran donasi langsung dari lapangan untuk transparansi Anda.</p>
           
           <div class="flex flex-col sm:flex-row gap-4 pt-4">
-            <router-link to="/news" class="px-8 py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:bg-blue-700 transition inline-block text-center">Lihat Berita Terbaru</router-link>
+            <router-link to="/news" class="px-8 py-4 bg-green-600 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-green-100 hover:bg-green-700 transition inline-block text-center">Lihat Berita Terbaru</router-link>
           </div>
         </div>
 
         <!-- Visual Element -->
         <div class="relative group">
-           <div class="absolute -inset-4 bg-blue-600/5 rounded-[3rem] -rotate-3 group-hover:rotate-0 transition-transform"></div>
+           <div class="absolute -inset-4 bg-green-600/5 rounded-[3rem] -rotate-3 group-hover:rotate-0 transition-transform"></div>
            <div class="relative aspect-video overflow-hidden rounded-[2.5rem] shadow-2xl">
               <img :src="siteSettings.impact_image || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1000&auto=format&fit=crop'" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="News Preview">
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>

@@ -156,3 +156,20 @@ exports.getCampaignUpdates = async (req, res) => {
         res.status(500).json({ message: 'Gagal mengambil kabar terbaru' });
     }
 };
+
+/**
+ * --- TASK COMPLETION (UPLOAD RESULT) ---
+ */
+exports.completeTask = async (req, res) => {
+    const { id } = req.params;
+    const { result_attachment } = req.body;
+    try {
+        await db.query(
+            'UPDATE todo_list SET status = "completed", result_attachment = ?, completed_at = NOW() WHERE id = ? AND user_id = ?',
+            [result_attachment, id, req.user.id]
+        );
+        res.json({ message: 'Tugas berhasil diselesaikan dan bukti telah diunggah!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal menyelesaikan tugas' });
+    }
+};

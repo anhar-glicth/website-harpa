@@ -3,7 +3,7 @@
     <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
       <!-- Header Login -->
       <div class="text-center mb-8">
-        <div class="bg-blue-600 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 text-white shadow-lg shadow-blue-200">
+        <div class="bg-green-600 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 text-white shadow-lg shadow-green-200">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
@@ -19,7 +19,7 @@
           <input 
             v-model="form.email" 
             type="email" 
-            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" 
+            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none transition-all" 
             placeholder="nama@email.com"
             required
           >
@@ -28,12 +28,12 @@
         <div>
           <div class="flex justify-between mb-1.5">
             <label class="block text-sm font-semibold text-gray-700">Kata Sandi</label>
-            <a href="#" class="text-xs text-blue-600 hover:underline">Lupa sandi?</a>
+            <a href="#" class="text-xs text-green-600 hover:underline">Lupa sandi?</a>
           </div>
           <input 
             v-model="form.password" 
             type="password" 
-            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all" 
+            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none transition-all" 
             placeholder="••••••••"
             required
           >
@@ -51,7 +51,7 @@
         <button 
           type="submit" 
           :disabled="isLoading"
-          class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-blue-100"
+          class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-green-100"
         >
           <span v-if="!isLoading">Masuk Sekarang</span>
           <span v-else class="flex items-center justify-center gap-2">
@@ -68,12 +68,12 @@
       <div class="mt-8 pt-6 border-t border-gray-50 text-center">
         <p class="text-sm text-gray-500">
           Belum memiliki akun? 
-          <router-link to="/register" class="text-blue-600 font-bold hover:underline">Daftar di sini</router-link>
+          <router-link to="/register" class="text-green-600 font-bold hover:underline">Daftar di sini</router-link>
         </p>
       </div>
 
       <!-- Hint untuk simulasi -->
-      <div class="mt-4 p-3 bg-blue-50 rounded-xl text-[10px] text-blue-700 leading-relaxed">
+      <div class="mt-4 p-3 bg-green-50 rounded-xl text-[10px] text-green-700 leading-relaxed">
         <strong>Tips Simulasi:</strong> Gunakan email yang mengandung kata <b>"admin"</b> untuk masuk sebagai Admin, atau <b>"field"</b> untuk Petugas Lapangan.
       </div>
     </div>

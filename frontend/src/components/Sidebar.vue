@@ -3,9 +3,9 @@
   <aside class="hidden md:flex flex-col w-72 space-y-6 sticky top-28 h-fit">
     <!-- Info Akun -->
     <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
-      <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-600/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+      <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-600/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
       <div class="relative z-10 space-y-4 text-center">
-        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+        <div class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
            <i :class="userRole === 'admin' ? 'fas fa-user-shield' : (userRole === 'field_worker' ? 'fas fa-id-badge' : 'fas fa-heart')"></i>
         </div>
         <div class="space-y-1">
@@ -24,7 +24,7 @@
         :to="link.to"
         class="flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all group border-2 border-transparent"
         :class="isActive(link.to) 
-          ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-100' 
+          ? 'bg-green-600 border-green-600 text-white shadow-xl shadow-green-100' 
           : 'text-gray-400 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-100'"
       >
         <div :class="['w-8 h-8 rounded-lg flex items-center justify-center transition-all', isActive(link.to) ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-white']">

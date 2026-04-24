@@ -2,10 +2,10 @@
   <div class="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4">
     <div class="max-w-7xl w-full bg-white/5 backdrop-blur-3xl rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden flex flex-col md:flex-row shadow-white/5">
       <!-- Contact Info Box -->
-      <div class="md:w-1/3 bg-blue-600 p-12 md:p-20 text-white flex flex-col justify-between space-y-12 shrink-0">
+      <div class="md:w-1/3 bg-green-600 p-12 md:p-20 text-white flex flex-col justify-between space-y-12 shrink-0">
         <div class="space-y-6">
           <h1 class="text-4xl font-black leading-none uppercase tracking-tighter">KONTAK <br>KAMI</h1>
-          <p class="text-[10px] uppercase font-black tracking-widest text-blue-200 italic">Sapa kami hari ini untuk berbagi kebahagiaan.</p>
+          <p class="text-[10px] uppercase font-black tracking-widest text-green-200 italic">Sapa kami hari ini untuk berbagi kebahagiaan.</p>
         </div>
 
         <div class="space-y-8">
@@ -24,34 +24,34 @@
         </div>
 
         <div class="flex gap-4 pt-4 border-t border-white/10">
-          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-facebook-f"></i></div>
-          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-instagram"></i></div>
-          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-blue-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-twitter"></i></div>
+          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-facebook-f"></i></div>
+          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-instagram"></i></div>
+          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-twitter"></i></div>
         </div>
       </div>
 
       <!-- Contact Form -->
       <div class="flex-grow p-12 md:p-20 space-y-10">
-        <h2 class="text-3xl font-black uppercase tracking-tighter">Kirim Pesan <span class="text-blue-500">Langsung</span></h2>
+        <h2 class="text-3xl font-black uppercase tracking-tighter">Kirim Pesan <span class="text-green-500">Langsung</span></h2>
         
         <form class="space-y-8">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="space-y-2">
               <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">NAMA LENGKAP</label>
-              <input type="text" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-blue-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="Daffa Anis" />
+              <input type="text" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="Daffa Anis" />
             </div>
             <div class="space-y-2">
               <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">ALAMAT EMAIL</label>
-              <input type="email" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-blue-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="daffa@example.com" />
+              <input type="email" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="daffa@example.com" />
             </div>
           </div>
 
           <div class="space-y-2">
             <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">HAL YANG INGIN DISAMPAIKAN</label>
-            <textarea rows="4" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-blue-500 outline-none p-4 font-bold text-sm transition-colors resize-none" placeholder="Ceritakan pada kami..."></textarea>
+            <textarea rows="4" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors resize-none" placeholder="Ceritakan pada kami..."></textarea>
           </div>
 
-          <button class="px-12 py-5 bg-blue-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-blue-900/50 hover:bg-blue-700 transition-all active:scale-95">Kirim Pertanyaan</button>
+          <button class="px-12 py-5 bg-green-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-green-900/50 hover:bg-green-700 transition-all active:scale-95">Kirim Pertanyaan</button>
         </form>
       </div>
     </div>

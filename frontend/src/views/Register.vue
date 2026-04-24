@@ -3,7 +3,7 @@
     <div class="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
       <!-- Header Pendaftaran -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 text-blue-600 rounded-3xl mb-4 shadow-sm">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-50 text-green-600 rounded-3xl mb-4 shadow-sm">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
           </svg>
@@ -22,7 +22,7 @@
           <input 
             v-model="form.name" 
             type="text" 
-            class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-bold placeholder:font-medium" 
+            class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-600 transition-all font-bold placeholder:font-medium" 
             placeholder="Masukkan nama Anda"
             required
           >
@@ -34,7 +34,7 @@
           <input 
             v-model="form.email" 
             type="email" 
-            class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-bold placeholder:font-medium" 
+            class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-600 transition-all font-bold placeholder:font-medium" 
             placeholder="email@contoh.com"
             required
           >
@@ -46,7 +46,7 @@
           <input 
             v-model="form.password" 
             type="password" 
-            class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all font-bold placeholder:font-medium" 
+            class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-600 transition-all font-bold placeholder:font-medium" 
             placeholder="••••••••"
             required
           >
@@ -64,7 +64,7 @@
         <button 
           type="submit" 
           :disabled="loading" 
-          class="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 active:scale-95 transition-all shadow-xl shadow-blue-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+          class="w-full py-5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 active:scale-95 transition-all shadow-xl shadow-green-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
         >
           <span v-if="!loading">Daftar Sekarang</span>
           <div v-else class="flex items-center gap-2">
@@ -81,7 +81,7 @@
       <div class="mt-8 pt-6 border-t border-gray-50 text-center">
         <p class="text-sm text-gray-500">
           Sudah memiliki akun? 
-          <router-link to="/login" class="text-blue-600 font-bold hover:underline">Masuk ke sini</router-link>
+          <router-link to="/login" class="text-green-600 font-bold hover:underline">Masuk ke sini</router-link>
         </p>
       </div>
     </div>

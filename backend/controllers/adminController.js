@@ -180,4 +180,80 @@ exports.verifyDonation = async (req, res) => {
         res.status(500).json({ message: 'Gagal memproses verifikasi' });
     }
 };
+
+/**
+ * --- MONITORING PEGAWAI (ATTENDANCE & TASKS) ---
+ */
+
+// 1. Ambil seluruh absensi pegawai
+exports.getAllAttendances = async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT a.*, u.name as employee_name, u.email as employee_email 
+            FROM attendance a 
+            JOIN users u ON a.user_id = u.id 
+            ORDER BY a.created_at DESC
+        `);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal memuat data absensi' });
+    }
+};
+
+// 2. Ambil Statistik Tugas Pegawai (Completion %)
+exports.getWorkerPerformance = async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT 
+                u.id, 
+                u.name, 
+                u.role,
+                COUNT(t.id) as total_tasks,
+                SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks
+            FROM users u
+            LEFT JOIN todo_list t ON u.id = t.user_id
+            WHERE u.role = 'field_worker'
+            GROUP BY u.id
+        `);
+        
+        const performance = rows.map(r => ({
+            ...r,
+            percentage: r.total_tasks > 0 ? Math.round((r.completed_tasks / r.total_tasks) * 100) : 0
+        }));
+        
+        res.json(performance);
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal memuat performa pegawai' });
+    }
+};
+
+// 3. Admin memberikan tugas ke pegawai
+exports.assignTask = async (req, res) => {
+    const { user_id, task, description, deadline } = req.body;
+    try {
+        await db.query(
+            'INSERT INTO todo_list (user_id, assigned_by, task, description, deadline, status) VALUES (?, ?, ?, ?, ?, "pending")',
+            [user_id, req.user.id, task, description, deadline]
+        );
+        res.status(201).json({ message: 'Tugas berhasil diberikan ke pegawai' });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal memberikan tugas' });
+    }
+};
+
+// 4. Lihat detail tugas (termasuk hasil upload pegawai)
+exports.getAllTasks = async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT t.*, u.name as employee_name, a.name as assigner_name
+            FROM todo_list t
+            JOIN users u ON t.user_id = u.id
+            LEFT JOIN users a ON t.assigned_by = a.id
+            ORDER BY t.created_at DESC
+        `);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal memuat daftar tugas' });
+    }
+};
 

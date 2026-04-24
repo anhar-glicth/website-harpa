@@ -34,4 +34,10 @@ router.post('/master/:module', auth, auth.isAdmin, masterController.createData);
 router.put('/master/:module/:id', auth, auth.isAdmin, masterController.updateData);
 router.delete('/master/:module/:id', auth, auth.isAdmin, masterController.deleteData);
 
+// 6. Monitoring & Tugas Pegawai
+router.get('/attendances', auth, auth.isAdmin, adminController.getAllAttendances);
+router.get('/worker-performance', auth, auth.isAdmin, adminController.getWorkerPerformance);
+router.get('/tasks', auth, auth.isAdmin, adminController.getAllTasks);
+router.post('/tasks', auth, auth.isAdmin, adminController.assignTask);
+
 module.exports = router;

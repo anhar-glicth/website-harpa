@@ -7,10 +7,13 @@ const db = require('../config/db');
 
 // Mapping of module names to table names
 const tableMap = {
+    'profile': 'site_settings',
+    'users_mgt': 'users',
     'office': 'offices',
     'employees': 'employees',
     'donor_channel': 'donor_channels',
     'program_group': 'program_groups',
+    'programs': 'campaigns',
     'payment_via': 'payment_via',
     'prospect_media': 'prospect_media',
     'prospect_method': 'prospect_methods',
@@ -18,7 +21,11 @@ const tableMap = {
     'fundraisers': 'fundraisers',
     'prospect_responses': 'prospect_responses',
     'targets': 'targets',
-    'distribution_list': 'distributions'
+    'distribution_list': 'distributions',
+    'prospects': 'prospects',
+    'potential_donors': 'prospects', // Map to prospects with different view
+    'donors': 'users', // Filtered by role in specific routes or generic if enough
+    'transactions': 'donations'
 };
 
 exports.getData = async (req, res) => {

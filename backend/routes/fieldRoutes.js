@@ -21,4 +21,8 @@ router.get('/stats', auth, fieldController.getFieldStats);
 router.get('/updates/:campaignId', fieldController.getCampaignUpdates); // Public can see
 router.post('/updates', auth, fieldController.addCampaignUpdate); // Only staff can add
 
+// Task Completion with results
+router.post('/todos/:id/complete', auth, fieldController.completeTask);
+
 module.exports = router;
+

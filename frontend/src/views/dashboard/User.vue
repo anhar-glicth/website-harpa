@@ -2,152 +2,186 @@
   <div class="min-h-screen bg-gray-50/50">
     <div class="max-w-7xl mx-auto px-4 py-6 md:py-10">
       <div class="flex flex-col lg:flex-row gap-8 items-start">
-        <!-- Sidebar Navigasi -->
         <Sidebar class="flex-shrink-0 w-full lg:w-72" />
 
-        <!-- Konten Utama Dashboard Donatur -->
-        <main class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full pb-24 lg:pb-0">
-          
-          <!-- Header Modern -->
-          <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden group">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-600/5 rounded-full group-hover:scale-150 transition-transform duration-1000"></div>
-            
-            <div class="space-y-2 text-center md:text-left relative z-10">
-              <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
-                Donatur <span class="text-blue-600">Portal</span>
-              </h1>
-              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">Pusat Kebaikan & Kontribusi Anda</p>
-            </div>
+        <main class="flex-grow space-y-8 w-full pb-24 lg:pb-0">
 
-            <div class="flex gap-4 relative z-10">
-              <router-link to="/" class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition-all shadow-xl shadow-slate-200">
-                <i class="fas fa-heart mr-2 text-[8px]"></i> Jelajah Kampanye
-              </router-link>
+          <!-- Header -->
+          <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="space-y-1 text-center md:text-left">
+              <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">
+                Donatur <span class="text-green-600">Portal</span>
+              </h1>
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pusat Kebaikan & Kontribusi Anda</p>
             </div>
+            <router-link to="/campaigns" class="px-8 py-4 bg-green-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-500/20">
+              🌿 Jelajah Program
+            </router-link>
           </header>
 
-          <!-- Statistik Ringkas -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
-              <div class="absolute right-0 bottom-0 opacity-5 text-6xl -mb-4 -mr-4 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                <i class="fas fa-hand-holding-heart"></i>
+          <!-- PERSONAL IMPACT STATS -->
+          <section class="bg-gradient-to-br from-green-600 to-emerald-700 p-8 md:p-12 rounded-[3rem] text-white relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+              <div class="absolute w-64 h-64 rounded-full border-4 border-white -top-10 -right-10"></div>
+              <div class="absolute w-40 h-40 rounded-full border-4 border-white bottom-5 right-32"></div>
+            </div>
+            <div class="relative z-10 mb-8">
+              <p class="text-[10px] font-black uppercase tracking-[0.3em] text-green-200">Dampak Nyata Kebaikan Anda</p>
+              <h2 class="text-3xl md:text-5xl font-black tracking-tighter mt-2">Your <span class="text-green-200">Impact</span></h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
+              <div v-for="impact in impactStats" :key="impact.label" class="bg-white/10 backdrop-blur-sm rounded-3xl p-6 border border-white/20 text-center hover:bg-white/20 transition-all">
+                <p class="text-4xl font-black tracking-tighter">{{ impact.value }}</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-green-100 mt-2">{{ impact.label }}</p>
+                <p class="text-3xl mt-2">{{ impact.icon }}</p>
               </div>
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Donasi</p>
-              <p class="text-3xl font-black text-blue-600 tracking-tighter italic">Rp {{ formatCurrency(totalAmount) }}</p>
+            </div>
+          </section>
+
+          <!-- ACHIEVEMENT BADGES -->
+          <section class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 md:p-12">
+            <div class="flex justify-between items-center mb-8">
+              <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Apresiasi & Penghargaan</p>
+                <h3 class="text-2xl font-black text-gray-900 tracking-tighter">Koleksi <span class="text-green-600">Badge</span> Anda</h3>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div v-for="badge in achievementBadges" :key="badge.title"
+                :class="['relative rounded-3xl p-6 text-center border-2 transition-all hover:scale-105', badge.unlocked ? 'border-green-200 bg-green-50' : 'border-gray-100 bg-gray-50 opacity-50 grayscale']">
+                <div class="text-5xl mb-3">{{ badge.icon }}</div>
+                <p class="font-black text-xs text-gray-900 uppercase tracking-tight">{{ badge.title }}</p>
+                <p class="text-[10px] text-gray-400 mt-1 font-medium leading-snug">{{ badge.desc }}</p>
+                <div v-if="badge.unlocked" class="absolute -top-2 -right-2 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-[10px]">✓</div>
+                <div v-else class="absolute -top-2 -right-2 w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center text-white text-[10px]">🔒</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- DONATION HISTORY WITH TABS -->
+          <section class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+            <div class="p-8 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
+              <h3 class="font-black text-gray-900 uppercase tracking-tighter italic text-xl">Riwayat <span class="text-green-600">Donasi</span></h3>
+              <div class="bg-gray-50 p-1.5 rounded-2xl inline-flex gap-1">
+                <button @click="activeTab = 'donations'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'donations' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Transaksi</button>
+                <button @click="activeTab = 'tracker'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'tracker' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Live Tracker</button>
+                <button @click="activeTab = 'certificate'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'certificate' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Sertifikat</button>
+              </div>
             </div>
 
-            <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
-              <div class="absolute right-0 bottom-0 opacity-5 text-6xl -mb-4 -mr-4 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                <i class="fas fa-bullseye"></i>
-              </div>
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Kampanye Didukung</p>
-              <p class="text-3xl font-black text-gray-900 tracking-tighter italic">{{ donations.length }} <span class="text-xs text-gray-300 font-bold uppercase tracking-widest ml-1">Proyek</span></p>
+            <!-- Tab: Transactions -->
+            <div v-if="activeTab === 'donations'" class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead class="bg-gray-50 text-[10px] text-gray-400 font-black uppercase tracking-widest">
+                  <tr>
+                    <th class="px-8 py-5">#</th>
+                    <th class="px-8 py-5">Program</th>
+                    <th class="px-8 py-5">Nominal</th>
+                    <th class="px-8 py-5">Metode</th>
+                    <th class="px-8 py-5 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                  <tr v-for="(d, idx) in donations" :key="d.id" class="hover:bg-green-50/30 transition-colors">
+                    <td class="px-8 py-6 text-[10px] font-black text-gray-300">{{ String(idx+1).padStart(2,'0') }}</td>
+                    <td class="px-8 py-6">
+                      <p class="font-black text-gray-900 italic tracking-tight">{{ d.campaign_title }}</p>
+                      <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{{ formatDate(d.created_at) }}</p>
+                    </td>
+                    <td class="px-8 py-6 font-black text-green-600 italic">Rp {{ formatCurrency(d.amount) }}</td>
+                    <td class="px-8 py-6 text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{ d.payment_method || 'Transfer' }}</td>
+                    <td class="px-8 py-6 text-center">
+                      <span :class="['px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest', d.payment_status === 'Success' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600']">
+                        {{ d.payment_status === 'Success' ? 'Berhasil' : 'Menunggu' }}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr v-if="donations.length === 0">
+                    <td colspan="5" class="px-8 py-24 text-center">
+                      <div class="text-6xl mb-4 opacity-20">📭</div>
+                      <p class="text-gray-400 font-black uppercase tracking-widest text-[10px]">Belum ada riwayat kebaikan.</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group lg:col-span-1">
-              <div class="absolute right-0 bottom-0 opacity-5 text-6xl -mb-4 -mr-4 transform rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                <i class="fas fa-award"></i>
-              </div>
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Peringkat Donatur</p>
-              <p class="text-lg font-black text-amber-500 tracking-tighter uppercase italic">Donatur Setia</p>
-            </div>
-          </div>
-
-          <!-- Navigasi Tab Internal -->
-          <div class="bg-white p-2 rounded-[2rem] border border-gray-100 shadow-sm inline-flex gap-2">
-             <button @click="activeTab = 'donations'" 
-               :class="['px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all', 
-               activeTab === 'donations' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-gray-400 hover:text-gray-900']">
-               Riwayat Kebaikan
-             </button>
-             <button @click="activeTab = 'impact'" 
-               :class="['px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all', 
-               activeTab === 'impact' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-gray-400 hover:text-gray-900']">
-               Kabar Dampak
-             </button>
-          </div>
-
-          <!-- Tab: Riwayat Donasi -->
-          <div v-if="activeTab === 'donations'" class="space-y-6 animate-in zoom-in-95 duration-500">
-             <div class="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden">
-               <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
-                  <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Log <span class="text-blue-600">Transaksi</span></h3>
-                  <div class="flex gap-2">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Enkripsi Aman SSL</span>
+            <!-- Tab: Live Tracker -->
+            <div v-if="activeTab === 'tracker'" class="p-8 space-y-6">
+              <p class="text-sm text-gray-400">Pantau secara langsung ke mana donasi Anda mengalir.</p>
+              <div v-for="(d, idx) in donations.slice(0,3)" :key="d.id" class="bg-slate-50 rounded-3xl p-6 space-y-4">
+                <p class="font-black text-gray-900 tracking-tight">{{ d.campaign_title }}</p>
+                <div class="flex items-center gap-0">
+                  <div v-for="(step, si) in trackerSteps" :key="step.label" class="flex items-center flex-1">
+                    <div class="flex flex-col items-center">
+                      <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all', si <= getStepIndex(d.tracking_status) && d.payment_status === 'Success' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-400']">
+                        {{ step.icon }}
+                      </div>
+                      <p class="text-[9px] font-black uppercase text-gray-400 mt-2 tracking-widest text-center leading-tight w-16">{{ step.label }}</p>
+                    </div>
+                    <div v-if="si < trackerSteps.length - 1" :class="['flex-1 h-1 mx-1 rounded-full', si < getStepIndex(d.tracking_status) && d.payment_status === 'Success' ? 'bg-green-600' : 'bg-gray-200']"></div>
                   </div>
-               </div>
-               <div class="overflow-x-auto">
-                  <table class="w-full text-left">
-                     <thead class="bg-gray-50 text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">
-                        <tr>
-                           <th class="px-8 py-5">#</th>
-                           <th class="px-8 py-5">Program Kemanusiaan</th>
-                           <th class="px-8 py-5">Nominal</th>
-                           <th class="px-8 py-5">Metode</th>
-                           <th class="px-8 py-5 text-center">Status</th>
-                        </tr>
-                     </thead>
-                     <tbody class="divide-y divide-gray-50">
-                        <tr v-for="(d, idx) in donations" :key="d.id" class="hover:bg-blue-50/20 transition-colors group">
-                           <td class="px-8 py-6 text-[10px] font-black text-gray-300">{{ String(idx+1).padStart(2, '0') }}</td>
-                           <td class="px-8 py-6">
-                              <p class="font-black text-gray-900 uppercase tracking-tight italic">{{ d.campaign_title }}</p>
-                              <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ formatDate(d.created_at) }}</p>
-                           </td>
-                           <td class="px-8 py-6">
-                             <p class="font-black text-blue-600 text-sm tracking-tighter italic">Rp {{ formatCurrency(d.amount) }}</p>
-                           </td>
-                           <td class="px-8 py-6 text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{ d.payment_method || 'Transfer' }}</td>
-                           <td class="px-8 py-6 text-center">
-                              <span :class="['px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm', 
-                                d.payment_status === 'Success' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600']">
-                                {{ d.payment_status === 'Success' ? 'Berhasil' : 'Menunggu' }}
-                              </span>
-                           </td>
-                        </tr>
-                        <tr v-if="donations.length === 0">
-                           <td colspan="5" class="px-8 py-24 text-center">
-                              <div class="w-20 h-20 bg-gray-50 text-gray-200 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-4">
-                                <i class="fas fa-box-open"></i>
-                              </div>
-                              <p class="text-gray-400 italic font-black uppercase tracking-widest text-[10px]">Belum ada riwayat kebaikan.</p>
-                           </td>
-                        </tr>
-                     </tbody>
-                  </table>
-               </div>
-             </div>
-          </div>
+                </div>
+              </div>
+              <div v-if="donations.length === 0" class="text-center py-16 opacity-40">
+                <div class="text-6xl mb-4">🔍</div>
+                <p class="font-black uppercase tracking-widest text-[10px] text-gray-400">Belum ada donasi untuk dilacak.</p>
+              </div>
+            </div>
 
-          <!-- Tab: Kabar Dampak (Placeholder for News updates on campaigns supported) -->
-          <div v-if="activeTab === 'impact'" class="space-y-8 animate-in zoom-in-95 duration-500">
-             <div class="bg-slate-900 p-12 rounded-[4rem] text-white relative overflow-hidden group">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/30 via-transparent to-transparent"></div>
-                <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10">
-                   <div class="space-y-6 text-center md:text-left">
-                      <div class="inline-block px-4 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-[10px] font-black uppercase tracking-widest text-blue-400">Update Kebaikan</div>
-                      <h3 class="text-4xl font-black uppercase italic tracking-tighter leading-tight">Melihat Hasil <br><span class="text-blue-500">Donasi Anda</span></h3>
-                      <p class="text-sm text-gray-400 font-medium max-w-sm leading-relaxed">Ikuti perkembangan kampanye yang Anda dukung dan lihat bagaimana kontribusi Anda merubah hidup mereka.</p>
-                   </div>
-                   <div class="w-24 h-24 bg-white/10 backdrop-blur-2xl rounded-full flex items-center justify-center text-3xl border border-white/10">
-                      <i class="fas fa-newspaper text-blue-400 animate-pulse"></i>
-                   </div>
+            <!-- Tab: Certificate -->
+            <div v-if="activeTab === 'certificate'" class="p-8 space-y-6">
+              <p class="text-sm text-gray-400 mb-6">Unduh sertifikat resmi sebagai bukti kebaikan Anda.</p>
+              <div v-if="donations.filter(d => d.payment_status === 'Success').length > 0">
+                <div v-for="d in donations.filter(d => d.payment_status === 'Success')" :key="d.id"
+                  class="flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 rounded-3xl p-6 gap-4">
+                  <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-green-600 rounded-2xl flex items-center justify-center text-white text-2xl">🏅</div>
+                    <div>
+                      <p class="font-black text-gray-900 tracking-tight">{{ d.campaign_title }}</p>
+                      <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Donasi {{ formatDate(d.created_at) }} · Rp {{ formatCurrency(d.amount) }}</p>
+                    </div>
+                  </div>
+                  <button @click="downloadCertificate(d)" class="bg-green-600 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all whitespace-nowrap">
+                    ⬇ Unduh Sertifikat
+                  </button>
                 </div>
-             </div>
-             
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div v-for="i in 2" :key="i" class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 space-y-6 opacity-50 grayscale cursor-not-allowed">
-                   <div class="h-40 bg-gray-50 rounded-[1.5rem] animate-pulse"></div>
-                   <div class="space-y-3">
-                      <div class="h-4 bg-gray-50 rounded-full w-2/3"></div>
-                      <div class="h-2 bg-gray-50 rounded-full w-full"></div>
-                      <div class="h-2 bg-gray-50 rounded-full w-full"></div>
-                   </div>
-                   <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest text-center italic">Fitur Kabar Dampak Sedang Dikembangkan</p>
+              </div>
+              <div v-else class="text-center py-16 opacity-40">
+                <div class="text-6xl mb-4">🏅</div>
+                <p class="font-black uppercase tracking-widest text-[10px] text-gray-400">Selesaikan donasi untuk mendapatkan sertifikat.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- DONOR WALL (Pesan & Doa) -->
+          <section class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 md:p-12">
+            <div class="mb-8">
+              <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Papan Doa</p>
+              <h3 class="text-2xl font-black text-gray-900 tracking-tighter">Tinggalkan <span class="text-green-600">Pesan</span></h3>
+            </div>
+            <div class="space-y-4 mb-6">
+              <textarea v-model="prayerMessage" rows="3" placeholder="Tulis doa atau pesan untuk penerima manfaat..." class="w-full bg-slate-50 border border-gray-200 rounded-2xl px-6 py-4 text-sm text-gray-700 placeholder-gray-300 font-medium focus:outline-none focus:ring-2 focus:ring-green-500 resize-none transition-all"></textarea>
+              <div class="flex justify-between items-center">
+                <label class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 cursor-pointer">
+                  <input type="checkbox" v-model="isAnonymous" class="accent-green-600" />
+                  Tampilkan sebagai Anonim
+                </label>
+                <button @click="submitPrayer" class="bg-green-600 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all">Kirim Doa</button>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div v-for="msg in prayerWall" :key="msg.id" class="bg-slate-50 rounded-2xl px-6 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-black text-xs flex-shrink-0">
+                  {{ msg.anonymous ? '🤍' : msg.name.charAt(0).toUpperCase() }}
                 </div>
-             </div>
-          </div>
+                <div>
+                  <p class="font-black text-[10px] uppercase tracking-widest text-gray-400">{{ msg.anonymous ? 'Anonim' : msg.name }}</p>
+                  <p class="text-sm text-gray-600 mt-1 leading-relaxed">{{ msg.message }}</p>
+                </div>
+              </div>
+            </div>
+          </section>
 
         </main>
       </div>
@@ -163,38 +197,110 @@ import Sidebar from '@/components/Sidebar.vue';
 const activeTab = ref('donations');
 const donations = ref([]);
 const loading = ref(true);
+const prayerMessage = ref('');
+const isAnonymous = ref(false);
+const prayerWall = ref([]);
 
-const totalAmount = computed(() => {
-  return donations.value
-    .filter(d => d.payment_status === 'Success')
-    .reduce((sum, d) => sum + Number(d.amount), 0);
+const trackerSteps = [
+  { icon: '✓', label: 'Diterima', key: 'Received' },
+  { icon: '🛒', label: 'Logistik', key: 'Processing' },
+  { icon: '🚚', label: 'Dikirim', key: 'Shipping' },
+  { icon: '🤝', label: 'Tersalur', key: 'Delivered' },
+];
+
+const getStepIndex = (status) => {
+  const map = { 'Received': 0, 'Processing': 1, 'Shipping': 2, 'Delivered': 3 };
+  return map[status] ?? 0;
+};
+
+const totalAmount = computed(() => donations.value.filter(d => d.payment_status === 'Success').reduce((s, d) => s + Number(d.amount), 0));
+
+const impactStats = computed(() => {
+  const total = totalAmount.value;
+  return [
+    { value: formatCurrency(total), label: 'Total Donasi', icon: '💰' },
+    { value: Math.floor(total / 500000), label: 'Keluarga Terbantu', icon: '👨‍👩‍👧‍👦' },
+    { value: Math.floor(total / 50000), label: 'Kg Beras', icon: '🌾' },
+    { value: donations.value.filter(d => d.payment_status === 'Success').length, label: 'Program Didukung', icon: '📦' },
+  ];
+});
+
+const achievementBadges = computed(() => {
+  const total = totalAmount.value;
+  const count = donations.value.filter(d => d.payment_status === 'Success').length;
+  return [
+    { icon: '🌱', title: 'Benih Kebaikan', desc: 'Donasi pertama Anda', unlocked: count >= 1 },
+    { icon: '💚', title: 'Pejuang Kemanusiaan', desc: 'Sudah 3x berdonasi', unlocked: count >= 3 },
+    { icon: '⭐', title: 'Donatur Setia', desc: 'Total donasi > 500K', unlocked: total >= 500000 },
+    { icon: '🏆', title: 'Pahlawan Tersembunyi', desc: 'Total donasi > 2 Juta', unlocked: total >= 2000000 },
+    { icon: '🌟', title: 'Ikon Kemanusiaan', desc: 'Sudah 10x berdonasi', unlocked: count >= 10 },
+    { icon: '🕊️', title: 'Duta Perdamaian', desc: 'Total donasi > 5 Juta', unlocked: total >= 5000000 },
+    { icon: '👑', title: 'Legenda Donatur', desc: 'Total > 10 Juta', unlocked: total >= 10000000 },
+    { icon: '💎', title: 'Dermawan Platinum', desc: 'Total > 50 Juta', unlocked: total >= 50000000 },
+  ];
 });
 
 const formatCurrency = (val) => new Intl.NumberFormat('id-ID').format(val || 0);
+const formatDate = (d) => !d ? '-' : new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-const formatDate = (dateStr) => {
-  if (!dateStr) return '-';
-  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+const downloadCertificate = (d) => {
+  const html = `<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="UTF-8"><title>Sertifikat Donasi</title>
+<style>
+  body { margin: 0; font-family: 'Georgia', serif; background: #f8faf8; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .cert { width: 800px; background: white; border: 8px solid #16a34a; padding: 60px; text-align: center; position: relative; }
+  .cert::before { content: ''; position: absolute; inset: 12px; border: 2px solid #bbf7d0; pointer-events: none; }
+  h1 { color: #16a34a; font-size: 38px; letter-spacing: 3px; margin-bottom: 8px; }
+  .sub { color: #6b7280; font-size: 14px; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 40px; }
+  .name { font-size: 28px; color: #111827; font-weight: bold; border-bottom: 2px solid #16a34a; display: inline-block; padding-bottom: 8px; margin: 16px 0; }
+  .amount { font-size: 36px; color: #16a34a; font-weight: bold; }
+  .campaign { font-size: 16px; color: #374151; margin: 8px 0 40px; }
+  .seal { width: 80px; height: 80px; background: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; margin: 0 auto 20px; }
+</style></head>
+<body><div class="cert">
+  <div class="seal">🏅</div>
+  <h1>SERTIFIKAT DONASI</h1>
+  <p class="sub">HumanityCare — Platform Kemanusiaan Terpercaya</p>
+  <p style="color:#6b7280">Dengan bangga diberikan kepada</p>
+  <div class="name">Donatur HumanityCare</div>
+  <p style="color:#6b7280">atas kontribusi sebesar</p>
+  <div class="amount">Rp ${formatCurrency(d.amount)}</div>
+  <div class="campaign">untuk program: <b>${d.campaign_title}</b></div>
+  <p style="color:#9ca3af;font-size:12px">Tanggal: ${formatDate(d.created_at)}</p>
+</div></body></html>`;
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Sertifikat_Donasi_${d.id}.html`;
+  a.click();
+};
+
+const submitPrayer = async () => {
+  if (!prayerMessage.value.trim()) return;
+  try {
+    await api.post('/prayers', { message: prayerMessage.value, is_anonymous: isAnonymous.value });
+    prayerMessage.value = '';
+    fetchPrayers();
+  } catch (err) { console.error(err); }
+};
+
+const fetchPrayers = async () => {
+  try {
+    const res = await api.get('/prayers');
+    prayerWall.value = res.data;
+  } catch (err) { console.error(err); }
 };
 
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [donRes] = await Promise.all([
-      api.get('/donations/my-donations'),
-    ]);
-    donations.value = donRes.data;
-  } catch (err) {
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
+    const res = await api.get('/donations/my-donations');
+    donations.value = res.data;
+    fetchPrayers();
+  } catch (err) { console.error(err); }
+  finally { loading.value = false; }
 };
 
 onMounted(fetchData);
 </script>
-
-<style scoped>
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-</style>
