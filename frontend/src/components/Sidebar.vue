@@ -130,13 +130,15 @@ const handleLogout = async () => {
 };
 
 const navigationLinks = computed(() => {
+  const role = (userRole.value || '').trim().toLowerCase();
+  
   const base = [
     { to: '/dashboard', label: 'Ringkasan', icon: 'fas fa-th-large' }
   ];
 
-  if (userRole.value === 'admin') {
+  if (role === 'admin') {
     base.push({ to: '/dashboard/admin', label: 'CMS Admin', icon: 'fas fa-user-shield' });
-  } else if (userRole.value === 'field_worker') {
+  } else if (role === 'field_worker' || role === 'petugas') {
     base.push({ to: '/dashboard/field', label: 'Panel Staff', icon: 'fas fa-briefcase' });
   } else {
     base.push({ to: '/dashboard/user', label: 'Donasi & Riwayat', icon: 'fas fa-heart' });
