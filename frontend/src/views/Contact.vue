@@ -34,26 +34,51 @@
       <div class="flex-grow p-12 md:p-20 space-y-10">
         <h2 class="text-3xl font-black uppercase tracking-tighter">Kirim Pesan <span class="text-green-500">Langsung</span></h2>
         
-        <form class="space-y-8">
+        <form @submit.prevent="handleSubmit" class="space-y-8">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="space-y-2">
               <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">NAMA LENGKAP</label>
-              <input type="text" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="Daffa Anis" />
+              <input v-model="form.name" type="text" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="Daffa Anis" required />
             </div>
             <div class="space-y-2">
               <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">ALAMAT EMAIL</label>
-              <input type="email" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="daffa@example.com" />
+              <input v-model="form.email" type="email" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors" placeholder="daffa@example.com" required />
             </div>
           </div>
 
           <div class="space-y-2">
             <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">HAL YANG INGIN DISAMPAIKAN</label>
-            <textarea rows="4" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors resize-none" placeholder="Ceritakan pada kami..."></textarea>
+            <textarea v-model="form.message" rows="4" class="w-full bg-white/5 border-b-2 border-white/10 focus:border-green-500 outline-none p-4 font-bold text-sm transition-colors resize-none" placeholder="Ceritakan pada kami..." required></textarea>
           </div>
 
-          <button class="px-12 py-5 bg-green-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-green-900/50 hover:bg-green-700 transition-all active:scale-95">Kirim Pertanyaan</button>
+          <button :disabled="submitting" class="px-12 py-5 bg-green-600 text-white rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl shadow-green-900/50 hover:bg-green-700 transition-all active:scale-95 disabled:opacity-50">
+            {{ submitting ? 'Mengirim...' : 'Kirim Pertanyaan' }}
+          </button>
         </form>
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+import { reactive, ref } from 'vue';
+import api from '@/api';
+
+const form = reactive({ name: '', email: '', message: '' });
+const submitting = ref(false);
+
+const handleSubmit = async () => {
+  submitting.value = true;
+  try {
+    await api.post('/contacts', form);
+    alert('Terima kasih! Pesan Anda telah terkirim.');
+    form.name = '';
+    form.email = '';
+    form.message = '';
+  } catch (err) {
+    alert('Gagal mengirim pesan. Silakan coba lagi nanti.');
+  } finally {
+    submitting.value = false;
+  }
+};
+</script>

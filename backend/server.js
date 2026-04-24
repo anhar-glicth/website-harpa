@@ -15,7 +15,21 @@ const fieldRoutes = require('./routes/fieldRoutes');
 const prayerRoutes = require('./routes/prayerRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
+
+// Security Middleware
+app.use(helmet());
+
+// Rate Limiting (Prevents DDoS/Brute Force)
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Terlalu banyak permintaan dari IP ini, silakan coba lagi nanti.'
+});
+app.use('/api/', limiter);
 
 // Global Middleware
 // Limit ditingkatkan ke 50mb agar data foto (Base64) tidak ditolak server (Error 413)
@@ -41,6 +55,9 @@ app.use('/api/zakats', zakatRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/field', fieldRoutes);
 app.use('/api/prayers', prayerRoutes);
+app.use('/api/volunteers', require('./routes/volunteerRoutes'));
+app.use('/api/contacts', require('./routes/contactRoutes'));
+app.use('/api/admin-master', require('./routes/adminMasterRoutes'));
 
 // Root test route
 app.get('/', (req, res) => {

@@ -52,21 +52,24 @@ const getMyDonations = async (req, res, next) => {
     }
 };
 
-/**
- * Mengambil SEMUA riwayat donasi (Untuk Admin)
- */
-const getAllDonations = async (req, res, next) => {
+const getDonationById = async (req, res, next) => {
     try {
+        const { id } = req.params;
         const query = `
-            SELECT 
-                d.*, 
-                c.title AS campaign_title
+            SELECT d.*, c.title as campaign_title 
             FROM donations d
             JOIN campaigns c ON d.campaign_id = c.id
-            ORDER BY d.donation_date DESC
+            WHERE d.id = ?
         `;
-        const [rows] = await db.query(query);
-        res.json(rows);
+        const [rows] = await db.query(query, [id]);
+        if (rows.length === 0) return res.status(404).json({ message: 'Donasi tidak ditemukan' });
+        
+        // Cek kepemilikan (Opsional: Jika bukan admin, pastikan milik user ybs)
+        if (req.user.role !== 'admin' && rows[0].user_id !== req.user.id) {
+            return res.status(403).json({ message: 'Akses ditolak' });
+        }
+
+        res.json(rows[0]);
     } catch (error) {
         next(error);
     }
@@ -75,5 +78,6 @@ const getAllDonations = async (req, res, next) => {
 module.exports = {
     createDonation,
     getMyDonations,
-    getAllDonations
+    getAllDonations,
+    getDonationById
 };

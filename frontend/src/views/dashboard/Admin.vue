@@ -333,7 +333,7 @@
                   </div>
                 </div>
               </div>
-            </template>emplate>
+            </template>
 
             <!-- Module Add Modal -->
             <div v-if="showModuleModal && activeModule" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
@@ -823,6 +823,10 @@ const sidebarTabs = ref([
   { id: 'verify_zakat', label: 'Verifikasi Zakat V2', icon: 'fas fa-hand-holding-heart' },
   { id: 'settings', label: 'CMS Tampilan V2', icon: 'fas fa-paint-roller' },
   { id: 'news_mgt', label: 'Manajemen Warta V2', icon: 'fas fa-newspaper' },
+  { id: 'mualaf_mgt', label: 'Manajemen Mualaf V2', icon: 'fas fa-kaaba' },
+  { id: 'recruitment', label: 'Rekrutmen Relawan V2', icon: 'fas fa-user-plus' },
+  { id: 'inbox', label: 'Kotak Pesan V2', icon: 'fas fa-envelope-open-text' },
+  { id: 'audit_logs', label: 'Log Sistem V2', icon: 'fas fa-history' },
   { id: 'verify_campaign', label: 'Approval Kampanye V2', icon: 'fas fa-check-double' },
   { id: 'verify_donation', label: 'Verifikasi Donasi V2', icon: 'fas fa-donate' },
   { id: 'monitoring', label: 'Monitoring & Tugas V2', icon: 'fas fa-tasks' },
@@ -962,6 +966,22 @@ const moduleConfigs = {
   news_mgt: { title: 'Manajemen Warta', entity: 'Berita', description: 'Publikasi artikel dan laporan lapangan', icon: 'fas fa-newspaper',
     columns: [{ key: 'title', label: 'Judul Berita' }, { key: 'created_at', label: 'Tanggal', type: 'date' }],
     fields: [{ key: 'title', label: 'Judul Berita' }, { key: 'content', label: 'Isi Berita', type: 'textarea' }, { key: 'image', label: 'URL Gambar', type: 'text' }] },
+
+  mualaf_mgt: { title: 'Layanan Mualaf', entity: 'Pengajuan', description: 'Permohonan bimbingan syahadat & pembinaan', icon: 'fas fa-kaaba',
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'desired_date', label: 'Rencana Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : v === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
+    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'address', label: 'Alamat', type: 'textarea' }, { key: 'desired_date', label: 'Rencana Tanggal', type: 'date' }, { key: 'location', label: 'Lokasi Syahadat' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected', 'completed'] }] },
+
+  audit_logs: { title: 'Audit Log Sistem', entity: 'Log', description: 'Riwayat seluruh aktivitas perubahan data', icon: 'fas fa-history',
+    columns: [{ key: 'action', label: 'Aksi' }, { key: 'module', label: 'Modul' }, { key: 'created_at', label: 'Waktu', type: 'date' }],
+    fields: [] },
+
+  recruitment: { title: 'Manajemen Relawan', entity: 'Relawan', description: 'Pendaftaran dan rekrutmen relawan baru', icon: 'fas fa-user-plus',
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Telepon' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : v === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
+    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Telepon' }, { key: 'address', label: 'Alamat', type: 'textarea' }, { key: 'skills', label: 'Keahlian', type: 'textarea' }, { key: 'reason', label: 'Alasan Bergabung', type: 'textarea' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] }] },
+
+  inbox: { title: 'Kotak Pesan Masuk', entity: 'Pesan', description: 'Pesan dan pertanyaan dari publik', icon: 'fas fa-envelope-open-text',
+    columns: [{ key: 'name', label: 'Pengirim' }, { key: 'email', label: 'Email' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'unread' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600' }],
+    fields: [{ key: 'name', label: 'Nama Pengirim' }, { key: 'email', label: 'Email' }, { key: 'message', label: 'Isi Pesan', type: 'textarea' }, { key: 'status', label: 'Status', type: 'select', options: ['unread', 'read', 'replied'] }] },
 };
 
 const activeModule = computed(() => moduleConfigs[currentAdminTab.value] || null);

@@ -34,7 +34,14 @@
       <div class="max-w-7xl mx-auto px-4 -mt-10 relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-8">
-          <div class="bg-white/5 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/10">
+          <!-- Tabs -->
+          <div class="flex gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/5">
+            <button @click="activeTab = 'story'" :class="['px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'story' ? 'bg-green-600 text-white shadow-lg' : 'text-white/40 hover:text-white']">Kisah Kampanye</button>
+            <button @click="activeTab = 'updates'" :class="['px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'updates' ? 'bg-green-600 text-white shadow-lg' : 'text-white/40 hover:text-white']">Kabar Terbaru ({{ updates.length }})</button>
+          </div>
+
+          <!-- Story Tab -->
+          <div v-if="activeTab === 'story'" class="bg-white/5 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-white/10 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div class="flex items-center gap-4 mb-8">
               <div class="p-4 bg-green-600/20 text-green-500 rounded-2xl border border-green-600/20">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,6 +51,27 @@
               <h2 class="text-xl font-black text-white uppercase tracking-tight italic">Kisah Kampanye</h2>
             </div>
             <p class="text-white/60 leading-relaxed text-lg whitespace-pre-wrap font-medium">{{ campaign.description }}</p>
+          </div>
+
+          <!-- Updates Tab -->
+          <div v-if="activeTab === 'updates'" class="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div v-if="updates.length === 0" class="bg-white/5 backdrop-blur-xl p-16 rounded-[2.5rem] border border-white/10 text-center">
+              <p class="text-white/30 font-black uppercase tracking-widest text-[10px]">Belum ada kabar terbaru dari lapangan.</p>
+            </div>
+            <div v-for="update in updates" :key="update.id" class="bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 space-y-6">
+              <div class="flex items-center justify-between">
+                 <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-green-600/20 text-green-500 flex items-center justify-center text-[10px] font-black uppercase">{{ update.author_name?.[0] }}</div>
+                    <p class="text-[10px] font-black text-white/60 uppercase tracking-widest">{{ update.author_name }}</p>
+                 </div>
+                 <p class="text-[10px] font-bold text-white/30 uppercase tracking-widest">{{ formatDate(update.created_at) }}</p>
+              </div>
+              <h3 class="text-xl font-black text-white uppercase italic tracking-tighter">{{ update.title }}</h3>
+              <p class="text-white/50 text-sm leading-relaxed font-medium">{{ update.content }}</p>
+              <div v-if="update.image" class="aspect-video rounded-[1.5rem] overflow-hidden">
+                <img :src="update.image" class="w-full h-full object-cover">
+              </div>
+            </div>
           </div>
 
           <!-- Campaign Stats Cards -->
@@ -174,6 +202,8 @@ const loading = ref(true);
 const error = ref(null);
 const submitting = ref(false);
 const successMsg = ref('');
+const activeTab = ref('story');
+const updates = ref([]);
 
 const donationForm = reactive({
   amount: '',
@@ -189,13 +219,21 @@ const fetchData = async () => {
   error.value = null;
   try {
     const id = route.params.id;
-    const res = await api.get(`/campaigns/${id}`);
-    campaign.value = res.data;
+    const [campaignRes, updateRes] = await Promise.all([
+      api.get(`/campaigns/${id}`),
+      api.get(`/field/campaign-updates/${id}`)
+    ]);
+    campaign.value = campaignRes.data;
+    updates.value = updateRes.data;
   } catch (err) {
     error.value = err.response?.data?.message || 'Gagal mengambil data kampanye.';
   } finally {
     loading.value = false;
   }
+};
+
+const formatDate = (dateStr) => {
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
 const handleFileChange = (e) => {

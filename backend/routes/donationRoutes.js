@@ -23,4 +23,7 @@ router.get('/my-donations', auth, donationController.getMyDonations);
 // Private: Admin bisa melihat riwayat semua donasi
 router.get('/', auth, auth.isAdmin, donationController.getAllDonations);
 
+// Private: Detail donasi untuk Kwitansi
+router.get('/:id', auth, donationController.getDonationById);
+
 module.exports = router;

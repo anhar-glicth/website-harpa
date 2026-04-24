@@ -79,6 +79,7 @@
                     <th class="px-8 py-5">Nominal</th>
                     <th class="px-8 py-5">Metode</th>
                     <th class="px-8 py-5 text-center">Status</th>
+                    <th class="px-8 py-5 text-center">Kwitansi</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -93,6 +94,14 @@
                     <td class="px-8 py-6 text-center">
                       <span :class="['px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest', d.payment_status === 'Success' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600']">
                         {{ d.payment_status === 'Success' ? 'Berhasil' : 'Menunggu' }}
+                      </span>
+                    </td>
+                    <td class="px-8 py-6 text-center">
+                      <router-link v-if="d.payment_status === 'Success'" :to="`/receipt/${d.id}`" target="_blank" class="text-green-600 hover:text-green-700 transition">
+                        <i class="fas fa-file-invoice text-lg"></i>
+                      </router-link>
+                      <span v-else class="text-gray-200">
+                        <i class="fas fa-file-invoice text-lg"></i>
                       </span>
                     </td>
                   </tr>
@@ -142,9 +151,14 @@
                       <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Donasi {{ formatDate(d.created_at) }} · Rp {{ formatCurrency(d.amount) }}</p>
                     </div>
                   </div>
-                  <button @click="downloadCertificate(d)" class="bg-green-600 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all whitespace-nowrap">
-                    ⬇ Unduh Sertifikat
-                  </button>
+                  <div class="flex gap-2">
+                    <router-link :to="`/receipt/${d.id}`" target="_blank" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all whitespace-nowrap">
+                      📄 Kwitansi
+                    </router-link>
+                    <button @click="downloadCertificate(d)" class="bg-green-600 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all whitespace-nowrap">
+                      ⬇ Sertifikat
+                    </button>
+                  </div>
                 </div>
               </div>
               <div v-else class="text-center py-16 opacity-40">

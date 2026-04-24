@@ -26,7 +26,19 @@ const moduleConfigs = {
     'prospects': { table: 'prospects', orderBy: 'created_at DESC' },
     'potential_donors': { table: 'prospects', filter: 'status = "Calon Donatur"', orderBy: 'created_at DESC' },
     'transactions': { table: 'donations', orderBy: 'donation_date DESC' },
-    'news_mgt': { table: 'news', orderBy: 'created_at DESC' }
+    'news_mgt': { table: 'news', orderBy: 'created_at DESC' },
+    'mualaf_mgt': { table: 'mualaf_requests', orderBy: 'created_at DESC' },
+    'audit_logs': { table: 'audit_logs', orderBy: 'created_at DESC' },
+    'recruitment': { table: 'volunteers', orderBy: 'created_at DESC' },
+    'inbox': { table: 'contact_messages', orderBy: 'created_at DESC' }
+};
+
+const logAudit = async (userId, action, module, details) => {
+    try {
+        await db.query('INSERT INTO audit_logs (user_id, action, module, details) VALUES (?, ?, ?, ?)', [userId, action, module, JSON.stringify(details)]);
+    } catch (e) {
+        console.error('Audit Log Error:', e);
+    }
 };
 
 exports.getData = async (req, res) => {
@@ -64,6 +76,9 @@ exports.createData = async (req, res) => {
         }
         
         const [result] = await db.query(`INSERT INTO ${config.table} SET ?`, [data]);
+        
+        await logAudit(req.user.id, 'CREATE', module, { id: result.insertId, ...data });
+
         res.status(201).json({ message: 'Data berhasil ditambahkan', id: result.insertId });
     } catch (error) {
         console.error(`Error creating ${module}:`, error);
@@ -81,10 +96,32 @@ exports.updateData = async (req, res) => {
 
     try {
         await db.query(`UPDATE ${config.table} SET ? WHERE ${pk} = ?`, [data, id]);
+        
+        await logAudit(req.user.id, 'UPDATE', module, { id, ...data });
+
         res.json({ message: 'Data berhasil diperbarui' });
     } catch (error) {
         console.error(`Error updating ${module}:`, error);
         res.status(500).json({ message: `Gagal memperbarui data ${module}` });
+    }
+};
+
+exports.deleteData = async (req, res) => {
+    const { module, id } = req.params;
+    const config = moduleConfigs[module];
+    const pk = config?.pk || 'id';
+
+    if (!config) return res.status(400).json({ message: 'Modul tidak valid' });
+
+    try {
+        await db.query(`DELETE FROM ${config.table} WHERE ${pk} = ?`, [id]);
+        
+        await logAudit(req.user.id, 'DELETE', module, { id });
+
+        res.json({ message: 'Data berhasil dihapus' });
+    } catch (error) {
+        console.error(`Error deleting ${module}:`, error);
+        res.status(500).json({ message: `Gagal menghapus data ${module}` });
     }
 };
 

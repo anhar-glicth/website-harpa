@@ -60,6 +60,12 @@ const routes = [
     component: Zakat
   },
   {
+    path: '/receipt/:id',
+    name: 'Receipt',
+    component: () => import('../views/Receipt.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login,
