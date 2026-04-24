@@ -252,9 +252,11 @@
                       </div>
                     </div>
                     <div class="flex items-center gap-3">
-                      <button @click="exportToCSV" class="w-12 h-12 bg-gray-50 text-gray-400 rounded-2xl hover:text-green-600 transition-all flex items-center justify-center shadow-sm" title="Export CSV"><i class="fas fa-file-csv"></i></button>
-                      <button @click="moduleFormData = {}; showModuleModal = true" class="flex items-center gap-3 bg-green-600 text-white px-7 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100 whitespace-nowrap">
-                        <i class="fas fa-plus text-[8px]"></i> Tambah {{ activeModule.entity }}
+                      <button @click="exportToCSV" class="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2">
+                        <i class="fas fa-file-export"></i> Ekspor CSV
+                      </button>
+                      <button @click="moduleFormData = {}; showModuleModal = true" class="bg-green-600 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-500/20 flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Tambah {{ activeModule.entity }}
                       </button>
                     </div>
                   </div>
@@ -1064,13 +1066,6 @@ const editModuleData = (row, index) => {
 };
 
 const exportToCSV = () => {
-  const tab = currentAdminTab.value;
-  const config = moduleConfigs[tab];
-  const data = moduleData.value[tab] || [];
-  
-  if (data.length === 0) {
-    alert('Tidak ada data untuk di-export.');
-    return;
   }
 
   const headers = config.columns.map(c => c.label).join(',');

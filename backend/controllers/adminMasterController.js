@@ -194,11 +194,5 @@ exports.getStats = async (req, res) => {
     }
 };
 
-// EXPORTS
-module.exports = {
-    getData: exports.getData,
-    createData: exports.createData,
-    updateData: exports.updateData,
-    deleteData: exports.deleteData,
-    getStats: exports.getStats
-};
+// EXPORTS are already handled by exports.xxx = ...
+// Removing the redundant and broken module.exports block at the end.
