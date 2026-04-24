@@ -1,11 +1,5 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 py-8 md:py-10">
-    <div class="flex flex-col lg:flex-row gap-8 items-start">
-      <!-- Sidebar Navigasi -->
-      <Sidebar class="flex-shrink-0 w-full lg:w-64" />
-
-      <!-- Konten Utama Dashboard -->
-      <div class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full pb-24 lg:pb-0">
+  <div class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full pb-24 lg:pb-0">
         <!-- Header -->
         <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
           <div class="space-y-2 relative z-10 text-center md:text-left">
@@ -259,8 +253,7 @@
            </div>
         </div>
 
-      </div>
-    </div>
+
 
     <!-- Modal: Buat Kampanye -->
     <Teleport to="body">
@@ -497,7 +490,6 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
 import api from '@/api';
-import Sidebar from '@/components/Sidebar.vue';
 
 const activeTab = ref('campaigns');
 const loading = ref(true);

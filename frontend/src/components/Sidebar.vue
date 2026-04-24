@@ -96,6 +96,25 @@
       </div>
     </Teleport>
   </aside>
+
+  <!-- Mobile Bottom Navigation (Tampil hanya di < md) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-gray-100 z-[100] px-4 py-2 flex justify-around items-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)] rounded-t-[2rem]">
+    <router-link 
+      v-for="link in navigationLinks"
+      :key="link.to"
+      :to="link.to"
+      class="flex flex-col items-center gap-1 p-3 transition-all duration-300"
+      :class="isActive(link.to) ? 'text-green-600 scale-110' : 'text-gray-400'"
+    >
+      <i :class="[link.icon, 'text-lg']"></i>
+      <span class="text-[8px] font-black uppercase tracking-widest">{{ link.label.split(' ')[0] }}</span>
+      <div v-if="isActive(link.to)" class="w-1 h-1 bg-green-600 rounded-full mt-0.5"></div>
+    </router-link>
+    <button @click="showLogoutModal = true" class="flex flex-col items-center gap-1 p-3 text-gray-400">
+       <i class="fas fa-sign-out-alt text-lg"></i>
+       <span class="text-[8px] font-black uppercase tracking-widest">Logout</span>
+    </button>
+  </nav>
 </template>
 
 <script setup>
@@ -147,7 +166,7 @@ const navigationLinks = computed(() => {
   const currentRole = role.value;
   
   const base = [
-    { to: '/dashboard', label: 'Ringkasan', icon: 'fas fa-th-large' }
+    { to: '/dashboard/overview', label: 'Ringkasan', icon: 'fas fa-th-large' }
   ];
 
   if (currentRole === 'admin') {
@@ -159,7 +178,7 @@ const navigationLinks = computed(() => {
   }
 
   // Edit Profil tersedia untuk semua role
-  base.push({ to: '/profile', label: 'Edit Profil', icon: 'fas fa-user-cog' });
+  base.push({ to: '/dashboard/profile', label: 'Edit Profil', icon: 'fas fa-user-cog' });
 
   return base;
 });

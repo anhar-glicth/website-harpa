@@ -160,10 +160,10 @@
           "Berdonasi di HumanityCare sangat transparan. Saya bisa memantau langsung bantuan saya sampai ke tangan mereka yang berhak."
         </blockquote>
         <div class="flex flex-col items-center gap-4">
-          <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-white font-black text-xl">AF</div>
+          <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-white font-black text-xl">A</div>
           <div>
-            <p class="text-white font-black text-lg">Ahmad Fauzi</p>
-            <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Donatur — Jakarta</p>
+            <p class="text-white font-black text-lg">Anhar</p>
+            <p class="text-slate-400 font-bold text-[10px] uppercase tracking-widest">Donatur — Jakarta</p>
           </div>
         </div>
       </div>
@@ -182,6 +182,44 @@
             <span class="text-green-600 font-black uppercase text-[10px] tracking-widest">{{ article.tag }}</span>
             <h3 class="font-black text-slate-900 group-hover:text-green-600 transition-colors">{{ article.title }}</h3>
             <router-link to="/news" class="text-green-600 text-xs font-bold hover:underline">Baca Selengkapnya →</router-link>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PAPAN DOA (NEW) ===== -->
+    <section class="py-24 bg-slate-50 overflow-hidden relative">
+      <div class="absolute top-0 right-0 w-96 h-96 bg-green-100/50 rounded-full blur-3xl -mr-48 -mt-48"></div>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+          <span class="text-green-600 font-black uppercase text-xs tracking-[0.3em] mb-4 block">Papan Doa Komunitas</span>
+          <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter">Tembok <span class="text-green-600">Harapan & Berkah</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div 
+            v-for="p in prayers" :key="p.id" 
+            class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+          >
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center font-black text-sm">
+                {{ p.name?.[0]?.toUpperCase() || 'H' }}
+              </div>
+              <div>
+                <p class="text-xs font-black text-slate-900 uppercase tracking-widest">{{ p.is_anonymous ? 'Hamba Allah' : p.name }}</p>
+                <p class="text-[10px] text-slate-400 font-bold">{{ formatDate(p.created_at) }}</p>
+              </div>
+            </div>
+            <p class="text-slate-600 text-sm leading-relaxed italic mb-8">"{{ p.message }}"</p>
+            <div class="flex justify-between items-center pt-6 border-t border-slate-50">
+              <button 
+                @click="handleAamiin(p.id)"
+                class="flex items-center gap-2 px-6 py-3 bg-green-50 text-green-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all active:scale-95"
+              >
+                <i class="fas fa-hands-praying"></i>
+                Aamiin <span class="opacity-50">({{ p.aamiin_count || 0 }})</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -259,6 +297,31 @@ const { isAuthenticated, getUserName, getUserPhoto, openLogin, openRegister } = 
 
 const subscriberEmail = ref('');
 const subscribing = ref(false);
+const prayers = ref([]);
+
+const fetchData = async () => {
+  try {
+    const res = await api.get('/prayers');
+    prayers.value = res.data;
+  } catch (e) {
+    console.error('Gagal mengambil data doa:', e);
+  }
+};
+
+const handleAamiin = async (id) => {
+   try {
+      await api.post(`/prayers/${id}/aamiin`);
+      const prayer = prayers.value.find(p => p.id === id);
+      if (prayer) prayer.aamiin_count++;
+   } catch (e) {
+      console.error(e);
+   }
+};
+
+const formatDate = (dateStr) => {
+   if (!dateStr) return '';
+   return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+};
 
 const handleSubscribe = async () => {
   subscribing.value = true;
@@ -317,6 +380,9 @@ const footerLinks = [
   { title: 'Bantuan', links: [{ label: 'Cara Donasi', to: '/' }, { label: 'Zakat', to: '/' }, { label: 'Kontak', to: '/' }] },
   { title: 'Legal', links: [{ label: 'Syarat Ketentuan', to: '/' }, { label: 'Kebijakan Privasi', to: '/' }] },
 ];
+
+import { onMounted } from 'vue';
+onMounted(fetchData);
 </script>
 
 <style>

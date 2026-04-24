@@ -1,10 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50/50">
-    <div class="max-w-7xl mx-auto px-4 py-6 md:py-10">
-      <div class="flex flex-col lg:flex-row gap-8 items-start">
-        <Sidebar class="flex-shrink-0 w-full lg:w-72" />
-
-        <main class="flex-grow space-y-8 w-full pb-24 lg:pb-0">
+  <main class="flex-grow space-y-8 w-full pb-24 lg:pb-0">
 
           <!-- Header -->
           <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
@@ -18,45 +13,6 @@
               🌿 Jelajah Program
             </router-link>
           </header>
-
-          <!-- PERSONAL IMPACT STATS -->
-          <section class="bg-gradient-to-br from-green-600 to-emerald-700 p-8 md:p-12 rounded-[3rem] text-white relative overflow-hidden">
-            <div class="absolute inset-0 opacity-10">
-              <div class="absolute w-64 h-64 rounded-full border-4 border-white -top-10 -right-10"></div>
-              <div class="absolute w-40 h-40 rounded-full border-4 border-white bottom-5 right-32"></div>
-            </div>
-            <div class="relative z-10 mb-8">
-              <p class="text-[10px] font-black uppercase tracking-[0.3em] text-green-200">Dampak Nyata Kebaikan Anda</p>
-              <h2 class="text-3xl md:text-5xl font-black tracking-tighter mt-2">Your <span class="text-green-200">Impact</span></h2>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
-              <div v-for="impact in impactStats" :key="impact.label" class="bg-white/10 backdrop-blur-sm rounded-3xl p-6 border border-white/20 text-center hover:bg-white/20 transition-all">
-                <p class="text-4xl font-black tracking-tighter">{{ impact.value }}</p>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-green-100 mt-2">{{ impact.label }}</p>
-                <p class="text-3xl mt-2">{{ impact.icon }}</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- ACHIEVEMENT BADGES -->
-          <section class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 md:p-12">
-            <div class="flex justify-between items-center mb-8">
-              <div>
-                <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Apresiasi & Penghargaan</p>
-                <h3 class="text-2xl font-black text-gray-900 tracking-tighter">Koleksi <span class="text-green-600">Badge</span> Anda</h3>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div v-for="badge in achievementBadges" :key="badge.title"
-                :class="['relative rounded-3xl p-6 text-center border-2 transition-all hover:scale-105', badge.unlocked ? 'border-green-200 bg-green-50' : 'border-gray-100 bg-gray-50 opacity-50 grayscale']">
-                <div class="text-5xl mb-3">{{ badge.icon }}</div>
-                <p class="font-black text-xs text-gray-900 uppercase tracking-tight">{{ badge.title }}</p>
-                <p class="text-[10px] text-gray-400 mt-1 font-medium leading-snug">{{ badge.desc }}</p>
-                <div v-if="badge.unlocked" class="absolute -top-2 -right-2 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center text-white text-[10px]">✓</div>
-                <div v-else class="absolute -top-2 -right-2 w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center text-white text-[10px]">🔒</div>
-              </div>
-            </div>
-          </section>
 
           <!-- DONATION HISTORY WITH TABS -->
           <section class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
@@ -198,15 +154,11 @@
           </section>
 
         </main>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import api from '@/api';
-import Sidebar from '@/components/Sidebar.vue';
 
 const activeTab = ref('donations');
 const donations = ref([]);

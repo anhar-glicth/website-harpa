@@ -13,6 +13,7 @@ import News from '../views/News.vue';
 import Zakat from '../views/Zakat.vue';
 
 // Gunakan impor dinamis untuk dashboard agar lebih ringan
+const Overview = () => import('../views/dashboard/Overview.vue');
 const UserDashboard = () => import('../views/dashboard/User.vue');
 const AdminDashboard = () => import('../views/dashboard/Admin.vue');
 const FieldDashboard = () => import('../views/dashboard/Field.vue');
@@ -77,42 +78,52 @@ const routes = [
     component: Register,
     meta: { guestOnly: true }
   },
-  // RUTE DASHBOARD UMUM (Bisa digunakan untuk pengalihan)
+  // LAYOUT DASHBOARD (Nested Routes)
   {
     path: '/dashboard',
-    name: 'Dashboard',
+    component: () => import('../layouts/DashboardLayout.vue'),
     meta: { requiresAuth: true },
-    beforeEnter: (to, from, next) => {
-      const role = localStorage.getItem('role');
-      if (role === 'admin') next('/dashboard/admin');
-      else if (role === 'field_worker') next('/dashboard/field');
-      else next('/dashboard/user');
-    }
-  },
-  // RUTE SPESIFIK BERDASARKAN ROLE
-  {
-    path: '/dashboard/user',
-    name: 'UserDashboard',
-    component: UserDashboard,
-    meta: { requiresAuth: true, role: 'user' }
-  },
-  {
-    path: '/dashboard/field',
-    name: 'FieldDashboard',
-    component: FieldDashboard,
-    meta: { requiresAuth: true, role: 'field_worker' }
-  },
-  {
-    path: '/dashboard/admin',
-    name: 'AdminDashboard',
-    component: AdminDashboard,
-    meta: { requiresAuth: true, role: 'admin' }
+    children: [
+      {
+        path: '',
+        name: 'Dashboard',
+        beforeEnter: (to, from, next) => {
+          next('/dashboard/overview');
+        }
+      },
+      {
+        path: 'overview',
+        name: 'Overview',
+        component: Overview
+      },
+      {
+        path: 'user',
+        name: 'UserDashboard',
+        component: UserDashboard,
+        meta: { role: 'user' }
+      },
+      {
+        path: 'field',
+        name: 'FieldDashboard',
+        component: FieldDashboard,
+        meta: { role: 'field_worker' }
+      },
+      {
+        path: 'admin',
+        name: 'AdminDashboard',
+        component: AdminDashboard,
+        meta: { role: 'admin' }
+      },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('../views/Profile.vue')
+      }
+    ]
   },
   {
     path: '/profile',
-    name: 'Profile',
-    component: () => import('../views/Profile.vue'),
-    meta: { requiresAuth: true }
+    redirect: '/dashboard/profile'
   }
 ];
 
