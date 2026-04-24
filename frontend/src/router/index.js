@@ -30,6 +30,11 @@ const routes = [
     component: Home
   },
   {
+    path: '/campaigns',
+    name: 'Campaigns',
+    component: Home
+  },
+  {
     path: '/campaigns/:id',
     name: 'CampaignDetails',
     component: CampaignDetails

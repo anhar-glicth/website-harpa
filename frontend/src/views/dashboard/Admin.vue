@@ -1022,8 +1022,8 @@ const moduleConfigs = {
   rfm_dashboard: { title: 'Dashboard RFM', entity: 'Laporan', description: 'Analitik Recency, Frequency, Monetary donatur', icon: 'fas fa-brain', isDashboard: true, fields: [] },
   
   news_mgt: { title: 'Manajemen Warta', entity: 'Berita', description: 'Publikasi artikel dan laporan lapangan', icon: 'fas fa-newspaper',
-    columns: [{ key: 'title', label: 'Judul Berita' }, { key: 'created_at', label: 'Tanggal', type: 'date' }],
-    fields: [{ key: 'title', label: 'Judul Berita' }, { key: 'content', label: 'Isi Berita', type: 'textarea' }, { key: 'image', label: 'URL Gambar', type: 'text' }] },
+    columns: [{ key: 'title', label: 'Judul Berita' }, { key: 'tag', label: 'Tag' }, { key: 'created_at', label: 'Tanggal', type: 'date' }],
+    fields: [{ key: 'title', label: 'Judul Berita' }, { key: 'tag', label: 'Tag (Contoh: Update, Laporan, Kisah)' }, { key: 'content', label: 'Isi Berita', type: 'textarea' }, { key: 'image', label: 'URL Gambar', type: 'text' }] },
 
   mualaf_mgt: { title: 'Layanan Mualaf', entity: 'Pengajuan', description: 'Permohonan bimbingan syahadat & pembinaan', icon: 'fas fa-kaaba',
     columns: [{ key: 'name', label: 'Nama' }, { key: 'desired_date', label: 'Rencana Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : v === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
@@ -1093,13 +1093,22 @@ const handleSaveModuleData = async () => {
   const config = activeModule.value;
   const pkField = config?.pk || 'id';
   
-  const payload = { ...moduleFormData.value };
+  let payload = { ...moduleFormData.value };
   const pkValue = payload[pkField];
   const isEditing = payload._index !== undefined;
 
   delete payload._index;
-  // We keep the PK in the payload if it's not 'id' or if it's being created
-  // but for 'id' tables, we usually don't send id in POST
+
+  // Filter payload to only include fields defined in config
+  if (config.fields && config.fields.length > 0) {
+    const filteredPayload = {};
+    config.fields.forEach(f => {
+      if (payload[f.key] !== undefined) {
+        filteredPayload[f.key] = payload[f.key];
+      }
+    });
+    payload = filteredPayload;
+  }
 
   try {
     if (isEditing && pkValue) {

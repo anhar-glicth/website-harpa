@@ -253,7 +253,7 @@ const campaignSection = ref(null);
 // State Pencarian & Filter (BARU)
 const searchQuery = ref('');
 const selectedCategory = ref('Semua');
-const categories = ['Semua', 'Sosial', 'Medis', 'Pendidikan', 'Bencana', 'Lingkungan', 'Yatim'];
+const categories = ['Semua', 'Kemanusiaan', 'Pendidikan', 'Kesehatan', 'Dakwah', 'Umum'];
 
 // Logika Filter (BARU)
 const filteredCampaigns = computed(() => {
@@ -284,8 +284,8 @@ const fetchData = async () => {
     }));
 
     stats.value = statsRes.data;
-    siteSettings.value = settingsRes.data;
-    prayers.value = prayersRes.data;
+    siteSettings.value = settingsRes.data || {};
+    prayers.value = prayersRes.data || [];
   } catch (err) {
     error.value = "Gagal mengambil data dari server. Pastikan backend menyala.";
     console.error(err);

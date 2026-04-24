@@ -61,10 +61,14 @@ const getStats = async (req, res, next) => {
         // Menghitung jumlah kategori unik
         const [[{ total_reach }]] = await db.query('SELECT COUNT(DISTINCT category) as total_reach FROM campaigns');
 
+        // Menghitung jumlah donatur unik
+        const [[{ total_donors }]] = await db.query('SELECT COUNT(DISTINCT donor_name) as total_donors FROM donations WHERE payment_status = "Success"');
+
         res.json({
             totalDonation: total_donation || 0,
             campaignsSuccess: total_success || 0,
-            reach: total_reach || 0
+            reach: total_reach || 0,
+            totalDonors: total_donors || 0
         });
     } catch (err) { 
         next(err); 

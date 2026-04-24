@@ -289,7 +289,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import api from '@/api';
 import { useAuth } from '../store/auth';
 
@@ -298,15 +298,63 @@ const { isAuthenticated, getUserName, getUserPhoto, openLogin, openRegister } = 
 const subscriberEmail = ref('');
 const subscribing = ref(false);
 const prayers = ref([]);
+const campaigns = ref([]);
+const stats = ref([
+  { value: '0', label: 'Donatur' },
+  { value: '0', label: 'Tersalur' },
+  { value: '0', label: 'Penerima' },
+  { value: '0', label: 'Program' },
+]);
+const articles = ref([]);
 
 const fetchData = async () => {
   try {
-    const res = await api.get('/prayers');
-    prayers.value = res.data;
+    // 1. Fetch Doa
+    const prayersRes = await api.get('/prayers');
+    prayers.value = prayersRes.data;
+
+    // 2. Fetch Campaigns
+    const campaignsRes = await api.get('/campaigns');
+    campaigns.value = campaignsRes.data.map(c => ({
+      ...c,
+      desc: c.description,
+      percent: Math.round((c.current_amount / c.target_amount) * 100) || 0,
+      icon: c.category === 'Kesehatan' ? '🏥' : 
+            (c.category === 'Pendidikan' ? '🎓' : 
+            (c.category === 'Dakwah' ? '🕌' : 
+            (c.category === 'Kemanusiaan' ? '🌍' : '📦'))),
+      color: 'bg-green-600'
+    })).slice(0, 8);
+
+    // 3. Fetch Stats
+    const statsRes = await api.get('/stats');
+    stats.value = [
+      { value: statsRes.data.totalDonors, label: 'Donatur' }, 
+      { value: 'Rp ' + new Intl.NumberFormat('id-ID').format(statsRes.data.totalDonation), label: 'Tersalur' },
+      { value: statsRes.data.campaignsSuccess, label: 'Program Sukses' },
+      { value: statsRes.data.reach, label: 'Kategori' },
+    ];
+
+    // 4. Fetch News
+    const newsRes = await api.get('/news');
+    articles.value = newsRes.data.map(n => ({
+      tag: n.tag || 'Update',
+      title: n.title,
+      color: 'bg-green-600'
+    })).slice(0, 3);
+
   } catch (e) {
-    console.error('Gagal mengambil data doa:', e);
+    console.error('Gagal mengambil data landing page:', e);
   }
 };
+onMounted(() => {
+  fetchData();
+});
+const steps = [
+  { title: 'Pilih Program', desc: 'Cari bantuan yang sesuai niat Anda.' },
+  { title: 'Donasi', desc: 'Berapapun sangat berarti bagi mereka.' },
+  { title: 'Laporan', desc: 'Dapatkan bukti penyaluran transparan.' },
+];
 
 const handleAamiin = async (id) => {
    try {
@@ -350,30 +398,7 @@ const features = [
   { icon: '🌍', title: 'Bantuan Darurat', desc: 'Respon cepat untuk bencana dan konflik global.' },
 ];
 
-const campaigns = [
-  { id: 1, title: 'Darurat Pangan Gaza', desc: 'Paket sembako untuk keluarga pengungsi.', color: 'bg-green-500', percent: 75, icon: '📦' },
-  { id: 2, title: 'Klinik Mobile Tepi Barat', desc: 'Layanan medis gratis warga terpencil.', color: 'bg-emerald-500', percent: 42, icon: '🏥' },
-  { id: 3, title: 'Beasiswa Anak Syuhada', desc: 'Menjamin pendidikan anak yatim konflik.', color: 'bg-green-600', percent: 90, icon: '🎓' },
-];
 
-const stats = [
-  { value: '2.3 Jt', label: 'Donatur' },
-  { value: 'Rp 48 M', label: 'Tersalur' },
-  { value: '820 Rb', label: 'Penerima' },
-  { value: '1.9k+', label: 'Program' },
-];
-
-const steps = [
-  { title: 'Pilih Program', desc: 'Cari bantuan yang sesuai niat Anda.' },
-  { title: 'Donasi', desc: 'Berapapun sangat berarti bagi mereka.' },
-  { title: 'Laporan', desc: 'Dapatkan bukti penyaluran transparan.' },
-];
-
-const articles = [
-  { tag: 'Update', title: 'Penyaluran Bantuan Gaza Tahap III', color: 'bg-green-600' },
-  { tag: 'Laporan', title: 'Transparansi Dana Zakat Fitrah 2026', color: 'bg-emerald-600' },
-  { tag: 'Cerita', title: 'Sekolah Kembali Dibuka di Rafah', color: 'bg-green-500' },
-];
 
 const footerLinks = [
   { title: 'Program', links: [{ label: 'Palestina', to: '/' }, { label: 'Bencana', to: '/' }, { label: 'Yatim', to: '/' }] },
@@ -381,8 +406,6 @@ const footerLinks = [
   { title: 'Legal', links: [{ label: 'Syarat Ketentuan', to: '/' }, { label: 'Kebijakan Privasi', to: '/' }] },
 ];
 
-import { onMounted } from 'vue';
-onMounted(fetchData);
 </script>
 
 <style>
