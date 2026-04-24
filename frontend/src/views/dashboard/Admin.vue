@@ -29,23 +29,23 @@
 
            <!-- Menu Navigasi Admin -->
            <nav class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-              <div class="p-3 space-y-1">
-                 <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest pl-5 py-3">Menu Utama</p>
-                 <button
-                   v-for="tab in sidebarTabs"
-                   :key="tab.id"
-                   @click="currentAdminTab = tab.id"
-                   class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all group border-2 border-transparent text-left"
-                   :class="currentAdminTab === tab.id 
-                     ? 'bg-green-600 border-green-600 text-white shadow-xl shadow-green-100' 
-                     : 'text-gray-400 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-100'"
-                 >
-                   <div :class="['w-8 h-8 rounded-lg flex items-center justify-center transition-all', currentAdminTab === tab.id ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-white']">
-                      <i :class="[tab.icon, 'text-[10px]']"></i>
-                   </div>
-                   {{ tab.label }}
-                 </button>
-              </div>
+               <div class="p-3 space-y-1">
+                  <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest pl-5 py-3">Menu Utama</p>
+                  <button
+                    v-for="tab in sidebarTabs"
+                    :key="tab.id"
+                    @click="currentAdminTab = tab.id"
+                    class="w-full flex items-center gap-4 px-5 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 group border-2 border-transparent text-left outline-none"
+                    :class="currentAdminTab === tab.id 
+                      ? 'bg-green-600 border-green-600 text-white shadow-2xl shadow-green-200/50 scale-[1.02]' 
+                      : 'text-gray-400 hover:bg-white hover:text-green-600 hover:border-green-100 hover:shadow-lg hover:shadow-slate-100'"
+                  >
+                    <div :class="['w-9 h-9 rounded-2xl flex items-center justify-center transition-all duration-300', currentAdminTab === tab.id ? 'bg-white/20 text-white rotate-12' : 'bg-gray-50 text-gray-400 group-hover:bg-green-50 group-hover:text-green-600 group-hover:rotate-12']">
+                       <i :class="[tab.icon, 'text-[11px]']"></i>
+                    </div>
+                    <span class="whitespace-nowrap">{{ tab.label }}</span>
+                  </button>
+               </div>
 
               <!-- Admin Management Group (Collapsible) -->
               <div class="mt-2 border-t border-gray-100">
@@ -63,10 +63,10 @@
                       @click="currentAdminTab = tab.id"
                       class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
                       :class="currentAdminTab === tab.id 
-                        ? 'text-green-600 bg-green-50/50 border-green-600' 
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
+                        ? 'bg-green-600 text-white shadow-lg' 
+                        : 'text-gray-500 hover:bg-gray-50'"
                     >
-                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-white' : 'text-gray-400']"></i>
                       {{ tab.label }}
                     </button>
                  </div>
@@ -87,10 +87,10 @@
                       @click="currentAdminTab = tab.id"
                       class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
                       :class="currentAdminTab === tab.id 
-                        ? 'text-green-600 bg-green-50/50 border-green-600' 
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
+                        ? 'bg-green-600 text-white shadow-lg' 
+                        : 'text-gray-500 hover:bg-gray-50'"
                     >
-                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-white' : 'text-gray-400']"></i>
                       {{ tab.label }}
                     </button>
                  </div>
@@ -111,10 +111,10 @@
                       @click="currentAdminTab = tab.id"
                       class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
                       :class="currentAdminTab === tab.id 
-                        ? 'text-green-600 bg-green-50/50 border-green-600' 
-                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
+                        ? 'bg-green-600 text-white shadow-lg' 
+                        : 'text-gray-500 hover:bg-gray-50'"
                     >
-                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-white' : 'text-gray-400']"></i>
                       {{ tab.label }}
                     </button>
                  </div>
