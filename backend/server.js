@@ -57,6 +57,7 @@ app.use('/api/field', fieldRoutes);
 app.use('/api/prayers', prayerRoutes);
 app.use('/api/volunteers', require('./routes/volunteerRoutes'));
 app.use('/api/contacts', require('./routes/contactRoutes'));
+app.use('/api/newsletters', require('./routes/newsletterRoutes'));
 app.use('/api/admin-master', require('./routes/adminMasterRoutes'));
 
 // Root test route

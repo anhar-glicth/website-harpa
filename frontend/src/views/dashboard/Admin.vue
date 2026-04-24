@@ -826,6 +826,7 @@ const sidebarTabs = ref([
   { id: 'mualaf_mgt', label: 'Manajemen Mualaf V2', icon: 'fas fa-kaaba' },
   { id: 'recruitment', label: 'Rekrutmen Relawan V2', icon: 'fas fa-user-plus' },
   { id: 'inbox', label: 'Kotak Pesan V2', icon: 'fas fa-envelope-open-text' },
+  { id: 'newsletter_mgt', label: 'Berlangganan Warta V2', icon: 'fas fa-mail-bulk' },
   { id: 'audit_logs', label: 'Log Sistem V2', icon: 'fas fa-history' },
   { id: 'verify_campaign', label: 'Approval Kampanye V2', icon: 'fas fa-check-double' },
   { id: 'verify_donation', label: 'Verifikasi Donasi V2', icon: 'fas fa-donate' },
@@ -982,6 +983,10 @@ const moduleConfigs = {
   inbox: { title: 'Kotak Pesan Masuk', entity: 'Pesan', description: 'Pesan dan pertanyaan dari publik', icon: 'fas fa-envelope-open-text',
     columns: [{ key: 'name', label: 'Pengirim' }, { key: 'email', label: 'Email' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'unread' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600' }],
     fields: [{ key: 'name', label: 'Nama Pengirim' }, { key: 'email', label: 'Email' }, { key: 'message', label: 'Isi Pesan', type: 'textarea' }, { key: 'status', label: 'Status', type: 'select', options: ['unread', 'read', 'replied'] }] },
+
+  newsletter_mgt: { title: 'Daftar Pelanggan Warta', entity: 'Pelanggan', description: 'Daftar email yang berlangganan newsletter', icon: 'fas fa-mail-bulk',
+    columns: [{ key: 'email', label: 'Email' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'active' ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-400' }, { key: 'created_at', label: 'Tanggal', type: 'date' }],
+    fields: [{ key: 'email', label: 'Email' }, { key: 'status', label: 'Status', type: 'select', options: ['active', 'unsubscribed'] }] },
 };
 
 const activeModule = computed(() => moduleConfigs[currentAdminTab.value] || null);

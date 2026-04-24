@@ -196,8 +196,35 @@
       </div>
     </section>
 
+    <!-- ===== NEWSLETTER ===== -->
+    <section class="max-w-7xl mx-auto px-6 py-24">
+      <div class="bg-slate-900 rounded-[3rem] p-12 md:p-20 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="absolute -top-24 -left-24 w-64 h-64 bg-green-600/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10 space-y-4 max-w-lg">
+          <h2 class="text-3xl md:text-5xl font-black text-white tracking-tighter leading-tight">Ikuti Jejak <span class="text-green-500">Kebaikan.</span></h2>
+          <p class="text-slate-400 text-lg">Dapatkan update terbaru penyaluran bantuan langsung ke email Anda.</p>
+        </div>
+        <form @submit.prevent="handleSubscribe" class="relative z-10 w-full md:w-auto flex flex-col sm:flex-row gap-4">
+          <input 
+            v-model="subscriberEmail"
+            type="email" 
+            placeholder="Alamat Email Anda" 
+            class="bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-white outline-none focus:border-green-500 transition-all w-full md:w-80 font-bold"
+            required
+          />
+          <button 
+            type="submit"
+            :disabled="subscribing"
+            class="bg-green-600 text-white px-10 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-900/50 disabled:opacity-50"
+          >
+            {{ subscribing ? 'Memproses...' : 'Langganan' }}
+          </button>
+        </form>
+      </div>
+    </section>
+
     <!-- ===== FOOTER ===== -->
-    <footer class="bg-slate-900 text-white py-20">
+    <footer class="bg-slate-900 text-white py-20 border-t border-white/5">
       <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
         <div class="space-y-6">
           <div class="flex items-center gap-2">
@@ -224,8 +251,27 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import api from '@/api';
 import { useAuth } from '../store/auth';
+
 const { isAuthenticated, getUserName, getUserPhoto, openLogin, openRegister } = useAuth();
+
+const subscriberEmail = ref('');
+const subscribing = ref(false);
+
+const handleSubscribe = async () => {
+  subscribing.value = true;
+  try {
+    await api.post('/newsletters/subscribe', { email: subscriberEmail.value });
+    alert('Terima kasih! Anda telah terdaftar sebagai pelanggan warta kami.');
+    subscriberEmail.value = '';
+  } catch (e) {
+    alert('Gagal berlangganan. Silakan coba lagi nanti.');
+  } finally {
+    subscribing.value = false;
+  }
+};
 
 const menuLinks = [
   { label: 'Beranda', to: '/' },

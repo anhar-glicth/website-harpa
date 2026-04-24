@@ -75,6 +75,26 @@ const getDonationById = async (req, res, next) => {
     }
 };
 
+/**
+ * Mengambil SEMUA riwayat donasi (Untuk Admin)
+ */
+const getAllDonations = async (req, res, next) => {
+    try {
+        const query = `
+            SELECT 
+                d.*, 
+                c.title AS campaign_title
+            FROM donations d
+            JOIN campaigns c ON d.campaign_id = c.id
+            ORDER BY d.donation_date DESC
+        `;
+        const [rows] = await db.query(query);
+        res.json(rows);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     createDonation,
     getMyDonations,

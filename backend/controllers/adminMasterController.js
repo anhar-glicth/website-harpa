@@ -30,7 +30,8 @@ const moduleConfigs = {
     'mualaf_mgt': { table: 'mualaf_requests', orderBy: 'created_at DESC' },
     'audit_logs': { table: 'audit_logs', orderBy: 'created_at DESC' },
     'recruitment': { table: 'volunteers', orderBy: 'created_at DESC' },
-    'inbox': { table: 'contact_messages', orderBy: 'created_at DESC' }
+    'inbox': { table: 'contact_messages', orderBy: 'created_at DESC' },
+    'newsletter_mgt': { table: 'newsletters', orderBy: 'created_at DESC' }
 };
 
 const logAudit = async (userId, action, module, details) => {
