@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-exports.registerVolunteer = async (req, res) => {
+const registerVolunteer = async (req, res) => {
     const { name, email, phone, address, skills, reason } = req.body;
     try {
         await db.query(
@@ -14,11 +14,16 @@ exports.registerVolunteer = async (req, res) => {
     }
 };
 
-exports.getVolunteers = async (req, res) => {
+const getVolunteers = async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM volunteers ORDER BY created_at DESC');
         res.json(rows);
     } catch (error) {
         res.status(500).json({ message: 'Gagal mengambil data relawan.' });
     }
+};
+
+module.exports = {
+    registerVolunteer,
+    getVolunteers
 };

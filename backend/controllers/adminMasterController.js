@@ -42,7 +42,7 @@ const logAudit = async (userId, action, module, details) => {
     }
 };
 
-exports.getData = async (req, res) => {
+const getData = async (req, res) => {
     const { module } = req.params;
     const config = moduleConfigs[module];
 
@@ -63,7 +63,7 @@ exports.getData = async (req, res) => {
     }
 };
 
-exports.createData = async (req, res) => {
+const createData = async (req, res) => {
     const { module } = req.params;
     const config = moduleConfigs[module];
     const data = req.body;
@@ -87,7 +87,7 @@ exports.createData = async (req, res) => {
     }
 };
 
-exports.updateData = async (req, res) => {
+const updateData = async (req, res) => {
     const { module, id } = req.params;
     const config = moduleConfigs[module];
     const data = req.body;
@@ -107,7 +107,7 @@ exports.updateData = async (req, res) => {
     }
 };
 
-exports.deleteData = async (req, res) => {
+const deleteData = async (req, res) => {
     const { module, id } = req.params;
     const config = moduleConfigs[module];
     const pk = config?.pk || 'id';
@@ -126,7 +126,7 @@ exports.deleteData = async (req, res) => {
     }
 };
 
-exports.getStats = async (req, res) => {
+const getStats = async (req, res) => {
     const { module } = req.params;
     
     try {
@@ -194,5 +194,11 @@ exports.getStats = async (req, res) => {
     }
 };
 
-// EXPORTS are already handled by exports.xxx = ...
-// Removing the redundant and broken module.exports block at the end.
+// EXPORTS
+module.exports = {
+    getData,
+    createData,
+    updateData,
+    deleteData,
+    getStats
+};

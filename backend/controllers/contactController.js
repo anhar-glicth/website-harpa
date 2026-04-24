@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-exports.sendMessage = async (req, res) => {
+const sendMessage = async (req, res) => {
     const { name, email, message } = req.body;
     try {
         await db.query(
@@ -14,11 +14,16 @@ exports.sendMessage = async (req, res) => {
     }
 };
 
-exports.getMessages = async (req, res) => {
+const getMessages = async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM contact_messages ORDER BY created_at DESC');
         res.json(rows);
     } catch (error) {
         res.status(500).json({ message: 'Gagal mengambil pesan.' });
     }
+};
+
+module.exports = {
+    sendMessage,
+    getMessages
 };

@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
@@ -55,10 +55,27 @@ const router = useRouter();
 const userName = computed(() => localStorage.getItem('name') || 'Guest');
 const userRole = computed(() => localStorage.getItem('role'));
 
+const showLogoutModal = ref(false);
+const isLoggingOut = ref(false);
+
 const isActive = (path) => route.path === path;
 
-const handleLogout = () => {
+const handleLogout = async () => {
+  isLoggingOut.value = true;
+  
+  // Simulasi proses pembersihan sesi agar terasa "premium"
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
   localStorage.clear();
+  sessionStorage.clear();
+  
+  // Hapus cookie jika ada (opsional)
+  document.cookie.split(";").forEach((c) => {
+    document.cookie = c
+      .replace(/^ +/, "")
+      .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+  });
+
   router.push('/login');
 };
 

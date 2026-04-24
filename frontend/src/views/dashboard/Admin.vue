@@ -1065,28 +1065,7 @@ const editModuleData = (row, index) => {
   showModuleModal.value = true;
 };
 
-const exportToCSV = () => {
-  }
 
-  const headers = config.columns.map(c => c.label).join(',');
-  const rows = data.map(row => 
-    config.columns.map(c => {
-      let val = row[c.key] || '';
-      // Escape commas and quotes for CSV
-      if (typeof val === 'string') val = `"${val.replace(/"/g, '""')}"`;
-      return val;
-    }).join(',')
-  ).join('\n');
-
-  const csvContent = "data:text/csv;charset=utf-8," + headers + "\n" + rows;
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `Laporan_${tab}_${new Date().toISOString().split('T')[0]}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
 
 const handleDeleteModuleData = async (row) => {
   const config = activeModule.value;
@@ -1335,6 +1314,35 @@ const handleSaveSettings = async () => {
   } finally {
     savingSettings.value = false;
   }
+};
+
+const exportToCSV = () => {
+  const data = filteredModuleData.value;
+  if (!data || data.length === 0) return alert('Tidak ada data untuk diekspor');
+
+  // Ambil kolom dari config untuk header CSV yang lebih rapi
+  const config = moduleConfigs[currentAdminTab.value];
+  const headers = config.columns.map(c => c.label);
+  const keys = config.columns.map(c => c.key);
+
+  const rows = data.map(item => 
+    keys.map(key => {
+      const val = item[key] === null ? '' : item[key];
+      return `"${String(val).replace(/"/g, '""')}"`;
+    }).join(',')
+  );
+
+  const csvContent = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', `${currentAdminTab.value}_export_${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 onMounted(() => {

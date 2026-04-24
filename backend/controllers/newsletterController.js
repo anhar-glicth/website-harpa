@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-exports.subscribe = async (req, res) => {
+const subscribe = async (req, res) => {
     const { email } = req.body;
     try {
         await db.query(
@@ -14,11 +14,16 @@ exports.subscribe = async (req, res) => {
     }
 };
 
-exports.getSubscribers = async (req, res) => {
+const getSubscribers = async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM newsletters ORDER BY created_at DESC');
         res.json(rows);
     } catch (error) {
         res.status(500).json({ message: 'Gagal mengambil data pelanggan.' });
     }
+};
+
+module.exports = {
+    subscribe,
+    getSubscribers
 };
