@@ -17,7 +17,7 @@
                     <p class="text-lg font-black text-gray-900 tracking-tighter truncate">Administrator</p>
                  </div>
                  <div class="flex gap-2 justify-center pt-2">
-                    <button @click="activeTab = 'settings'" class="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:text-green-600 hover:bg-green-50 transition-all shadow-sm">
+                    <button @click="currentAdminTab = 'settings'" class="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:text-green-600 hover:bg-green-50 transition-all shadow-sm">
                        <i class="fas fa-cog"></i>
                     </button>
                     <button @click="showAddModal = true" class="px-4 py-2 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-green-100 hover:bg-green-700 transition-all">
@@ -34,13 +34,13 @@
                  <button
                    v-for="tab in sidebarTabs"
                    :key="tab.id"
-                   @click="activeTab = tab.id"
+                   @click="currentAdminTab = tab.id"
                    class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all group border-2 border-transparent text-left"
-                   :class="activeTab === tab.id 
+                   :class="currentAdminTab === tab.id 
                      ? 'bg-green-600 border-green-600 text-white shadow-xl shadow-green-100' 
                      : 'text-gray-400 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-100'"
                  >
-                   <div :class="['w-8 h-8 rounded-lg flex items-center justify-center transition-all', activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-white']">
+                   <div :class="['w-8 h-8 rounded-lg flex items-center justify-center transition-all', currentAdminTab === tab.id ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-white']">
                       <i :class="[tab.icon, 'text-[10px]']"></i>
                    </div>
                    {{ tab.label }}
@@ -60,13 +60,13 @@
                     <button
                       v-for="tab in managementTabs"
                       :key="tab.id"
-                      @click="activeTab = tab.id"
+                      @click="currentAdminTab = tab.id"
                       class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
-                      :class="activeTab === tab.id 
+                      :class="currentAdminTab === tab.id 
                         ? 'text-green-600 bg-green-50/50 border-green-600' 
                         : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
                     >
-                      <i :class="[tab.icon, 'w-5 text-center transition-colors', activeTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
                       {{ tab.label }}
                     </button>
                  </div>
@@ -84,13 +84,13 @@
                     <button
                       v-for="tab in distributionTabs"
                       :key="tab.id"
-                      @click="activeTab = tab.id"
+                      @click="currentAdminTab = tab.id"
                       class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
-                      :class="activeTab === tab.id 
+                      :class="currentAdminTab === tab.id 
                         ? 'text-green-600 bg-green-50/50 border-green-600' 
                         : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
                     >
-                      <i :class="[tab.icon, 'w-5 text-center transition-colors', activeTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
                       {{ tab.label }}
                     </button>
                  </div>
@@ -108,13 +108,13 @@
                     <button
                       v-for="tab in transactionTabs"
                       :key="tab.id"
-                      @click="activeTab = tab.id"
+                      @click="currentAdminTab = tab.id"
                       class="w-full flex items-center gap-4 px-6 py-3.5 text-[12px] font-semibold transition-all text-left border-l-4 border-transparent"
-                      :class="activeTab === tab.id 
+                      :class="currentAdminTab === tab.id 
                         ? 'text-green-600 bg-green-50/50 border-green-600' 
                         : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'"
                     >
-                      <i :class="[tab.icon, 'w-5 text-center transition-colors', activeTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
+                      <i :class="[tab.icon, 'w-5 text-center transition-colors', currentAdminTab === tab.id ? 'text-green-600' : 'text-gray-400']"></i>
                       {{ tab.label }}
                     </button>
                  </div>
@@ -131,7 +131,7 @@
         <main class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full overflow-hidden">
           <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="space-y-1 text-center md:text-left">
-              <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">ADMIN <span class="text-green-600">PANEL [V2]</span></h1>
+              <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">ADMIN <span class="text-green-600">PANEL [FORCE UPDATE]</span></h1>
               <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">Pusat Kendali & CMS HumanityCare</p>
             </div>
 
@@ -154,7 +154,7 @@
           <div v-else class="space-y-8 animate-in zoom-in-95 duration-500 pb-20 lg:pb-0">
             
             <!-- Dashboard Tab -->
-            <div v-if="activeTab === 'dashboard'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <div v-if="currentAdminTab === 'dashboard'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm bg-gradient-to-br from-white to-green-50/30">
                 <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Donasi</p>
                 <p class="text-2xl md:text-3xl font-black text-green-600 tracking-tighter">Rp {{ stats.totalDonations?.toLocaleString() || 0 }}</p>
@@ -170,7 +170,7 @@
             </div>
 
             <!-- Generic Module Renderer -->
-            <template v-if="managementTabs.some(t => t.id === activeTab) || distributionTabs.some(t => t.id === activeTab) || transactionTabs.some(t => t.id === activeTab)">
+            <template v-if="managementTabs.some(t => t.id === currentAdminTab) || distributionTabs.some(t => t.id === currentAdminTab) || transactionTabs.some(t => t.id === currentAdminTab)">
               <div v-if="activeModule" class="space-y-6">
                 <!-- Module Header -->
                 <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col md:flex-row justify-between items-center gap-5">
@@ -289,7 +289,7 @@
             </div>
 
             <!-- User Management Tab -->
-            <div v-if="activeTab === 'users'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div v-if="currentAdminTab === 'users'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-green-50/20">
                   <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Manajemen <span class="text-green-600">Pengguna</span></h3>
                   <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ users.length }} Akun Terdaftar</span>
@@ -328,7 +328,7 @@
             </div>
 
             <!-- Zakat Approval Tab (NEW) -->
-            <div v-if="activeTab === 'verify_zakat'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div v-if="currentAdminTab === 'verify_zakat'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                <div class="p-8 border-b border-gray-50 bg-green-50/20 text-center md:text-left">
                   <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Verifikasi <span class="text-green-600">Zakat</span></h3>
                </div>
@@ -366,7 +366,7 @@
             </div>
 
             <!-- Site Settings Tab (CMS) -->
-            <div v-if="activeTab === 'settings'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div v-if="currentAdminTab === 'settings'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                <div class="p-8 border-b border-gray-50 bg-green-50/20">
                   <h3 class="font-black text-gray-900 uppercase tracking-tighter">Pengaturan Eksternal <span class="text-green-600">(CMS)</span></h3>
                </div>
@@ -415,7 +415,7 @@
             </div>
 
             <!-- Other Approval Tabs -->
-            <div v-if="activeTab === 'verify_campaign'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+            <div v-if="currentAdminTab === 'verify_campaign'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                <div class="p-8 border-b border-gray-50 bg-green-50/20">
                   <h3 class="font-black text-gray-900 uppercase tracking-tighter">Approval <span class="text-green-600">Kampanye</span></h3>
                </div>
@@ -439,7 +439,7 @@
                 </div>
              </div>
  
-             <div v-if="activeTab === 'verify_donation'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+             <div v-if="currentAdminTab === 'verify_donation'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                <div class="p-8 border-b border-gray-50 bg-green-50/20 text-center md:text-left">
                   <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Konfirmasi <span class="text-green-600">Donasi</span></h3>
                </div>
@@ -474,7 +474,7 @@
             </div>
 
             <!-- Monitoring & Task Management Tab (NEW) -->
-            <div v-if="activeTab === 'monitoring'" class="space-y-8">
+            <div v-if="currentAdminTab === 'monitoring'" class="space-y-8">
               <!-- Worker Performance Cards -->
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div v-for="worker in workerPerformance" :key="worker.id" class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
@@ -501,9 +501,14 @@
 
               <!-- Tabs Internal: Absensi vs Daftar Tugas -->
               <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-gray-50 flex gap-4 bg-gray-50/50">
-                  <button @click="monitoringSubTab = 'attendance'" :class="monitoringSubTab === 'attendance' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700'" class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Absensi</button>
-                  <button @click="monitoringSubTab = 'tasks'" :class="monitoringSubTab === 'tasks' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700'" class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Daftar Tugas</button>
+                <div class="p-6 border-b border-gray-50 flex flex-wrap justify-between items-center gap-4 bg-gray-50/50">
+                  <div class="flex gap-4">
+                    <button @click="monitoringSubTab = 'attendance'" :class="monitoringSubTab === 'attendance' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700'" class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Absensi</button>
+                    <button @click="monitoringSubTab = 'tasks'" :class="monitoringSubTab === 'tasks' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700'" class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Daftar Tugas</button>
+                  </div>
+                  <button v-if="monitoringSubTab === 'tasks'" @click="showAssignModal = true; assignTaskForm.user_id = null; assignTaskForm.worker_name = 'Umum'" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-green-600 transition-all flex items-center gap-2">
+                    <i class="fas fa-plus-circle"></i> Beri Tugas Baru
+                  </button>
                 </div>
 
                 <!-- Sub-Tab: Attendance -->
@@ -692,6 +697,12 @@
            <button @click="showAssignModal = false" class="text-white/60 hover:text-white">✕</button>
          </div>
          <form @submit.prevent="handleAssignTask" class="p-8 space-y-5">
+           <div v-if="!assignTaskForm.user_id" class="space-y-2">
+             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Pilih Pegawai</label>
+             <select v-model="assignTaskForm.user_id" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required>
+               <option v-for="w in workerPerformance" :key="w.id" :value="w.id">{{ w.name }} ({{ w.role }})</option>
+             </select>
+           </div>
            <div class="space-y-2">
              <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Judul Tugas</label>
              <input v-model="assignTaskForm.task" placeholder="Contoh: Distribusi Sembako" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
@@ -737,7 +748,7 @@ const sidebarTabs = ref([
   { id: 'monitoring', label: 'Monitoring & Tugas V2', icon: 'fas fa-tasks' },
 ]);
 
-const activeTab = ref('dashboard');
+const currentAdminTab = ref('monitoring');
 const managementTabs = [
   { id: 'profile', label: 'Profil Lembaga', icon: 'fas fa-building' },
   { id: 'users_mgt', label: 'Users', icon: 'fas fa-user-friends' },
@@ -867,9 +878,9 @@ const moduleConfigs = {
   rfm_dashboard: { title: 'Dashboard RFM', entity: 'Laporan', description: 'Analitik Recency, Frequency, Monetary donatur', icon: 'fas fa-brain', isDashboard: true, fields: [] },
 };
 
-const activeModule = computed(() => moduleConfigs[activeTab.value] || null);
+const activeModule = computed(() => moduleConfigs[currentAdminTab.value] || null);
 const filteredModuleData = computed(() => {
-  const data = moduleData.value[activeTab.value] || [];
+  const data = moduleData.value[currentAdminTab.value] || [];
   if (!moduleSearchQuery.value) return data;
   
   const query = moduleSearchQuery.value.toLowerCase();
@@ -910,7 +921,7 @@ const processingDecision = ref(false);
 const noteData = reactive({ type: '', id: null, status: '', note: '' });
 
 const handleSaveModuleData = async () => {
-  const tab = activeTab.value;
+  const tab = currentAdminTab.value;
   const payload = { ...moduleFormData.value };
   const id = payload.id;
   delete payload._index;
@@ -938,7 +949,7 @@ const editModuleData = (row, index) => {
 const handleDeleteModuleData = async (id) => {
   if (confirm(`Yakin ingin menghapus data ini?`)) {
     try {
-      await api.delete(`/admin/master/${activeTab.value}/${id}`);
+      await api.delete(`/admin/master/${currentAdminTab.value}/${id}`);
       fetchModuleData();
     } catch (e) {
       alert('Gagal menghapus data.');
@@ -947,7 +958,7 @@ const handleDeleteModuleData = async (id) => {
 };
 
 const fetchModuleData = async () => {
-  const tab = activeTab.value;
+  const tab = currentAdminTab.value;
   if (!moduleConfigs[tab] || moduleConfigs[tab].isDashboard) return;
   
   try {
@@ -973,7 +984,7 @@ const fetchMonitoringData = async () => {
   }
 };
 
-const openAssignTask = (worker) => {
+const openAssignModal = (worker) => {
   assignTaskForm.user_id = worker.id;
   assignTaskForm.worker_name = worker.name;
   assignTaskForm.task = '';
@@ -1040,7 +1051,7 @@ const fetchData = async () => {
 
 // Watch for tab changes to fetch specific module data
 import { watch } from 'vue';
-watch(activeTab, (newTab) => {
+watch(currentAdminTab, (newTab) => {
   if (moduleConfigs[newTab]) {
     fetchModuleData();
   }
@@ -1118,7 +1129,7 @@ const handleSaveSettings = async () => {
 
 onMounted(() => {
   console.log('Admin Dashboard Mounted, Tabs:', sidebarTabs.value.length);
-  activeTab.value = 'dashboard';
+  currentAdminTab.value = 'dashboard';
   fetchData();
   fetchMonitoringData();
 });
