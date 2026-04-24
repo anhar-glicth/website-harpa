@@ -49,14 +49,23 @@
                     />
                  </div>
                  <div class="space-y-2">
-                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Alamat Email / Username</label>
+                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Username Unik</label>
                     <input 
-                      v-model="profileData.email" 
-                      type="email"
+                      v-model="profileData.username" 
                       class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-green-600 outline-none font-bold text-xs"
-                      placeholder="email@anda.com"
+                      placeholder="username_anda"
                     />
                  </div>
+              </div>
+
+              <div class="space-y-2">
+                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Alamat Email Aktif</label>
+                 <input 
+                   v-model="profileData.email" 
+                   type="email"
+                   class="w-full p-4 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-green-600 outline-none font-bold text-xs"
+                   placeholder="email@anda.com"
+                 />
               </div>
            </div>
 
@@ -130,6 +139,7 @@ const { updateUserData } = useAuth();
 
 const profileData = ref({
    name: '',
+   username: '',
    email: '',
    password: '',
    profile_photo: '',
@@ -165,6 +175,7 @@ const handleSave = async () => {
    try {
       await api.post('/profile/update', {
          name: profileData.value.name,
+         username: profileData.value.username,
          email: profileData.value.email,
          password: profileData.value.password || undefined,
          profile_photo: profileData.value.profile_photo
@@ -176,7 +187,7 @@ const handleSave = async () => {
       alert('Profil Anda berhasil diperbarui!');
       fetchProfile();
    } catch (e) {
-      alert('Gagal memperbarui profil.');
+      alert(e.response?.data?.message || 'Gagal memperbarui profil.');
    } finally {
       saving.value = false;
    }

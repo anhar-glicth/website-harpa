@@ -33,18 +33,23 @@ exports.register = async (req, res) => {
 /**
  * LOGIN TUNGGAL
  */
-exports.login = async (req, res) => {
+const login = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        // Cari user berdasarkan email ATAU username
+        const [users] = await db.query(
+            'SELECT * FROM users WHERE email = ? OR username = ?', 
+            [email, email]
+        );
+
         if (users.length === 0) {
-            return res.status(401).json({ message: 'Email atau password salah' });
+            return res.status(401).json({ message: 'Identitas atau password salah' });
         }
         
         const user = users[0];
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: 'Email atau password salah' });
+            return res.status(401).json({ message: 'Identitas atau password salah' });
         }
         
         const token = jwt.sign(
@@ -64,4 +69,9 @@ exports.login = async (req, res) => {
         console.error('Login Error:', error.message);
         res.status(500).json({ message: 'Terjadi kesalahan pada server' });
     }
+};
+
+module.exports = {
+    register,
+    login
 };

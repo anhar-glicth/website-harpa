@@ -121,12 +121,24 @@
               </div>
            </nav>
 
-           <!-- Link Kembali -->
-           <router-link to="/dashboard" class="flex items-center justify-center gap-3 w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-600 transition-all shadow-lg">
-              <i class="fas fa-arrow-left text-[8px]"></i>
-              Dashboard Utama
-           </router-link>
-        </div>
+            <!-- Link Kembali -->
+            <div class="space-y-2">
+              <router-link to="/profile" class="flex items-center justify-center gap-3 w-full py-4 bg-white border-2 border-slate-100 text-slate-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-green-600 hover:text-green-600 transition-all">
+                <i class="fas fa-user-circle text-[8px]"></i>
+                Edit Profil Saya
+              </router-link>
+
+              <router-link to="/dashboard" class="flex items-center justify-center gap-3 w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-600 transition-all shadow-lg">
+                <i class="fas fa-arrow-left text-[8px]"></i>
+                Dashboard Utama
+              </router-link>
+              
+              <button @click="showLogoutModal = true" class="flex items-center justify-center gap-3 w-full py-4 bg-white border-2 border-red-50 text-red-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-red-50 hover:border-red-100 transition-all">
+                <i class="fas fa-power-off text-[8px]"></i>
+                Keluar Sistem
+              </button>
+            </div>
+         </div>
 
         <main class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full overflow-hidden">
           <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
@@ -804,12 +816,40 @@
     </div>
 
     <!-- Modal: View Attachment (Image/Proof) -->
-    <div v-if="showAttachmentModal" class="fixed inset-0 bg-slate-900/95 backdrop-blur-xl flex items-center justify-center p-6 z-[110]">
+      <div v-if="showAttachmentModal" class="fixed inset-0 bg-slate-900/95 backdrop-blur-xl flex items-center justify-center p-6 z-[110]">
       <div class="relative max-w-4xl w-full">
         <button @click="showAttachmentModal = false" class="absolute -top-12 right-0 text-white text-3xl">✕</button>
         <img :src="attachmentUrl" class="w-full h-auto rounded-[2rem] shadow-2xl border border-white/10" />
       </div>
     </div>
+
+    <!-- Modal Konfirmasi Logout Admin (Moved to bottom for better nesting) -->
+    <Teleport to="body">
+      <div v-if="showLogoutModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300" @click="!isLoggingOut && (showLogoutModal = false)"></div>
+        
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden animate-in zoom-in-95 duration-300">
+          <div class="p-10 text-center">
+            <div class="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+              <i class="fas fa-user-lock"></i>
+            </div>
+            
+            <h3 class="text-2xl font-black text-gray-900 tracking-tighter mb-2 italic">Sesi <span class="text-red-600">Admin</span></h3>
+            <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed mb-8">
+              Anda akan mengakhiri akses administratif. Pastikan semua perubahan telah tersimpan.
+            </p>
+            
+            <div class="flex flex-col gap-3">
+              <button @click="handleLogout" :disabled="isLoggingOut" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-600 transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200">
+                <i v-if="isLoggingOut" class="fas fa-circle-notch animate-spin"></i>
+                <span v-else>Ya, Akhiri Sesi</span>
+              </button>
+              <button @click="showLogoutModal = false" :disabled="isLoggingOut" class="w-full bg-gray-50 text-gray-400 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all">Batal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </div>
 </div>
@@ -817,7 +857,22 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '@/api';
+import { useAuth } from '@/store/auth';
+
+const router = useRouter();
+const { clearAuth } = useAuth();
+const showLogoutModal = ref(false);
+const isLoggingOut = ref(false);
+
+const handleLogout = async () => {
+  isLoggingOut.value = true;
+  await new Promise(r => setTimeout(r, 1000));
+  clearAuth();
+  sessionStorage.clear();
+  router.push('/login');
+};
 
 const sidebarTabs = ref([
   { id: 'dashboard', label: 'Ringkasan V2', icon: 'fas fa-chart-pie' },

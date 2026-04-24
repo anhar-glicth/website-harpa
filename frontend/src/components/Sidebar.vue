@@ -34,7 +34,7 @@
       </router-link>
 
       <button 
-        @click="handleLogout"
+        @click="showLogoutModal = true"
         class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all group border-2 border-transparent text-gray-400 hover:bg-red-50 hover:text-red-600 hover:border-red-100 mt-2"
       >
         <div class="w-8 h-8 bg-gray-50 text-gray-400 rounded-lg flex items-center justify-center group-hover:bg-white group-hover:text-red-600">
@@ -43,17 +43,64 @@
         Keluar Akun
       </button>
     </nav>
+
+    <!-- Modal Konfirmasi Logout Premium -->
+    <Teleport to="body">
+      <div v-if="showLogoutModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300" @click="!isLoggingOut && (showLogoutModal = false)"></div>
+        
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden animate-in zoom-in-95 duration-300">
+          <div class="p-10 text-center">
+            <div class="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            
+            <h3 class="text-2xl font-black text-gray-900 tracking-tighter mb-2 italic">Konfirmasi <span class="text-red-600">Keamanan</span></h3>
+            <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed mb-8">
+              Apakah Anda yakin ingin mengakhiri sesi ini dan menghapus akses sementara?
+            </p>
+            
+            <div class="flex flex-col gap-3">
+              <button 
+                @click="handleLogout" 
+                :disabled="isLoggingOut"
+                class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-600 transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
+              >
+                <i v-if="isLoggingOut" class="fas fa-circle-notch animate-spin"></i>
+                <span v-else>Ya, Keluar Sekarang</span>
+              </button>
+              
+              <button 
+                @click="showLogoutModal = false" 
+                :disabled="isLoggingOut"
+                class="w-full bg-gray-50 text-gray-400 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all"
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+          
+          <div class="bg-gray-50 py-4 px-6 border-t border-gray-100 flex items-center justify-center gap-2">
+            <i class="fas fa-lock text-[8px] text-gray-300"></i>
+            <span class="text-[8px] font-black text-gray-300 uppercase tracking-widest">Sesi Enkripsi Terproteksi</span>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </aside>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useAuth } from '../store/auth';
 
 const route = useRoute();
 const router = useRouter();
-const userName = computed(() => localStorage.getItem('name') || 'Guest');
-const userRole = computed(() => localStorage.getItem('role'));
+const { getUserName: storeUserName, getUserRole: storeUserRole, clearAuth } = useAuth();
+
+const userName = computed(() => storeUserName.value || localStorage.getItem('name') || 'Guest');
+const userRole = computed(() => storeUserRole.value || localStorage.getItem('role'));
 
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
@@ -66,7 +113,7 @@ const handleLogout = async () => {
   // Simulasi proses pembersihan sesi agar terasa "premium"
   await new Promise(resolve => setTimeout(resolve, 800));
   
-  localStorage.clear();
+  clearAuth();
   sessionStorage.clear();
   
   // Hapus cookie jika ada (opsional)
@@ -89,8 +136,11 @@ const navigationLinks = computed(() => {
   } else if (userRole.value === 'field_worker') {
     base.push({ to: '/dashboard/field', label: 'Panel Staff', icon: 'fas fa-briefcase' });
   } else {
-    base.push({ to: '/dashboard/user', label: 'Profil Saya', icon: 'fas fa-user-circle' });
+    base.push({ to: '/dashboard/user', label: 'Donasi & Riwayat', icon: 'fas fa-heart' });
   }
+
+  // Edit Profil tersedia untuk semua role
+  base.push({ to: '/profile', label: 'Edit Profil', icon: 'fas fa-user-cog' });
 
   return base;
 });
