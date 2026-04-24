@@ -22,23 +22,23 @@
         v-for="link in navigationLinks"
         :key="link.to"
         :to="link.to"
-        class="flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all group border-2 border-transparent"
+        class="flex items-center gap-4 px-5 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 group border-2 border-transparent outline-none"
         :class="isActive(link.to) 
-          ? 'bg-green-600 border-green-600 text-white shadow-xl shadow-green-100' 
-          : 'text-gray-400 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-100'"
+          ? 'bg-green-600 border-green-600 text-white shadow-2xl shadow-green-200/50 scale-[1.02]' 
+          : 'text-gray-400 hover:bg-white hover:text-green-600 hover:border-green-100 hover:shadow-lg hover:shadow-slate-100'"
       >
-        <div :class="['w-8 h-8 rounded-lg flex items-center justify-center transition-all', isActive(link.to) ? 'bg-white/20 text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-white']">
-           <i :class="[link.icon, 'text-[10px]']"></i>
+        <div :class="['w-9 h-9 rounded-2xl flex items-center justify-center transition-all duration-300', isActive(link.to) ? 'bg-white/20 text-white rotate-12' : 'bg-gray-50 text-gray-400 group-hover:bg-green-50 group-hover:text-green-600 group-hover:rotate-12']">
+           <i :class="[link.icon, 'text-[11px]']"></i>
         </div>
-        {{ link.label }}
+        <span class="whitespace-nowrap">{{ link.label }}</span>
       </router-link>
 
       <button 
         @click="showLogoutModal = true"
-        class="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all group border-2 border-transparent text-gray-400 hover:bg-red-50 hover:text-red-600 hover:border-red-100 mt-2"
+        class="w-full flex items-center gap-4 px-5 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 group border-2 border-transparent text-gray-400 hover:bg-red-50/50 hover:text-red-600 hover:border-red-100 hover:shadow-lg hover:shadow-red-50 mt-2"
       >
-        <div class="w-8 h-8 bg-gray-50 text-gray-400 rounded-lg flex items-center justify-center group-hover:bg-white group-hover:text-red-600">
-           <i class="fas fa-sign-out-alt text-[10px]"></i>
+        <div class="w-9 h-9 bg-gray-50 text-gray-400 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:bg-white group-hover:text-red-600 group-hover:rotate-12">
+           <i class="fas fa-sign-out-alt text-[11px]"></i>
         </div>
         Keluar Akun
       </button>
@@ -105,7 +105,10 @@ const userRole = computed(() => storeUserRole.value || localStorage.getItem('rol
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
 
-const isActive = (path) => route.path === path;
+const isActive = (path) => {
+  if (path === '/dashboard') return route.path === '/dashboard';
+  return route.path.startsWith(path);
+};
 
 const handleLogout = async () => {
   isLoggingOut.value = true;

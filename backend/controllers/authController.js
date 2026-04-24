@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
  * REGISTRASI PUBLIK (Hanya untuk Donatur)
  * Role dipaksa 'user' di level query untuk keamanan
  */
-exports.register = async (req, res) => {
+const register = async (req, res) => {
     const { name, email, password } = req.body;
     try {
         if (!name || !email || !password) {
