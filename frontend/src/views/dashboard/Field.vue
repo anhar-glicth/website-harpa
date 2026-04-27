@@ -243,11 +243,13 @@
                  </div>
                  <div class="p-12 bg-white/5 backdrop-blur-3xl rounded-[3.5rem] border border-white/10 text-center space-y-3 shadow-2xl shadow-black/20">
                     <p class="text-[10px] font-black uppercase tracking-widest text-green-400">Efektivitas Kerja</p>
-                    <p class="text-5xl font-black italic tracking-tighter text-white">92<span class="text-2xl text-green-500">%</span></p>
+                    <p class="text-5xl font-black italic tracking-tighter text-white">{{ fieldStats.effectiveness || 0 }}<span class="text-2xl text-green-500">%</span></p>
                     <div class="w-40 h-2 bg-white/10 rounded-full mx-auto overflow-hidden">
-                       <div class="h-full bg-green-500 w-[92%] shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                       <div class="h-full bg-green-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-1000" :style="{ width: (fieldStats.effectiveness || 0) + '%' }"></div>
                     </div>
-                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest pt-2">Sangat Baik</p>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest pt-2">
+                      {{ fieldStats.effectiveness >= 90 ? 'Sangat Baik' : fieldStats.effectiveness >= 75 ? 'Baik' : fieldStats.effectiveness >= 50 ? 'Cukup' : 'Perlu Ditingkatkan' }}
+                    </p>
                  </div>
               </div>
            </div>

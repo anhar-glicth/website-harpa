@@ -120,11 +120,18 @@ exports.getFieldStats = async (req, res) => {
             [userId]
         );
 
+        // 5. Work Effectiveness (Task Completion Rate)
+        const [[{ totalTasks }]] = await db.query('SELECT COUNT(*) as total FROM todo_list WHERE user_id = ?', [userId]);
+        const [[{ completedTasks }]] = await db.query('SELECT COUNT(*) as completed FROM todo_list WHERE user_id = ? AND status = "completed"', [userId]);
+        
+        const effectiveness = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
         res.json({
             totalCampaigns,
             totalContent: totalNews + totalUpdates,
             totalFunds: totalFunds || 0,
-            presentDays
+            presentDays,
+            effectiveness
         });
     } catch (error) {
         console.error(error);
