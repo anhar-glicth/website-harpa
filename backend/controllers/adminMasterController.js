@@ -24,6 +24,7 @@ const moduleConfigs = {
                  (SELECT payment_via.name FROM donations JOIN payment_via ON donations.payment_via_id = payment_via.id WHERE donations.user_id = users.id AND donations.payment_status = 'Success' ORDER BY donations.donation_date DESC LIMIT 1) as last_payment_via_name,
                  (SELECT proof_image FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success' ORDER BY donation_date DESC LIMIT 1) as last_donation_proof`,
         join: 'LEFT JOIN offices ON users.office_id = offices.id LEFT JOIN users pic ON users.pic_prospect_id = pic.id LEFT JOIN prospect_media media ON users.last_prospect_media_id = media.id',
+        filter: 'users.role = "user" AND users.id IN (SELECT user_id FROM donations WHERE payment_status = "Success")',
         orderBy: 'users.created_at DESC' 
     },
     'office': { table: 'offices', orderBy: 'name ASC' },
@@ -54,7 +55,13 @@ const moduleConfigs = {
     },
     'targets': { table: 'targets', orderBy: 'period DESC' },
     'prospects': { table: 'prospects', orderBy: 'created_at DESC' },
-    'potential_donors': { table: 'prospects', orderBy: 'created_at DESC' },
+    'potential_donors': { 
+        table: 'users', 
+        select: 'users.*, pic.name as pic_name',
+        join: 'LEFT JOIN users pic ON users.pic_prospect_id = pic.id',
+        filter: 'users.role = "user" AND users.id NOT IN (SELECT user_id FROM donations WHERE payment_status = "Success")',
+        orderBy: 'users.created_at DESC' 
+    },
     'distribution_list': { 
         table: 'distributions', 
         select: 'distributions.*, campaigns.title as campaign_title',
@@ -124,6 +131,23 @@ const createData = async (req, res) => {
         if (module === 'news_mgt') {
             data.author_id = req.user.id;
         }
+
+        if (module === 'potential_donors' || module === 'donors') {
+            data.role = 'user';
+            // Generate default password
+            if (!data.password) {
+                const bcrypt = require('bcryptjs');
+                data.password = await bcrypt.hash('donatur123', 10);
+            }
+            // Ensure username exists
+            if (!data.username) {
+                data.username = data.phone || (data.email ? data.email.split('@')[0] : 'calon_' + Math.random().toString(36).substring(7));
+            }
+            // Ensure email exists (Database might require it)
+            if (!data.email) {
+                data.email = data.username + '@internal.com';
+            }
+        }
         
         const [result] = await db.query(`INSERT INTO ${config.table} SET ?`, [data]);
         await logAudit(req.user.id, 'CREATE', module, { id: result.insertId, ...data });
@@ -131,7 +155,7 @@ const createData = async (req, res) => {
         res.status(201).json({ message: 'Data berhasil ditambahkan', id: result.insertId });
     } catch (error) {
         console.error(`Error creating ${module}:`, error);
-        res.status(500).json({ message: `Gagal menambah data ${module}` });
+        res.status(500).json({ message: `Gagal menambah data ${module}: ${error.message}` });
     }
 };
 

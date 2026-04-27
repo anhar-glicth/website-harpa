@@ -7,6 +7,7 @@ const auth = require('../middleware/auth');
 // Import Controllers
 const adminController = require('../controllers/adminController');
 const masterController = require('../controllers/adminMasterController');
+const donorDashboardController = require('../controllers/donorDashboardController');
 
 /**
  * Rute khusus Admin Dashboard & Management
@@ -34,6 +35,9 @@ router.get('/master/stats/:module', auth, auth.isAdmin, masterController.getStat
 router.post('/master/:module', auth, auth.isAdmin, masterController.createData);
 router.put('/master/:module/:id', auth, auth.isAdmin, masterController.updateData);
 router.delete('/master/:module/:id', auth, auth.isAdmin, masterController.deleteData);
+
+// 6. Donor Dashboard Analytics
+router.get('/donor-dashboard', auth, auth.isAdmin, donorDashboardController.getDonorDashboardData);
 
 // 6. Monitoring & Tugas Pegawai
 router.get('/attendances', auth, auth.isAdmin, adminController.getAllAttendances);

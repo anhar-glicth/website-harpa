@@ -27,24 +27,33 @@
               </div>
            </div>
 
-           <!-- Menu Navigasi Admin -->
-           <nav class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-               <div class="p-3 space-y-1">
-                  <p class="text-[9px] font-black text-gray-300 uppercase tracking-widest pl-5 py-3">Menu Utama</p>
-                  <button
-                    v-for="tab in sidebarTabs"
-                    :key="tab.id"
-                    @click="currentAdminTab = tab.id"
-                    class="w-full flex items-center gap-4 px-5 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 group border-2 border-transparent text-left outline-none"
-                    :class="currentAdminTab === tab.id 
-                      ? 'bg-green-600 border-green-600 text-white shadow-2xl shadow-green-200/50 scale-[1.02]' 
-                      : 'text-gray-400 hover:bg-white hover:text-green-600 hover:border-green-100 hover:shadow-lg hover:shadow-slate-100'"
+            <!-- Menu Navigasi Admin -->
+            <nav class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+               <!-- Main Menu Group (Collapsible) -->
+               <div>
+                  <div 
+                    @click="isMainMenuOpen = !isMainMenuOpen"
+                    class="bg-slate-800 px-6 py-4 flex justify-between items-center text-white cursor-pointer hover:bg-slate-900 transition-colors"
                   >
-                    <div :class="['w-9 h-9 rounded-2xl flex items-center justify-center transition-all duration-300', currentAdminTab === tab.id ? 'bg-white/20 text-white rotate-12' : 'bg-gray-50 text-gray-400 group-hover:bg-green-50 group-hover:text-green-600 group-hover:rotate-12']">
-                       <i :class="[tab.icon, 'text-[11px]']"></i>
-                    </div>
-                    <span class="whitespace-nowrap">{{ tab.label }}</span>
-                  </button>
+                     <span class="text-[11px] font-bold uppercase tracking-wider">Menu Utama</span>
+                     <i :class="['fas fa-chevron-up text-[10px] transition-transform duration-300', !isMainMenuOpen ? 'rotate-180' : '']"></i>
+                  </div>
+                  <div v-show="isMainMenuOpen" class="p-3 space-y-1 max-h-96 overflow-y-auto custom-scrollbar animate-in slide-in-from-top-2 duration-300">
+                     <button
+                       v-for="tab in sidebarTabs"
+                       :key="tab.id"
+                       @click="currentAdminTab = tab.id"
+                       class="w-full flex items-center gap-4 px-5 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 group border-2 border-transparent text-left outline-none"
+                       :class="currentAdminTab === tab.id 
+                         ? 'bg-green-600 border-green-600 text-white shadow-2xl shadow-green-200/50 scale-[1.02]' 
+                         : 'text-gray-400 hover:bg-white hover:text-green-600 hover:border-green-100 hover:shadow-lg hover:shadow-slate-100'"
+                     >
+                       <div :class="['w-9 h-9 rounded-2xl flex items-center justify-center transition-all duration-300', currentAdminTab === tab.id ? 'bg-white/20 text-white rotate-12' : 'bg-gray-50 text-gray-400 group-hover:bg-green-50 group-hover:text-green-600 group-hover:rotate-12']">
+                          <i :class="[tab.icon, 'text-[11px]']"></i>
+                       </div>
+                       <span class="whitespace-nowrap">{{ tab.label }}</span>
+                     </button>
+                  </div>
                </div>
 
               <!-- Admin Management Group (Collapsible) -->
@@ -248,7 +257,12 @@
 
             <!-- Generic Module Renderer (Table or Dashboard) -->
             <template v-if="managementTabs.some(t => t.id === currentAdminTab) || distributionTabs.some(t => t.id === currentAdminTab) || transactionTabs.some(t => t.id === currentAdminTab)">
-              <div v-if="activeModule" class="space-y-6">
+
+              <!-- Donor Dashboard Special View -->
+              <DonorDashboard v-if="currentAdminTab === 'donor_dashboard'" />
+
+              <!-- Other modules -->
+              <div v-else-if="activeModule" class="space-y-6">
                 
                 <!-- Dashboard View -->
                 <div v-if="activeModule.isDashboard" class="space-y-8">
@@ -986,6 +1000,7 @@ import api from '@/api';
 import { useAuth } from '@/store/auth';
 import LineChart from '@/components/charts/LineChart.vue';
 import DoughnutChart from '@/components/charts/DoughnutChart.vue';
+import DonorDashboard from '@/views/dashboard/DonorDashboard.vue';
 
 const router = useRouter();
 const { clearAuth } = useAuth();
@@ -1054,6 +1069,7 @@ const transactionTabs = [
 const isAdminManagementOpen = ref(true);
 const isDistributionManagementOpen = ref(true);
 const isTransactionManagementOpen = ref(true);
+const isMainMenuOpen = ref(false); // Default to closed to save space
 const showModuleModal = ref(false);
 const moduleSearchQuery = ref('');
 const moduleFormData = ref({});
@@ -1197,9 +1213,25 @@ const moduleConfigs = {
       { key: 'tracking_status', label: 'Status Pelacakan', type: 'select', options: ['Diterima', 'Logistik', 'Dikirim', 'Tersalur'] }
     ] },
 
-  potential_donors: { title: 'List Calon Donatur', entity: 'Calon Donatur', description: 'Prospek tervalidasi siap dikonversi', icon: 'fas fa-user-plus',
-    columns: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Konversi' ? 'bg-green-50 text-green-600' : v === 'Lost' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600' }],
-    fields: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'status', label: 'Status', type: 'select', options: ['Prospek', 'Calon Donatur', 'Konversi', 'Lost'] }] },
+  potential_donors: { title: 'List Calon Donatur', entity: 'Calon Donatur', description: 'User terdaftar yang belum melakukan donasi', icon: 'fas fa-user-plus',
+    columns: [
+       { key: 'profile_photo', label: 'Foto', type: 'image' },
+       { key: 'name', label: 'Nama Lengkap' }, 
+       { key: 'phone', label: 'No HP' }, 
+       { key: 'email', label: 'Email' }, 
+       { key: 'created_at', label: 'Tgl Daftar', type: 'date' },
+       { key: 'source_info', label: 'Sumber Info' }, 
+       { key: 'pic_name', label: 'PIC Prospek' }
+    ],
+    fields: [
+       { key: 'name', label: 'Nama Lengkap' }, 
+       { key: 'gender', label: 'Jenis Kelamin', type: 'select', options: ['L', 'P'] }, 
+       { key: 'phone', label: 'Nomor HP' }, 
+       { key: 'email', label: 'Email', type: 'email' }, 
+       { key: 'pic_prospect_id', label: 'PIC Prospek' }, 
+       { key: 'source_info', label: 'Sumber Informasi' },
+       { key: 'category', label: 'Kategori (e.g. Prospek Baru)' }
+    ] },
 
   distribution_dashboard: { title: 'Dashboard Penyaluran', entity: 'Laporan', description: 'Statistik & visualisasi distribusi bantuan', icon: 'fas fa-chart-line', isDashboard: true, fields: [] },
   transaction_dashboard: { title: 'Dashboard Transaksi', entity: 'Laporan', description: 'Analitik & ringkasan transaksi keuangan', icon: 'fas fa-chart-bar', isDashboard: true, fields: [] },
