@@ -17,8 +17,8 @@ const getAllCampaigns = async (req, res, next) => {
  */
 const getMyCampaigns = async (req, res, next) => {
     try {
-        const user_id = req.user.id;
-        const [rows] = await db.query('SELECT * FROM campaigns WHERE user_id = ?', [user_id]);
+        const author_id = req.user.id;
+        const [rows] = await db.query('SELECT * FROM campaigns WHERE author_id = ?', [author_id]);
         res.json(rows);
     } catch (err) { 
         next(err); 
@@ -81,18 +81,16 @@ const getStats = async (req, res, next) => {
 const createCampaign = async (req, res, next) => {
     try {
         const { title, description, target_amount, start_date, end_date, category, foto, bank_name, account_number, account_holder } = req.body;
-        const user_id = req.user.id; // Diambil dari middleware auth
+        const author_id = req.user.id; // Diambil dari middleware auth
 
         const sql = `INSERT INTO campaigns 
-                     (title, description, target_amount, current_amount, start_date, end_date, category, foto, bank_name, account_number, account_holder, user_id, status) 
-                     VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`;
+                     (title, description, target_amount, current_amount, category, foto, author_id, status) 
+                     VALUES (?, ?, ?, 0, ?, ?, ?, 'pending')`;
         
         const [result] = await db.query(sql, [
             title, description, target_amount, 
-            start_date || new Date(), end_date || null, 
             category || 'Bantuan', foto || null, 
-            bank_name || null, account_number || null, account_holder || null, 
-            user_id
+            author_id
         ]);
         
         res.status(201).json({ 

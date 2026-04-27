@@ -11,6 +11,7 @@ import Help from '../views/Help.vue';
 import Contact from '../views/Contact.vue';
 import News from '../views/News.vue';
 import Zakat from '../views/Zakat.vue';
+import Volunteer from '../views/Volunteer.vue';
 
 // Gunakan impor dinamis untuk dashboard agar lebih ringan
 const Overview = () => import('../views/dashboard/Overview.vue');
@@ -64,6 +65,11 @@ const routes = [
     path: '/zakat',
     name: 'Zakat',
     component: Zakat
+  },
+  {
+    path: '/volunteer',
+    name: 'Volunteer',
+    component: Volunteer
   },
   {
     path: '/receipt/:id',

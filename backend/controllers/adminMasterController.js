@@ -7,31 +7,33 @@ const db = require('../config/db');
 
 // Mapping of module names to table names and special configurations
 const moduleConfigs = {
-    'profile': { table: 'site_settings', pk: 'setting_key', orderBy: 'setting_key' },
+    'profile': { table: 'settings', pk: 'id', orderBy: 'id DESC' },
     'users_mgt': { table: 'users', orderBy: 'role ASC, created_at DESC' },
     'donors': { table: 'users', filter: 'role = "user"', orderBy: 'created_at DESC' },
-    'office': { table: 'offices', orderBy: 'id DESC' },
-    'employees': { table: 'employees', orderBy: 'id DESC' },
-    'donor_channel': { table: 'donor_channels', orderBy: 'id DESC' },
-    'program_group': { table: 'program_groups', orderBy: 'id DESC' },
+    'distribution_list': { 
+        table: 'distributions', 
+        select: 'distributions.*, campaigns.title as campaign_title',
+        join: 'LEFT JOIN campaigns ON distributions.campaign_id = campaigns.id',
+        orderBy: 'distributions.id DESC' 
+    },
+    'transactions': { 
+        table: 'donations', 
+        select: 'donations.*, users.name as donor_name, campaigns.title as campaign_title',
+        join: 'LEFT JOIN users ON donations.user_id = users.id LEFT JOIN campaigns ON donations.campaign_id = campaigns.id',
+        orderBy: 'donations.donation_date DESC' 
+    },
     'programs': { table: 'campaigns', orderBy: 'created_at DESC' },
-    'payment_via': { table: 'payment_via', orderBy: 'id DESC' },
-    'prospect_media': { table: 'prospect_media', orderBy: 'id DESC' },
-    'prospect_method': { table: 'prospect_methods', orderBy: 'id DESC' },
-    'prospect_type': { table: 'prospect_types', orderBy: 'id DESC' },
-    'fundraisers': { table: 'fundraisers', orderBy: 'id DESC' },
-    'prospect_responses': { table: 'prospect_responses', orderBy: 'id DESC' },
-    'targets': { table: 'targets', orderBy: 'id DESC' },
-    'distribution_list': { table: 'distributions', orderBy: 'id DESC' },
-    'prospects': { table: 'prospects', orderBy: 'created_at DESC' },
-    'potential_donors': { table: 'prospects', filter: 'status = "Calon Donatur"', orderBy: 'created_at DESC' },
-    'transactions': { table: 'donations', orderBy: 'donation_date DESC' },
     'news_mgt': { table: 'news', orderBy: 'created_at DESC' },
-    'mualaf_mgt': { table: 'mualaf_requests', orderBy: 'created_at DESC' },
-    'audit_logs': { table: 'audit_logs', orderBy: 'created_at DESC' },
+    'mualaf_mgt': { table: 'muallaf_requests', orderBy: 'created_at DESC' },
     'recruitment': { table: 'volunteers', orderBy: 'created_at DESC' },
     'inbox': { table: 'contact_messages', orderBy: 'created_at DESC' },
-    'newsletter_mgt': { table: 'newsletters', orderBy: 'created_at DESC' }
+    'newsletter_mgt': { table: 'newsletters', orderBy: 'created_at DESC' },
+    'audit_logs': { 
+        table: 'audit_logs', 
+        select: 'audit_logs.*, users.name as user_name',
+        join: 'LEFT JOIN users ON audit_logs.user_id = users.id',
+        orderBy: 'audit_logs.created_at DESC' 
+    }
 };
 
 const logAudit = async (userId, action, module, details) => {
@@ -51,9 +53,12 @@ const getData = async (req, res) => {
     }
 
     try {
+        const selectFields = config.select || '*';
+        const joinClause = config.join || '';
         const whereClause = config.filter ? `WHERE ${config.filter}` : '';
         const orderBy = config.orderBy || 'id DESC';
-        const query = `SELECT * FROM ${config.table} ${whereClause} ORDER BY ${orderBy}`;
+        
+        const query = `SELECT ${selectFields} FROM ${config.table} ${joinClause} ${whereClause} ORDER BY ${orderBy}`;
         
         const [rows] = await db.query(query);
         res.json(rows);
@@ -71,13 +76,11 @@ const createData = async (req, res) => {
     if (!config) return res.status(400).json({ message: 'Modul tidak valid' });
 
     try {
-        // Otomatis set author_id jika modul adalah news_mgt
         if (module === 'news_mgt') {
             data.author_id = req.user.id;
         }
         
         const [result] = await db.query(`INSERT INTO ${config.table} SET ?`, [data]);
-        
         await logAudit(req.user.id, 'CREATE', module, { id: result.insertId, ...data });
 
         res.status(201).json({ message: 'Data berhasil ditambahkan', id: result.insertId });
@@ -97,7 +100,6 @@ const updateData = async (req, res) => {
 
     try {
         await db.query(`UPDATE ${config.table} SET ? WHERE ${pk} = ?`, [data, id]);
-        
         await logAudit(req.user.id, 'UPDATE', module, { id, ...data });
 
         res.json({ message: 'Data berhasil diperbarui' });
@@ -116,7 +118,6 @@ const deleteData = async (req, res) => {
 
     try {
         await db.query(`DELETE FROM ${config.table} WHERE ${pk} = ?`, [id]);
-        
         await logAudit(req.user.id, 'DELETE', module, { id });
 
         res.json({ message: 'Data berhasil dihapus' });
@@ -163,26 +164,6 @@ const getStats = async (req, res) => {
                     { label: 'Retensi Donatur', value: '78%', percentage: 78 }
                 ]
             };
-        } else if (module === 'rfm_dashboard') {
-            // RFM Analysis Summary
-            const [[{ loyal }]] = await db.query('SELECT COUNT(*) as loyal FROM (SELECT user_id FROM donations GROUP BY user_id HAVING COUNT(*) > 5) as t');
-            stats = {
-                kpis: [
-                    { label: 'Donatur Loyal (R3 F5)', value: loyal, percentage: 65 },
-                    { label: 'Potensi Churn', value: '12%', percentage: 12 },
-                    { label: 'Average Ticket Size', value: 'Rp 250rb', percentage: 45 }
-                ]
-            };
-        } else if (module === 'target_vs_achievement') {
-            const [[{ total_target }]] = await db.query('SELECT SUM(amount) as total_target FROM targets');
-            const [[{ total_ach }]] = await db.query('SELECT SUM(achievement) as total_ach FROM targets');
-            stats = {
-                kpis: [
-                    { label: 'Total Target', value: `Rp ${Number(total_target||0).toLocaleString()}`, percentage: 100 },
-                    { label: 'Total Capaian', value: `Rp ${Number(total_ach||0).toLocaleString()}`, percentage: (total_ach/total_target * 100) || 0 },
-                    { label: 'Gap Target', value: `Rp ${Number((total_target||0)-(total_ach||0)).toLocaleString()}`, percentage: 30 }
-                ]
-            };
         } else {
             stats = { kpis: [{ label: 'Data', value: '0', percentage: 0 }] };
         }
@@ -194,11 +175,4 @@ const getStats = async (req, res) => {
     }
 };
 
-// EXPORTS
-module.exports = {
-    getData,
-    createData,
-    updateData,
-    deleteData,
-    getStats
-};
+module.exports = { getData, createData, updateData, deleteData, getStats };

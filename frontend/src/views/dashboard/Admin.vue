@@ -166,22 +166,61 @@
           <div v-else class="space-y-8 animate-in zoom-in-95 duration-500 pb-20 lg:pb-0">
             
             <!-- Dashboard Tab -->
-            <div v-if="currentAdminTab === 'dashboard'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm bg-gradient-to-br from-white to-green-50/30">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Donasi</p>
-                <p class="text-2xl md:text-3xl font-black text-green-600 tracking-tighter">Rp {{ stats.totalDonations?.toLocaleString() || 0 }}</p>
-              </div>
-              <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Kampanye Aktif</p>
-                <p class="text-3xl font-black text-green-600 tracking-tighter">{{ stats.activeCampaigns || 0 }}</p>
-              </div>
-              <div class="bg-white p-6 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Zakat Pending</p>
-                <p class="text-3xl font-black text-green-600 tracking-tighter">{{ pendingZakats.length }}</p>
+            <div v-if="currentAdminTab === 'dashboard'" class="space-y-8">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm bg-gradient-to-br from-white to-green-50/30">
+                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Donasi</p>
+                  <p class="text-2xl md:text-3xl font-black text-green-600 tracking-tighter">Rp {{ stats.totalDonations?.toLocaleString() || 0 }}</p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Donatur</p>
+                  <p class="text-3xl font-black text-blue-600 tracking-tighter">{{ stats.totalDonors || 0 }}</p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Kampanye Aktif</p>
+                  <p class="text-3xl font-black text-orange-600 tracking-tighter">{{ stats.activeCampaigns || 0 }}</p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                  <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Target Tercapai</p>
+                  <p class="text-3xl font-black text-green-600 tracking-tighter">{{ stats.successCampaigns || 0 }}</p>
+                </div>
               </div>
 
-              <!-- Recent Activities -->
-              <div class="col-span-1 sm:col-span-2 lg:col-span-3 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mt-6">
+              <!-- Real Charts Section -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Line Chart: Monthly Donation Trends -->
+                <div class="lg:col-span-2 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col">
+                  <div class="flex justify-between items-center mb-8">
+                    <div>
+                      <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">Tren Donasi Bulanan</h3>
+                      <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1">Pertumbuhan 6 bulan terakhir</p>
+                    </div>
+                    <div class="flex gap-2">
+                      <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                      <span class="text-[9px] font-black text-gray-400 uppercase">Donasi Terverifikasi</span>
+                    </div>
+                  </div>
+                  <div class="h-[300px] w-full">
+                    <LineChart v-if="stats.monthlyDonations" :data="stats.monthlyDonations" />
+                    <div v-else class="h-full flex items-center justify-center text-gray-300 text-[10px] font-black uppercase italic">Memuat grafik...</div>
+                  </div>
+                </div>
+
+                <!-- Doughnut Chart: Category Distribution -->
+                <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col">
+                  <div class="mb-8">
+                    <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">Distribusi Program</h3>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1">Berdasarkan kategori</p>
+                  </div>
+                  <div class="h-[300px] w-full">
+                    <DoughnutChart v-if="stats.categoryDistribution" :data="stats.categoryDistribution" />
+                    <div v-else class="h-full flex items-center justify-center text-gray-300 text-[10px] font-black uppercase italic">Memuat grafik...</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Activities (Keep existing but inside the dashboard tab) -->
+              <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden mt-6">
                 <div class="px-8 py-6 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
                   <h3 class="text-[11px] font-black text-gray-900 uppercase tracking-widest">Aktivitas Terbaru</h3>
                   <span class="px-3 py-1 bg-green-50 text-green-600 rounded-full text-[9px] font-black uppercase">Live Update</span>
@@ -860,6 +899,8 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
 import { useAuth } from '@/store/auth';
+import LineChart from '@/components/charts/LineChart.vue';
+import DoughnutChart from '@/components/charts/DoughnutChart.vue';
 
 const router = useRouter();
 const { clearAuth } = useAuth();
@@ -871,7 +912,7 @@ const handleLogout = async () => {
   await new Promise(r => setTimeout(r, 1000));
   clearAuth();
   sessionStorage.clear();
-  router.push('/login');
+  router.push('/');
 };
 
 const sidebarTabs = ref([
@@ -998,17 +1039,23 @@ const moduleConfigs = {
     fields: [{ key: 'period', label: 'Periode (Bulan/Tahun)' }, { key: 'amount', label: 'Target Dana', type: 'number' }] },
 
   distribution_list: { title: 'List Penyaluran', entity: 'Penyaluran', description: 'Histori distribusi bantuan ke penerima', icon: 'fas fa-clipboard-list',
-    columns: [{ key: 'recipient_name', label: 'Penerima' }, { key: 'amount', label: 'Nilai', type: 'currency' }, { key: 'distribution_date', label: 'Tanggal' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tersalur' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
-    fields: [{ key: 'recipient_name', label: 'Nama Penerima' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'select', options: ['Tersalur', 'Proses'] }] },
+    columns: [{ key: 'recipient_name', label: 'Penerima' }, { key: 'campaign_title', label: 'Program' }, { key: 'amount', label: 'Nilai', type: 'currency' }, { key: 'distribution_date', label: 'Tanggal' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tersalur' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
+    fields: [{ key: 'recipient_name', label: 'Nama Penerima' }, { key: 'campaign_id', label: 'ID Kampanye (Numeric)' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'select', options: ['Tersalur', 'Proses'] }] },
 
   donors:       { title: 'List Donatur', entity: 'Donatur', description: 'Database seluruh donatur terdaftar', icon: 'fas fa-users',
     columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Telepon' }],
     fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'phone', label: 'Telepon' }] },
 
   transactions: { title: 'List Transaksi', entity: 'Transaksi', description: 'Riwayat seluruh transaksi donasi', icon: 'fas fa-exchange-alt',
-    columns: [{ key: 'donor_name', label: 'Donatur' }, { key: 'amount', label: 'Jumlah', type: 'currency' }, { key: 'payment_status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Success' ? 'bg-green-50 text-green-600' : v === 'Pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
-    actions: [{ icon: 'fas fa-print', class: 'bg-blue-50 text-blue-600 hover:bg-blue-600', click: (row) => 'printReceipt', show: (row) => row.payment_status === 'Success' }],
-    fields: [] },
+    columns: [{ key: 'donor_name', label: 'Donatur' }, { key: 'campaign_title', label: 'Program' }, { key: 'amount', label: 'Jumlah', type: 'currency' }, { key: 'payment_status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Success' ? 'bg-green-50 text-green-600' : v === 'Pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
+    fields: [
+      { key: 'user_id', label: 'User ID' }, 
+      { key: 'campaign_id', label: 'Campaign ID' }, 
+      { key: 'amount', label: 'Jumlah', type: 'number' }, 
+      { key: 'payment_method', label: 'Metode', type: 'select', options: ['Manual Transfer', 'QRIS', 'E-Wallet', 'Cash'] }, 
+      { key: 'payment_status', label: 'Status', type: 'select', options: ['Pending', 'Success', 'Failed'] },
+      { key: 'tracking_status', label: 'Status Pelacakan (Tracker)', type: 'select', options: ['Diterima', 'Logistik', 'Dikirim', 'Tersalur'] }
+    ] },
 
   potential_donors: { title: 'List Calon Donatur', entity: 'Calon Donatur', description: 'Prospek tervalidasi siap dikonversi', icon: 'fas fa-user-plus',
     columns: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Konversi' ? 'bg-green-50 text-green-600' : v === 'Lost' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600' }],
@@ -1029,8 +1076,17 @@ const moduleConfigs = {
     columns: [{ key: 'name', label: 'Nama' }, { key: 'desired_date', label: 'Rencana Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : v === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
     fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'address', label: 'Alamat', type: 'textarea' }, { key: 'desired_date', label: 'Rencana Tanggal', type: 'date' }, { key: 'location', label: 'Lokasi Syahadat' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected', 'completed'] }] },
 
-  audit_logs: { title: 'Audit Log Sistem', entity: 'Log', description: 'Riwayat seluruh aktivitas perubahan data', icon: 'fas fa-history',
-    columns: [{ key: 'action', label: 'Aksi' }, { key: 'module', label: 'Modul' }, { key: 'created_at', label: 'Waktu', type: 'date' }],
+  news: { title: 'Berita & Artikel', entity: 'Artikel', description: 'Kelola konten berita dan laporan lapangan', icon: 'fas fa-newspaper',
+    columns: [{ key: 'title', label: 'Judul Artikel' }, { key: 'tag', label: 'Tag' }, { key: 'created_at', label: 'Tanggal Publish' }],
+    fields: [
+      { key: 'title', label: 'Judul Artikel' },
+      { key: 'tag', label: 'Kategori/Tag (Contoh: Laporan, Update, Kisah)' },
+      { key: 'content', label: 'Konten Lengkap', type: 'textarea' },
+      { key: 'image_url', label: 'URL Gambar Utama' }
+    ] },
+
+  audit_logs: { title: 'Log Aktivitas', entity: 'Log', description: 'Rekam jejak seluruh perubahan sistem', icon: 'fas fa-history',
+    columns: [{ key: 'user_name', label: 'Aktor' }, { key: 'action', label: 'Aksi' }, { key: 'module', label: 'Modul' }, { key: 'created_at', label: 'Waktu', type: 'date' }],
     fields: [] },
 
   recruitment: { title: 'Manajemen Relawan', entity: 'Relawan', description: 'Pendaftaran dan rekrutmen relawan baru', icon: 'fas fa-user-plus',

@@ -597,7 +597,8 @@ const handleAttendance = async (type) => {
     leaveForm.attachment = '';
     fetchData();
   } catch (err) {
-    alert('Gagal melakukan absensi: ' + (err.response?.data?.message || err.message));
+    const errorMsg = err.response?.data?.error || err.response?.data?.message || err.message;
+    alert('Gagal melakukan absensi: ' + errorMsg);
   } finally {
     submitting.value = false;
   }

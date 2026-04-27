@@ -20,15 +20,38 @@ exports.getStats = async (req, res) => {
             .sort((a, b) => new Date(b.date) - new Date(a.date))
             .slice(0, 5);
 
+        // Monthly Trends (Last 6 Months)
+        const [monthlyDonations] = await db.query(`
+            SELECT 
+                DATE_FORMAT(donation_date, '%b') as month, 
+                SUM(amount) as total 
+            FROM donations 
+            WHERE payment_status = 'Success'
+            AND donation_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+            GROUP BY DATE_FORMAT(donation_date, '%Y-%m')
+            ORDER BY donation_date ASC
+        `);
+
+        // Category Distribution
+        const [categoryDistribution] = await db.query(`
+            SELECT c.category as name, SUM(d.amount) as value
+            FROM donations d
+            JOIN campaigns c ON d.campaign_id = c.id
+            WHERE d.payment_status = 'Success'
+            GROUP BY c.category
+        `);
+
         res.json({
             totalDonations: donations.total || 0,
             totalDonors: donors.total || 0,
             activeCampaigns: campaigns.total || 0,
             successCampaigns: successCampaigns.total || 0,
-            recent_activities
+            recent_activities,
+            monthlyDonations,
+            categoryDistribution
         });
     } catch (error) {
-        console.error('Error getStats:', error.message);
+        console.error('Error getStats Full:', error);
         res.status(500).json({ message: 'Gagal memuat statistik platform' });
     }
 };
@@ -265,4 +288,3 @@ exports.getAllTasks = async (req, res) => {
         res.status(500).json({ message: 'Gagal memuat daftar tugas' });
     }
 };
-

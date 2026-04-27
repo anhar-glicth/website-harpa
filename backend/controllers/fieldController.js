@@ -73,8 +73,12 @@ exports.submitAttendance = async (req, res) => {
         let msg = `Berhasil ${type === 'check_in' ? 'Masuk' : type === 'check_out' ? 'Pulang' : 'Kirim Keterangan'}`;
         res.status(201).json({ message: msg });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Gagal melakukan absensi' });
+        console.error('Attendance Submission Error:', error);
+        res.status(500).json({ 
+            message: 'Gagal melakukan absensi', 
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+        });
     }
 };
 
@@ -98,7 +102,7 @@ exports.getFieldStats = async (req, res) => {
         const userId = req.user.id;
         
         // 1. Total Campaigns Created
-        const [[{ totalCampaigns }]] = await db.query('SELECT COUNT(*) as totalCampaigns FROM campaigns WHERE user_id = ?', [userId]);
+        const [[{ totalCampaigns }]] = await db.query('SELECT COUNT(*) as totalCampaigns FROM campaigns WHERE author_id = ?', [userId]);
         
         // 2. Total News/Updates Published
         const [[{ totalNews }]] = await db.query('SELECT COUNT(*) as totalNews FROM news WHERE author_id = ?', [userId]);
@@ -106,7 +110,7 @@ exports.getFieldStats = async (req, res) => {
         
         // 3. Total Funds Collected via their campaigns
         const [[{ totalFunds }]] = await db.query(
-            'SELECT SUM(current_amount) as totalFunds FROM campaigns WHERE user_id = ?', 
+            'SELECT SUM(current_amount) as totalFunds FROM campaigns WHERE author_id = ?', 
             [userId]
         );
 

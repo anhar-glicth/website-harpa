@@ -389,6 +389,7 @@ const menuLinks = [
   { label: 'Berita', to: '/news' },
   { label: 'Program', to: '/campaigns' },
   { label: 'Zakat', to: '/zakat' },
+  { label: 'Relawan', to: '/volunteer' },
   { label: 'Tentang Kami', to: '/about' },
 ];
 

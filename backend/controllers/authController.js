@@ -36,10 +36,16 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
     try {
-        // Cari user berdasarkan email ATAU username
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email dan password wajib diisi' });
+        }
+
+        const cleanEmail = email.trim();
+
+        // Cari user berdasarkan email
         const [users] = await db.query(
-            'SELECT * FROM users WHERE email = ? OR username = ?', 
-            [email, email]
+            'SELECT * FROM users WHERE email = ?', 
+            [cleanEmail]
         );
 
         if (users.length === 0) {
@@ -48,6 +54,7 @@ const login = async (req, res) => {
         
         const user = users[0];
         const isMatch = await bcrypt.compare(password, user.password);
+
         if (!isMatch) {
             return res.status(401).json({ message: 'Identitas atau password salah' });
         }
@@ -66,7 +73,7 @@ const login = async (req, res) => {
             message: `Selamat datang kembali, ${user.name}!`
         });
     } catch (error) {
-        console.error('Login Error:', error.message);
+        console.error('Login Error Full:', error);
         res.status(500).json({ message: 'Terjadi kesalahan pada server' });
     }
 };

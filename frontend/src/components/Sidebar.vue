@@ -159,7 +159,7 @@ const handleLogout = async () => {
       .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
   });
 
-  router.push('/login');
+  router.push('/');
 };
 
 const navigationLinks = computed(() => {
