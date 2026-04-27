@@ -7,19 +7,64 @@ const db = require('../config/db');
 
 // Mapping of module names to table names and special configurations
 const moduleConfigs = {
-    'profile': { table: 'settings', pk: 'id', orderBy: 'id DESC' },
+    'profile': { table: 'site_settings', pk: 'setting_key', orderBy: 'setting_key ASC' },
     'users_mgt': { table: 'users', orderBy: 'role ASC, created_at DESC' },
-    'donors': { table: 'users', filter: 'role = "user"', orderBy: 'created_at DESC' },
+    'donors': { 
+        table: 'users', 
+        filter: 'users.role = "user"',
+        select: `users.*, 
+                 offices.name as office_name, 
+                 pic.name as pic_name, 
+                 media.name as last_media_name,
+                 (SELECT COUNT(*) FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success') as total_transactions,
+                 (SELECT COALESCE(SUM(amount), 0) FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success') as total_nominal,
+                 (SELECT donation_date FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success' ORDER BY donation_date DESC LIMIT 1) as last_transaction_date,
+                 (SELECT campaigns.title FROM donations JOIN campaigns ON donations.campaign_id = campaigns.id WHERE donations.user_id = users.id AND donations.payment_status = 'Success' ORDER BY donations.donation_date DESC LIMIT 1) as last_program_title,
+                 (SELECT amount FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success' ORDER BY donation_date DESC LIMIT 1) as last_amount,
+                 (SELECT payment_via.name FROM donations JOIN payment_via ON donations.payment_via_id = payment_via.id WHERE donations.user_id = users.id AND donations.payment_status = 'Success' ORDER BY donations.donation_date DESC LIMIT 1) as last_payment_via_name,
+                 (SELECT proof_image FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success' ORDER BY donation_date DESC LIMIT 1) as last_donation_proof`,
+        join: 'LEFT JOIN offices ON users.office_id = offices.id LEFT JOIN users pic ON users.pic_prospect_id = pic.id LEFT JOIN prospect_media media ON users.last_prospect_media_id = media.id',
+        orderBy: 'users.created_at DESC' 
+    },
+    'office': { table: 'offices', orderBy: 'name ASC' },
+    'employees': { 
+        table: 'employees', 
+        select: 'employees.*, offices.name as office_name',
+        join: 'LEFT JOIN offices ON employees.office_id = offices.id',
+        orderBy: 'employees.name ASC' 
+    },
+    'donor_channel': { table: 'donor_channels', orderBy: 'name ASC' },
+    'program_group': { table: 'program_groups', orderBy: 'name ASC' },
+    'programs': { 
+        table: 'campaigns', 
+        select: 'campaigns.*, program_groups.name as group_name',
+        join: 'LEFT JOIN program_groups ON campaigns.group_id = program_groups.id',
+        orderBy: 'campaigns.created_at DESC' 
+    },
+    'payment_via': { table: 'payment_via', orderBy: 'name ASC' },
+    'prospect_media': { table: 'prospect_media', orderBy: 'name ASC' },
+    'prospect_method': { table: 'prospect_methods', orderBy: 'name ASC' },
+    'prospect_type': { table: 'prospect_types', orderBy: 'name ASC' },
+    'fundraisers': { table: 'fundraisers', orderBy: 'name ASC' },
+    'prospect_responses': { 
+        table: 'prospect_responses', 
+        select: 'prospect_responses.*, prospects.name as prospect_name',
+        join: 'LEFT JOIN prospects ON prospect_responses.prospect_id = prospects.id',
+        orderBy: 'prospect_responses.created_at DESC' 
+    },
+    'targets': { table: 'targets', orderBy: 'period DESC' },
+    'prospects': { table: 'prospects', orderBy: 'created_at DESC' },
+    'potential_donors': { table: 'prospects', orderBy: 'created_at DESC' },
     'distribution_list': { 
         table: 'distributions', 
         select: 'distributions.*, campaigns.title as campaign_title',
-        join: 'LEFT JOIN campaigns ON distributions.campaign_id = campaigns.id',
+        join: 'LEFT JOIN campaigns ON distributions.program_id = campaigns.id',
         orderBy: 'distributions.id DESC' 
     },
     'transactions': { 
         table: 'donations', 
-        select: 'donations.*, users.name as donor_name, campaigns.title as campaign_title',
-        join: 'LEFT JOIN users ON donations.user_id = users.id LEFT JOIN campaigns ON donations.campaign_id = campaigns.id',
+        select: 'donations.*, users.name as donor_name, users.phone as donor_phone, campaigns.title as campaign_title, payment_via.name as payment_via_name',
+        join: 'LEFT JOIN users ON donations.user_id = users.id LEFT JOIN campaigns ON donations.campaign_id = campaigns.id LEFT JOIN payment_via ON donations.payment_via_id = payment_via.id',
         orderBy: 'donations.donation_date DESC' 
     },
     'programs': { table: 'campaigns', orderBy: 'created_at DESC' },

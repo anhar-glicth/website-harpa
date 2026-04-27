@@ -11,22 +11,22 @@
         <div class="space-y-8">
           <div class="flex items-center gap-6 group hover:translate-x-2 transition-transform">
             <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white"><i class="fas fa-map-marker-alt"></i></div>
-            <p class="text-xs font-bold leading-relaxed">Gedung Kemanusiaan Lt. 3, <br> Jakarta Selatan, Indonesia</p>
+            <p class="text-xs font-bold leading-relaxed" v-html="siteSettings.inst_address || 'Gedung Kemanusiaan Lt. 3, <br> Jakarta Selatan, Indonesia'"></p>
           </div>
           <div class="flex items-center gap-6 group hover:translate-x-2 transition-transform">
             <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white"><i class="fas fa-phone-alt"></i></div>
-            <p class="text-xs font-bold tracking-widest">+62 21 5566 7788</p>
+            <p class="text-xs font-bold tracking-widest">{{ siteSettings.inst_phone || '+62 21 5566 7788' }}</p>
           </div>
           <div class="flex items-center gap-6 group hover:translate-x-2 transition-transform">
             <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white"><i class="fas fa-envelope"></i></div>
-            <p class="text-xs font-bold tracking-widest lowercase">halo@humanitycare.id</p>
+            <p class="text-xs font-bold tracking-widest lowercase">{{ siteSettings.inst_email || 'halo@humanitycare.id' }}</p>
           </div>
         </div>
 
         <div class="flex gap-4 pt-4 border-t border-white/10">
-          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-facebook-f"></i></div>
-          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-instagram"></i></div>
-          <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-twitter"></i></div>
+          <a :href="siteSettings.inst_fb || '#'" target="_blank" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-facebook-f"></i></a>
+          <a :href="siteSettings.inst_ig || '#'" target="_blank" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-instagram"></i></a>
+          <a :href="siteSettings.inst_tw || '#'" target="_blank" class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 hover:scale-110 transition-transform cursor-pointer"><i class="fab fa-twitter"></i></a>
         </div>
       </div>
 
@@ -66,6 +66,16 @@ import api from '@/api';
 
 const form = reactive({ name: '', email: '', message: '' });
 const submitting = ref(false);
+const siteSettings = ref({});
+
+const fetchSettings = async () => {
+  try {
+    const res = await api.get('/settings');
+    siteSettings.value = res.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 const handleSubmit = async () => {
   submitting.value = true;
@@ -81,4 +91,7 @@ const handleSubmit = async () => {
     submitting.value = false;
   }
 };
+
+import { onMounted } from 'vue';
+onMounted(fetchSettings);
 </script>

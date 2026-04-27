@@ -13,8 +13,12 @@
           <img :src="siteSettings.about_image || 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop'" class="w-full h-full object-cover" alt="Mission" />
         </div>
         <div class="space-y-4">
-          <h2 class="text-lg md:text-2xl font-black text-gray-800 tracking-tight uppercase italic">Misi Kami</h2>
-          <p class="text-[10px] md:text-sm text-gray-500 leading-relaxed italic font-medium">{{ siteSettings.about_mission || 'HumanityCare adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses.' }}</p>
+          <h2 class="text-lg md:text-2xl font-black text-gray-800 tracking-tight uppercase italic">Visi & Misi Kami</h2>
+          <p class="text-[10px] md:text-sm text-gray-400 font-bold uppercase tracking-widest leading-relaxed">Visi</p>
+          <p class="text-[10px] md:text-sm text-gray-500 leading-relaxed italic font-medium mb-4">{{ siteSettings.inst_vision || 'Menjadi lembaga filantropi terdepan dalam membangun kemandirian ummat.' }}</p>
+          
+          <p class="text-[10px] md:text-sm text-gray-400 font-bold uppercase tracking-widest leading-relaxed">Misi</p>
+          <p class="text-[10px] md:text-sm text-gray-500 leading-relaxed italic font-medium">{{ siteSettings.inst_mission || 'HumanityCare adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses.' }}</p>
           <div class="space-y-4">
             <div class="flex items-center gap-4 p-4 bg-green-50 rounded-2xl border border-green-100">
               <div class="w-10 h-10 bg-green-600 text-white rounded-xl flex items-center justify-center font-bold">1</div>

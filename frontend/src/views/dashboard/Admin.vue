@@ -306,7 +306,7 @@
                       <button @click="exportToCSV" class="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2">
                         <i class="fas fa-file-export"></i> Ekspor CSV
                       </button>
-                      <button @click="moduleFormData = {}; showModuleModal = true" class="bg-green-600 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-500/20 flex items-center gap-2">
+                      <button @click="openModuleModal()" class="bg-green-600 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-500/20 flex items-center gap-2">
                         <i class="fas fa-plus"></i> Tambah {{ activeModule.entity }}
                       </button>
                     </div>
@@ -347,9 +347,14 @@
                         <tbody class="divide-y divide-gray-50">
                           <tr v-for="(row, idx) in filteredModuleData.slice(0, 10)" :key="idx" class="hover:bg-green-50/20 transition-colors group">
                             <td class="px-6 py-4 text-[10px] font-black text-gray-300">{{ String(idx+1).padStart(2,'0') }}</td>
-                            <td v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4">
+                            <td v-for="col in activeModule.columns" :key="col.key" class="px-6 py-4 whitespace-nowrap">
                               <span v-if="col.type==='badge'" :class="['inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', col.badgeClass?.(row[col.key]) || 'bg-green-50 text-green-600']">{{ row[col.key]||'-' }}</span>
                               <span v-else-if="col.type==='currency'" class="text-[11px] font-black text-green-600">Rp {{ Number(row[col.key]||0).toLocaleString('id-ID') }}</span>
+                              <span v-else-if="col.type==='date'" class="text-[11px] font-semibold text-gray-700">{{ formatDate(row[col.key]) }}</span>
+                              <span v-else-if="col.type==='image'" class="flex items-center">
+                                <img v-if="row[col.key]" :src="row[col.key]" class="w-8 h-8 object-cover rounded-lg border border-gray-200" />
+                                <span v-else class="text-gray-300">-</span>
+                              </span>
                               <span v-else class="text-[11px] font-semibold text-gray-700">{{ row[col.key]||'-' }}</span>
                             </td>
                             <td class="px-6 py-4">
@@ -388,37 +393,7 @@
               </div>
             </template>
 
-            <!-- Module Add Modal -->
-            <div v-if="showModuleModal && activeModule" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
-              <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in duration-300">
-                <div class="p-8 bg-gradient-to-r from-green-600 to-emerald-600 text-white flex justify-between items-center">
-                  <div>
-                    <p class="text-[9px] font-black uppercase tracking-widest text-green-200">Tambah Data Baru</p>
-                    <h3 class="text-xl font-black uppercase tracking-tighter">{{ activeModule.entity }}</h3>
-                  </div>
-                  <button @click="showModuleModal = false" class="text-white/60 hover:text-white text-xl">✕</button>
-                </div>
-                <div class="p-8 space-y-5 max-h-[60vh] overflow-y-auto">
-                  <div v-for="field in activeModule.fields" :key="field.key" class="space-y-2">
-                    <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ field.label }}</label>
-                    <textarea v-if="field.type==='textarea'" v-model="moduleFormData[field.key]" rows="3"
-                      class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 text-xs font-semibold border-none transition-all resize-none"></textarea>
-                    <select v-else-if="field.type==='select'" v-model="moduleFormData[field.key]"
-                      class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 text-xs font-semibold border-none transition-all">
-                      <option value="">-- Pilih --</option>
-                      <option v-for="opt in field.options" :key="opt" :value="opt">{{ opt }}</option>
-                    </select>
-                    <input v-else :type="field.type||'text'" v-model="moduleFormData[field.key]" :placeholder="field.placeholder||field.label"
-                      class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 text-xs font-semibold border-none transition-all" />
-                  </div>
-                </div>
-                <div class="p-8 pt-0">
-                  <button @click="showModuleModal = false" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95">
-                    Simpan Data
-                  </button>
-                </div>
-              </div>
-            </div>
+
 
             <!-- User Management Tab -->
             <div v-if="currentAdminTab === 'users'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
@@ -494,6 +469,96 @@
                       </tr>
                     </tbody>
                   </table>
+               </div>
+            </div>
+
+            <!-- Profil Lembaga Tab (New Dedicated Form) -->
+            <div v-if="currentAdminTab === 'profile'" class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+               <div class="p-8 border-b border-gray-50 bg-green-50/20 flex justify-between items-center">
+                  <div>
+                    <h3 class="font-black text-gray-900 uppercase tracking-tighter">Profil Resmi <span class="text-green-600">Lembaga</span></h3>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Identitas resmi HumanityCare</p>
+                  </div>
+                  <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-green-600 border border-green-50">
+                    <i class="fas fa-building text-xl"></i>
+                  </div>
+               </div>
+               <div class="p-8 space-y-10">
+                  <!-- Identity Section -->
+                  <div class="space-y-6">
+                     <h4 class="text-[10px] font-black uppercase tracking-widest text-green-600 border-l-4 border-green-600 pl-4">Identitas & Kontak</h4>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Nama Lembaga</label>
+                           <input v-model="settingsData.inst_name" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="HumanityCare Indonesia" />
+                        </div>
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Email Resmi</label>
+                           <input v-model="settingsData.inst_email" type="email" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="kontak@humanitycare.org" />
+                        </div>
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Telepon / WhatsApp</label>
+                           <input v-model="settingsData.inst_phone" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="0812-xxxx-xxxx" />
+                        </div>
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Legalitas (NPWP/SK)</label>
+                           <input v-model="settingsData.inst_legal" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="NPWP: 01.xxx.xxx.x-xxx.000" />
+                        </div>
+                        <div class="md:col-span-2 space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Alamat Kantor Pusat</label>
+                           <textarea v-model="settingsData.inst_address" rows="2" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="Jl. Raya Kebaikan No. 123..."></textarea>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Vision & Mission Section -->
+                  <div class="space-y-6 pt-6 border-t border-gray-100">
+                     <h4 class="text-[10px] font-black uppercase tracking-widest text-green-600 border-l-4 border-green-600 pl-4">Visi & Misi</h4>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Visi Lembaga</label>
+                           <textarea v-model="settingsData.inst_vision" rows="4" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs italic" placeholder="Menjadi lembaga filantropi terdepan..."></textarea>
+                        </div>
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Misi Lembaga</label>
+                           <textarea v-model="settingsData.inst_mission" rows="4" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs italic" placeholder="1. Mengelola dana ummat secara profesional..."></textarea>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Social Media & Logo Section -->
+                  <div class="space-y-6 pt-6 border-t border-gray-100">
+                     <h4 class="text-[10px] font-black uppercase tracking-widest text-green-600 border-l-4 border-green-600 pl-4">Media Sosial & Logo</h4>
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Instagram URL</label>
+                           <input v-model="settingsData.inst_ig" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="https://instagram.com/..." />
+                        </div>
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Facebook URL</label>
+                           <input v-model="settingsData.inst_fb" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="https://facebook.com/..." />
+                        </div>
+                        <div class="space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Twitter/X URL</label>
+                           <input v-model="settingsData.inst_tw" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="https://twitter.com/..." />
+                        </div>
+                        <div class="md:col-span-3 space-y-2">
+                           <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">URL Logo Lembaga (PNG/SVG recommended)</label>
+                           <div class="flex gap-4 items-start">
+                              <input v-model="settingsData.inst_logo" class="flex-1 p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="https://domain.com/logo.png" />
+                              <div class="w-20 h-20 bg-white rounded-2xl border border-gray-100 p-2 flex items-center justify-center overflow-hidden">
+                                 <img v-if="settingsData.inst_logo" :src="settingsData.inst_logo" class="max-w-full max-h-full object-contain" />
+                                 <i v-else class="fas fa-image text-gray-200"></i>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <button @click="handleSaveSettings" :disabled="savingSettings" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3">
+                     <i v-if="savingSettings" class="fas fa-circle-notch animate-spin"></i>
+                     {{ savingSettings ? 'Menyimpan Profil...' : 'Simpan Pembaruan Profil Lembaga' }}
+                  </button>
                </div>
             </div>
 
@@ -800,13 +865,33 @@
          <div class="p-8 space-y-5 overflow-y-auto custom-scrollbar">
             <div v-for="field in activeModule.fields" :key="field.key" class="space-y-2">
               <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">{{ field.label }}</label>
-              
-              <select v-if="field.type === 'select'" v-model="moduleFormData[field.key]" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm">
-                <option v-for="opt in field.options" :key="opt" :value="opt">{{ opt }}</option>
-              </select>
- 
+               <select v-if="field.type === 'select' || ['office_id', 'group_id', 'payment_via_id', 'pic_prospect_id', 'last_prospect_media_id'].includes(field.key)" v-model="moduleFormData[field.key]" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm">
+                 <option v-if="['office_id', 'group_id', 'payment_via_id', 'pic_prospect_id', 'last_prospect_media_id'].includes(field.key)" value="">-- Pilih --</option>
+                 <option v-if="field.key === 'office_id'" v-for="o in (moduleData.office || [])" :key="o.id" :value="o.id">{{ o.name }}</option>
+                 <option v-else-if="field.key === 'group_id'" v-for="g in (moduleData.program_group || [])" :key="g.id" :value="g.name">{{ g.name }}</option>
+                 <option v-else-if="field.key === 'payment_via_id'" v-for="p in (moduleData.payment_via || [])" :key="p.id" :value="p.id">{{ p.name }} ({{ p.provider }})</option>
+                 <option v-else-if="field.key === 'pic_prospect_id'" v-for="u in (moduleData.all_users || [])" :key="u.id" :value="u.id">{{ u.name }} ({{ u.role }})</option>
+                 <option v-else-if="field.key === 'last_prospect_media_id'" v-for="m in (moduleData.prospect_media || [])" :key="m.id" :value="m.id">{{ m.name }}</option>
+                 <option v-else v-for="opt in (field.options || [])" :key="opt" :value="opt">{{ opt }}</option>
+               </select>
+
               <textarea v-else-if="field.type === 'textarea'" v-model="moduleFormData[field.key]" :placeholder="field.label" rows="3" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm"></textarea>
- 
+
+               <div v-else-if="field.type === 'image' || field.key.includes('_image') || field.key.includes('photo') || field.key.includes('logo') || field.key.includes('proof')" class="space-y-3">
+                 <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 bg-gray-100 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden">
+                       <img v-if="moduleFormData[field.key]" :src="moduleFormData[field.key]" class="w-full h-full object-cover" />
+                       <i v-else class="fas fa-image text-gray-400 text-xl"></i>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                       <input type="file" @change="(e) => handleFileUpload(e, field.key)" accept="image/*" class="hidden" :ref="'fileInput_'+field.key" />
+                       <button type="button" @click="() => $refs['fileInput_'+field.key][0].click()" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-all">Pilih Gambar</button>
+                       <p class="text-[8px] text-gray-400 font-medium">Klik untuk upload foto/bukti</p>
+                    </div>
+                 </div>
+                 <input v-model="moduleFormData[field.key]" placeholder="Atau tempel URL gambar di sini" class="w-full p-3 bg-gray-50/50 rounded-xl border-none outline-none focus:ring-1 focus:ring-green-500 font-bold text-[10px]" />
+               </div>
+
               <input v-else :type="field.type || 'text'" v-model="moduleFormData[field.key]" :placeholder="field.label" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" />
             </div>
          </div>
@@ -972,7 +1057,7 @@ const isTransactionManagementOpen = ref(true);
 const showModuleModal = ref(false);
 const moduleSearchQuery = ref('');
 const moduleFormData = ref({});
-const moduleData = ref([]);
+const moduleData = ref({});
 const moduleStats = ref({ kpis: [] });
 
 // Module Configs — drives the generic CRUD renderer
@@ -987,32 +1072,32 @@ const moduleConfigs = {
     fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'role', label: 'Peran', type: 'select', options: ['admin', 'field_worker', 'user'] }] },
 
   office:      { title: 'Kantor', entity: 'Kantor', description: 'Data seluruh lokasi kantor', icon: 'fas fa-map-marked-alt',
-    columns: [{ key: 'name', label: 'Nama Kantor' }, { key: 'city', label: 'Kota' }, { key: 'phone', label: 'Telepon' }],
-    fields: [{ key: 'name', label: 'Nama Kantor' }, { key: 'address', label: 'Alamat', type: 'textarea' }, { key: 'city', label: 'Kota' }, { key: 'phone', label: 'Telepon' }] },
+    columns: [{ key: 'name', label: 'Nama Kantor' }, { key: 'city', label: 'Kota' }, { key: 'phone', label: 'Telepon' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Kantor' }, { key: 'address', label: 'Alamat', type: 'textarea' }, { key: 'city', label: 'Kota' }, { key: 'phone', label: 'Telepon' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
 
   employees:   { title: 'Karyawan', entity: 'Karyawan', description: 'Data SDM & personel aktif', icon: 'fas fa-id-badge',
-    columns: [{ key: 'name', label: 'Nama' }, { key: 'position', label: 'Jabatan' }, { key: 'department', label: 'Divisi' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
-    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'position', label: 'Jabatan' }, { key: 'department', label: 'Divisi' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Nonaktif'] }] },
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'position', label: 'Jabatan' }, { key: 'office_name', label: 'Kantor' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'position', label: 'Jabatan' }, { key: 'department', label: 'Divisi' }, { key: 'phone', label: 'No. Telepon' }, { key: 'office_id', label: 'Lokasi Kantor' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
 
   donor_channel: { title: 'Channel Donasi', entity: 'Channel', description: 'Saluran penerimaan donasi', icon: 'fas fa-network-wired',
-    columns: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe' }, { key: 'account', label: 'No. Rekening/Akun' }],
-    fields: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe', type: 'select', options: ['Bank Transfer', 'E-Wallet', 'QRIS', 'Tunai'] }, { key: 'account', label: 'No. Rekening/Akun' }] },
+    columns: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe' }, { key: 'account', label: 'No. Rekening/Akun' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
 
   program_group: { title: 'Rumpun Program', entity: 'Rumpun', description: 'Klaster pengelompokan program', icon: 'fas fa-layer-group',
     columns: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode' }, { key: 'description', label: 'Deskripsi' }],
     fields: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode' }, { key: 'description', label: 'Deskripsi', type: 'textarea' }] },
 
   programs:    { title: 'Program (Kampanye)', entity: 'Program', description: 'Program sosial & kemanusiaan aktif', icon: 'fas fa-project-diagram',
-    columns: [{ key: 'title', label: 'Nama Program' }, { key: 'category', label: 'Kategori' }, { key: 'target_amount', label: 'Target Dana', type: 'currency' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
-    fields: [{ key: 'title', label: 'Nama Program' }, { key: 'category', label: 'Kategori', type: 'select', options: ['Kemanusiaan', 'Pendidikan', 'Kesehatan', 'Dakwah', 'Umum'] }, { key: 'description', label: 'Deskripsi', type: 'textarea' }, { key: 'target_amount', label: 'Target Dana', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] }] },
+    columns: [{ key: 'title', label: 'Nama Program' }, { key: 'group_name', label: 'Rumpun' }, { key: 'target_amount', label: 'Target Dana', type: 'currency' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
+    fields: [{ key: 'title', label: 'Nama Program' }, { key: 'group_id', label: 'Rumpun Program' }, { key: 'description', label: 'Deskripsi', type: 'textarea' }, { key: 'target_amount', label: 'Target Dana', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] }] },
 
   payment_via: { title: 'Via Bayar', entity: 'Metode Bayar', description: 'Metode pembayaran yang diterima', icon: 'fas fa-credit-card',
-    columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'fee', label: 'Biaya Admin (%)' }],
-    fields: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'fee', label: 'Biaya Admin (%)', type: 'number' }] },
+    columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'fee', label: 'Biaya Admin (%)', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
 
   prospect_media: { title: 'Media Prospek', entity: 'Media', description: 'Kanal pemasaran & akuisisi donatur', icon: 'fas fa-photo-video',
-    columns: [{ key: 'name', label: 'Nama Media' }, { key: 'type', label: 'Tipe' }],
-    fields: [{ key: 'name', label: 'Nama Media' }, { key: 'type', label: 'Tipe', type: 'select', options: ['Sosial Media', 'Email', 'Telepon', 'Tatap Muka', 'Website'] }] },
+    columns: [{ key: 'name', label: 'Nama Media' }, { key: 'type', label: 'Tipe' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Media' }, { key: 'type', label: 'Tipe' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
 
   prospect_method: { title: 'Metode Prospek', entity: 'Metode', description: 'Teknik pendekatan calon donatur', icon: 'fas fa-bullhorn',
     columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'description', label: 'Deskripsi' }],
@@ -1023,8 +1108,8 @@ const moduleConfigs = {
     fields: [{ key: 'name', label: 'Nama Jenis' }, { key: 'priority', label: 'Prioritas', type: 'select', options: ['Tinggi', 'Sedang', 'Rendah'] }] },
 
   fundraisers:  { title: 'Fundraiser', entity: 'Fundraiser', description: 'Tim penggalangan dana aktif', icon: 'fas fa-user-tie',
-    columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'target', label: 'Target', type: 'currency' }, { key: 'achievement', label: 'Capaian', type: 'currency' }],
-    fields: [{ key: 'name', label: 'Nama Fundraiser' }, { key: 'email', label: 'Email' }, { key: 'target', label: 'Target Dana', type: 'number' }] },
+    columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
+    fields: [{ key: 'name', label: 'Nama Fundraiser' }, { key: 'email', label: 'Email' }, { key: 'target', label: 'Target Dana', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
 
   prospects:    { title: 'List Prospek', entity: 'Prospek', description: 'Database calon donatur yang diprospek', icon: 'fas fa-search-dollar',
     columns: [{ key: 'name', label: 'Nama' }, { key: 'phone', label: 'Kontak' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Konversi' ? 'bg-green-50 text-green-600' : 'bg-green-50 text-green-600' }],
@@ -1039,22 +1124,77 @@ const moduleConfigs = {
     fields: [{ key: 'period', label: 'Periode (Bulan/Tahun)' }, { key: 'amount', label: 'Target Dana', type: 'number' }] },
 
   distribution_list: { title: 'List Penyaluran', entity: 'Penyaluran', description: 'Histori distribusi bantuan ke penerima', icon: 'fas fa-clipboard-list',
-    columns: [{ key: 'recipient_name', label: 'Penerima' }, { key: 'campaign_title', label: 'Program' }, { key: 'amount', label: 'Nilai', type: 'currency' }, { key: 'distribution_date', label: 'Tanggal' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tersalur' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
-    fields: [{ key: 'recipient_name', label: 'Nama Penerima' }, { key: 'campaign_id', label: 'ID Kampanye (Numeric)' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'select', options: ['Tersalur', 'Proses'] }] },
-
+    columns: [{ key: 'recipient_name', label: 'Penerima' }, { key: 'campaign_title', label: 'Program' }, { key: 'amount', label: 'Nilai', type: 'currency' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tersalur' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
+    fields: [{ key: 'recipient_name', label: 'Nama Penerima' }, { key: 'program_id', label: 'ID Program (Numeric)' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'select', options: ['Tersalur', 'Proses'] }] },
+ 
   donors:       { title: 'List Donatur', entity: 'Donatur', description: 'Database seluruh donatur terdaftar', icon: 'fas fa-users',
-    columns: [{ key: 'name', label: 'Nama' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Telepon' }],
-    fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'phone', label: 'Telepon' }] },
+    columns: [
+      { key: 'profile_photo', label: 'Foto', type: 'image' },
+      { key: 'name', label: 'Nama Lengkap' }, 
+      { key: 'gender', label: 'L/P' }, 
+      { key: 'phone', label: 'No HP' }, 
+      { key: 'email', label: 'Email' }, 
+      { key: 'office_name', label: 'Kantor' }, 
+      { key: 'segment', label: 'Segmen' }, 
+      { key: 'profile_type', label: 'Profil' }, 
+      { key: 'rfm_90d', label: 'RFM 90D' }, 
+      { key: 'rfm_alltime', label: 'RFM AllTime' }, 
+      { key: 'category', label: 'Kategori' }, 
+      { key: 'badge', label: 'Badge' }, 
+      { key: 'total_transactions', label: 'Total Transaksi' }, 
+      { key: 'total_nominal', label: 'Total Nominal', type: 'currency' }, 
+      { key: 'last_transaction_date', label: 'Tgl Transaksi Terakhir', type: 'date' }, 
+      { key: 'registration_date', label: 'Tgl Registrasi', type: 'date' }, 
+      { key: 'created_at', label: 'Tgl Insert', type: 'date' }, 
+      { key: 'last_proof_image', label: 'Bukti', type: 'image' }, 
+      { key: 'pic_name', label: 'PIC Prospek' }, 
+      { key: 'source_info', label: 'Sumber Info' }, 
+      { key: 'last_program_title', label: 'Prog Terakhir' }, 
+      { key: 'last_payment_via_name', label: 'Via Terakhir' }, 
+      { key: 'prospect_date', label: 'Tgl Prospek', type: 'date' }, 
+      { key: 'last_media_name', label: 'Media Terakhir' }
+    ],
+     fields: [
+       { key: 'name', label: 'Nama Lengkap' }, 
+       { key: 'gender', label: 'Jenis Kelamin', type: 'select', options: ['L', 'P'] }, 
+       { key: 'phone', label: 'Nomor HP' }, 
+       { key: 'email', label: 'Email', type: 'email' }, 
+       { key: 'office_id', label: 'Kantor Layanan' }, 
+       { key: 'segment', label: 'Segmen' }, 
+       { key: 'profile_type', label: 'Profil' }, 
+       { key: 'category', label: 'Kategori' }, 
+       { key: 'badge', label: 'Badge' }, 
+       { key: 'profile_photo', label: 'Foto Profil (Upload)', type: 'image' },
+       { key: 'last_proof_image', label: 'Bukti Donasi Terakhir (Upload)', type: 'image' },
+       { key: 'pic_prospect_id', label: 'PIC Prospek' }, 
+       { key: 'source_info', label: 'Sumber Informasi' }, 
+       { key: 'prospect_date', label: 'Tanggal Prospek', type: 'date' }, 
+       { key: 'last_prospect_media_id', label: 'Media Prospek Terakhir' },
+       { key: 'registration_date', label: 'Tanggal Registrasi', type: 'date' },
+       { key: 'rfm_90d', label: 'RFM Score 90 Days' },
+       { key: 'rfm_alltime', label: 'RFM Score All Time' }
+     ] },
 
   transactions: { title: 'List Transaksi', entity: 'Transaksi', description: 'Riwayat seluruh transaksi donasi', icon: 'fas fa-exchange-alt',
-    columns: [{ key: 'donor_name', label: 'Donatur' }, { key: 'campaign_title', label: 'Program' }, { key: 'amount', label: 'Jumlah', type: 'currency' }, { key: 'payment_status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Success' ? 'bg-green-50 text-green-600' : v === 'Pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
+    columns: [
+      { key: 'donation_date', label: 'Tgl Donasi', type: 'date' },
+      { key: 'created_at', label: 'Tgl Insert', type: 'date' },
+      { key: 'updated_at', label: 'Tgl Konfirmasi', type: 'date' },
+      { key: 'donor_name', label: 'Nama Lengkap' }, 
+      { key: 'donor_phone', label: 'Nomor HP' },
+      { key: 'campaign_title', label: 'Program' }, 
+      { key: 'amount', label: 'Jumlah', type: 'currency' }, 
+      { key: 'payment_via_name', label: 'Metode' }, 
+      { key: 'payment_status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Success' ? 'bg-green-50 text-green-600' : v === 'Pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }
+    ],
     fields: [
-      { key: 'user_id', label: 'User ID' }, 
-      { key: 'campaign_id', label: 'Campaign ID' }, 
+      { key: 'donor_name', label: 'Nama Donatur' }, 
+      { key: 'campaign_id', label: 'ID Program' }, 
       { key: 'amount', label: 'Jumlah', type: 'number' }, 
-      { key: 'payment_method', label: 'Metode', type: 'select', options: ['Manual Transfer', 'QRIS', 'E-Wallet', 'Cash'] }, 
+      { key: 'payment_via_id', label: 'Metode Bayar' }, 
+      { key: 'proof_image', label: 'Upload Bukti Transfer', type: 'image' },
       { key: 'payment_status', label: 'Status', type: 'select', options: ['Pending', 'Success', 'Failed'] },
-      { key: 'tracking_status', label: 'Status Pelacakan (Tracker)', type: 'select', options: ['Diterima', 'Logistik', 'Dikirim', 'Tersalur'] }
+      { key: 'tracking_status', label: 'Status Pelacakan', type: 'select', options: ['Diterima', 'Logistik', 'Dikirim', 'Tersalur'] }
     ] },
 
   potential_donors: { title: 'List Calon Donatur', entity: 'Calon Donatur', description: 'Prospek tervalidasi siap dikonversi', icon: 'fas fa-user-plus',
@@ -1102,7 +1242,16 @@ const moduleConfigs = {
     fields: [{ key: 'email', label: 'Email' }, { key: 'status', label: 'Status', type: 'select', options: ['active', 'unsubscribed'] }] },
 };
 
-const activeModule = computed(() => moduleConfigs[currentAdminTab.value] || null);
+const activeModule = computed(() => {
+  const customTabs = [
+    'dashboard', 'users', 'verify_campaign', 'verify_donation', 
+    'verify_zakat', 'settings', 'profile', 'monitoring',
+    'transaction_dashboard', 'distribution_dashboard', 'donor_dashboard', 
+    'prospect_dashboard', 'target_vs_achievement', 'rfm_dashboard'
+  ];
+  if (customTabs.includes(currentAdminTab.value)) return null;
+  return moduleConfigs[currentAdminTab.value] || null;
+});
 const filteredModuleData = computed(() => {
   const data = moduleData.value[currentAdminTab.value] || [];
   if (!moduleSearchQuery.value) return data;
@@ -1144,6 +1293,22 @@ const showNoteModal = ref(false);
 const processingDecision = ref(false);
 const noteData = reactive({ type: '', id: null, status: '', note: '' });
 
+ const handleFileUpload = (event, fieldKey) => {
+   const file = event.target.files[0];
+   if (!file) return;
+   
+   if (file.size > 2 * 1024 * 1024) {
+     alert('File terlalu besar! Maksimal 2MB.');
+     return;
+   }
+
+   const reader = new FileReader();
+   reader.onload = (e) => {
+     moduleFormData.value[fieldKey] = e.target.result;
+   };
+   reader.readAsDataURL(file);
+ };
+
 const handleSaveModuleData = async () => {
   const tab = currentAdminTab.value;
   const config = activeModule.value;
@@ -1160,7 +1325,9 @@ const handleSaveModuleData = async () => {
     const filteredPayload = {};
     config.fields.forEach(f => {
       if (payload[f.key] !== undefined) {
-        filteredPayload[f.key] = payload[f.key];
+        let val = payload[f.key];
+        if (val === "" && (f.key.endsWith('_id') || f.type === 'number')) val = null;
+        filteredPayload[f.key] = val;
       }
     });
     payload = filteredPayload;
@@ -1176,12 +1343,64 @@ const handleSaveModuleData = async () => {
     moduleFormData.value = {};
     fetchModuleData();
   } catch (e) {
-    alert('Gagal menyimpan data modul.');
+    console.error('Error saving module data:', e);
+    alert('Gagal menyimpan data: ' + (e.response?.data?.message || 'Terjadi kesalahan sistem'));
   }
 };
 
-const editModuleData = (row, index) => {
+const openModuleModal = async () => {
+  moduleFormData.value = {};
+  
+  // Pre-fetch offices if needed for the employee form
+  if (currentAdminTab.value === 'employees' && (!moduleData.value.office || moduleData.value.office.length === 0)) {
+     try {
+       const res = await api.get('/admin/master/office');
+       moduleData.value.office = res.data;
+     } catch (e) {
+       console.error('Gagal mengambil data kantor untuk dropdown');
+     }
+  }
+
+  // Pre-fetch program groups if needed for the programs form
+  if (currentAdminTab.value === 'programs' && (!moduleData.value.program_group || moduleData.value.program_group.length === 0)) {
+     try {
+       const res = await api.get('/admin/master/program_group');
+       moduleData.value.program_group = res.data;
+     } catch (e) {
+       console.error('Gagal mengambil data rumpun untuk dropdown');
+     }
+  }
+
+  // Pre-fetch payment via if needed for the transactions form
+  if (currentAdminTab.value === 'transactions' && (!moduleData.value.payment_via || moduleData.value.payment_via.length === 0)) {
+     try {
+       const res = await api.get('/admin/master/payment_via');
+       moduleData.value.payment_via = res.data;
+     } catch (e) {
+       console.error('Gagal mengambil data metode bayar untuk dropdown');
+     }
+  }
+
+  // Pre-fetch donors data
+  if (currentAdminTab.value === 'donors') {
+    if (!moduleData.value.office) { try { const res = await api.get('/admin/master/office'); moduleData.value.office = res.data; } catch (e) {} }
+    if (!moduleData.value.all_users) { try { const res = await api.get('/admin/master/users_mgt'); moduleData.value.all_users = res.data; } catch (e) {} }
+    if (!moduleData.value.prospect_media) { try { const res = await api.get('/admin/master/prospect_media'); moduleData.value.prospect_media = res.data; } catch (e) {} }
+  }
+  
+  showModuleModal.value = true;
+};
+
+const editModuleData = async (row, index) => {
   moduleFormData.value = { ...row, _index: index };
+  
+  // Trigger pre-fetches even on edit
+  if (currentAdminTab.value === 'donors') {
+    if (!moduleData.value.office) { try { const res = await api.get('/admin/master/office'); moduleData.value.office = res.data; } catch (e) {} }
+    if (!moduleData.value.all_users) { try { const res = await api.get('/admin/master/users_mgt'); moduleData.value.all_users = res.data; } catch (e) {} }
+    if (!moduleData.value.prospect_media) { try { const res = await api.get('/admin/master/prospect_media'); moduleData.value.prospect_media = res.data; } catch (e) {} }
+  }
+  
   showModuleModal.value = true;
 };
 
