@@ -8,6 +8,11 @@ const auth = require('../middleware/auth');
 const adminController = require('../controllers/adminController');
 const masterController = require('../controllers/adminMasterController');
 const donorDashboardController = require('../controllers/donorDashboardController');
+const rfmDashboardController = require('../controllers/rfmDashboardController');
+const targetDashboardController = require('../controllers/targetDashboardController');
+const prospectDashboardController = require('../controllers/prospectDashboardController');
+const transactionDashboardController = require('../controllers/transactionDashboardController');
+const distributionDashboardController = require('../controllers/distributionDashboardController');
 
 /**
  * Rute khusus Admin Dashboard & Management
@@ -38,6 +43,12 @@ router.delete('/master/:module/:id', auth, auth.isAdmin, masterController.delete
 
 // 6. Donor Dashboard Analytics
 router.get('/donor-dashboard', auth, auth.isAdmin, donorDashboardController.getDonorDashboardData);
+router.get('/rfm-dashboard', auth, auth.isAdmin, rfmDashboardController.getRFMDashboardData);
+router.get('/target-dashboard', auth, auth.isAdmin, targetDashboardController.getTargetDashboardData);
+router.post('/save-target', auth, auth.isAdmin, targetDashboardController.saveTarget);
+router.get('/prospect-dashboard', auth, auth.isAdmin, prospectDashboardController.getProspectDashboardData);
+router.get('/transaction-dashboard', auth, auth.isAdmin, transactionDashboardController.getTransactionDashboardData);
+router.get('/distribution-dashboard', auth, auth.isAdmin, distributionDashboardController.getDistributionDashboardData);
 
 // 6. Monitoring & Tugas Pegawai
 router.get('/attendances', auth, auth.isAdmin, adminController.getAllAttendances);

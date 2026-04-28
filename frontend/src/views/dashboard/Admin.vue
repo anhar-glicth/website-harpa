@@ -128,6 +128,7 @@
                     </button>
                  </div>
               </div>
+
            </nav>
 
             <!-- Link Kembali -->
@@ -260,6 +261,11 @@
 
               <!-- Donor Dashboard Special View -->
               <DonorDashboard v-if="currentAdminTab === 'donor_dashboard'" />
+              <RFMDashboard v-if="currentAdminTab === 'rfm_dashboard'" />
+              <TargetDashboard v-if="currentAdminTab === 'target_dashboard'" />
+              <ProspectDashboard v-if="currentAdminTab === 'prospect_dashboard'" />
+              <TransactionDashboard v-if="currentAdminTab === 'transaction_dashboard'" />
+              <DistributionDashboard v-if="currentAdminTab === 'distribution_dashboard'" />
 
               <!-- Other modules -->
               <div v-else-if="activeModule" class="space-y-6">
@@ -1001,6 +1007,11 @@ import { useAuth } from '@/store/auth';
 import LineChart from '@/components/charts/LineChart.vue';
 import DoughnutChart from '@/components/charts/DoughnutChart.vue';
 import DonorDashboard from '@/views/dashboard/DonorDashboard.vue';
+import RFMDashboard from '@/views/dashboard/RFMDashboard.vue';
+import TargetDashboard from '@/views/dashboard/TargetDashboard.vue';
+import ProspectDashboard from '@/views/dashboard/ProspectDashboard.vue';
+import TransactionDashboard from '@/views/dashboard/TransactionDashboard.vue';
+import DistributionDashboard from '@/views/dashboard/DistributionDashboard.vue';
 
 const router = useRouter();
 const { clearAuth } = useAuth();
@@ -1062,14 +1073,14 @@ const transactionTabs = [
   { id: 'transaction_dashboard', label: 'Dashboard Transaksi', icon: 'fas fa-chart-bar' },
   { id: 'donor_dashboard', label: 'Dashboard Donatur', icon: 'fas fa-user-chart' },
   { id: 'prospect_dashboard', label: 'Dashboard Prospek', icon: 'fas fa-funnel-dollar' },
-  { id: 'target_vs_achievement', label: 'Dashboard Target Vs Capaian', icon: 'fas fa-tasks' },
+  { id: 'target_dashboard', label: 'Target Vs Capaian', icon: 'fas fa-tasks' },
   { id: 'rfm_dashboard', label: 'Dashboard RFM', icon: 'fas fa-brain' },
 ];
 
 const isAdminManagementOpen = ref(true);
 const isDistributionManagementOpen = ref(true);
 const isTransactionManagementOpen = ref(true);
-const isMainMenuOpen = ref(false); // Default to closed to save space
+const isMainMenuOpen = ref(false); 
 const showModuleModal = ref(false);
 const moduleSearchQuery = ref('');
 const moduleFormData = ref({});
