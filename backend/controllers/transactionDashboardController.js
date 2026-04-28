@@ -7,12 +7,12 @@ const getTransactionDashboardData = async (req, res) => {
             donorId, picId, officeId 
         } = req.query;
 
-        let whereClause = "WHERE d.status = 'Success' ";
+        let whereClause = "WHERE d.payment_status = 'Success' ";
         const params = [];
 
         if (startDate) { whereClause += "AND d.donation_date >= ? "; params.push(startDate); }
         if (endDate) { whereClause += "AND d.donation_date <= ? "; params.push(endDate); }
-        if (programId) { whereClause += "AND d.program_id = ? "; params.push(programId); }
+        if (programId) { whereClause += "AND d.campaign_id = ? "; params.push(programId); }
         if (donorId) { whereClause += "AND d.user_id = ? "; params.push(donorId); }
         
         // Joins needed for PIC and Office filtering

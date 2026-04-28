@@ -85,43 +85,71 @@
            <div class="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm space-y-6">
               <div class="flex justify-between items-center">
                  <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Daftar <span class="text-green-600">Tugas</span></h3>
-                 <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ todos.length }} Tugas</span>
+                 <div class="flex items-center gap-3">
+                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ todos.filter(t => t.status === 'completed').length }}/{{ todos.length }} Selesai</span>
+                    <div class="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                       <div class="h-full bg-green-500 rounded-full transition-all duration-700" :style="{ width: todos.length ? (todos.filter(t => t.status === 'completed').length / todos.length * 100) + '%' : '0%' }"></div>
+                    </div>
+                 </div>
               </div>
               
-              <div class="flex gap-3">
-                 <input v-model="newTodo" @keyup.enter="handleAddTodo" placeholder="Ketik tugas baru..." class="flex-grow p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-bold text-xs transition-all">
-                 <button @click="handleAddTodo" class="px-6 py-4 bg-green-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-700 transition-all">Tambah</button>
+              <!-- Form Tambah Tugas -->
+              <div class="bg-gray-50 rounded-[2rem] p-5 space-y-3 border border-gray-100">
+                 <p class="text-[9px] font-black uppercase tracking-widest text-gray-400">Tambah Tugas Baru</p>
+                 <input v-model="newTodo" @keyup.enter="handleAddTodo" placeholder="Nama tugas..." class="w-full p-4 bg-white rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-black text-xs transition-all border border-gray-100 uppercase italic">
+                 <textarea v-model="newTodoDescription" placeholder="Catatan tambahan / Deskripsi tugas..." class="w-full p-3 bg-white rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-medium text-[10px] transition-all border border-gray-100 text-gray-500 h-20 resize-none"></textarea>
+                 <div class="flex flex-col md:flex-row gap-3 items-end">
+                    <div class="flex-grow w-full">
+                       <label class="text-[8px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1.5 block ml-1">Tenggat Waktu Pengerjaan</label>
+                       <input v-model="newTodoDeadline" type="datetime-local" class="w-full p-3.5 bg-white rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-black text-[10px] transition-all border border-gray-100">
+                    </div>
+                    <button @click="handleAddTodo" class="w-full md:w-auto px-8 py-3.5 bg-green-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100 shrink-0 mb-0.5">
+                       Simpan Tugas
+                    </button>
+                 </div>
               </div>
 
-              <div class="space-y-4">
-                 <div v-for="t in todos" :key="t.id" class="p-6 bg-gray-50/50 rounded-[2rem] border border-transparent hover:border-green-100 hover:bg-white transition-all group">
+              <div class="space-y-3">
+                 <div v-for="t in todos" :key="t.id" :class="['p-5 rounded-[2rem] border transition-all group', t.status === 'completed' ? 'bg-green-50/30 border-green-100' : 'bg-gray-50/50 border-transparent hover:border-green-100 hover:bg-white']">
                     <div class="flex items-start justify-between gap-4">
-                       <div class="flex gap-4">
-                          <div :class="['w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-sm', t.status === 'completed' ? 'bg-green-600 text-white' : 'bg-white text-gray-400']">
-                             <i :class="t.status === 'completed' ? 'fas fa-check' : 'fas fa-tasks'"></i>
-                          </div>
-                          <div class="space-y-1">
+                       <div class="flex gap-3 flex-1">
+                          <!-- Toggle Button -->
+                          <button @click="handleToggleTodo(t.id)" :class="['w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-all hover:scale-110', t.status === 'completed' ? 'bg-green-600 text-white' : 'bg-white text-gray-300 border-2 border-gray-200 hover:border-green-400']">
+                             <i :class="t.status === 'completed' ? 'fas fa-check text-xs' : 'fas fa-circle text-[8px]'"></i>
+                          </button>
+                          <div class="space-y-1 flex-1">
                              <h4 :class="['font-black text-xs uppercase tracking-tight', t.status === 'completed' ? 'text-gray-300 line-through' : 'text-gray-700']">{{ t.task }}</h4>
-                             <p v-if="t.description" class="text-[10px] text-gray-400 font-medium line-clamp-2">{{ t.description }}</p>
-                             <div class="flex items-center gap-3 pt-2">
-                                <span v-if="t.deadline" class="text-[8px] font-black uppercase tracking-widest text-red-400">
-                                   <i class="fas fa-clock mr-1"></i> Deadline: {{ formatDate(t.deadline) }}
+                             <p v-if="t.description" class="text-[10px] text-gray-400 font-medium">{{ t.description }}</p>
+                             <div class="flex items-center gap-3 flex-wrap pt-1">
+                                <span v-if="t.deadline" :class="['text-[8px] font-black uppercase tracking-widest flex items-center gap-1', isOverdue(t) ? 'text-red-500' : 'text-amber-500']">
+                                   <i class="fas fa-clock"></i>
+                                   {{ formatDeadline(t.deadline) }}
+                                   <span v-if="isOverdue(t)" class="bg-red-100 text-red-500 px-1.5 py-0.5 rounded-full">Terlambat</span>
                                 </span>
                                 <span v-if="t.assigned_by" class="text-[8px] font-black uppercase tracking-widest text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Admin Assigned</span>
                              </div>
                           </div>
                        </div>
                        
-                       <div class="flex flex-col gap-2">
-                          <button v-if="t.status !== 'completed'" @click="openTaskResultModal(t)" class="px-4 py-2 bg-green-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-105 transition-all">Selesaikan</button>
-                          <span v-else class="text-[9px] font-black uppercase tracking-widest text-green-600 flex items-center gap-1 justify-center"><i class="fas fa-check-double"></i> Selesai</span>
-                          
-                          <button v-if="!t.assigned_by" @click="handleDeleteTodo(t.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all text-[10px] font-bold uppercase tracking-widest mt-2">Hapus</button>
+                       <div class="flex flex-col gap-1.5 items-end">
+                          <button v-if="t.status !== 'completed'" @click="openTaskResultModal(t)" class="px-4 py-2.5 bg-green-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-green-100">
+                             Upload Bukti
+                          </button>
+                          <div v-else class="flex flex-col items-end gap-1">
+                             <span class="text-[9px] font-black uppercase tracking-widest text-green-600 flex items-center gap-1"><i class="fas fa-check-double"></i> Selesai</span>
+                             <a v-if="t.result_attachment" :href="t.result_attachment" target="_blank" class="text-[8px] font-black uppercase text-blue-500 hover:underline">Lihat Bukti</a>
+                          </div>
+                          <button v-if="!t.assigned_by" @click="handleDeleteTodo(t.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all text-[9px] font-bold uppercase mt-1">Hapus</button>
                        </div>
+                    </div>
+                    <!-- Display Note/Result if exist -->
+                    <div v-if="t.status === 'completed' && t.result_note" class="mt-4 p-4 bg-green-50/50 rounded-2xl border border-green-100/50">
+                       <p class="text-[8px] font-black uppercase text-green-600 tracking-widest mb-1 italic">Catatan Hasil Pengerjaan:</p>
+                       <p class="text-[10px] text-gray-600 font-medium italic">"{{ t.result_note }}"</p>
                     </div>
                  </div>
                  <div v-if="todos.length === 0" class="py-12 text-center">
-                    <p class="text-gray-400 font-bold italic uppercase tracking-widest text-[10px]">Semua tugas sudah selesai!</p>
+                    <p class="text-gray-400 font-bold italic uppercase tracking-widest text-[10px]">Belum ada tugas. Tambahkan tugas baru di atas!</p>
                  </div>
               </div>
            </div>
@@ -180,34 +208,55 @@
               </div>
               <div class="overflow-x-auto">
                  <table class="w-full text-left">
-                    <thead class="bg-gray-50/50 text-[10px] uppercase font-black text-gray-400 tracking-widest">
+                    <thead class="bg-gray-50/50 text-[10px] uppercase font-black text-gray-400 tracking-widest text-center">
                        <tr>
-                          <th class="px-8 py-5">Tanggal</th>
-                          <th class="px-8 py-5">Status</th>
-                          <th class="px-8 py-5">Jam</th>
-                          <th class="px-8 py-5">Lokasi</th>
-                          <th class="px-8 py-5 text-center">Lampiran</th>
+                          <th class="px-8 py-5 text-left">Tanggal</th>
+                          <th class="px-8 py-5">Masuk (Jam/Lokasi)</th>
+                          <th class="px-8 py-5">Pulang (Jam/Lokasi)</th>
+                          <th class="px-8 py-5">Keterangan</th>
                        </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
-                       <tr v-for="log in allAttendanceLogs" :key="log.id" class="hover:bg-green-50/20 transition-colors group">
-                          <td class="px-8 py-6 font-bold text-gray-800 text-xs">{{ formatDate(log.created_at) }}</td>
+                    <tbody class="divide-y divide-gray-50 text-center">
+                       <tr v-for="group in groupedAttendance" :key="group.date" class="hover:bg-green-50/20 transition-colors group">
+                          <td class="px-8 py-6 font-bold text-gray-800 text-xs text-left">{{ group.date }}</td>
+                          
+                          <!-- Kolom Masuk -->
                           <td class="px-8 py-6">
-                             <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm', getStatusBadgeClass(log.type)]">
-                                {{ log.type.replace('_', ' ') }}
-                             </span>
+                             <div v-if="group.check_in" class="space-y-1">
+                                <div class="flex items-center justify-center gap-2">
+                                   <span class="text-[11px] font-black text-green-600">{{ formatTime(group.check_in.created_at) }}</span>
+                                   <a v-if="group.check_in.attachment" :href="group.check_in.attachment" target="_blank" class="text-blue-500 hover:scale-110 transition-all"><i class="fas fa-paperclip text-[10px]"></i></a>
+                                </div>
+                                <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_in.location">{{ group.check_in.location }}</p>
+                             </div>
+                             <span v-else class="text-[10px] text-gray-200 font-black italic">--:--</span>
                           </td>
-                          <td class="px-8 py-6 font-mono text-[11px] text-gray-500">{{ formatTime(log.created_at) }}</td>
-                          <td class="px-8 py-6 text-[10px] font-medium text-gray-400 italic line-clamp-1 max-w-[200px]" :title="log.location">{{ log.location }}</td>
-                          <td class="px-8 py-6 text-center">
-                             <a v-if="log.attachment" :href="log.attachment" target="_blank" class="inline-flex p-2 bg-green-50 text-green-600 rounded-xl hover:scale-110 transition-transform">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                             </a>
-                             <span v-else class="text-[10px] text-gray-300 italic font-medium">None</span>
+
+                          <!-- Kolom Pulang -->
+                          <td class="px-8 py-6 border-l border-gray-50">
+                             <div v-if="group.check_out" class="space-y-1">
+                                <div class="flex items-center justify-center gap-2">
+                                   <span class="text-[11px] font-black text-red-500">{{ formatTime(group.check_out.created_at) }}</span>
+                                   <a v-if="group.check_out.attachment" :href="group.check_out.attachment" target="_blank" class="text-blue-500 hover:scale-110 transition-all"><i class="fas fa-paperclip text-[10px]"></i></a>
+                                </div>
+                                <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_out.location">{{ group.check_out.location }}</p>
+                             </div>
+                             <span v-else class="text-[10px] text-gray-200 font-black italic">--:--</span>
+                          </td>
+
+                          <!-- Kolom Lainnya (Sakit/Izin) -->
+                          <td class="px-8 py-6 border-l border-gray-50">
+                             <div v-if="group.other" class="flex flex-col items-center gap-1">
+                                <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm', getStatusBadgeClass(group.other.type)]">
+                                   {{ group.other.type }}
+                                </span>
+                                <a v-if="group.other.attachment" :href="group.other.attachment" target="_blank" class="text-[8px] font-black text-blue-500 hover:underline uppercase tracking-widest">Lihat Dokumen</a>
+                             </div>
+                             <span v-else class="text-[10px] text-gray-200 font-black italic">Normal</span>
                           </td>
                        </tr>
-                       <tr v-if="allAttendanceLogs.length === 0">
-                          <td colspan="5" class="px-8 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-xs italic">Belum ada riwayat presensi.</td>
+                       <tr v-if="groupedAttendance.length === 0">
+                          <td colspan="4" class="px-8 py-20 text-center text-gray-400 font-bold uppercase tracking-widest text-xs italic">Belum ada riwayat presensi.</td>
                        </tr>
                     </tbody>
                  </table>
@@ -444,48 +493,55 @@
        </Transition>
     </Teleport>
 
-    <!-- Modal: Upload Hasil Tugas -->
-    <Teleport to="body">
-       <Transition name="fade">
-          <div v-if="showTaskResultModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
-             <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showTaskResultModal = false"></div>
-             <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in duration-300">
-                <div class="p-8 bg-slate-900 text-white flex justify-between items-center shrink-0">
-                   <div class="space-y-1">
-                      <h3 class="text-xl font-black uppercase tracking-tighter italic">Upload <span class="text-green-500">Hasil</span></h3>
-                      <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Tugas: {{ selectedTask?.task }}</p>
-                   </div>
-                   <button @click="showTaskResultModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
-                </div>
-                
-                <div class="p-8 space-y-6">
-                   <div class="space-y-2">
-                      <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Bukti Hasil Pekerjaan</label>
-                      <div 
-                        class="relative w-full h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-gray-100 transition-all"
-                        @click="$refs.taskResultFileInput.click()"
-                      >
-                         <img v-if="taskResultForm.attachment" :src="taskResultForm.attachment" class="w-full h-full object-cover">
-                         <div v-else class="text-center p-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                            <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest leading-tight">Ambil Foto Hasil / <br> Bukti Pekerjaan</p>
-                         </div>
-                      </div>
-                      <input ref="taskResultFileInput" type="file" @change="handleTaskResultFileChange" class="hidden" accept="image/*">
-                   </div>
+     <!-- Modal: Upload Hasil Tugas -->
+     <Teleport to="body">
+        <Transition name="fade">
+           <div v-if="showTaskResultModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+              <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showTaskResultModal = false"></div>
+              <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in duration-300">
+                 <div class="p-8 bg-slate-900 text-white flex justify-between items-center shrink-0">
+                    <div class="space-y-1">
+                       <h3 class="text-xl font-black uppercase tracking-tighter italic">Upload <span class="text-green-500">Hasil</span></h3>
+                       <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Tugas: {{ selectedTask?.task }}</p>
+                    </div>
+                    <button @click="showTaskResultModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
+                 </div>
+                 
+                 <div class="p-8 space-y-6">
+                    <div class="space-y-4">
+                       <div class="space-y-1">
+                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Catatan Hasil Pengerjaan</label>
+                          <textarea v-model="taskResultForm.note" placeholder="Tuliskan laporan singkat atau catatan pengerjaan tugas ini..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-medium text-xs resize-none transition-all" required></textarea>
+                       </div>
 
-                   <button 
-                     @click="handleCompleteTask" 
-                     :disabled="!taskResultForm.attachment || submitting" 
-                     class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-green-100 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
-                   >
-                      {{ submitting ? 'Mengirim...' : 'Selesaikan Tugas' }}
-                   </button>
-                </div>
-             </div>
-          </div>
-       </Transition>
-    </Teleport>
+                       <div class="space-y-2">
+                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Bukti Hasil Pekerjaan (Foto)</label>
+                          <div 
+                            class="relative w-full h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-gray-100 transition-all"
+                            @click="$refs.taskResultFileInput.click()"
+                          >
+                             <img v-if="taskResultForm.attachment" :src="taskResultForm.attachment" class="w-full h-full object-cover">
+                             <div v-else class="text-center p-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest leading-tight">Ambil Foto Hasil / <br> Bukti Pekerjaan</p>
+                             </div>
+                          </div>
+                          <input ref="taskResultFileInput" type="file" @change="handleTaskResultFileChange" class="hidden" accept="image/*">
+                       </div>
+                    </div>
+
+                    <button 
+                      @click="handleCompleteTask" 
+                      :disabled="!taskResultForm.attachment || submitting" 
+                      class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-green-100 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                    >
+                       {{ submitting ? 'Mengirim...' : 'Selesaikan & Kirim Laporan' }}
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </Transition>
+     </Teleport>
   </div>
 </template>
 
@@ -500,6 +556,8 @@ const myCampaigns = ref([]);
 const myNews = ref([]);
 const todos = ref([]);
 const newTodo = ref('');
+const newTodoDeadline = ref('');
+const newTodoDescription = ref('');
 const attendanceLogs = ref([]);
 const allAttendanceLogs = ref([]);
 const fieldStats = ref({});
@@ -511,7 +569,7 @@ const selectedTask = ref(null);
 const leaveType = ref('');
 const leaveForm = reactive({ attachment: '' });
 const updateForm = reactive({ title: '', content: '', image: '' });
-const taskResultForm = reactive({ attachment: '' });
+const taskResultForm = reactive({ attachment: '', note: '' });
 const coords = ref(null);
 const currentLocationName = ref('');
 
@@ -557,8 +615,14 @@ const fetchData = async () => {
 const handleAddTodo = async () => {
   if (!newTodo.value.trim()) return;
   try {
-    await api.post('/field/todos', { task: newTodo.value });
+    await api.post('/field/todos', {
+      task: newTodo.value,
+      deadline: newTodoDeadline.value || null,
+      description: newTodoDescription.value || null
+    });
     newTodo.value = '';
+    newTodoDeadline.value = '';
+    newTodoDescription.value = '';
     fetchData();
   } catch (err) {
     alert('Gagal menambah tugas');
@@ -572,6 +636,19 @@ const handleToggleTodo = async (id) => {
   } catch (err) {
     alert('Gagal memperbarui tugas');
   }
+};
+
+const isOverdue = (todo) => {
+  if (!todo.deadline || todo.status === 'completed') return false;
+  return new Date(todo.deadline) < new Date();
+};
+
+const formatDeadline = (dateStr) => {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleString('id-ID', {
+    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
 };
 
 const handleDeleteTodo = async (id) => {
@@ -709,6 +786,20 @@ const isAlreadyCheckedOut = computed(() => attendanceLogs.value.some(l => l.type
 const isAbsent = computed(() => attendanceLogs.value.some(l => l.type === 'sakit' || l.type === 'izin'));
 const isAnyAttendanceToday = computed(() => attendanceLogs.value.length > 0);
 
+const groupedAttendance = computed(() => {
+  const groups = {};
+  allAttendanceLogs.value.forEach(log => {
+    const dateKey = new Date(log.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (!groups[dateKey]) {
+      groups[dateKey] = { date: dateKey, check_in: null, check_out: null, other: null };
+    }
+    if (log.type === 'check_in') groups[dateKey].check_in = log;
+    else if (log.type === 'check_out') groups[dateKey].check_out = log;
+    else groups[dateKey].other = log;
+  });
+  return Object.values(groups);
+});
+
 const todayDate = computed(() => {
   return new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 });
@@ -817,6 +908,7 @@ const handleCreateUpdate = async () => {
 const openTaskResultModal = (task) => {
   selectedTask.value = task;
   taskResultForm.attachment = '';
+  taskResultForm.note = '';
   showTaskResultModal.value = true;
 };
 
@@ -835,7 +927,8 @@ const handleCompleteTask = async () => {
   submitting.value = true;
   try {
     await api.post(`/field/todos/${selectedTask.value.id}/complete`, {
-      result_attachment: taskResultForm.attachment
+      result_attachment: taskResultForm.attachment,
+      result_note: taskResultForm.note
     });
     showTaskResultModal.value = false;
     alert('Tugas berhasil diselesaikan!');

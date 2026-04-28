@@ -2,120 +2,230 @@
 CREATE DATABASE IF NOT EXISTS humanity_db;
 USE humanity_db;
 
--- 1. Users Table
-CREATE TABLE IF NOT EXISTS users (
+-- 1. Master Data Tables
+CREATE TABLE IF NOT EXISTS offices (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'field_worker', 'user') DEFAULT 'user',
-    profile_photo LONGTEXT,
+    address TEXT,
+    phone VARCHAR(20),
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Campaigns Table
+CREATE TABLE IF NOT EXISTS donor_channels (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(50) UNIQUE,
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
+);
+
+CREATE TABLE IF NOT EXISTS program_groups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(50) UNIQUE,
+    description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS payment_via (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    provider VARCHAR(255),
+    account_no VARCHAR(100),
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
+);
+
+CREATE TABLE IF NOT EXISTS prospect_media (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
+);
+
+CREATE TABLE IF NOT EXISTS prospect_methods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE IF NOT EXISTS prospect_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    priority ENUM('Tinggi', 'Sedang', 'Rendah') DEFAULT 'Sedang'
+);
+
+-- 2. Core Users Table
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    username VARCHAR(100) UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'field_worker', 'user') DEFAULT 'user',
+    gender ENUM('L', 'P', 'Other'),
+    phone VARCHAR(20),
+    address TEXT,
+    profile_photo LONGTEXT,
+    office_id INT NULL,
+    pic_prospect_id INT NULL,
+    last_prospect_media_id INT NULL,
+    segment VARCHAR(100),
+    rfm_alltime VARCHAR(100),
+    prospect_date DATE,
+    source_info TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (office_id) REFERENCES offices(id) ON DELETE SET NULL,
+    FOREIGN KEY (pic_prospect_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (last_prospect_media_id) REFERENCES prospect_media(id) ON DELETE SET NULL
+);
+
+-- 3. Core Business Tables
 CREATE TABLE IF NOT EXISTS campaigns (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    author_id INT NOT NULL,
+    group_id INT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
+    category VARCHAR(100),
     target_amount DECIMAL(15, 2) NOT NULL,
     current_amount DECIMAL(15, 2) DEFAULT 0,
-    start_date DATE,
-    end_date DATE,
-    category VARCHAR(100),
     foto LONGTEXT,
-    bank_name VARCHAR(100),
-    account_number VARCHAR(100),
-    account_holder VARCHAR(255),
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES program_groups(id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS news (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    author_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    image LONGTEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- 3. Donations Table
 CREATE TABLE IF NOT EXISTS donations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     campaign_id INT NOT NULL,
     user_id INT NULL,
+    payment_via_id INT NULL,
     donor_name VARCHAR(255) NOT NULL,
     amount DECIMAL(15, 2) NOT NULL,
     message TEXT,
-    donation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    payment_method VARCHAR(100),
     payment_status ENUM('Pending', 'Success', 'Failed') DEFAULT 'Pending',
+    tracking_status ENUM('Diterima', 'Logistik', 'Dikirim', 'Tersalur') DEFAULT 'Diterima',
     proof_image LONGTEXT,
+    admin_note TEXT,
+    donation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    FOREIGN KEY (payment_via_id) REFERENCES payment_via(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS distributions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    program_id INT NOT NULL,
+    recipient_name VARCHAR(255) NOT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    distribution_date DATE,
+    status ENUM('Proses', 'Tersalur') DEFAULT 'Proses',
+    notes TEXT,
+    asnaf VARCHAR(100),
+    city VARCHAR(100),
+    province VARCHAR(100),
+    source_of_fund VARCHAR(100),
+    pm_count INT DEFAULT 1,
+    category_name VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (program_id) REFERENCES campaigns(id) ON DELETE CASCADE
+);
+
+-- 4. CRM & Social Tables
+CREATE TABLE IF NOT EXISTS prospects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    email VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS prospect_responses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    prospect_id INT NULL,
+    response TEXT,
+    status ENUM('Tertarik', 'Tidak Tertarik', 'Follow Up') DEFAULT 'Follow Up',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (prospect_id) REFERENCES prospects(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS fundraisers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    name VARCHAR(255) NOT NULL,
+    type ENUM('Internal', 'Mitra', 'Volunteer') DEFAULT 'Internal',
+    target DECIMAL(15, 2) DEFAULT 0,
+    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- 4. News Table
+CREATE TABLE IF NOT EXISTS volunteers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    phone VARCHAR(20),
+    address TEXT,
+    skills TEXT,
+    reason TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pic_targets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pic_id INT NOT NULL,
+    month_period DATE NOT NULL,
+    target_amount DECIMAL(15, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (pic_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 5. Content & Feedback
 CREATE TABLE IF NOT EXISTS news (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    author_id INT NOT NULL,
+    author_id INT,
+    title VARCHAR(255),
+    tag VARCHAR(100),
+    content TEXT,
+    image LONGTEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS campaign_updates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    campaign_id INT NOT NULL,
+    user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
     image LONGTEXT,
-    category VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- 5. Mualaf Requests Table
-CREATE TABLE IF NOT EXISTS mualaf_requests (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    address TEXT NOT NULL,
-    desired_date DATE NOT NULL,
-    location VARCHAR(100) NOT NULL,
-    status ENUM('pending', 'approved', 'rejected', 'completed') DEFAULT 'pending',
-    admin_notes TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 6. Site Settings Table
-CREATE TABLE IF NOT EXISTS site_settings (
-    setting_key VARCHAR(100) PRIMARY KEY,
-    setting_value TEXT,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- 7. Zakats Table
-CREATE TABLE IF NOT EXISTS zakats (
+CREATE TABLE IF NOT EXISTS prayers (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    zakat_type VARCHAR(50) NOT NULL,
-    amount DECIMAL(15, 2) NOT NULL,
-    payment_method VARCHAR(50) DEFAULT 'Transfer Bank',
-    payment_status ENUM('Pending', 'Success', 'Failed') DEFAULT 'Pending',
-    admin_note TEXT,
+    user_id INT NULL,
+    name VARCHAR(255),
+    message TEXT,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    aamiin_count INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- 8. To Do List Table
-CREATE TABLE IF NOT EXISTS todo_list (
+CREATE TABLE IF NOT EXISTS contact_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    task TEXT NOT NULL,
-    status ENUM('pending', 'completed') DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    name VARCHAR(255),
+    email VARCHAR(255),
+    subject VARCHAR(255),
+    message TEXT,
+    status ENUM('unread', 'read', 'replied') DEFAULT 'unread',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 9. Attendance Table
+-- 6. Operational
 CREATE TABLE IF NOT EXISTS attendance (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -128,110 +238,60 @@ CREATE TABLE IF NOT EXISTS attendance (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 10. Campaign Updates (Impact Stories)
-CREATE TABLE IF NOT EXISTS campaign_updates (
+CREATE TABLE IF NOT EXISTS todo_list (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    campaign_id INT NOT NULL,
     user_id INT NOT NULL,
-    title VARCHAR(255),
-    content TEXT NOT NULL,
-    image LONGTEXT,
+    assigned_by INT NULL,
+    task VARCHAR(255) NOT NULL,
+    description TEXT,
+    deadline DATETIME,
+    status ENUM('pending', 'completed') DEFAULT 'pending',
+    result_attachment LONGTEXT,
+    completed_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (campaign_id) REFERENCES campaigns(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (assigned_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS zakats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    zakat_type VARCHAR(100) NOT NULL,
+    amount DECIMAL(15, 2) NOT NULL,
+    payment_status ENUM('Pending', 'Success', 'Failed') DEFAULT 'Pending',
+    admin_note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 11. Offices Table
-CREATE TABLE IF NOT EXISTS offices (
+CREATE TABLE IF NOT EXISTS muallaf_requests (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    email VARCHAR(255),
     address TEXT,
-    phone VARCHAR(20),
-    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
+    desired_date DATE,
+    location VARCHAR(255),
+    status ENUM('pending', 'approved', 'rejected', 'completed') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 12. Employees Table
-CREATE TABLE IF NOT EXISTS employees (
+CREATE TABLE IF NOT EXISTS newsletters (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NULL,
-    office_id INT NULL,
-    name VARCHAR(255) NOT NULL,
-    position VARCHAR(100),
-    phone VARCHAR(20),
-    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-    FOREIGN KEY (office_id) REFERENCES offices(id) ON DELETE SET NULL,
+    email VARCHAR(255) UNIQUE,
+    status ENUM('active', 'unsubscribed') DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 13. Donor Channels
-CREATE TABLE IF NOT EXISTS donor_channels (
+CREATE TABLE IF NOT EXISTS audit_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    code VARCHAR(50) UNIQUE,
-    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
-);
-
--- 14. Program Groups
-CREATE TABLE IF NOT EXISTS program_groups (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    code VARCHAR(50) UNIQUE,
-    description TEXT
-);
-
--- 15. Payment Via
-CREATE TABLE IF NOT EXISTS payment_via (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    provider VARCHAR(255),
-    account_no VARCHAR(100),
-    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
-);
-
--- 16. Prospect Media
-CREATE TABLE IF NOT EXISTS prospect_media (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif'
-);
-
--- 17. Prospect Methods
-CREATE TABLE IF NOT EXISTS prospect_methods (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT
-);
-
--- 18. Prospect Types
-CREATE TABLE IF NOT EXISTS prospect_types (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    priority ENUM('Tinggi', 'Sedang', 'Rendah') DEFAULT 'Sedang'
-);
-
--- 19. Fundraisers
-CREATE TABLE IF NOT EXISTS fundraisers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NULL,
-    name VARCHAR(255) NOT NULL,
-    type ENUM('Internal', 'Mitra', 'Volunteer') DEFAULT 'Internal',
-    target DECIMAL(15, 2) DEFAULT 0,
-    status ENUM('Aktif', 'Non-Aktif') DEFAULT 'Aktif',
+    user_id INT,
+    action VARCHAR(255),
+    module VARCHAR(100),
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- 20. Prospect Responses
-CREATE TABLE IF NOT EXISTS prospect_responses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    prospect_id INT NULL,
-    response TEXT,
-    status ENUM('Tertarik', 'Tidak Tertarik', 'Follow Up') DEFAULT 'Follow Up',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 21. Targets
 CREATE TABLE IF NOT EXISTS targets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     period VARCHAR(50) NOT NULL,
@@ -242,29 +302,14 @@ CREATE TABLE IF NOT EXISTS targets (
     FOREIGN KEY (program_id) REFERENCES campaigns(id) ON DELETE SET NULL
 );
 
--- 22. Distributions
-CREATE TABLE IF NOT EXISTS distributions (
+CREATE TABLE IF NOT EXISTS settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    recipient_name VARCHAR(255) NOT NULL,
-    program_id INT NULL,
-    amount DECIMAL(15, 2) NOT NULL,
-    distribution_date DATE,
-    status ENUM('Tersalur', 'Proses') DEFAULT 'Proses',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (program_id) REFERENCES campaigns(id) ON DELETE SET NULL
+    hero_title TEXT,
+    hero_subtitle TEXT,
+    hero_image LONGTEXT,
+    about_mission TEXT,
+    about_image LONGTEXT,
+    impact_title TEXT,
+    impact_image LONGTEXT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
--- SEED DATA UPDATE
-INSERT IGNORE INTO offices (name, address, phone) VALUES 
-('Kantor Pusat Jakarta', 'Jl. Sudirman No. 123', '021-123456'),
-('Cabang Bandung', 'Jl. Asia Afrika No. 45', '022-765432');
-
-INSERT IGNORE INTO donor_channels (name, code) VALUES 
-('Website Utama', 'WEB-01'),
-('Social Media Ads', 'SOC-ADS'),
-('Event Offline', 'EVT-OFF');
-
-INSERT IGNORE INTO program_groups (name, code) VALUES 
-('Pendidikan & Dakwah', 'EDU-DAK'),
-('Kesehatan Masyarakat', 'HEALTH'),
-('Bencana & Emergency', 'EMR');

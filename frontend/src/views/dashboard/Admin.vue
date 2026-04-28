@@ -731,37 +731,64 @@
                 <!-- Sub-Tab: Attendance -->
                 <div v-if="monitoringSubTab === 'attendance'" class="overflow-x-auto">
                   <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                    <thead class="bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest text-center">
                       <tr>
-                        <th class="px-8 py-5">Pegawai</th>
-                        <th class="px-8 py-5">Waktu</th>
-                        <th class="px-8 py-5">Tipe</th>
-                        <th class="px-8 py-5">Lokasi</th>
-                        <th class="px-8 py-5 text-center">Aksi</th>
+                        <th class="px-8 py-5 text-left">Pegawai & Tanggal</th>
+                        <th class="px-8 py-5">Masuk (Jam/Lokasi)</th>
+                        <th class="px-8 py-5">Pulang (Jam/Lokasi)</th>
+                        <th class="px-8 py-5">Keterangan</th>
+                        <th class="px-8 py-5">Aksi</th>
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-50">
-                      <tr v-for="att in allAttendances" :key="att.id" class="hover:bg-gray-50/50 transition-colors">
+                    <tbody class="divide-y divide-gray-50 text-center">
+                      <tr v-for="group in groupedAdminAttendances" :key="group.date + group.employee_email" class="hover:bg-gray-50/50 transition-colors">
+                        <td class="px-8 py-6 text-left">
+                          <p class="font-black text-gray-900 text-[10px] uppercase tracking-tight">{{ group.employee_name }}</p>
+                          <p class="text-[9px] text-green-600 font-black uppercase tracking-widest">{{ group.date }}</p>
+                        </td>
+                        
+                        <!-- Masuk -->
                         <td class="px-8 py-6">
-                          <p class="font-black text-gray-900 text-[10px] uppercase tracking-tight">{{ att.employee_name }}</p>
-                          <p class="text-[9px] text-gray-400 font-medium lowercase">{{ att.employee_email }}</p>
+                           <div v-if="group.check_in" class="space-y-1">
+                              <p class="text-[10px] font-black text-green-600">{{ formatTime(group.check_in.created_at) }}</p>
+                              <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_in.location">{{ group.check_in.location }}</p>
+                           </div>
+                           <span v-else class="text-[10px] text-gray-200 font-black italic">--:--</span>
                         </td>
+
+                        <!-- Pulang -->
+                        <td class="px-8 py-6 border-l border-gray-50">
+                           <div v-if="group.check_out" class="space-y-1">
+                              <p class="text-[10px] font-black text-red-500">{{ formatTime(group.check_out.created_at) }}</p>
+                              <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_out.location">{{ group.check_out.location }}</p>
+                           </div>
+                           <span v-else class="text-[10px] text-gray-200 font-black italic">--:--</span>
+                        </td>
+
+                        <!-- Keterangan Lain -->
+                        <td class="px-8 py-6 border-l border-gray-50">
+                           <div v-if="group.other" class="flex flex-col items-center gap-1">
+                              <span class="px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-[8px] font-black uppercase tracking-widest">{{ group.other.type }}</span>
+                           </div>
+                           <span v-else class="text-[10px] text-gray-200 font-black italic">Normal</span>
+                        </td>
+
                         <td class="px-8 py-6">
-                           <p class="text-[10px] font-bold text-gray-700">{{ formatDate(att.created_at) }}</p>
-                           <p class="text-[9px] text-gray-400 font-medium">{{ formatTime(att.created_at) }}</p>
+                           <div class="flex justify-center gap-2">
+                              <button v-if="group.check_in?.attachment" @click="viewAttachment(group.check_in.attachment)" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all" title="Bukti Masuk">
+                                 <i class="fas fa-sign-in-alt text-[10px]"></i>
+                              </button>
+                              <button v-if="group.check_out?.attachment" @click="viewAttachment(group.check_out.attachment)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all" title="Bukti Pulang">
+                                 <i class="fas fa-sign-out-alt text-[10px]"></i>
+                              </button>
+                              <button v-if="group.other?.attachment" @click="viewAttachment(group.other.attachment)" class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all" title="Bukti Keterangan">
+                                 <i class="fas fa-file-alt text-[10px]"></i>
+                              </button>
+                           </div>
                         </td>
-                        <td class="px-8 py-6">
-                          <span :class="att.type === 'check_in' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'" class="px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest">
-                            {{ att.type === 'check_in' ? 'Masuk' : 'Pulang' }}
-                          </span>
-                        </td>
-                        <td class="px-8 py-6">
-                          <p class="text-[10px] font-semibold text-gray-600 italic truncate w-40">{{ att.location }}</p>
-                        </td>
-                        <td class="px-8 py-6 text-center">
-                          <button v-if="att.attachment" @click="viewAttachment(att.attachment)" class="text-green-600 hover:underline text-[9px] font-black uppercase tracking-widest">Lihat Bukti</button>
-                          <span v-else class="text-gray-300 text-[9px] uppercase font-black">-</span>
-                        </td>
+                      </tr>
+                      <tr v-if="groupedAdminAttendances.length === 0">
+                         <td colspan="5" class="py-20 text-center text-gray-300 font-black uppercase tracking-widest text-[10px]">Belum ada data absensi</td>
                       </tr>
                     </tbody>
                   </table>
@@ -782,21 +809,25 @@
                       <tr v-for="task in allTasks" :key="task.id" class="hover:bg-gray-50/50 transition-colors">
                         <td class="px-8 py-6">
                            <p class="font-black text-gray-900 text-[10px] uppercase tracking-tight">{{ task.task }}</p>
+                           <p v-if="task.description" class="text-[9px] text-gray-400 italic mb-1">{{ task.description }}</p>
                            <p class="text-[9px] text-green-600 font-bold uppercase tracking-widest">PIC: {{ task.employee_name }}</p>
                         </td>
-                        <td class="px-8 py-6">
+                        <td class="px-8 py-6 text-center">
                            <p class="text-[10px] font-bold text-gray-700 italic">{{ formatDate(task.deadline) }}</p>
                         </td>
-                        <td class="px-8 py-6">
+                        <td class="px-8 py-6 text-center">
                           <span :class="task.status === 'completed' ? 'bg-green-600 text-white' : 'bg-yellow-50 text-yellow-600'" class="px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest">
                             {{ task.status }}
                           </span>
                         </td>
                         <td class="px-8 py-6 text-center">
-                          <button v-if="task.result_attachment" @click="viewAttachment(task.result_attachment)" class="bg-green-50 text-green-600 p-2.5 rounded-xl hover:bg-green-600 hover:text-white transition-all">
-                            <i class="fas fa-eye text-[9px]"></i>
-                          </button>
-                          <span v-else class="text-gray-300 text-[9px] uppercase font-black">Belum Ada</span>
+                          <div v-if="task.result_attachment || task.result_note" class="flex flex-col items-center gap-2">
+                            <button v-if="task.result_attachment" @click="viewAttachment(task.result_attachment)" class="bg-green-50 text-green-600 p-2.5 rounded-xl hover:bg-green-600 hover:text-white transition-all" title="Lihat Foto Bukti">
+                              <i class="fas fa-eye text-[9px]"></i>
+                            </button>
+                            <p v-if="task.result_note" class="text-[9px] text-gray-500 italic max-w-[150px] line-clamp-3" :title="task.result_note">"{{ task.result_note }}"</p>
+                          </div>
+                          <span v-else class="text-gray-300 text-[9px] uppercase font-black">Belum Ada Laporan</span>
                         </td>
                       </tr>
                     </tbody>
@@ -1032,7 +1063,7 @@ const sidebarTabs = ref([
   { id: 'verify_zakat', label: 'Verifikasi Zakat V2', icon: 'fas fa-hand-holding-heart' },
   { id: 'settings', label: 'CMS Tampilan V2', icon: 'fas fa-paint-roller' },
   { id: 'news_mgt', label: 'Manajemen Warta V2', icon: 'fas fa-newspaper' },
-  { id: 'mualaf_mgt', label: 'Manajemen Mualaf V2', icon: 'fas fa-kaaba' },
+  { id: 'muallaf_mgt', label: 'Manajemen Mualaf V2', icon: 'fas fa-kaaba' },
   { id: 'recruitment', label: 'Rekrutmen Relawan V2', icon: 'fas fa-user-plus' },
   { id: 'inbox', label: 'Kotak Pesan V2', icon: 'fas fa-envelope-open-text' },
   { id: 'newsletter_mgt', label: 'Berlangganan Warta V2', icon: 'fas fa-mail-bulk' },
@@ -1255,7 +1286,7 @@ const moduleConfigs = {
     columns: [{ key: 'title', label: 'Judul Berita' }, { key: 'tag', label: 'Tag' }, { key: 'created_at', label: 'Tanggal', type: 'date' }],
     fields: [{ key: 'title', label: 'Judul Berita' }, { key: 'tag', label: 'Tag (Contoh: Update, Laporan, Kisah)' }, { key: 'content', label: 'Isi Berita', type: 'textarea' }, { key: 'image', label: 'URL Gambar', type: 'text' }] },
 
-  mualaf_mgt: { title: 'Layanan Mualaf', entity: 'Pengajuan', description: 'Permohonan bimbingan syahadat & pembinaan', icon: 'fas fa-kaaba',
+  muallaf_mgt: { title: 'Layanan Mualaf', entity: 'Pengajuan', description: 'Permohonan bimbingan syahadat & pembinaan', icon: 'fas fa-kaaba',
     columns: [{ key: 'name', label: 'Nama' }, { key: 'desired_date', label: 'Rencana Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : v === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-red-50 text-red-600' }],
     fields: [{ key: 'name', label: 'Nama Lengkap' }, { key: 'email', label: 'Email', type: 'email' }, { key: 'address', label: 'Alamat', type: 'textarea' }, { key: 'desired_date', label: 'Rencana Tanggal', type: 'date' }, { key: 'location', label: 'Lokasi Syahadat' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected', 'completed'] }] },
 
@@ -1324,6 +1355,31 @@ const formData = reactive({ name: '', email: '', password: '', role: 'field_work
 const monitoringSubTab = ref('attendance');
 const workerPerformance = ref([]);
 const allAttendances = ref([]);
+
+const groupedAdminAttendances = computed(() => {
+  const groups = {};
+  allAttendances.value.forEach(att => {
+    const dateStr = formatDate(att.created_at);
+    const key = `${att.user_id}_${dateStr}`;
+    
+    if (!groups[key]) {
+      groups[key] = {
+        employee_name: att.employee_name,
+        employee_email: att.employee_email,
+        date: dateStr,
+        check_in: null,
+        check_out: null,
+        other: null
+      };
+    }
+    
+    if (att.type === 'check_in') groups[key].check_in = att;
+    else if (att.type === 'check_out') groups[key].check_out = att;
+    else groups[key].other = att;
+  });
+  return Object.values(groups);
+});
+
 const allTasks = ref([]);
 const showAssignModal = ref(false);
 const assigning = ref(false);
@@ -1666,12 +1722,14 @@ const submitDecisionWithNote = async () => {
 
 const handleAddUser = async () => {
   try {
-    await api.post('/admin/users', formData);
+    const res = await api.post('/admin/users', formData);
+    alert(res.data.message || 'Pahlawan baru berhasil diaktifkan!');
     showAddModal.value = false;
     formData.name = ''; formData.email = ''; formData.password = '';
     fetchData();
   } catch (e) {
-    alert('Gagal menambah pahlawan baru.');
+    const errorMsg = e.response?.data?.message || 'Gagal menambah pahlawan baru. Pastikan email belum terdaftar.';
+    alert(errorMsg);
   }
 };
 

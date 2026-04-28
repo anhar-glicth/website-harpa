@@ -43,21 +43,21 @@ app.use(cors());
 
 // Route Spesifik - Pastikan rute admin berada di atas rute global api
 const campaignController = require('./controllers/campaignController');
-app.get('/api/stats', campaignController.getStats);
+app.get(['/api/stats', '/stats'], campaignController.getStats);
 
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/campaigns', campaignRoutes);
-app.use('/api/donations', donationRoutes);
-app.use('/api/news', newsRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/zakats', zakatRoutes);
-app.use('/api/profile', profileRoutes);
-app.use('/api/field', fieldRoutes);
-app.use('/api/prayers', prayerRoutes);
-app.use('/api/volunteers', require('./routes/volunteerRoutes'));
-app.use('/api/contacts', require('./routes/contactRoutes'));
-app.use('/api/newsletters', require('./routes/newsletterRoutes'));
+app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/admin', '/admin'], adminRoutes);
+app.use(['/api/campaigns', '/campaigns'], campaignRoutes);
+app.use(['/api/donations', '/donations'], donationRoutes);
+app.use(['/api/news', '/news'], newsRoutes);
+app.use(['/api/settings', '/settings'], settingsRoutes);
+app.use(['/api/zakats', '/zakats'], zakatRoutes);
+app.use(['/api/profile', '/profile'], profileRoutes);
+app.use(['/api/field', '/field'], fieldRoutes);
+app.use(['/api/prayers', '/prayers'], prayerRoutes);
+app.use(['/api/volunteers', '/volunteers'], require('./routes/volunteerRoutes'));
+app.use(['/api/contacts', '/contacts'], require('./routes/contactRoutes'));
+app.use(['/api/newsletters', '/newsletters'], require('./routes/newsletterRoutes'));
 
 
 // Root test route

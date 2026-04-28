@@ -114,7 +114,7 @@ const submitting = ref(false);
 const handleSubmit = async () => {
   submitting.value = true;
   try {
-    await api.post('/volunteers', form);
+    await api.post('/volunteers/register', form);
     alert('Terima kasih! Pendaftaran Anda telah kami terima. Tim kami akan segera menghubungi Anda.');
     // Reset form
     Object.keys(form).forEach(key => form[key] = '');

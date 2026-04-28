@@ -221,7 +221,7 @@ const fetchData = async () => {
     const id = route.params.id;
     const [campaignRes, updateRes] = await Promise.all([
       api.get(`/campaigns/${id}`),
-      api.get(`/field/campaign-updates/${id}`)
+      api.get(`/field/updates/${id}`)
     ]);
     campaign.value = campaignRes.data;
     updates.value = updateRes.data;

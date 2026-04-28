@@ -14,12 +14,15 @@ exports.getTodos = async (req, res) => {
 };
 
 exports.addTodo = async (req, res) => {
-    const { task } = req.body;
+    const { task, deadline, description } = req.body;
     try {
-        await db.query('INSERT INTO todo_list (user_id, task) VALUES (?, ?)', [req.user.id, task]);
+        await db.query(
+            'INSERT INTO todo_list (user_id, task, deadline, description) VALUES (?, ?, ?, ?)',
+            [req.user.id, task, deadline || null, description || null]
+        );
         res.status(201).json({ message: 'Tugas berhasil ditambahkan' });
     } catch (error) {
-        res.status(500).json({ message: 'Gagal menambah tugas' });
+        res.status(500).json({ message: 'Gagal menambah tugas', error: error.message });
     }
 };
 
@@ -173,11 +176,11 @@ exports.getCampaignUpdates = async (req, res) => {
  */
 exports.completeTask = async (req, res) => {
     const { id } = req.params;
-    const { result_attachment } = req.body;
+    const { result_attachment, result_note } = req.body;
     try {
         await db.query(
-            'UPDATE todo_list SET status = "completed", result_attachment = ?, completed_at = NOW() WHERE id = ? AND user_id = ?',
-            [result_attachment, id, req.user.id]
+            'UPDATE todo_list SET status = "completed", result_attachment = ?, result_note = ?, completed_at = NOW() WHERE id = ? AND user_id = ?',
+            [result_attachment, result_note || null, id, req.user.id]
         );
         res.json({ message: 'Tugas berhasil diselesaikan dan bukti telah diunggah!' });
     } catch (error) {
