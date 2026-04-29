@@ -12,6 +12,8 @@ import Contact from '../views/Contact.vue';
 import News from '../views/News.vue';
 import Zakat from '../views/Zakat.vue';
 import Volunteer from '../views/Volunteer.vue';
+import ForgotPassword from '../views/ForgotPassword.vue';
+import ResetPassword from '../views/ResetPassword.vue';
 
 // Gunakan impor dinamis untuk dashboard agar lebih ringan
 const Overview = () => import('../views/dashboard/Overview.vue');
@@ -87,6 +89,18 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register,
+    meta: { guestOnly: true }
+  },
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPassword,
+    meta: { guestOnly: true }
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword,
     meta: { guestOnly: true }
   },
   // LAYOUT DASHBOARD (Nested Routes)

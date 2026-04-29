@@ -14,6 +14,9 @@
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <button @click="openNewsModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-50 text-green-600 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-100 transition-all border border-green-100">Tulis Berita</button>
             <button @click="openCampaignModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-600 text-white rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100">Kampanye Baru</button>
+            <button @click="handleLogout" class="flex-1 sm:flex-none px-6 py-3 bg-red-50 text-red-500 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-red-100 transition-all border border-red-100">
+              <i class="fas fa-power-off"></i>
+            </button>
           </div>
         </header>
 
@@ -548,7 +551,19 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth } from '@/store/auth';
 import api from '@/api';
+
+const router = useRouter();
+const { clearAuth } = useAuth();
+
+const handleLogout = async () => {
+  if (confirm('Apakah Anda yakin ingin keluar?')) {
+    clearAuth();
+    router.push('/login');
+  }
+};
 
 const activeTab = ref('campaigns');
 const loading = ref(true);

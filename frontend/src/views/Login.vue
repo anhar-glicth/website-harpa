@@ -28,7 +28,7 @@
         <div>
           <div class="flex justify-between mb-1.5">
             <label class="block text-sm font-semibold text-gray-700">Kata Sandi</label>
-            <a href="#" class="text-xs text-green-600 hover:underline">Lupa sandi?</a>
+            <router-link to="/forgot-password" class="text-xs text-green-600 hover:underline">Lupa sandi?</router-link>
           </div>
           <input 
             v-model="form.password" 

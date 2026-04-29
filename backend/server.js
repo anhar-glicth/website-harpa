@@ -65,6 +65,26 @@ app.get('/', (req, res) => {
     res.send('API Humanity Care is Running...');
 });
 
+// Database Health Check
+const db = require('./config/db');
+app.get('/api/health', async (req, res) => {
+    try {
+        await db.query('SELECT 1');
+        res.json({
+            status: 'online',
+            database: 'connected',
+            timestamp: new Date()
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'online',
+            database: 'error',
+            message: err.message,
+            timestamp: new Date()
+        });
+    }
+});
+
 // Handling 404 Not Found
 app.use((req, res) => {
     console.log(`[404] Request ke: ${req.originalUrl}`);

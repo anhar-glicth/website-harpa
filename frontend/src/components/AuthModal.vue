@@ -38,6 +38,9 @@
                     <div class="space-y-4">
                        <input v-model="loginForm.email" type="email" placeholder="Email Anda" class="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
                        <input v-model="loginForm.password" type="password" placeholder="Kata Sandi" class="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
+                       <div class="flex justify-end px-2">
+                         <button @click="handleGoToForgotPassword" class="text-[9px] font-black text-green-600 uppercase tracking-widest hover:underline">Lupa Kata Sandi?</button>
+                       </div>
                     </div>
                     <div v-if="error" class="text-[10px] font-bold text-red-500 uppercase tracking-widest animate-pulse">{{ error }}</div>
                     <button @click="handleLogin" :disabled="isLoading" class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50">
@@ -88,6 +91,11 @@ const error = ref('');
 
 const loginForm = reactive({ email: '', password: '' });
 const regForm = reactive({ name: '', email: '', password: '' });
+
+const handleGoToForgotPassword = () => {
+  closeAuthModal();
+  router.push('/forgot-password');
+};
 
 const handleLogin = async () => {
   if (!loginForm.email || !loginForm.password) return error.value = 'Mohon isi semua bidang';

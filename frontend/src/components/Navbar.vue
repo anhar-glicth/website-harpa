@@ -28,6 +28,9 @@
               <img v-if="getUserPhoto" :src="getUserPhoto" class="w-full h-full object-cover" />
               <span v-else>{{ getUserName?.charAt(0).toUpperCase() }}</span>
             </router-link>
+            <button @click="handleLogout" class="text-gray-400 hover:text-red-600 transition-colors ml-1">
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
           </template>
         </div>
       </div>
