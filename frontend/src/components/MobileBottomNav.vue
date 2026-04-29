@@ -54,7 +54,7 @@ const handleNavClick = (link, event) => {
         <svg v-else-if="link.type === 'profile'" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
       </div>
-      <span class="truncate max-w-[64px] font-black tracking-widest">{{ link.label }}</span>
+      <span class="truncate max-w-[64px] font-black tracking-tight">{{ link.label }}</span>
     </button>
   </nav>
 </template>

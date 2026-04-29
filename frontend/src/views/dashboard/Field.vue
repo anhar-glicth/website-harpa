@@ -1,28 +1,29 @@
 <template>
-  <div class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full pb-24 lg:pb-0">
+  <div class="flex-grow space-y-6 lg:space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full pb-28 lg:pb-0">
         <!-- Header -->
-        <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
-          <div class="space-y-2 relative z-10 text-center md:text-left">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-5 bg-white p-5 sm:p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
+          <div class="space-y-1.5 relative z-10 text-center md:text-left">
             <div class="flex items-center justify-center md:justify-start gap-3">
-              <h1 class="text-3xl font-black text-gray-900 tracking-tight leading-none uppercase italic">Panel <span class="text-green-600">Staff</span></h1>
-              <span class="bg-green-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-green-100">Live</span>
+              <h1 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight leading-none uppercase italic">Panel <span class="text-green-600">Staff</span></h1>
+              <span class="bg-green-600 text-white text-[8px] sm:text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-green-100">Live</span>
             </div>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Manajemen Lapangan & Warta Kebaikan</p>
+            <p class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">Manajemen Lapangan & Warta Kebaikan</p>
           </div>
           
-          <div class="flex flex-col md:flex-row gap-3">
-            <button @click="openNewsModal" class="px-6 py-3.5 bg-green-50 text-green-600 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-100 transition-all border border-green-100">Tulis Berita</button>
-            <button @click="openCampaignModal" class="px-6 py-3.5 bg-green-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100">Kampanye Baru</button>
+          <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <button @click="openNewsModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-50 text-green-600 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-100 transition-all border border-green-100">Tulis Berita</button>
+            <button @click="openCampaignModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-600 text-white rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100">Kampanye Baru</button>
           </div>
         </header>
 
-        <!-- Navigasi Tab Intern -->
-        <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-2xl w-full overflow-x-auto no-scrollbar">
-           <button @click="activeTab = 'campaigns'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'campaigns' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Proyek Saya</button>
-           <button @click="activeTab = 'news'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'news' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Arsip Berita</button>
-           <button @click="activeTab = 'todo'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'todo' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">To-Do List</button>
-           <button @click="activeTab = 'attendance'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'attendance' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Absensi</button>
-           <button @click="activeTab = 'stats'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'stats' ? 'bg-white text-green-600 shadow-sm' : 'text-gray-500 hover:text-green-600']">Statistik</button>
+        <!-- Navigasi Tab Intern (Sticky on mobile) -->
+        <div class="sticky top-[64px] lg:top-0 z-30 flex items-center gap-2 bg-white/80 backdrop-blur-md p-1.5 rounded-2xl w-full overflow-x-auto no-scrollbar border border-gray-100 shadow-sm lg:shadow-none">
+           <button @click="activeTab = 'campaigns'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'campaigns' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Proyek Saya</button>
+           <button @click="activeTab = 'news'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'news' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Arsip Berita</button>
+           <button @click="activeTab = 'todo'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'todo' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">To-Do List</button>
+           <button @click="activeTab = 'attendance'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'attendance' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Absensi</button>
+           <button @click="activeTab = 'stats'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'stats' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Statistik</button>
         </div>
 
         <!-- Tab: Campaigns -->

@@ -1,27 +1,28 @@
 <template>
-  <main class="flex-grow space-y-8 w-full pb-24 lg:pb-0">
+  <main class="flex-grow space-y-6 lg:space-y-8 w-full pb-28 lg:pb-0">
 
           <!-- Header -->
-          <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+          <!-- Header -->
+          <header class="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-5">
             <div class="space-y-1 text-center md:text-left">
-              <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">
+              <h1 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tighter uppercase italic">
                 Donatur <span class="text-green-600">Portal</span>
               </h1>
-              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pusat Kebaikan & Kontribusi Anda</p>
+              <p class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">Pusat Kebaikan & Kontribusi Anda</p>
             </div>
-            <router-link to="/campaigns" class="px-8 py-4 bg-green-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-500/20">
+            <router-link to="/campaigns" class="w-full md:w-auto text-center px-8 py-3.5 bg-green-600 text-white rounded-xl sm:rounded-2xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-500/20">
               🌿 Jelajah Program
             </router-link>
           </header>
 
           <!-- DONATION HISTORY WITH TABS -->
-          <section class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-            <div class="p-8 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
+          <section class="bg-white rounded-[2rem] sm:rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+            <div class="p-6 sm:p-8 border-b border-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
               <h3 class="font-black text-gray-900 uppercase tracking-tighter italic text-xl">Riwayat <span class="text-green-600">Donasi</span></h3>
-              <div class="bg-gray-50 p-1.5 rounded-2xl inline-flex gap-1">
-                <button @click="activeTab = 'donations'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'donations' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Transaksi</button>
-                <button @click="activeTab = 'tracker'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'tracker' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Live Tracker</button>
-                <button @click="activeTab = 'certificate'" :class="['px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'certificate' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Sertifikat</button>
+              <div class="bg-gray-50 p-1 rounded-xl sm:rounded-2xl inline-flex gap-1 w-full md:w-auto overflow-x-auto no-scrollbar">
+                <button @click="activeTab = 'donations'" :class="['whitespace-nowrap flex-1 md:flex-none px-5 py-2.5 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'donations' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Transaksi</button>
+                <button @click="activeTab = 'tracker'" :class="['whitespace-nowrap flex-1 md:flex-none px-5 py-2.5 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'tracker' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Live Tracker</button>
+                <button @click="activeTab = 'certificate'" :class="['whitespace-nowrap flex-1 md:flex-none px-5 py-2.5 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'certificate' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700']">Sertifikat</button>
               </div>
             </div>
 
@@ -72,19 +73,19 @@
             </div>
 
             <!-- Tab: Live Tracker -->
-            <div v-if="activeTab === 'tracker'" class="p-8 space-y-6">
-              <p class="text-sm text-gray-400">Pantau secara langsung ke mana donasi Anda mengalir.</p>
-              <div v-for="(d, idx) in donations.slice(0,3)" :key="d.id" class="bg-slate-50 rounded-3xl p-6 space-y-4">
-                <p class="font-black text-gray-900 tracking-tight">{{ d.campaign_title }}</p>
-                <div class="flex items-center gap-0">
-                  <div v-for="(step, si) in trackerSteps" :key="step.label" class="flex items-center flex-1">
+            <div v-if="activeTab === 'tracker'" class="p-5 sm:p-8 space-y-6">
+              <p class="text-xs sm:text-sm text-gray-400">Pantau secara langsung ke mana donasi Anda mengalir.</p>
+              <div v-for="(d, idx) in donations.slice(0,3)" :key="d.id" class="bg-slate-50 rounded-[2rem] p-5 sm:p-6 space-y-5">
+                <p class="font-black text-gray-900 tracking-tight text-xs sm:text-base">{{ d.campaign_title }}</p>
+                <div class="flex items-center justify-between gap-1 overflow-x-auto no-scrollbar pb-2">
+                  <div v-for="(step, si) in trackerSteps" :key="step.label" class="flex items-center flex-1 min-w-[70px]">
                     <div class="flex flex-col items-center">
-                      <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all', si <= getStepIndex(d.tracking_status) && d.payment_status === 'Success' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-400']">
+                      <div :class="['w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-black transition-all', si <= getStepIndex(d.tracking_status) && d.payment_status === 'Success' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-400']">
                         {{ step.icon }}
                       </div>
-                      <p class="text-[9px] font-black uppercase text-gray-400 mt-2 tracking-widest text-center leading-tight w-16">{{ step.label }}</p>
+                      <p class="text-[8px] sm:text-[9px] font-black uppercase text-gray-400 mt-2 tracking-widest text-center leading-tight w-full">{{ step.label }}</p>
                     </div>
-                    <div v-if="si < trackerSteps.length - 1" :class="['flex-1 h-1 mx-1 rounded-full', si < getStepIndex(d.tracking_status) && d.payment_status === 'Success' ? 'bg-green-600' : 'bg-gray-200']"></div>
+                    <div v-if="si < trackerSteps.length - 1" :class="['flex-1 h-0.5 sm:h-1 mx-1 rounded-full', si < getStepIndex(d.tracking_status) && d.payment_status === 'Success' ? 'bg-green-600' : 'bg-gray-200']"></div>
                   </div>
                 </div>
               </div>
@@ -125,10 +126,10 @@
           </section>
 
           <!-- DONOR WALL (Pesan & Doa) -->
-          <section class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 md:p-12">
-            <div class="mb-8">
-              <p class="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Papan Doa</p>
-              <h3 class="text-2xl font-black text-gray-900 tracking-tighter">Tinggalkan <span class="text-green-600">Pesan</span></h3>
+          <section class="bg-white rounded-[2rem] sm:rounded-[2.5rem] border border-gray-100 shadow-sm p-6 sm:p-8 md:p-12">
+            <div class="mb-6">
+              <p class="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Papan Doa</p>
+              <h3 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tighter">Tinggalkan <span class="text-green-600">Pesan</span></h3>
             </div>
             <div class="space-y-4 mb-6">
               <textarea v-model="prayerMessage" rows="3" placeholder="Tulis doa atau pesan untuk penerima manfaat..." class="w-full bg-slate-50 border border-gray-200 rounded-2xl px-6 py-4 text-sm text-gray-700 placeholder-gray-300 font-medium focus:outline-none focus:ring-2 focus:ring-green-500 resize-none transition-all"></textarea>

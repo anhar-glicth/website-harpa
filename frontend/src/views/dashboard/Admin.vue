@@ -1,10 +1,130 @@
 <template>
   <div class="min-h-screen bg-gray-50/50">
-    <div class="max-w-7xl mx-auto px-4 py-6 md:py-10">
+
+    <!-- ===== MOBILE HEADER BAR ===== -->
+    <div class="lg:hidden sticky top-0 z-[90] bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-green-600 text-white rounded-xl flex items-center justify-center text-xs">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div>
+          <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Admin Panel</p>
+          <p class="text-[11px] font-black text-gray-900 uppercase tracking-tight leading-tight">{{ allNavTabs.find(t => t.id === currentAdminTab)?.label || 'Dashboard' }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button @click="showAddModal = true" class="px-3 py-1.5 bg-green-600 text-white rounded-lg text-[9px] font-black uppercase tracking-wider">
+          + Staff
+        </button>
+        <button @click="isMobileMenuOpen = true" class="w-9 h-9 bg-gray-50 text-gray-600 rounded-xl flex items-center justify-center hover:bg-green-50 hover:text-green-600 transition-all">
+          <i class="fas fa-bars text-sm"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== MOBILE MENU DRAWER (Bottom Sheet) ===== -->
+    <Teleport to="body">
+      <Transition name="drawer">
+        <div v-if="isMobileMenuOpen" class="fixed inset-0 z-[150] flex flex-col justify-end lg:hidden">
+          <!-- Backdrop -->
+          <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" @click="isMobileMenuOpen = false"></div>
+          <!-- Sheet -->
+          <div class="relative bg-white rounded-t-[2rem] max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+            <!-- Sheet Handle -->
+            <div class="flex justify-center pt-3 pb-1 flex-shrink-0">
+              <div class="w-10 h-1 bg-gray-200 rounded-full"></div>
+            </div>
+            <!-- Sheet Header -->
+            <div class="px-6 py-3 flex justify-between items-center border-b border-gray-50 flex-shrink-0">
+              <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Navigasi Admin</span>
+              <button @click="isMobileMenuOpen = false" class="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <!-- Sheet Content: Scrollable -->
+            <div class="overflow-y-auto flex-1 p-4 space-y-2 pb-8">
+
+              <!-- Menu Utama -->
+              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-2 pt-2">Menu Utama</p>
+              <button
+                v-for="tab in sidebarTabs" :key="tab.id"
+                @click="currentAdminTab = tab.id; isMobileMenuOpen = false"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all text-left"
+                :class="currentAdminTab === tab.id ? 'bg-green-600 text-white shadow-lg shadow-green-200/50' : 'text-gray-500 hover:bg-gray-50'"
+              >
+                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0', currentAdminTab === tab.id ? 'bg-white/20' : 'bg-gray-100']">
+                  <i :class="tab.icon"></i>
+                </div>
+                <span>{{ tab.label }}</span>
+              </button>
+
+              <!-- Admin Management -->
+              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-2 pt-4">Admin Management</p>
+              <button
+                v-for="tab in managementTabs" :key="tab.id"
+                @click="currentAdminTab = tab.id; isMobileMenuOpen = false"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all text-left"
+                :class="currentAdminTab === tab.id ? 'bg-green-600 text-white shadow-lg shadow-green-200/50' : 'text-gray-500 hover:bg-gray-50'"
+              >
+                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0', currentAdminTab === tab.id ? 'bg-white/20' : 'bg-gray-100']">
+                  <i :class="tab.icon"></i>
+                </div>
+                <span>{{ tab.label }}</span>
+              </button>
+
+              <!-- Distribution Management -->
+              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-2 pt-4">Distribution Management</p>
+              <button
+                v-for="tab in distributionTabs" :key="tab.id"
+                @click="currentAdminTab = tab.id; isMobileMenuOpen = false"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all text-left"
+                :class="currentAdminTab === tab.id ? 'bg-green-600 text-white shadow-lg shadow-green-200/50' : 'text-gray-500 hover:bg-gray-50'"
+              >
+                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0', currentAdminTab === tab.id ? 'bg-white/20' : 'bg-gray-100']">
+                  <i :class="tab.icon"></i>
+                </div>
+                <span>{{ tab.label }}</span>
+              </button>
+
+              <!-- Transaction Management -->
+              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-2 pt-4">Transaction Management</p>
+              <button
+                v-for="tab in transactionTabs" :key="tab.id"
+                @click="currentAdminTab = tab.id; isMobileMenuOpen = false"
+                class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all text-left"
+                :class="currentAdminTab === tab.id ? 'bg-green-600 text-white shadow-lg shadow-green-200/50' : 'text-gray-500 hover:bg-gray-50'"
+              >
+                <div :class="['w-8 h-8 rounded-xl flex items-center justify-center text-xs flex-shrink-0', currentAdminTab === tab.id ? 'bg-white/20' : 'bg-gray-100']">
+                  <i :class="tab.icon"></i>
+                </div>
+                <span>{{ tab.label }}</span>
+              </button>
+
+              <!-- Quick Links -->
+              <div class="pt-4 grid grid-cols-2 gap-2">
+                <router-link to="/profile" @click="isMobileMenuOpen = false" class="flex items-center justify-center gap-2 py-3 bg-gray-50 text-gray-600 rounded-2xl font-black uppercase text-[9px] tracking-widest">
+                  <i class="fas fa-user-circle text-[8px]"></i> Edit Profil
+                </router-link>
+                <router-link to="/dashboard" @click="isMobileMenuOpen = false" class="flex items-center justify-center gap-2 py-3 bg-slate-900 text-white rounded-2xl font-black uppercase text-[9px] tracking-widest">
+                  <i class="fas fa-arrow-left text-[8px]"></i> Dashboard
+                </router-link>
+                <button @click="isMobileMenuOpen = false; showLogoutModal = true" class="col-span-2 flex items-center justify-center gap-2 py-3 bg-red-50 text-red-500 rounded-2xl font-black uppercase text-[9px] tracking-widest">
+                  <i class="fas fa-power-off text-[8px]"></i> Keluar Sistem
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-4 lg:py-10">
       <div class="flex flex-col lg:flex-row gap-8 items-start">
         
         <!-- Sidebar Kiri: Admin Specific -->
-        <div class="w-full lg:w-72 space-y-6 flex-shrink-0 sticky top-28">
+        <!-- Desktop Sidebar: hidden on mobile -->
+        <div class="hidden lg:block w-72 space-y-6 flex-shrink-0 sticky top-28">
            <!-- Info Admin -->
            <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
               <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-600/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
@@ -150,15 +270,15 @@
             </div>
          </div>
 
-        <main class="flex-grow space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full overflow-hidden">
-          <header class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+        <main class="flex-grow min-w-0 space-y-6 lg:space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full overflow-hidden">
+          <!-- Desktop Header: hidden on mobile (mobile uses sticky top bar instead) -->
+          <header class="hidden lg:flex bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex-col md:flex-row justify-between items-center gap-6">
             <div class="space-y-1 text-center md:text-left">
-              <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">ADMIN <span class="text-green-600">PANEL [FORCE UPDATE]</span></h1>
+              <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">ADMIN <span class="text-green-600">PANEL</span></h1>
               <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">Pusat Kendali & CMS HumanityCare</p>
             </div>
-
             <div class="flex gap-4">
-               <div class="text-right hidden md:block">
+               <div class="text-right">
                   <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Status Sistem</p>
                   <div class="flex items-center gap-2 text-green-600 font-black text-[10px] uppercase">
                      <span class="w-2 h-2 bg-green-600 rounded-full animate-ping"></span>
@@ -173,7 +293,7 @@
             <p class="text-gray-400 font-black text-[10px] uppercase tracking-widest">Sinkronisasi Data...</p>
           </div>
 
-          <div v-else class="space-y-8 animate-in zoom-in-95 duration-500 pb-20 lg:pb-0">
+          <div v-else class="space-y-6 lg:space-y-8 animate-in zoom-in-95 duration-500 pb-28 lg:pb-0">
             
             <!-- Dashboard Tab -->
             <div v-if="currentAdminTab === 'dashboard'" class="space-y-8">
@@ -1048,6 +1168,7 @@ const router = useRouter();
 const { clearAuth } = useAuth();
 const showLogoutModal = ref(false);
 const isLoggingOut = ref(false);
+const isMobileMenuOpen = ref(false);
 
 const handleLogout = async () => {
   isLoggingOut.value = true;
@@ -1107,6 +1228,15 @@ const transactionTabs = [
   { id: 'target_dashboard', label: 'Target Vs Capaian', icon: 'fas fa-tasks' },
   { id: 'rfm_dashboard', label: 'Dashboard RFM', icon: 'fas fa-brain' },
 ];
+
+// All tabs combined — used by mobile header to show active tab label
+const allNavTabs = computed(() => [
+  ...sidebarTabs.value,
+  ...managementTabs,
+  ...distributionTabs,
+  ...transactionTabs,
+]);
+
 
 const isAdminManagementOpen = ref(true);
 const isDistributionManagementOpen = ref(true);
@@ -1809,5 +1939,26 @@ onMounted(() => {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Drawer Animation */
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.drawer-enter-from,
+.drawer-leave-to {
+  opacity: 0;
+}
+
+.drawer-enter-active .relative,
+.drawer-leave-active .relative {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-enter-from .relative,
+.drawer-leave-to .relative {
+  transform: translateY(100%);
 }
 </style>
