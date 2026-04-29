@@ -206,9 +206,44 @@
 
            <!-- Riwayat Absensi -->
            <div class="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden">
-              <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
-                 <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Riwayat <span class="text-green-600">Presensi</span></h3>
-                 <span class="px-4 py-1.5 bg-white border border-gray-100 rounded-full text-[9px] font-black text-gray-400 uppercase tracking-widest shadow-sm">30 Hari Terakhir</span>
+              <!-- Header + Filter -->
+              <div class="p-6 border-b border-gray-50 bg-gray-50/30 space-y-4">
+                 <div class="flex flex-wrap justify-between items-center gap-4">
+                    <h3 class="font-black text-gray-900 uppercase tracking-tighter italic">Riwayat <span class="text-green-600">Presensi</span></h3>
+                    <div class="flex items-center gap-2 flex-wrap">
+                       <button @click="downloadAttendanceCSV" class="flex items-center gap-2 px-4 py-1.5 bg-green-600 text-white rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-100 active:scale-95">
+                         <i class="fas fa-download text-[8px]"></i> Download CSV
+                       </button>
+                    </div>
+                 </div>
+                 <!-- Filter Row -->
+                 <div class="flex flex-wrap gap-2 items-center">
+                    <span class="text-[9px] font-black uppercase tracking-widest text-gray-400"><i class="fas fa-filter mr-1"></i>Filter:</span>
+                    <!-- Tahun -->
+                    <select v-model="filterYear" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                       <option value="">Semua Tahun</option>
+                       <option v-for="y in availableYears" :key="y" :value="String(y)">{{ y }}</option>
+                    </select>
+                    <!-- Bulan -->
+                    <select v-model="filterMonth" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                       <option value="">Semua Bulan</option>
+                       <option value="1">Januari</option><option value="2">Februari</option>
+                       <option value="3">Maret</option><option value="4">April</option>
+                       <option value="5">Mei</option><option value="6">Juni</option>
+                       <option value="7">Juli</option><option value="8">Agustus</option>
+                       <option value="9">September</option><option value="10">Oktober</option>
+                       <option value="11">November</option><option value="12">Desember</option>
+                    </select>
+                    <!-- Tanggal -->
+                    <select v-model="filterDay" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                       <option value="">Semua Tanggal</option>
+                       <option v-for="d in 31" :key="d" :value="String(d)">{{ d }}</option>
+                    </select>
+                    <!-- Reset -->
+                    <button v-if="filterMonth || filterYear || filterDay" @click="resetFilter" class="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
+                       <i class="fas fa-times mr-1"></i>Reset
+                    </button>
+                 </div>
               </div>
               <div class="overflow-x-auto">
                  <table class="w-full text-left">
@@ -618,7 +653,15 @@ const fetchData = async () => {
     myCampaigns.value = campRes.data;
     myNews.value = newsRes.data;
     todos.value = todoRes.data;
-    attendanceLogs.value = attendRes.data;
+
+    // Filter absensi berdasarkan tanggal LOKAL browser (bukan tanggal server)
+    // Ini memastikan absensi kemarin tidak muncul sebagai absensi hari ini
+    const todayLocal = new Date().toLocaleDateString('en-CA'); // Format: YYYY-MM-DD
+    attendanceLogs.value = attendRes.data.filter(log => {
+      const logDate = new Date(log.created_at).toLocaleDateString('en-CA');
+      return logDate === todayLocal;
+    });
+
     allAttendanceLogs.value = allAttendRes.data;
     fieldStats.value = statsRes.data;
   } catch (err) {
@@ -802,23 +845,66 @@ const isAlreadyCheckedOut = computed(() => attendanceLogs.value.some(l => l.type
 const isAbsent = computed(() => attendanceLogs.value.some(l => l.type === 'sakit' || l.type === 'izin'));
 const isAnyAttendanceToday = computed(() => attendanceLogs.value.length > 0);
 
+// Filter state untuk riwayat absensi
+const filterMonth = ref(''); // '01' - '12' atau '' untuk semua
+const filterYear = ref('');  // '2026' atau '' untuk semua
+const filterDay = ref('');   // '1'-'31' atau '' untuk semua
+
+const availableYears = computed(() => {
+  const years = new Set(allAttendanceLogs.value.map(l => new Date(l.created_at).getFullYear()));
+  return [...years].sort((a, b) => b - a);
+});
+
 const groupedAttendance = computed(() => {
   const groups = {};
   allAttendanceLogs.value.forEach(log => {
-    const dateKey = new Date(log.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const d = new Date(log.created_at);
+    // Filter berdasarkan bulan, tahun, hari
+    if (filterYear.value && d.getFullYear() !== parseInt(filterYear.value)) return;
+    if (filterMonth.value && (d.getMonth() + 1) !== parseInt(filterMonth.value)) return;
+    if (filterDay.value && d.getDate() !== parseInt(filterDay.value)) return;
+
+    const dateKey = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     if (!groups[dateKey]) {
-      groups[dateKey] = { date: dateKey, check_in: null, check_out: null, other: null };
+      groups[dateKey] = { date: dateKey, rawDate: d, check_in: null, check_out: null, other: null };
     }
     if (log.type === 'check_in') groups[dateKey].check_in = log;
     else if (log.type === 'check_out') groups[dateKey].check_out = log;
     else groups[dateKey].other = log;
   });
-  return Object.values(groups);
+  // Urutkan dari tanggal terbaru ke terlama
+  return Object.values(groups).sort((a, b) => b.rawDate - a.rawDate);
 });
+
+const resetFilter = () => {
+  filterMonth.value = '';
+  filterYear.value = '';
+  filterDay.value = '';
+};
 
 const todayDate = computed(() => {
   return new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 });
+
+const downloadAttendanceCSV = () => {
+  const headers = ['Tanggal', 'Jam Masuk', 'Lokasi Masuk', 'Jam Pulang', 'Lokasi Pulang', 'Keterangan'];
+  const rows = groupedAttendance.value.map(g => [
+    g.date,
+    g.check_in ? formatTime(g.check_in.created_at) : '-',
+    g.check_in ? (g.check_in.location || '-') : '-',
+    g.check_out ? formatTime(g.check_out.created_at) : '-',
+    g.check_out ? (g.check_out.location || '-') : '-',
+    g.other ? g.other.type.toUpperCase() : 'Hadir'
+  ]);
+  const csvContent = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Rekap_Absensi_${new Date().toLocaleDateString('en-CA')}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
 
 const openCampaignModal = () => {
   form.title = '';

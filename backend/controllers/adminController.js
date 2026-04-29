@@ -288,3 +288,29 @@ exports.getAllTasks = async (req, res) => {
         res.status(500).json({ message: 'Gagal memuat daftar tugas' });
     }
 };
+
+// 5. Admin mengupdate tugas
+exports.updateTask = async (req, res) => {
+    const { id } = req.params;
+    const { task, description, deadline, status } = req.body;
+    try {
+        await db.query(
+            'UPDATE todo_list SET task = ?, description = ?, deadline = ?, status = ? WHERE id = ?',
+            [task, description, deadline, status || 'pending', id]
+        );
+        res.json({ message: 'Tugas berhasil diperbarui' });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal memperbarui tugas' });
+    }
+};
+
+// 6. Admin menghapus tugas
+exports.deleteTask = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query('DELETE FROM todo_list WHERE id = ?', [id]);
+        res.json({ message: 'Tugas berhasil dihapus' });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal menghapus tugas' });
+    }
+};

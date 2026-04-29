@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Set Timezone to Indonesia/Makassar (GMT+8)
+process.env.TZ = 'Asia/Makassar';
+
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
@@ -63,6 +66,25 @@ app.use(['/api/newsletters', '/newsletters'], require('./routes/newsletterRoutes
 // Root test route
 app.get('/', (req, res) => {
     res.send('API Humanity Care is Running...');
+});
+
+// DEBUG: Cek timezone server - buka /api/debug-tz di browser
+app.get('/api/debug-tz', (req, res) => {
+    const now = new Date();
+    const WITA_OFFSET = 8 * 60 * 60 * 1000;
+    const nowWITA = new Date(now.getTime() + WITA_OFFSET);
+    const startOfDayWITA = new Date(Date.UTC(
+        nowWITA.getUTCFullYear(), nowWITA.getUTCMonth(), nowWITA.getUTCDate(), 0, 0, 0
+    ));
+    const startOfDayUTC = new Date(startOfDayWITA.getTime() - WITA_OFFSET);
+    const endOfDayUTC = new Date(startOfDayUTC.getTime() + 24 * 60 * 60 * 1000 - 1);
+    res.json({
+        server_now_utc: now.toISOString(),
+        server_now_wita_calculated: nowWITA.toISOString(),
+        process_TZ: process.env.TZ || 'NOT SET',
+        startOfDayUTC: startOfDayUTC.toISOString(),
+        endOfDayUTC: endOfDayUTC.toISOString()
+    });
 });
 
 // Database Health Check

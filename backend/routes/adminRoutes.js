@@ -55,5 +55,7 @@ router.get('/attendances', auth, auth.isAdmin, adminController.getAllAttendances
 router.get('/worker-performance', auth, auth.isAdmin, adminController.getWorkerPerformance);
 router.get('/tasks', auth, auth.isAdmin, adminController.getAllTasks);
 router.post('/tasks', auth, auth.isAdmin, adminController.assignTask);
+router.put('/tasks/:id', auth, auth.isAdmin, adminController.updateTask);
+router.delete('/tasks/:id', auth, auth.isAdmin, adminController.deleteTask);
 
 module.exports = router;

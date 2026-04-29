@@ -10,7 +10,8 @@ const db = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    family: 4  // Paksa IPv4 agar tidak terhubung via ::1 (IPv6)
+    family: 4,  // Paksa IPv4 agar tidak terhubung via ::1 (IPv6)
+    timezone: '+08:00' // Set zona waktu ke WITA/GMT+8
 });
 
 // Tes koneksi database saat start

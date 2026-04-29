@@ -843,13 +843,47 @@
                     <button @click="monitoringSubTab = 'attendance'" :class="monitoringSubTab === 'attendance' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700'" class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Absensi</button>
                     <button @click="monitoringSubTab = 'tasks'" :class="monitoringSubTab === 'tasks' ? 'bg-green-600 text-white shadow-lg' : 'text-gray-400 hover:text-gray-700'" class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Daftar Tugas</button>
                   </div>
-                  <button v-if="monitoringSubTab === 'tasks'" @click="showAssignModal = true; assignTaskForm.user_id = null; assignTaskForm.worker_name = 'Umum'" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-green-600 transition-all flex items-center gap-2">
-                    <i class="fas fa-plus-circle"></i> Beri Tugas Baru
-                  </button>
+                  <div class="flex gap-3">
+                    <button v-if="monitoringSubTab === 'tasks'" @click="downloadTasksCSV" class="px-6 py-2.5 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-green-700 transition-all flex items-center gap-2">
+                      <i class="fas fa-download"></i> Download CSV
+                    </button>
+                    <button v-if="monitoringSubTab === 'tasks'" @click="showAssignModal = true; assignTaskForm.id = null; assignTaskForm.user_id = null; assignTaskForm.worker_name = 'Umum'" class="px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-green-600 transition-all flex items-center gap-2">
+                      <i class="fas fa-plus-circle"></i> Beri Tugas Baru
+                    </button>
+                  </div>
                 </div>
 
                 <!-- Sub-Tab: Attendance -->
-                <div v-if="monitoringSubTab === 'attendance'" class="overflow-x-auto">
+                <div v-if="monitoringSubTab === 'attendance'" class="space-y-0">
+                  <!-- Filter Row Admin -->
+                  <div class="p-6 border-b border-gray-50 flex flex-wrap gap-4 items-center bg-gray-50/20">
+                     <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-[9px] font-black uppercase tracking-widest text-gray-400"><i class="fas fa-filter mr-1"></i>Filter Absensi:</span>
+                        <select v-model="adminFilterYear" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                           <option value="">Tahun</option>
+                           <option v-for="y in availableAdminYears" :key="y" :value="String(y)">{{ y }}</option>
+                        </select>
+                        <select v-model="adminFilterMonth" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                           <option value="">Bulan</option>
+                           <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option><option value="4">April</option>
+                           <option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option>
+                           <option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                        </select>
+                        <select v-model="adminFilterDay" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                           <option value="">Tanggal</option>
+                           <option v-for="d in 31" :key="d" :value="String(d)">{{ d }}</option>
+                        </select>
+                        <button v-if="adminFilterMonth || adminFilterYear || adminFilterDay" @click="resetAdminFilter" class="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
+                           <i class="fas fa-times"></i>
+                        </button>
+                     </div>
+                     <div class="ml-auto flex items-center gap-2">
+                        <button @click="downloadAdminAttendanceCSV" class="flex items-center gap-2 px-4 py-1.5 bg-green-600 text-white rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-100">
+                          <i class="fas fa-download"></i> Download CSV
+                        </button>
+                     </div>
+                  </div>
+                  <div class="overflow-x-auto">
                   <table class="w-full text-left">
                     <thead class="bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest text-center">
                       <tr>
@@ -913,6 +947,7 @@
                     </tbody>
                   </table>
                 </div>
+              </div>
 
                 <!-- Sub-Tab: All Tasks -->
                 <div v-if="monitoringSubTab === 'tasks'" class="overflow-x-auto">
@@ -923,6 +958,7 @@
                         <th class="px-8 py-5">Tenggat</th>
                         <th class="px-8 py-5">Status</th>
                         <th class="px-8 py-5 text-center">Hasil</th>
+                        <th class="px-8 py-5 text-center">Aksi</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
@@ -948,6 +984,16 @@
                             <p v-if="task.result_note" class="text-[9px] text-gray-500 italic max-w-[150px] line-clamp-3" :title="task.result_note">"{{ task.result_note }}"</p>
                           </div>
                           <span v-else class="text-gray-300 text-[9px] uppercase font-black">Belum Ada Laporan</span>
+                        </td>
+                        <td class="px-8 py-6">
+                          <div class="flex justify-center gap-2">
+                            <button @click="openEditTask(task)" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all">
+                              <i class="fas fa-pen text-[9px]"></i>
+                            </button>
+                            <button @click="handleDeleteTask(task.id)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-500 hover:text-white transition-all">
+                              <i class="fas fa-trash text-[9px]"></i>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -1489,6 +1535,12 @@ const allAttendances = ref([]);
 const groupedAdminAttendances = computed(() => {
   const groups = {};
   allAttendances.value.forEach(att => {
+    const d = new Date(att.created_at);
+    // Filter berdasarkan bulan, tahun, hari
+    if (adminFilterYear.value && d.getFullYear() !== parseInt(adminFilterYear.value)) return;
+    if (adminFilterMonth.value && (d.getMonth() + 1) !== parseInt(adminFilterMonth.value)) return;
+    if (adminFilterDay.value && d.getDate() !== parseInt(adminFilterDay.value)) return;
+
     const dateStr = formatDate(att.created_at);
     const key = `${att.user_id}_${dateStr}`;
     
@@ -1497,6 +1549,7 @@ const groupedAdminAttendances = computed(() => {
         employee_name: att.employee_name,
         employee_email: att.employee_email,
         date: dateStr,
+        rawDate: d,
         check_in: null,
         check_out: null,
         other: null
@@ -1507,13 +1560,99 @@ const groupedAdminAttendances = computed(() => {
     else if (att.type === 'check_out') groups[key].check_out = att;
     else groups[key].other = att;
   });
-  return Object.values(groups);
+  // Urutkan dari tanggal terbaru ke terlama
+  return Object.values(groups).sort((a, b) => b.rawDate - a.rawDate);
 });
+
+// Admin Filter State
+const adminFilterMonth = ref('');
+const adminFilterYear = ref('');
+const adminFilterDay = ref('');
+
+const availableAdminYears = computed(() => {
+  const years = new Set(allAttendances.value.map(l => new Date(l.created_at).getFullYear()));
+  return [...years].sort((a, b) => b - a);
+});
+
+const resetAdminFilter = () => {
+  adminFilterMonth.value = '';
+  adminFilterYear.value = '';
+  adminFilterDay.value = '';
+};
+
+const downloadAdminAttendanceCSV = () => {
+  const headers = ['Nama Pegawai', 'Email', 'Tanggal', 'Jam Masuk', 'Lokasi Masuk', 'Jam Pulang', 'Lokasi Pulang', 'Keterangan'];
+  const rows = groupedAdminAttendances.value.map(g => [
+    g.employee_name,
+    g.employee_email,
+    g.date,
+    g.check_in ? formatTime(g.check_in.created_at) : '-',
+    g.check_in ? (g.check_in.location || '-') : '-',
+    g.check_out ? formatTime(g.check_out.created_at) : '-',
+    g.check_out ? (g.check_out.location || '-') : '-',
+    g.other ? g.other.type.toUpperCase() : 'Hadir'
+  ]);
+  const csvContent = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Rekap_Absensi_Admin_${new Date().toLocaleDateString('en-CA')}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
 
 const allTasks = ref([]);
 const showAssignModal = ref(false);
 const assigning = ref(false);
-const assignTaskForm = reactive({ user_id: null, worker_name: '', task: '', description: '', deadline: '' });
+const assignTaskForm = reactive({ id: null, user_id: null, worker_name: '', task: '', description: '', deadline: '' });
+
+const handleDeleteTask = async (id) => {
+  if (confirm('Yakin ingin menghapus tugas ini?')) {
+    try {
+      await api.delete(`/admin/tasks/${id}`);
+      fetchMonitoringData();
+    } catch (e) {
+      alert('Gagal menghapus tugas.');
+    }
+  }
+};
+
+const openEditTask = (task) => {
+  assignTaskForm.id = task.id;
+  assignTaskForm.user_id = task.user_id;
+  assignTaskForm.worker_name = task.employee_name;
+  assignTaskForm.task = task.task;
+  assignTaskForm.description = task.description;
+  // Format deadline for datetime-local input (YYYY-MM-DDTHH:mm)
+  const d = new Date(task.deadline);
+  const formattedDeadline = d.getFullYear() + '-' + 
+    String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+    String(d.getDate()).padStart(2, '0') + 'T' + 
+    String(d.getHours()).padStart(2, '0') + ':' + 
+    String(d.getMinutes()).padStart(2, '0');
+  assignTaskForm.deadline = formattedDeadline;
+  showAssignModal.value = true;
+};
+
+const downloadTasksCSV = () => {
+  const headers = ['Tugas', 'Pegawai', 'Tenggat', 'Status', 'Catatan Hasil'];
+  const rows = allTasks.value.map(t => [
+    t.task,
+    t.employee_name,
+    formatDate(t.deadline),
+    t.status.toUpperCase(),
+    t.result_note || '-'
+  ]);
+  const csvContent = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Daftar_Tugas_${new Date().toLocaleDateString('en-CA')}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
 const showAttachmentModal = ref(false);
 const attachmentUrl = ref('');
 
@@ -1753,12 +1892,17 @@ const openAssignModal = (worker) => {
 const handleAssignTask = async () => {
   assigning.value = true;
   try {
-    await api.post('/admin/tasks', assignTaskForm);
-    alert('Tugas berhasil diberikan!');
+    if (assignTaskForm.id) {
+      await api.put(`/admin/tasks/${assignTaskForm.id}`, assignTaskForm);
+      alert('Tugas berhasil diperbarui!');
+    } else {
+      await api.post('/admin/tasks', assignTaskForm);
+      alert('Tugas berhasil diberikan!');
+    }
     showAssignModal.value = false;
     fetchMonitoringData();
   } catch (e) {
-    alert('Gagal memberikan tugas.');
+    alert('Gagal menyimpan tugas.');
   } finally {
     assigning.value = false;
   }

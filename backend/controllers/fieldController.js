@@ -54,14 +54,62 @@ exports.deleteTodo = async (req, res) => {
  * --- ATTENDANCE ---
  */
 
+// DEBUG: Endpoint untuk cek timezone dan range tanggal server
+exports.debugTime = async (req, res) => {
+    const now = new Date();
+    const WITA_OFFSET = 8 * 60 * 60 * 1000;
+    const nowWITA = new Date(now.getTime() + WITA_OFFSET);
+    const startOfDayWITA = new Date(Date.UTC(
+        nowWITA.getUTCFullYear(),
+        nowWITA.getUTCMonth(),
+        nowWITA.getUTCDate(),
+        0, 0, 0
+    ));
+    const startOfDayUTC = new Date(startOfDayWITA.getTime() - WITA_OFFSET);
+    const endOfDayUTC = new Date(startOfDayUTC.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+    // Ambil juga data attendance langsung dari DB untuk user tertentu
+    const [[dbTime]] = await req.app?.locals?.db?.query?.('SELECT NOW() as db_now') || [[{ db_now: 'N/A (no db access)' }]];
+
+    res.json({
+        server_now_utc: now.toISOString(),
+        server_now_wita: nowWITA.toISOString(),
+        process_timezone: process.env.TZ || 'NOT SET',
+        startOfDayUTC: startOfDayUTC.toISOString(),
+        endOfDayUTC: endOfDayUTC.toISOString(),
+        query_range: `created_at >= '${startOfDayUTC.toISOString()}' AND created_at <= '${endOfDayUTC.toISOString()}'`
+    });
+};
+
 exports.getAttendanceStatus = async (req, res) => {
     try {
+        // Hitung awal dan akhir hari ini dalam zona waktu Asia/Makassar (UTC+8)
+        const now = new Date();
+        // Offset WITA = UTC+8 = 8*60*60*1000 ms
+        const WITA_OFFSET = 8 * 60 * 60 * 1000;
+        
+        // Waktu saat ini dalam WITA (sebagai milidetik)
+        const nowWITA = new Date(now.getTime() + WITA_OFFSET);
+        
+        // Awal hari ini jam 00:00:00 WITA (ubah ke UTC untuk query)
+        const startOfDayWITA = new Date(Date.UTC(
+            nowWITA.getUTCFullYear(),
+            nowWITA.getUTCMonth(),
+            nowWITA.getUTCDate(),
+            0, 0, 0
+        ));
+        const startOfDayUTC = new Date(startOfDayWITA.getTime() - WITA_OFFSET);
+        
+        // Akhir hari ini jam 23:59:59 WITA (ubah ke UTC untuk query)
+        const endOfDayUTC = new Date(startOfDayUTC.getTime() + 24 * 60 * 60 * 1000 - 1);
+
         const [rows] = await db.query(
-            'SELECT * FROM attendance WHERE user_id = ? AND DATE(created_at) = CURDATE() ORDER BY created_at DESC', 
-            [req.user.id]
+            'SELECT * FROM attendance WHERE user_id = ? AND created_at >= ? AND created_at <= ? ORDER BY created_at DESC', 
+            [req.user.id, startOfDayUTC, endOfDayUTC]
         );
         res.json(rows);
     } catch (error) {
+        console.error('Attendance Status Error:', error);
         res.status(500).json({ message: 'Gagal mengecek status absensi' });
     }
 };
