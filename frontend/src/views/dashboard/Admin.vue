@@ -812,13 +812,24 @@
 
             <!-- Monitoring & Task Management Tab (NEW) -->
             <div v-if="currentAdminTab === 'monitoring'" class="space-y-8">
+              <!-- Search Row for Workers -->
+              <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm flex items-center gap-4">
+                <div class="relative flex-grow">
+                  <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <input v-model="workerSearchQuery" type="text" placeholder="Cari nama petugas lapangan..." class="w-full pl-12 pr-6 py-4 bg-gray-50 border-none rounded-2xl text-[11px] font-bold text-gray-700 outline-none focus:ring-2 focus:ring-green-400 transition-all placeholder:text-gray-300 placeholder:italic" />
+                </div>
+                <div class="px-6 py-4 bg-green-50 rounded-2xl">
+                   <p class="text-[9px] font-black text-green-600 uppercase tracking-widest">{{ filteredWorkerPerformance.length }} Petugas Ditemukan</p>
+                </div>
+              </div>
+
               <!-- Worker Performance Cards -->
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div v-for="worker in workerPerformance" :key="worker.id" class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
+              <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+                <div v-for="worker in filteredWorkerPerformance" :key="worker.id" class="bg-white p-4 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
                   <div class="absolute -right-4 -top-4 w-20 h-20 bg-green-50 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-                  <div class="relative z-10 space-y-4">
-                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ worker.role }}</p>
-                    <h4 class="text-lg font-black text-gray-900 tracking-tighter">{{ worker.name }}</h4>
+                  <div class="relative z-10 space-y-2 md:space-y-4">
+                    <p class="text-[8px] md:text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ worker.role }}</p>
+                    <h4 class="text-sm md:text-lg font-black text-gray-900 tracking-tighter line-clamp-1">{{ worker.name }}</h4>
                     <div class="space-y-1">
                       <div class="flex justify-between items-center text-[10px] font-bold">
                         <span class="text-gray-400 uppercase">Progres Tugas</span>
@@ -1530,6 +1541,14 @@ const formData = reactive({ name: '', email: '', password: '', role: 'field_work
 // Monitoring State
 const monitoringSubTab = ref('attendance');
 const workerPerformance = ref([]);
+const workerSearchQuery = ref('');
+
+const filteredWorkerPerformance = computed(() => {
+  if (!workerSearchQuery.value) return workerPerformance.value;
+  const q = workerSearchQuery.value.toLowerCase();
+  return workerPerformance.value.filter(w => w.name.toLowerCase().includes(q));
+});
+
 const allAttendances = ref([]);
 
 const groupedAdminAttendances = computed(() => {

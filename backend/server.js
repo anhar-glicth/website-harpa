@@ -22,17 +22,20 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
+app.set('trust proxy', 1); // Penting untuk Hostinger/Proxy agar IP asli terbaca
 
 // Security Middleware
 app.use(helmet());
 
-// Rate Limiting (Prevents DDoS/Brute Force)
+// Rate Limiting (DISABLED TEMPORARILY)
+/*
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    windowMs: 15 * 60 * 1000, // 15 menit
+    max: 1000, // Tingkatkan batas ke 1000 agar tidak mudah terblokir
     message: 'Terlalu banyak permintaan dari IP ini, silakan coba lagi nanti.'
 });
 app.use('/api/', limiter);
+*/
 
 // Global Middleware
 // Limit ditingkatkan ke 50mb agar data foto (Base64) tidak ditolak server (Error 413)
