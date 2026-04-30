@@ -263,7 +263,7 @@
                           <td class="px-8 py-6">
                              <div v-if="group.check_in" class="space-y-1">
                                 <div class="flex items-center justify-center gap-2">
-                                   <span class="text-[11px] font-black text-green-600">{{ formatTime(group.check_in.created_at) }}</span>
+                                   <span class="text-[11px] font-black text-green-600">{{ formatTime(group.check_in) }}</span>
                                    <a v-if="group.check_in.attachment" :href="group.check_in.attachment" target="_blank" class="text-blue-500 hover:scale-110 transition-all"><i class="fas fa-paperclip text-[10px]"></i></a>
                                 </div>
                                 <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_in.location">{{ group.check_in.location }}</p>
@@ -275,7 +275,7 @@
                           <td class="px-8 py-6 border-l border-gray-50">
                              <div v-if="group.check_out" class="space-y-1">
                                 <div class="flex items-center justify-center gap-2">
-                                   <span class="text-[11px] font-black text-red-500">{{ formatTime(group.check_out.created_at) }}</span>
+                                   <span class="text-[11px] font-black text-red-500">{{ formatTime(group.check_out) }}</span>
                                    <a v-if="group.check_out.attachment" :href="group.check_out.attachment" target="_blank" class="text-blue-500 hover:scale-110 transition-all"><i class="fas fa-paperclip text-[10px]"></i></a>
                                 </div>
                                 <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_out.location">{{ group.check_out.location }}</p>
@@ -836,8 +836,11 @@ const getStatusBadgeClass = (type) => {
   return map[type];
 };
 
-const formatTime = (dateStr) => {
-  return new Date(dateStr).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+const formatTime = (log) => {
+  if (!log) return '';
+  const dateStr = log.created_at || log;
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 };
 
 const isAlreadyCheckedIn = computed(() => attendanceLogs.value.some(l => l.type === 'check_in'));

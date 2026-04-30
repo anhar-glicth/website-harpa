@@ -103,10 +103,15 @@ exports.getAttendanceStatus = async (req, res) => {
         // Akhir hari ini jam 23:59:59 WITA (ubah ke UTC untuk query)
         const endOfDayUTC = new Date(startOfDayUTC.getTime() + 24 * 60 * 60 * 1000 - 1);
 
-        const [rows] = await db.query(
-            'SELECT * FROM attendance WHERE user_id = ? AND created_at >= ? AND created_at <= ? ORDER BY created_at DESC', 
-            [req.user.id, startOfDayUTC, endOfDayUTC]
-        );
+        await db.query("SET time_zone = '+08:00'");
+        const [rows] = await db.query(`
+            SELECT *, 
+                   DATE_FORMAT(created_at, '%H:%i') as jam_menit,
+                   DATE_FORMAT(created_at, '%e %M %Y') as tgl_indo 
+            FROM attendance 
+            WHERE user_id = ? AND created_at >= ? AND created_at <= ? 
+            ORDER BY created_at DESC
+        `, [req.user.id, startOfDayUTC, endOfDayUTC]);
         res.json(rows);
     } catch (error) {
         console.error('Attendance Status Error:', error);
@@ -135,10 +140,16 @@ exports.submitAttendance = async (req, res) => {
 
 exports.getAttendanceRecap = async (req, res) => {
     try {
-        const [rows] = await db.query(
-            'SELECT * FROM attendance WHERE user_id = ? ORDER BY created_at DESC LIMIT 50', 
-            [req.user.id]
-        );
+        await db.query("SET time_zone = '+08:00'");
+        const [rows] = await db.query(`
+            SELECT *, 
+                   DATE_FORMAT(created_at, '%H:%i') as jam_menit,
+                   DATE_FORMAT(created_at, '%e %M %Y') as tgl_indo 
+            FROM attendance 
+            WHERE user_id = ? 
+            ORDER BY created_at DESC 
+            LIMIT 50
+        `, [req.user.id]);
         res.json(rows);
     } catch (error) {
         res.status(500).json({ message: 'Gagal mengambil riwayat absensi' });

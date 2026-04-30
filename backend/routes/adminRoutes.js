@@ -19,11 +19,14 @@ const distributionDashboardController = require('../controllers/distributionDash
  */
 
 // 1. Statistik Dashboard
-router.get('/stats', auth, auth.isAdmin, adminController.getStats);
+router.get('/stats', auth, adminController.getStats);
+router.get('/all-dashboard-data', auth, adminController.getAllDashboardData);
+router.get('/dashboard-stats', auth, adminController.getStats); // Alias tambahan
 
 // 2. Manajemen User
 router.get('/users', auth, auth.isAdmin, adminController.getTeamList);
 router.post('/users', auth, auth.isAdmin, adminController.addAccount);
+router.put('/users/:id', auth, auth.isAdmin, adminController.updateAccount);
 router.delete('/users/:id', auth, auth.isAdmin, adminController.deleteAccount);
 
 // 3. Verifikasi Kampanye

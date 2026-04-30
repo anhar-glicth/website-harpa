@@ -564,10 +564,15 @@
                           </span>
                        </td>
                        <td class="px-8 py-6 text-center">
-                         <button @click="handleDeleteUser(u.id)" class="text-red-500 hover:text-red-700 p-2 transition active:scale-90">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                         </button>
-                       </td>
+                          <div class="flex gap-2 justify-center">
+                            <button @click="handleEditUser(u)" class="text-blue-500 hover:text-blue-700 p-2 transition active:scale-90" title="Edit Akun">
+                               <i class="fas fa-edit"></i>
+                            </button>
+                            <button @click="handleDeleteUser(u.id)" class="text-red-500 hover:text-red-700 p-2 transition active:scale-90" title="Hapus Akun">
+                               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                          </div>
+                        </td>
                      </tr>
                    </tbody>
                  </table>
@@ -915,7 +920,7 @@
                         <!-- Masuk -->
                         <td class="px-8 py-6">
                            <div v-if="group.check_in" class="space-y-1">
-                              <p class="text-[10px] font-black text-green-600">{{ formatTime(group.check_in.created_at) }}</p>
+                              <p class="text-[10px] font-black text-green-600">{{ formatTime(group.check_in) }}</p>
                               <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_in.location">{{ group.check_in.location }}</p>
                            </div>
                            <span v-else class="text-[10px] text-gray-200 font-black italic">--:--</span>
@@ -924,7 +929,7 @@
                         <!-- Pulang -->
                         <td class="px-8 py-6 border-l border-gray-50">
                            <div v-if="group.check_out" class="space-y-1">
-                              <p class="text-[10px] font-black text-red-500">{{ formatTime(group.check_out.created_at) }}</p>
+                              <p class="text-[10px] font-black text-red-500">{{ formatTime(group.check_out) }}</p>
                               <p class="text-[9px] text-gray-400 italic line-clamp-1 max-w-[150px] mx-auto" :title="group.check_out.location">{{ group.check_out.location }}</p>
                            </div>
                            <span v-else class="text-[10px] text-gray-200 font-black italic">--:--</span>
@@ -952,8 +957,18 @@
                            </div>
                         </td>
                       </tr>
-                      <tr v-if="groupedAdminAttendances.length === 0">
-                         <td colspan="5" class="py-20 text-center text-gray-300 font-black uppercase tracking-widest text-[10px]">Belum ada data absensi</td>
+                      <tr v-if="!loading && (groupedAdminAttendances.length === 0)">
+                        <td colspan="5" class="px-8 py-24 text-center">
+                           <div class="flex flex-col items-center gap-4 text-gray-300">
+                              <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-2xl">
+                                 <i class="fas fa-calendar-times"></i>
+                              </div>
+                              <div>
+                                 <p class="text-[11px] font-black uppercase tracking-[0.2em] italic">Belum ada data absensi</p>
+                                 <p class="text-[9px] font-bold text-gray-400 mt-1">Data akan muncul setelah petugas melakukan absensi</p>
+                              </div>
+                           </div>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -1063,13 +1078,13 @@
     <div v-if="showAddModal" class="fixed inset-0 bg-gray-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
        <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in duration-300">
          <div class="p-8 bg-green-600 text-white flex justify-between items-center shrink-0">
-           <h3 class="text-xl font-black uppercase tracking-tighter italic">Pendaftaran <span class="text-green-200">Personel</span></h3>
+           <h3 class="text-xl font-black uppercase tracking-tighter italic">{{ formData.id ? 'Edit' : 'Pendaftaran' }} <span class="text-green-200">Personel</span></h3>
            <button @click="showAddModal = false" class="text-white/60 hover:text-white">✕</button>
          </div>
          <form @submit.prevent="handleAddUser" class="p-8 space-y-5 overflow-y-auto custom-scrollbar">
            <input v-model="formData.name" placeholder="Nama Lengkap" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
            <input v-model="formData.email" type="email" placeholder="Alamat Email" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
-           <input v-model="formData.password" type="password" placeholder="Kata Sandi Akses" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" required />
+           <input v-model="formData.password" type="password" :placeholder="formData.id ? 'Kata Sandi (Kosongkan jika tidak diubah)' : 'Kata Sandi Akses'" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm" :required="!formData.id" />
            <select v-model="formData.role" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-black uppercase text-[10px] tracking-widest">
              <option value="field_worker">Field Worker</option>
              <option value="admin">Admin</option>
@@ -1208,7 +1223,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
 import { useAuth } from '@/store/auth';
@@ -1220,6 +1235,8 @@ import TargetDashboard from '@/views/dashboard/TargetDashboard.vue';
 import ProspectDashboard from '@/views/dashboard/ProspectDashboard.vue';
 import TransactionDashboard from '@/views/dashboard/TransactionDashboard.vue';
 import DistributionDashboard from '@/views/dashboard/DistributionDashboard.vue';
+
+const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
 const router = useRouter();
 const { clearAuth } = useAuth();
@@ -1536,7 +1553,7 @@ const settingsData = ref({});
 const savingSettings = ref(false);
 
 const showAddModal = ref(false);
-const formData = reactive({ name: '', email: '', password: '', role: 'field_worker' });
+const formData = reactive({ id: null, name: '', email: '', password: '', role: 'field_worker' });
 
 // Monitoring State
 const monitoringSubTab = ref('attendance');
@@ -1560,7 +1577,7 @@ const groupedAdminAttendances = computed(() => {
     if (adminFilterMonth.value && (d.getMonth() + 1) !== parseInt(adminFilterMonth.value)) return;
     if (adminFilterDay.value && d.getDate() !== parseInt(adminFilterDay.value)) return;
 
-    const dateStr = formatDate(att.created_at);
+    const dateStr = att.tgl_indo || formatDate(att.created_at);
     const key = `${att.user_id}_${dateStr}`;
     
     if (!groups[key]) {
@@ -1885,18 +1902,8 @@ const fetchModuleData = async () => {
 };
 
 const fetchMonitoringData = async () => {
-  try {
-    const [perf, att, tasks] = await Promise.all([
-      api.get('/admin/worker-performance'),
-      api.get('/admin/attendances'),
-      api.get('/admin/tasks')
-    ]);
-    workerPerformance.value = perf.data;
-    allAttendances.value = att.data;
-    allTasks.value = tasks.data;
-  } catch (e) {
-    console.error('Error fetching monitoring data:', e);
-  }
+  // Now handled by the consolidated fetchData() to reduce request count
+  await fetchData();
 };
 
 const openAssignModal = (worker) => {
@@ -1932,45 +1939,95 @@ const viewAttachment = (url) => {
   showAttachmentModal.value = true;
 };
 
-const formatTime = (dateStr) => {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+const formatTime = (log) => {
+  if (!log) return '';
+  const dateStr = log.created_at || log;
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 };
 
-const formatDate = (dateStr) => {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+const formatDate = (log) => {
+  if (!log) return '';
+  if (log.tgl_indo) return log.tgl_indo; // Prioritas data dari server (WITA)
+  const date = new Date(log.created_at || log);
+  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [statsRes, usersRes, campRes, donRes, settingsRes, zakatRes] = await Promise.all([
-      api.get('/admin/stats'),
-      api.get('/admin/users'),
-      api.get('/admin/pending-campaigns'),
-      api.get('/admin/pending-donations'),
-      api.get('/settings'),
-      api.get('/zakats/pending')
-    ]);
-    stats.value = statsRes.data;
-    users.value = usersRes.data;
-    pendingCampaigns.value = campRes.data;
-    pendingDonations.value = donRes.data;
-    settingsData.value = settingsRes.data;
-    pendingZakats.value = zakatRes.data;
-    
-    // Fetch initial module data if applicable
-    fetchModuleData();
+    const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+    // 1. Fetch Basic Stats
+    try {
+      const resStats = await api.get('/admin/all-dashboard-data'); // Tetap pakai ini tapi ambil stats saja
+      stats.value = resStats.data.stats || {};
+      recentActivities.value = resStats.data.stats.recent_activities || [];
+    } catch (e) { console.error('Stats failed', e); }
+
+    await delay(500); // Tunggu 0.5 detik
+
+    // 2. Fetch Users
+    try {
+      const resUsers = await api.get('/admin/users');
+      users.value = resUsers.data || [];
+    } catch (e) { console.error('Users failed', e); }
+
+    await delay(500);
+
+    // 3. Fetch Monitoring (Attendances & Performance)
+    try {
+      const [resAtt, resPerf] = await Promise.all([
+        api.get('/admin/attendances'),
+        api.get('/admin/worker-performance')
+      ]);
+      allAttendances.value = resAtt.data || [];
+      workerPerformance.value = resPerf.data || [];
+    } catch (e) { console.error('Monitoring failed', e); }
+
+    await delay(500);
+
+    // 4. Fetch Tasks & Pending
+    try {
+      const resTasks = await api.get('/admin/tasks');
+      allTasks.value = resTasks.data || [];
+    } catch (e) { console.error('Tasks failed', e); }
+
+    await delay(300);
+
+    try {
+      const resCamp = await api.get('/admin/pending-campaigns');
+      pendingCampaigns.value = resCamp.data || [];
+    } catch (e) { console.error('Campaigns failed', e); }
+
+    await delay(300);
+
+    try {
+      const resDon = await api.get('/admin/pending-donations');
+      pendingDonations.value = resDon.data || [];
+    } catch (e) { console.error('Donations failed', e); }
+
+    await delay(300);
+
+    try {
+      const resZakat = await api.get('/admin/master/zakats');
+      pendingZakats.value = (resZakat.data && resZakat.data.rows) || resZakat.data || [];
+    } catch (e) { console.error('Zakats failed', e); }
+
+    // Fetch site settings
+    try {
+       const resSet = await api.get('/settings');
+       settingsData.value = resSet.data || {};
+    } catch (e) {}
+
   } catch (error) {
-    console.error(error);
+    console.error('Fetch Error:', error);
   } finally {
     loading.value = false;
   }
 };
 
 // Watch for tab changes to fetch specific module data
-import { watch } from 'vue';
 watch(currentAdminTab, (newTab) => {
   if (moduleConfigs[newTab]) {
     fetchModuleData();
@@ -2015,15 +2072,32 @@ const submitDecisionWithNote = async () => {
 
 const handleAddUser = async () => {
   try {
-    const res = await api.post('/admin/users', formData);
-    alert(res.data.message || 'Pahlawan baru berhasil diaktifkan!');
+    if (formData.id) {
+      // UPDATE
+      const res = await api.put(`/admin/users/${formData.id}`, formData);
+      alert(res.data.message || 'Informasi personel berhasil diperbarui');
+    } else {
+      // CREATE
+      const res = await api.post('/admin/users', formData);
+      alert(res.data.message || 'Pahlawan baru berhasil diaktifkan!');
+    }
+    
     showAddModal.value = false;
-    formData.name = ''; formData.email = ''; formData.password = '';
+    formData.id = null; formData.name = ''; formData.email = ''; formData.password = '';
     fetchData();
   } catch (e) {
-    const errorMsg = e.response?.data?.message || 'Gagal menambah pahlawan baru. Pastikan email belum terdaftar.';
+    const errorMsg = e.response?.data?.message || 'Gagal menyimpan data personel.';
     alert(errorMsg);
   }
+};
+
+const handleEditUser = (user) => {
+  formData.id = user.id;
+  formData.name = user.name;
+  formData.email = user.email;
+  formData.role = user.role;
+  formData.password = ''; // Kosongkan password saat edit
+  showAddModal.value = true;
 };
 
 const handleDeleteUser = async (id) => {

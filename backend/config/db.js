@@ -2,27 +2,32 @@ const mysql = require('mysql2');
 require('dotenv').config();
 
 // Membuat pool koneksi
-const db = mysql.createPool({
-    host: process.env.DB_HOST || '127.0.0.1',
-    user: process.env.DB_USER || 'u314775488_abadi',
-    password: process.env.DB_PASSWORD || 'Abadi_1234',
-    database: process.env.DB_NAME || 'u314775488_abadi',
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    family: 4,  // Paksa IPv4 agar tidak terhubung via ::1 (IPv6)
-    timezone: '+08:00' // Set zona waktu ke WITA/GMT+8
+
 });
 
-// Tes koneksi database saat start
-db.getConnection((err, connection) => {
+// Pastikan zona waktu benar-benar terpasang di sesi setiap kali ada koneksi baru
+pool.on('connection', function (connection) {
+    connection.query("SET time_zone = '+08:00'");
+});
+
+const db = pool.promise();
+
+// Tes koneksi database
+pool.getConnection((err, connection) => {
     if (err) {
         console.error('❌ DATABASE CONNECTION FAILED:', err.message);
-        console.error('Check your .env credentials!');
     } else {
-        console.log('✅ DATABASE CONNECTED SUCCESSFULLY');
+        console.log('✅ DATABASE CONNECTED SUCCESSFULLY (WITA MODE)');
         connection.release();
     }
 });
 
-module.exports = db.promise();
+module.exports = db;
