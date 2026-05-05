@@ -196,11 +196,24 @@
               </div>
 
               <div class="pt-10 border-t border-gray-100 space-y-3">
-                 <div class="flex items-center justify-center gap-2 text-green-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    <p class="text-[10px] font-black uppercase tracking-[0.2em]">{{ currentLocationName || 'Mendeteksi Lokasi...' }}</p>
+                 <!-- Location Display -->
+                 <div class="flex items-center justify-center gap-2" :class="locationLoading ? 'text-amber-500' : coords ? 'text-green-600' : 'text-gray-400'">
+                    <i v-if="locationLoading" class="fas fa-circle-notch animate-spin text-sm"></i>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" :class="coords ? 'animate-bounce' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em]">{{ currentLocationName || 'Mendeteksi Lokasi GPS...' }}</p>
                  </div>
-                 <p v-if="coords" class="text-[8px] text-gray-300 font-mono tracking-widest">GPS: {{ coords.latitude.toFixed(6) }}, {{ coords.longitude.toFixed(6) }}</p>
+                 <!-- Koordinat & Akurasi -->
+                 <div v-if="coords" class="flex flex-col items-center gap-1">
+                    <p class="text-[8px] text-gray-300 font-mono tracking-widest">{{ coords.latitude.toFixed(6) }}, {{ coords.longitude.toFixed(6) }}</p>
+                    <span v-if="coords.accuracy" :class="coords.accuracy <= 20 ? 'bg-green-50 text-green-600' : coords.accuracy <= 100 ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-500'" class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">
+                       Akurasi ±{{ Math.round(coords.accuracy) }}m {{ coords.accuracy <= 20 ? '· Sangat Baik' : coords.accuracy <= 100 ? '· Cukup' : '· Kurang Akurat' }}
+                    </span>
+                 </div>
+                 <!-- Refresh Button -->
+                 <button @click="getMyLocation" :disabled="locationLoading" class="mx-auto flex items-center gap-2 px-4 py-1.5 bg-gray-50 text-gray-400 rounded-full text-[8px] font-black uppercase tracking-widest hover:bg-green-50 hover:text-green-600 transition-all border border-gray-100 disabled:opacity-50">
+                    <i class="fas fa-redo-alt text-[8px]" :class="locationLoading ? 'animate-spin' : ''"></i>
+                    {{ locationLoading ? 'Memperbarui...' : 'Perbarui Lokasi' }}
+                 </button>
               </div>
            </div>
 
@@ -758,33 +771,71 @@ const handleLeaveFileChange = (e) => {
   reader.readAsDataURL(file);
 };
 
+const locationLoading = ref(false);
+
 const getMyLocation = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        coords.value = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        };
-        await reverseGeocode(coords.value.latitude, coords.value.longitude);
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-        currentLocationName.value = "Akses Lokasi Ditolak";
-      }
-    );
-  } else {
-    currentLocationName.value = "Geolocation tidak didukung browser";
+  if (!navigator.geolocation) {
+    currentLocationName.value = 'Browser tidak mendukung GPS';
+    return;
   }
+
+  locationLoading.value = true;
+  currentLocationName.value = 'Mendeteksi lokasi GPS...';
+
+  const options = {
+    enableHighAccuracy: true,  // Wajib: paksa GPS chip, bukan WiFi/tower
+    maximumAge: 0,             // Wajib: jangan pakai cache lokasi lama
+    timeout: 15000             // 15 detik batas waktu
+  };
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const { latitude, longitude, accuracy } = position.coords;
+      coords.value = { latitude, longitude, accuracy };
+
+      // Tampilkan koordinat sementara akurasi selesai
+      currentLocationName.value = `GPS aktif (±${Math.round(accuracy)}m)`;
+      await reverseGeocode(latitude, longitude);
+      locationLoading.value = false;
+    },
+    (error) => {
+      locationLoading.value = false;
+      const messages = {
+        1: 'Izin lokasi ditolak — aktifkan di pengaturan browser',
+        2: 'Sinyal GPS lemah — coba di area terbuka',
+        3: 'Timeout GPS — coba refresh halaman'
+      };
+      currentLocationName.value = messages[error.code] || 'Gagal mendapatkan lokasi';
+      console.warn('Geolocation error:', error.code, error.message);
+    },
+    options
+  );
 };
 
 const reverseGeocode = async (lat, lon) => {
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`,
+      { headers: { 'Accept-Language': 'id,en' } }
+    );
+    if (!res.ok) throw new Error('Nominatim error');
     const data = await res.json();
-    currentLocationName.value = data.display_name.split(',').slice(0, 3).join(',');
+
+    // Ambil nama jalan + kelurahan + kota untuk presisi lebih baik
+    const addr = data.address || {};
+    const parts = [
+      addr.road || addr.neighbourhood || addr.suburb,
+      addr.city_district || addr.suburb || addr.village,
+      addr.city || addr.town || addr.county
+    ].filter(Boolean);
+
+    currentLocationName.value = parts.length > 0
+      ? parts.join(', ')
+      : data.display_name.split(',').slice(0, 3).join(',');
   } catch (err) {
-    currentLocationName.value = `Koordinat: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+    // Fallback ke koordinat jika reverse geocode gagal
+    currentLocationName.value = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+    console.warn('Reverse geocode gagal:', err);
   }
 };
 

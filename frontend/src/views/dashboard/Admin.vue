@@ -830,8 +830,16 @@
 
               <!-- Worker Performance Cards -->
               <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-                <div v-for="worker in filteredWorkerPerformance" :key="worker.id" class="bg-white p-4 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
+                <div
+                  v-for="worker in filteredWorkerPerformance" :key="worker.id"
+                  @click="openWorkerDetail(worker)"
+                  class="bg-white p-4 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group cursor-pointer hover:border-green-200 hover:shadow-xl transition-all duration-300 active:scale-[0.98]"
+                >
                   <div class="absolute -right-4 -top-4 w-20 h-20 bg-green-50 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+                  <!-- Click hint badge -->
+                  <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span class="px-2 py-1 bg-green-600 text-white rounded-full text-[7px] font-black uppercase tracking-widest">Klik</span>
+                  </div>
                   <div class="relative z-10 space-y-2 md:space-y-4">
                     <p class="text-[8px] md:text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ worker.role }}</p>
                     <h4 class="text-sm md:text-lg font-black text-gray-900 tracking-tighter line-clamp-1">{{ worker.name }}</h4>
@@ -845,8 +853,8 @@
                       </div>
                       <p class="text-[9px] text-gray-400 font-medium italic">{{ worker.completed_tasks }} / {{ worker.total_tasks }} Selesai</p>
                     </div>
-                    <button @click="openAssignTask(worker)" class="w-full py-3 bg-slate-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-all">
-                      Beri Tugas
+                    <button @click.stop="openAssignModal(worker)" class="w-full py-3 bg-slate-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-all">
+                      <i class="fas fa-plus-circle mr-1"></i> Beri Tugas
                     </button>
                   </div>
                 </div>
@@ -1180,6 +1188,107 @@
             </button>
           </form>
         </div>
+    </div>
+
+    <!-- Modal: Worker Detail & Task Management -->
+    <div v-if="showWorkerDetailModal && selectedWorker" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
+      <div class="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in duration-300">
+        <!-- Header -->
+        <div class="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white flex justify-between items-start shrink-0">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center text-2xl font-black text-green-400 border border-green-500/30 uppercase">
+              {{ selectedWorker.name?.charAt(0) }}
+            </div>
+            <div>
+              <p class="text-[9px] font-black text-white/50 uppercase tracking-widest">{{ selectedWorker.role }}</p>
+              <h3 class="text-xl font-black uppercase tracking-tighter">{{ selectedWorker.name }}</h3>
+              <div class="flex items-center gap-2 mt-1">
+                <div class="w-28 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div :style="{ width: selectedWorker.percentage + '%' }" class="h-full bg-green-400 rounded-full transition-all duration-700"></div>
+                </div>
+                <span class="text-green-400 font-black text-[10px]">{{ selectedWorker.percentage }}%</span>
+              </div>
+              <p class="text-[9px] text-white/40 mt-0.5">{{ selectedWorker.completed_tasks }} / {{ selectedWorker.total_tasks }} Tugas Selesai</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button @click="openAssignFromDetail" class="px-4 py-2.5 bg-green-500 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-400 transition-all flex items-center gap-2">
+              <i class="fas fa-plus"></i> Tambah Tugas
+            </button>
+            <button @click="showWorkerDetailModal = false" class="w-8 h-8 bg-white/10 rounded-xl flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all">
+              <i class="fas fa-times text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="px-6 py-3 bg-gray-50 border-b border-gray-100 flex items-center gap-6 shrink-0">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 bg-green-50 text-green-600 rounded-lg flex items-center justify-center text-[10px]"><i class="fas fa-tasks"></i></div>
+            <div><p class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Total Tugas</p><p class="text-[13px] font-black text-gray-900">{{ workerTasks.length }}</p></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-[10px]"><i class="fas fa-check-circle"></i></div>
+            <div><p class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Selesai</p><p class="text-[13px] font-black text-gray-900">{{ workerTasks.filter(t => t.status === 'completed').length }}</p></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center text-[10px]"><i class="fas fa-hourglass-half"></i></div>
+            <div><p class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Pending</p><p class="text-[13px] font-black text-gray-900">{{ workerTasks.filter(t => t.status !== 'completed').length }}</p></div>
+          </div>
+        </div>
+
+        <!-- Task List -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-3">
+          <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2 mb-4">
+            <i class="fas fa-clipboard-list text-green-600"></i> Daftar Tugas
+            <span class="px-2 py-0.5 bg-green-50 text-green-600 rounded-full">{{ workerTasks.length }}</span>
+          </p>
+
+          <div v-if="workerTasks.length === 0" class="py-16 text-center">
+            <div class="w-16 h-16 bg-gray-50 text-gray-200 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-clipboard-list"></i></div>
+            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Belum Ada Tugas</p>
+            <p class="text-[9px] text-gray-300 mt-1">Klik Tambah Tugas untuk memberikan tugas baru</p>
+            <button @click="openAssignFromDetail" class="mt-4 px-5 py-2.5 bg-green-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-700 transition-all">
+              <i class="fas fa-plus mr-1"></i> Tambah Tugas Pertama
+            </button>
+          </div>
+
+          <div v-for="task in workerTasks" :key="task.id" class="p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-green-100 hover:bg-green-50/30 transition-all group/task">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <span :class="task.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-amber-50 text-amber-600'" class="px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest">{{ task.status }}</span>
+                </div>
+                <p class="font-black text-gray-900 text-[11px] uppercase tracking-tight">{{ task.task }}</p>
+                <p v-if="task.description" class="text-[9px] text-gray-400 italic mt-1 line-clamp-2">{{ task.description }}</p>
+                <p class="text-[9px] text-green-600 font-bold uppercase tracking-widest mt-2">
+                  <i class="fas fa-clock mr-1"></i>Tenggat: {{ formatDate(task.deadline) }}
+                </p>
+                <div v-if="task.result_note" class="mt-2 p-2 bg-white rounded-xl border border-green-100">
+                  <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Hasil Laporan:</p>
+                  <p class="text-[9px] text-gray-600 italic line-clamp-3">"{{ task.result_note }}"</p>
+                </div>
+              </div>
+              <div class="flex gap-2 flex-shrink-0 opacity-0 group-hover/task:opacity-100 transition-opacity">
+                <button @click="openEditTask(task); showWorkerDetailModal = false" class="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all" title="Edit Tugas">
+                  <i class="fas fa-pen text-[9px]"></i>
+                </button>
+                <button @click="handleDeleteTask(task.id)" class="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-500 hover:text-white transition-all" title="Hapus Tugas">
+                  <i class="fas fa-trash text-[9px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-5 border-t border-gray-50 flex justify-between items-center shrink-0 bg-gray-50/50">
+          <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ workerTasks.length }} Tugas Tercatat</p>
+          <button @click="openAssignFromDetail" class="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-all flex items-center gap-2">
+            <i class="fas fa-plus-circle"></i> Tambah Tugas Baru
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Modal: View Attachment (Image/Proof) -->
@@ -1907,12 +2016,32 @@ const fetchMonitoringData = async () => {
 };
 
 const openAssignModal = (worker) => {
+  assignTaskForm.id = null;
   assignTaskForm.user_id = worker.id;
   assignTaskForm.worker_name = worker.name;
   assignTaskForm.task = '';
   assignTaskForm.description = '';
   assignTaskForm.deadline = '';
   showAssignModal.value = true;
+};
+
+// Worker Detail Modal State
+const selectedWorker = ref(null);
+const showWorkerDetailModal = ref(false);
+
+const workerTasks = computed(() => {
+  if (!selectedWorker.value) return [];
+  return allTasks.value.filter(t => t.user_id === selectedWorker.value.id);
+});
+
+const openWorkerDetail = (worker) => {
+  selectedWorker.value = worker;
+  showWorkerDetailModal.value = true;
+};
+
+const openAssignFromDetail = () => {
+  showWorkerDetailModal.value = false;
+  openAssignModal(selectedWorker.value);
 };
 
 const handleAssignTask = async () => {
