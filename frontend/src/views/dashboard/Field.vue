@@ -13,6 +13,7 @@
           
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <button @click="openNewsModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-50 text-green-600 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-100 transition-all border border-green-100">Tulis Berita</button>
+            <button @click="showDistributionModal = true" class="flex-1 sm:flex-none px-6 py-3 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-blue-100 transition-all border border-blue-100">Lapor Penyaluran</button>
             <button @click="openCampaignModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-600 text-white rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100">Kampanye Baru</button>
             <button @click="handleLogout" class="flex-1 sm:flex-none px-6 py-3 bg-red-50 text-red-500 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-red-100 transition-all border border-red-100">
               <i class="fas fa-power-off"></i>
@@ -25,6 +26,7 @@
            <button @click="activeTab = 'campaigns'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'campaigns' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Proyek Saya</button>
            <button @click="activeTab = 'news'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'news' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Arsip Berita</button>
            <button @click="activeTab = 'todo'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'todo' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">To-Do List</button>
+           <button @click="activeTab = 'distributions'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'distributions' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Laporan Saya</button>
            <button @click="activeTab = 'attendance'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'attendance' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Absensi</button>
            <button @click="activeTab = 'stats'" :class="['whitespace-nowrap px-5 py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-all', activeTab === 'stats' ? 'bg-green-600 text-white shadow-lg shadow-green-100' : 'text-gray-500 hover:text-green-600']">Statistik</button>
         </div>
@@ -159,7 +161,35 @@
            </div>
         </div>
 
-        <!-- Tab: Absensi -->
+                 <!-- Tab: My Distributions (Laporan Saya) -->
+         <div v-if="activeTab === 'distributions'" class="space-y-8">
+            <div v-if="myDistributions.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               <div v-for="d in myDistributions" :key="d.id" class="bg-white p-5 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+                  <div class="relative h-40 rounded-[2rem] overflow-hidden mb-4">
+                     <img :src="d.photo_url" class="w-full h-full object-cover">
+                     <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                     <div class="absolute bottom-4 left-4 right-4 flex justify-between gap-2">
+                        <button @click="startEditDist(d)" class="flex-1 py-2 bg-white/20 backdrop-blur-md text-white text-[9px] font-black uppercase rounded-xl border border-white/20 hover:bg-white/40 transition-all">Edit</button>
+                        <button @click="deleteDist(d.id)" class="flex-1 py-2 bg-red-500/20 backdrop-blur-md text-red-100 text-[9px] font-black uppercase rounded-xl border border-red-500/20 hover:bg-red-500 hover:text-white transition-all">Hapus</button>
+                     </div>
+                  </div>
+                  <div class="space-y-2">
+                     <p class="text-[8px] font-black text-blue-600 uppercase tracking-widest">{{ formatDate(d.created_at) }}</p>
+                     <h4 class="font-black text-gray-900 uppercase italic text-sm line-clamp-1">{{ d.title }}</h4>
+                     <p class="text-[10px] text-gray-400 font-medium line-clamp-2 leading-relaxed">{{ d.description }}</p>
+                     <div class="pt-2 flex items-center gap-2 text-[9px] font-bold text-gray-500 italic">
+                        <i class="fas fa-map-marker-alt text-blue-500"></i>
+                        <span class="truncate">{{ d.location_name }}</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div v-else class="py-20 text-center bg-white rounded-[3rem] border border-dashed border-gray-100">
+               <p class="text-gray-400 font-bold italic uppercase tracking-widest text-xs">Anda belum pernah mengirim laporan penyaluran.</p>
+            </div>
+         </div>
+
+         <!-- Tab: Absensi -->
         <div v-if="activeTab === 'attendance'" class="space-y-8">
            <!-- Kartu Absensi Hari Ini -->
            <div class="bg-white p-10 rounded-[3.5rem] border border-gray-100 shadow-2xl shadow-green-900/5 text-center space-y-10 relative overflow-hidden">
@@ -594,11 +624,104 @@
            </div>
         </Transition>
      </Teleport>
-  </div>
+
+     <!-- Modal: Lapor Penyaluran -->
+     <Teleport to="body">
+        <Transition name="fade">
+           <div v-if="showDistributionModal" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+              <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showDistributionModal = false"></div>
+              <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in duration-300">
+                 <div class="p-8 bg-blue-600 text-white flex justify-between items-center shrink-0">
+                    <div class="space-y-1">
+                       <h3 class="text-xl font-black uppercase tracking-tighter italic">Lapor <span class="text-blue-200">Penyaluran</span></h3>
+                       <p class="text-[9px] font-bold text-blue-100/60 uppercase tracking-widest">Titik Koordinat: {{ coords?.latitude ? (coords.latitude.toFixed(4) + ', ' + coords.longitude.toFixed(4)) : 'Mencari...' }}</p>
+                    </div>
+                    <button @click="showDistributionModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
+                 </div>
+                 
+                 <div class="p-8 space-y-6 overflow-y-auto max-h-[70vh] custom-scrollbar">
+                    <div class="space-y-4">
+                       <div class="space-y-1">
+                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Nama Kegiatan / Lokasi</label>
+                          <input v-model="distForm.title" placeholder="Contoh: Penyaluran Beras di Kelurahan A" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-xs transition-all" required />
+                       </div>
+
+                       <div class="space-y-1">
+                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Link Google Maps / Iframe (Opsional)</label>
+                          <input v-model="distForm.maps_link" @input="extractCoordsFromLink" placeholder="Tempel link Google Maps atau Iframe di sini..." class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-[10px] transition-all" />
+                          <p class="text-[8px] text-gray-400 px-2 italic">Jika diisi, koordinat akan mencoba menyesuaikan dengan link ini.</p>
+                       </div>
+
+                       <div class="space-y-1">
+                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Deskripsi Penyaluran</label>
+                          <textarea v-model="distForm.description" placeholder="Ceritakan detail bantuan yang diberikan..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-xs resize-none transition-all" required></textarea>
+                       </div>
+
+                       <div class="space-y-2">
+                          <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Bukti Penyaluran (Foto)</label>
+                          <div 
+                            class="relative w-full h-48 bg-gray-50 border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-gray-100 transition-all"
+                            @click="$refs.distPhotoInput.click()"
+                          >
+                             <img v-if="distForm.photo_preview" :src="distForm.photo_preview" class="w-full h-full object-cover">
+                             <div v-else class="text-center p-4">
+                                <i class="fas fa-camera text-3xl text-gray-200 mb-3"></i>
+                                <p class="text-[10px] font-black uppercase text-gray-400 tracking-widest leading-tight">Klik Ambil Foto / <br> Bukti Penyaluran</p>
+                             </div>
+                          </div>
+                          <input ref="distPhotoInput" type="file" @change="handleDistPhoto" class="hidden" accept="image/*">
+                       </div>
+                    </div>
+
+                    <button 
+                      @click="submitDistribution" 
+                      :disabled="!distForm.photo_preview || !distForm.title || submitting || !coords" 
+                      class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                    >
+                       {{ submitting ? 'Mengirim...' : 'Kirim Laporan & Tandai Lokasi' }}
+                    </button>
+                  </div>
+               </div>
+            </div>
+         </Transition>
+      </Teleport>
+
+      <!-- Modal: Edit Laporan Penyaluran -->
+      <Teleport to="body">
+         <Transition name="fade">
+            <div v-if="showEditDistModal" class="fixed inset-0 z-[250] flex items-center justify-center p-4">
+               <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showEditDistModal = false"></div>
+               <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in duration-300">
+                  <div class="p-8 bg-slate-900 text-white flex justify-between items-center shrink-0">
+                     <h3 class="text-xl font-black uppercase tracking-tighter italic">Edit <span class="text-blue-400">Laporan</span></h3>
+                     <button @click="showEditDistModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
+                  </div>
+                  <div v-if="editDistData" class="p-8 space-y-6 overflow-y-auto max-h-[70vh] custom-scrollbar">
+                     <div class="space-y-4">
+                        <div class="space-y-1">
+                           <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Nama Kegiatan / Lokasi</label>
+                           <input v-model="editDistData.title" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-xs transition-all" />
+                        </div>
+                        <div class="space-y-1">
+                           <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Deskripsi Penyaluran</label>
+                           <textarea v-model="editDistData.description" class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-xs resize-none transition-all"></textarea>
+                        </div>
+                        <div class="space-y-1">
+                           <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Nama Lokasi GPS</label>
+                           <input v-model="editDistData.location_name" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-xs transition-all" />
+                        </div>
+                     </div>
+                     <button @click="submitUpdateDist" class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all">Simpan Perubahan</button>
+                  </div>
+               </div>
+            </div>
+         </Transition>
+      </Teleport>
+   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/store/auth';
 import api from '@/api';
@@ -618,6 +741,7 @@ const loading = ref(true);
 const submitting = ref(false);
 const myCampaigns = ref([]);
 const myNews = ref([]);
+const myDistributions = ref([]);
 const todos = ref([]);
 const newTodo = ref('');
 const newTodoDeadline = ref('');
@@ -646,9 +770,125 @@ const attendanceTypes = [
 
 const showCampaignModal = ref(false);
 const showNewsModal = ref(false);
+const showDistributionModal = ref(false);
+const showEditDistModal = ref(false);
+const editDistData = ref(null);
+
+const distForm = reactive({
+  title: '',
+  description: '',
+  maps_link: '',
+  photo: null,
+  photo_preview: ''
+});
+
+const extractCoordsFromLink = () => {
+  const link = distForm.maps_link;
+  if (!link) return;
+
+  // Regex untuk link Google Maps (@lat,lng)
+  const regexNormal = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+  // Regex untuk iframe src (!2d longitude !3d latitude)
+  const regexIframe = /!2d(-?\d+\.\d+)!3d(-?\d+\.\d+)/;
+
+  let match = link.match(regexNormal);
+  if (match) {
+    coords.value = { latitude: parseFloat(match[1]), longitude: parseFloat(match[2]) };
+    currentLocationName.value = 'Lokasi dari Link Maps';
+    return;
+  }
+
+  match = link.match(regexIframe);
+  if (match) {
+    coords.value = { latitude: parseFloat(match[2]), longitude: parseFloat(match[1]) };
+    currentLocationName.value = 'Lokasi dari Iframe Maps';
+  }
+};
+
+const handleDistPhoto = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      distForm.photo_preview = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const submitDistribution = async () => {
+  if (!distForm.title || !distForm.photo_preview) {
+    alert('Harap isi Judul dan ambil Foto bukti terlebih dahulu.');
+    return;
+  }
+  submitting.value = true;
+  try {
+    await api.post('/field/distributions', {
+      title: distForm.title,
+      description: distForm.description,
+      maps_link: distForm.maps_link,
+      latitude: coords.value.latitude,
+      longitude: coords.value.longitude,
+      location_name: currentLocationName.value,
+      photo: distForm.photo_preview
+    });
+
+    showDistributionModal.value = false;
+    // Reset form
+    distForm.title = '';
+    distForm.description = '';
+    distForm.maps_link = '';
+    distForm.photo = null;
+    distForm.photo_preview = '';
+    
+    alert('Laporan penyaluran berhasil disimpan!');
+    fetchData();
+  } catch (err) {
+    console.error(err);
+    const msg = err.response?.data?.message || 'Gagal mengirim laporan. Pastikan database sudah terupdate.';
+    alert('Error: ' + msg);
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const startEditDist = (dist) => {
+  editDistData.value = { ...dist };
+  showEditDistModal.value = true;
+};
+
+const submitUpdateDist = async () => {
+  if (!editDistData.value.title) return alert('Judul tidak boleh kosong');
+  submitting.value = true;
+  try {
+    await api.put(`/field/distributions/${editDistData.value.id}`, {
+      title: editDistData.value.title,
+      description: editDistData.value.description,
+      location_name: editDistData.value.location_name,
+      maps_link: editDistData.value.maps_link
+    });
+    showEditDistModal.value = false;
+    alert('Laporan berhasil diperbarui!');
+    fetchData();
+  } catch (err) {
+    alert('Gagal memperbarui laporan');
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const deleteDist = async (id) => {
+  if (!confirm('Hapus laporan ini secara permanen?')) return;
+  try {
+    await api.delete(`/field/distributions/${id}`);
+    alert('Laporan dihapus');
+    fetchData();
+  } catch (err) {
+    alert('Gagal menghapus laporan');
+  }
+};
 
 const categories = ['Sosial', 'Medis', 'Pendidikan', 'Bencana', 'Lingkungan', 'Yatim'];
-
 const form = reactive({ title: '', description: '', category: 'Sosial', target_amount: '', foto: '' });
 const newsForm = reactive({ title: '', content: '', image: '' });
 
@@ -666,6 +906,10 @@ const fetchData = async () => {
     myCampaigns.value = campRes.data;
     myNews.value = newsRes.data;
     todos.value = todoRes.data;
+    
+    // Ambil riwayat distribusi
+    const distRes = await api.get('/field/my-distributions');
+    myDistributions.value = distRes.data;
 
     // Filter absensi berdasarkan tanggal LOKAL browser (bukan tanggal server)
     // Ini memastikan absensi kemarin tidak muncul sebagai absensi hari ini
@@ -783,23 +1027,39 @@ const getMyLocation = () => {
   currentLocationName.value = 'Mendeteksi lokasi GPS...';
 
   const options = {
-    enableHighAccuracy: true,  // Wajib: paksa GPS chip, bukan WiFi/tower
-    maximumAge: 0,             // Wajib: jangan pakai cache lokasi lama
-    timeout: 15000             // 15 detik batas waktu
+    enableHighAccuracy: true,
+    maximumAge: 0,
+    timeout: 15000
   };
 
-  navigator.geolocation.getCurrentPosition(
+  let watchId = null;
+  let bestAccuracy = Infinity;
+
+  // Simpan watchId ke scope yang lebih luas agar bisa dibersihkan saat unmount
+  window._currentLocationWatchId = null;
+
+  window._currentLocationWatchId = navigator.geolocation.watchPosition(
     async (position) => {
       const { latitude, longitude, accuracy } = position.coords;
+      
+      // Simpan koordinat terbaru
       coords.value = { latitude, longitude, accuracy };
+      
+      // Selalu update nama lokasi, tapi tandai jika masih proses "mencari yang terbaik"
+      if (accuracy < bestAccuracy) {
+        bestAccuracy = accuracy;
+        await reverseGeocode(latitude, longitude);
+      }
 
-      // Tampilkan koordinat sementara akurasi selesai
-      currentLocationName.value = `GPS aktif (±${Math.round(accuracy)}m)`;
-      await reverseGeocode(latitude, longitude);
-      locationLoading.value = false;
+      // Jika akurasi sudah sangat bagus (di bawah 15 meter), kunci lokasi ini
+      if (accuracy <= 15) {
+        navigator.geolocation.clearWatch(watchId);
+        locationLoading.value = false;
+      }
     },
     (error) => {
       locationLoading.value = false;
+      if (watchId) navigator.geolocation.clearWatch(watchId);
       const messages = {
         1: 'Izin lokasi ditolak — aktifkan di pengaturan browser',
         2: 'Sinyal GPS lemah — coba di area terbuka',
@@ -810,23 +1070,55 @@ const getMyLocation = () => {
     },
     options
   );
+
+  // Stop pemantauan setelah 10 detik agar tidak menguras baterai, ambil yang terbaik yang didapat
+  setTimeout(() => {
+    if (locationLoading.value) {
+      navigator.geolocation.clearWatch(watchId);
+      locationLoading.value = false;
+    }
+  }, 10000);
 };
 
 const reverseGeocode = async (lat, lon) => {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`,
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
       { headers: { 'Accept-Language': 'id,en' } }
     );
     if (!res.ok) throw new Error('Nominatim error');
     const data = await res.json();
 
-    // Ambil nama jalan + kelurahan + kota untuk presisi lebih baik
+    // Ambil nama gedung/tempat + jalan + kelurahan untuk presisi maksimal
     const addr = data.address || {};
+    
+    // Identifikasi nama tempat (gedung, kantor, toko, dll)
+    const place = addr.building || addr.amenity || addr.office || addr.shop || addr.tourism || addr.historic || addr.man_made;
+    const road = addr.road;
+    const houseNo = addr.house_number;
+    
+    // Konstruksi baris utama (Gedung + Jalan + No atau Jalan + No)
+    let primary = "";
+    const roadWithNo = road ? (houseNo ? `${road} No. ${houseNo}` : road) : "";
+
+    if (place && roadWithNo) {
+      primary = `${place}, ${roadWithNo}`;
+    } else if (place) {
+      primary = place;
+    } else if (roadWithNo) {
+      primary = roadWithNo;
+    }
+
+    // Kelurahan & Kecamatan & Kota
+    const kel = addr.suburb || addr.village || addr.neighbourhood;
+    const kec = addr.city_district;
+    const kota = addr.city || addr.town || addr.county;
+
     const parts = [
-      addr.road || addr.neighbourhood || addr.suburb,
-      addr.city_district || addr.suburb || addr.village,
-      addr.city || addr.town || addr.county
+      primary,
+      kel ? (kel.toLowerCase().includes('kel') || kel.toLowerCase().includes('desa') ? kel : `Kel. ${kel}`) : null,
+      kec ? (kec.toLowerCase().includes('kec') ? kec : `Kec. ${kec}`) : null,
+      kota
     ].filter(Boolean);
 
     currentLocationName.value = parts.length > 0
@@ -1112,6 +1404,12 @@ const formatDate = (dateStr) => {
 onMounted(() => {
   fetchData();
   getMyLocation();
+});
+
+onUnmounted(() => {
+  if (window._currentLocationWatchId) {
+    navigator.geolocation.clearWatch(window._currentLocationWatchId);
+  }
 });
 </script>
 

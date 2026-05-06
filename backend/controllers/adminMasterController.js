@@ -68,6 +68,12 @@ const moduleConfigs = {
         join: 'LEFT JOIN campaigns ON distributions.program_id = campaigns.id',
         orderBy: 'distributions.id DESC' 
     },
+    'field_reports': { 
+        table: 'distributions', 
+        select: 'distributions.*, users.name as worker_name',
+        join: 'LEFT JOIN users ON distributions.worker_id = users.id',
+        orderBy: 'distributions.created_at DESC' 
+    },
     'transactions': { 
         table: 'donations', 
         select: 'donations.*, users.name as donor_name, users.phone as donor_phone, campaigns.title as campaign_title, payment_via.name as payment_via_name',
@@ -233,8 +239,39 @@ const getStats = async (req, res) => {
                     { label: 'Retensi Donatur', value: '78%', percentage: 78 }
                 ]
             };
+        } else if (module === 'muallaf_mgt') {
+            const [[{ total }]] = await db.query('SELECT COUNT(*) as total FROM muallaf_requests');
+            const [[{ pending }]] = await db.query('SELECT COUNT(*) as pending FROM muallaf_requests WHERE status = "pending"');
+            stats = {
+                kpis: [
+                    { label: 'Total Pengajuan', value: total, percentage: 100 },
+                    { label: 'Menunggu Jadwal', value: pending, percentage: (pending/total * 100) || 0 },
+                    { label: 'Tingkat Respon', value: '100%', percentage: 100 }
+                ]
+            };
+        } else if (module === 'recruitment') {
+            const [[{ total }]] = await db.query('SELECT COUNT(*) as total FROM volunteers');
+            const [[{ pending }]] = await db.query('SELECT COUNT(*) as pending FROM volunteers WHERE status = "pending"');
+            stats = {
+                kpis: [
+                    { label: 'Total Pendaftar', value: total, percentage: 100 },
+                    { label: 'Belum Direview', value: pending, percentage: (pending/total * 100) || 0 },
+                    { label: 'Target Relawan', value: '150', percentage: (total/150 * 100) }
+                ]
+            };
+        } else if (module === 'inbox') {
+            const [[{ total }]] = await db.query('SELECT COUNT(*) as total FROM contact_messages');
+            const [[{ unread }]] = await db.query('SELECT COUNT(*) as unread FROM contact_messages WHERE status = "unread"');
+            stats = {
+                kpis: [
+                    { label: 'Total Pesan Masuk', value: total, percentage: 100 },
+                    { label: 'Pesan Belum Dibaca', value: unread, percentage: (unread/total * 100) || 0 },
+                    { label: 'Kepuasan Publik', value: '98%', percentage: 98 }
+                ]
+            };
         } else {
-            stats = { kpis: [{ label: 'Data', value: '0', percentage: 0 }] };
+            const [[{ count }]] = await db.query(`SELECT COUNT(*) as count FROM ${config.table}`);
+            stats = { kpis: [{ label: `Total Data ${config.table}`, value: count, percentage: 100 }] };
         }
         
         res.json(stats);
@@ -244,4 +281,30 @@ const getStats = async (req, res) => {
     }
 };
 
-module.exports = { getData, createData, updateData, deleteData, getStats };
+// --- DISTRIBUTIONS MANAGEMENT ---
+exports.getAllDistributions = async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT d.*, u.name as worker_name 
+            FROM distributions d
+            JOIN users u ON d.worker_id = u.id
+            ORDER BY d.created_at DESC
+        `);
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Gagal mengambil data penyaluran' });
+    }
+};
+
+exports.deleteDistribution = async (req, res) => {
+    try {
+        await db.query('DELETE FROM distributions WHERE id = ?', [req.params.id]);
+        res.json({ message: 'Laporan penyaluran berhasil dihapus' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Gagal menghapus laporan' });
+    }
+};
+
+module.exports = { getData, createData, updateData, deleteData, getStats, getAllDistributions: exports.getAllDistributions, deleteDistribution: exports.deleteDistribution };

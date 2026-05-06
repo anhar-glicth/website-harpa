@@ -377,7 +377,7 @@
             </div>
 
             <!-- Generic Module Renderer (Table or Dashboard) -->
-            <template v-if="managementTabs.some(t => t.id === currentAdminTab) || distributionTabs.some(t => t.id === currentAdminTab) || transactionTabs.some(t => t.id === currentAdminTab)">
+            <template v-if="activeModule || managementTabs.some(t => t.id === currentAdminTab) || distributionTabs.some(t => t.id === currentAdminTab) || transactionTabs.some(t => t.id === currentAdminTab)">
 
               <!-- Donor Dashboard Special View -->
               <DonorDashboard v-if="currentAdminTab === 'donor_dashboard'" />
@@ -984,9 +984,37 @@
               </div>
 
                 <!-- Sub-Tab: All Tasks -->
-                <div v-if="monitoringSubTab === 'tasks'" class="overflow-x-auto">
-                  <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest">
+                <div v-if="monitoringSubTab === 'tasks'">
+                   <!-- Filter Row Tugas -->
+                   <div class="p-6 border-b border-gray-50 flex flex-wrap gap-3 items-center bg-gray-50/20">
+                      <span class="text-[9px] font-black uppercase tracking-widest text-gray-400"><i class="fas fa-filter mr-1"></i>Filter Tugas:</span>
+                      <select v-model="taskFilterYear" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                         <option value="">Tahun</option>
+                         <option v-for="y in availableTaskYears" :key="y" :value="String(y)">{{ y }}</option>
+                      </select>
+                      <select v-model="taskFilterMonth" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                         <option value="">Bulan</option>
+                         <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option><option value="4">April</option>
+                         <option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option>
+                         <option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                      </select>
+                      <select v-model="taskFilterDay" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                         <option value="">Tanggal</option>
+                         <option v-for="d in 31" :key="d" :value="String(d)">{{ d }}</option>
+                      </select>
+                      <select v-model="taskFilterStatus" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
+                         <option value="">Semua Status</option>
+                         <option value="pending">Pending</option>
+                         <option value="completed">Completed</option>
+                      </select>
+                      <button v-if="taskFilterYear || taskFilterMonth || taskFilterDay || taskFilterStatus" @click="resetTaskFilter" class="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
+                         <i class="fas fa-times"></i> Reset
+                      </button>
+                      <span class="ml-auto text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ filteredTasks.length }} tugas ditemukan</span>
+                   </div>
+                   <div class="overflow-x-auto">
+                     <table class="w-full text-left">
+                        <thead class="bg-gray-50 text-[9px] font-black text-gray-400 uppercase tracking-widest">
                       <tr>
                         <th class="px-8 py-5">Tugas & Pegawai</th>
                         <th class="px-8 py-5">Tenggat</th>
@@ -996,7 +1024,7 @@
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                      <tr v-for="task in allTasks" :key="task.id" class="hover:bg-gray-50/50 transition-colors">
+                      <tr v-for="task in filteredTasks" :key="task.id" class="hover:bg-gray-50/50 transition-colors">
                         <td class="px-8 py-6">
                            <p class="font-black text-gray-900 text-[10px] uppercase tracking-tight">{{ task.task }}</p>
                            <p v-if="task.description" class="text-[9px] text-gray-400 italic mb-1">{{ task.description }}</p>
@@ -1034,8 +1062,8 @@
                   </table>
                 </div>
               </div>
-            </div> <!-- End of Monitoring Tab -->
-
+               </div>
+            </div> <!-- End Monitoring Wrapper (819) -->
           </div> <!-- End of main content area -->
         </main>
 
@@ -1362,19 +1390,19 @@ const handleLogout = async () => {
 };
 
 const sidebarTabs = ref([
-  { id: 'dashboard', label: 'Ringkasan V2', icon: 'fas fa-chart-pie' },
-  { id: 'users', label: 'Manajemen User V2', icon: 'fas fa-users-cog' },
-  { id: 'verify_zakat', label: 'Verifikasi Zakat V2', icon: 'fas fa-hand-holding-heart' },
-  { id: 'settings', label: 'CMS Tampilan V2', icon: 'fas fa-paint-roller' },
-  { id: 'news_mgt', label: 'Manajemen Warta V2', icon: 'fas fa-newspaper' },
-  { id: 'muallaf_mgt', label: 'Manajemen Mualaf V2', icon: 'fas fa-kaaba' },
-  { id: 'recruitment', label: 'Rekrutmen Relawan V2', icon: 'fas fa-user-plus' },
-  { id: 'inbox', label: 'Kotak Pesan V2', icon: 'fas fa-envelope-open-text' },
-  { id: 'newsletter_mgt', label: 'Berlangganan Warta V2', icon: 'fas fa-mail-bulk' },
-  { id: 'audit_logs', label: 'Log Sistem V2', icon: 'fas fa-history' },
-  { id: 'verify_campaign', label: 'Approval Kampanye V2', icon: 'fas fa-check-double' },
-  { id: 'verify_donation', label: 'Verifikasi Donasi V2', icon: 'fas fa-donate' },
-  { id: 'monitoring', label: 'Monitoring & Tugas V2', icon: 'fas fa-tasks' },
+  { id: 'dashboard', label: 'Ringkasan', icon: 'fas fa-chart-pie' },
+  { id: 'users', label: 'Manajemen User', icon: 'fas fa-users-cog' },
+  { id: 'verify_zakat', label: 'Verifikasi Zakat', icon: 'fas fa-hand-holding-heart' },
+  { id: 'settings', label: 'CMS Tampilan', icon: 'fas fa-paint-roller' },
+  { id: 'news_mgt', label: 'Manajemen Warta', icon: 'fas fa-newspaper' },
+  { id: 'muallaf_mgt', label: 'Manajemen Mualaf', icon: 'fas fa-kaaba' },
+  { id: 'recruitment', label: 'Rekrutmen Relawan', icon: 'fas fa-user-plus' },
+  { id: 'inbox', label: 'Kotak Pesan', icon: 'fas fa-envelope-open-text' },
+  { id: 'newsletter_mgt', label: 'Berlangganan Warta', icon: 'fas fa-mail-bulk' },
+  { id: 'audit_logs', label: 'Log Sistem', icon: 'fas fa-history' },
+  { id: 'verify_campaign', label: 'Approval Kampanye', icon: 'fas fa-check-double' },
+  { id: 'verify_donation', label: 'Verifikasi Donasi', icon: 'fas fa-donate' },
+  { id: 'monitoring', label: 'Monitoring & Tugas', icon: 'fas fa-tasks' },
 ]);
 
 const currentAdminTab = ref('dashboard');
@@ -1397,6 +1425,7 @@ const managementTabs = [
 
 const distributionTabs = [
   { id: 'distribution_list', label: 'List Penyaluran', icon: 'fas fa-clipboard-list' },
+  { id: 'field_reports', label: 'Laporan Lapangan', icon: 'fas fa-map-marker-alt' },
   { id: 'distribution_dashboard', label: 'Dashboard Penyaluran', icon: 'fas fa-chart-line' },
 ];
 
@@ -1497,6 +1526,22 @@ const moduleConfigs = {
   distribution_list: { title: 'List Penyaluran', entity: 'Penyaluran', description: 'Histori distribusi bantuan ke penerima', icon: 'fas fa-clipboard-list',
     columns: [{ key: 'recipient_name', label: 'Penerima' }, { key: 'campaign_title', label: 'Program' }, { key: 'amount', label: 'Nilai', type: 'currency' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tersalur' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
     fields: [{ key: 'recipient_name', label: 'Nama Penerima' }, { key: 'program_id', label: 'ID Program (Numeric)' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'select', options: ['Tersalur', 'Proses'] }] },
+
+  field_reports: { title: 'Laporan Lapangan (Peta)', entity: 'Laporan', table: 'distributions', description: 'Laporan penyaluran real-time dari petugas lapangan', icon: 'fas fa-map-marked-alt',
+    columns: [
+      { key: 'photo_url', label: 'Foto', type: 'image' },
+      { key: 'title', label: 'Judul Laporan' },
+      { key: 'worker_name', label: 'Petugas' },
+      { key: 'location_name', label: 'Lokasi' },
+      { key: 'created_at', label: 'Waktu', type: 'date' }
+    ],
+    fields: [
+      { key: 'title', label: 'Judul Laporan' },
+      { key: 'description', label: 'Deskripsi', type: 'textarea' },
+      { key: 'location_name', label: 'Nama Lokasi' },
+      { key: 'maps_link', label: 'Link Google Maps' }
+    ]
+  },
  
   donors:       { title: 'List Donatur', entity: 'Donatur', description: 'Database seluruh donatur terdaftar', icon: 'fas fa-users',
     columns: [
@@ -1747,6 +1792,40 @@ const downloadAdminAttendanceCSV = () => {
   URL.revokeObjectURL(url);
 };
 
+// Task Filter State
+const taskFilterYear = ref('');
+const taskFilterMonth = ref('');
+const taskFilterDay = ref('');
+const taskFilterStatus = ref('');
+
+const availableTaskYears = computed(() => {
+  const years = new Set(allTasks.value.map(t => {
+    const date = t.deadline ? new Date(t.deadline) : new Date(t.created_at);
+    return date.getFullYear();
+  }));
+  return [...years].sort((a, b) => b - a);
+});
+
+const filteredTasks = computed(() => {
+  return allTasks.value.filter(t => {
+    const d = t.deadline ? new Date(t.deadline) : new Date(t.created_at);
+    
+    if (taskFilterYear.value && d.getFullYear() !== parseInt(taskFilterYear.value)) return false;
+    if (taskFilterMonth.value && (d.getMonth() + 1) !== parseInt(taskFilterMonth.value)) return false;
+    if (taskFilterDay.value && d.getDate() !== parseInt(taskFilterDay.value)) return false;
+    if (taskFilterStatus.value && t.status !== taskFilterStatus.value) return false;
+    
+    return true;
+  });
+});
+
+const resetTaskFilter = () => {
+  taskFilterYear.value = '';
+  taskFilterMonth.value = '';
+  taskFilterDay.value = '';
+  taskFilterStatus.value = '';
+};
+
 const allTasks = ref([]);
 const showAssignModal = ref(false);
 const assigning = ref(false);
@@ -1782,7 +1861,7 @@ const openEditTask = (task) => {
 
 const downloadTasksCSV = () => {
   const headers = ['Tugas', 'Pegawai', 'Tenggat', 'Status', 'Catatan Hasil'];
-  const rows = allTasks.value.map(t => [
+  const rows = filteredTasks.value.map(t => [
     t.task,
     t.employee_name,
     formatDate(t.deadline),

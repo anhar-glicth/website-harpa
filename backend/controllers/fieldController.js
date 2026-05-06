@@ -246,3 +246,83 @@ exports.completeTask = async (req, res) => {
         res.status(500).json({ message: 'Gagal menyelesaikan tugas' });
     }
 };
+
+/**
+ * --- DISTRIBUTION MAPPING ---
+ */
+exports.addDistribution = async (req, res) => {
+    const { title, description, latitude, longitude, location_name, photo, maps_link } = req.body;
+    try {
+        await db.query(
+            'INSERT INTO distributions (worker_id, title, description, latitude, longitude, location_name, photo_url, maps_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [req.user.id, title, description, latitude, longitude, location_name, photo, maps_link || null]
+        );
+        res.status(201).json({ message: 'Titik penyaluran berhasil ditandai!' });
+    } catch (error) {
+        console.error('SQL Error in addDistribution:', error);
+        res.status(500).json({ 
+            message: 'Gagal menyimpan titik penyaluran', 
+            error: error.message 
+        });
+    }
+};
+
+exports.getAllDistributions = async (req, res) => {
+    try {
+        const [rows] = await db.query(`
+            SELECT d.*, u.name as worker_name 
+            FROM distributions d 
+            JOIN users u ON d.worker_id = u.id 
+            ORDER BY d.created_at DESC
+        `);
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Gagal mengambil data penyaluran' });
+    }
+};
+
+// Petugas melihat laporan miliknya sendiri
+exports.getMyDistributions = async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            'SELECT * FROM distributions WHERE worker_id = ? ORDER BY created_at DESC',
+            [req.user.id]
+        );
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal mengambil riwayat laporan Anda' });
+    }
+};
+
+exports.updateDistribution = async (req, res) => {
+    const { id } = req.params;
+    const { title, description, location_name, maps_link } = req.body;
+    try {
+        // Pastikan laporan milik petugas yang sedang login
+        const [check] = await db.query('SELECT id FROM distributions WHERE id = ? AND worker_id = ?', [id, req.user.id]);
+        if (check.length === 0) return res.status(403).json({ message: 'Anda tidak memiliki akses ke laporan ini' });
+
+        await db.query(
+            'UPDATE distributions SET title = ?, description = ?, location_name = ?, maps_link = ? WHERE id = ?',
+            [title, description, location_name, maps_link, id]
+        );
+        res.json({ message: 'Laporan berhasil diperbarui!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal memperbarui laporan' });
+    }
+};
+
+exports.deleteDistribution = async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Pastikan laporan milik petugas yang sedang login
+        const [check] = await db.query('SELECT id FROM distributions WHERE id = ? AND worker_id = ?', [id, req.user.id]);
+        if (check.length === 0) return res.status(403).json({ message: 'Anda tidak memiliki akses ke laporan ini' });
+
+        await db.query('DELETE FROM distributions WHERE id = ?', [id]);
+        res.json({ message: 'Laporan berhasil dihapus' });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal menghapus laporan' });
+    }
+};

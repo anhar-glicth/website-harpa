@@ -27,4 +27,11 @@ router.post('/updates', auth, fieldController.addCampaignUpdate);
 // Task Completion with results
 router.post('/todos/:id/complete', auth, fieldController.completeTask);
 
+// Distribution Reporting
+router.get('/distributions', fieldController.getAllDistributions); // publik - untuk peta landing page
+router.post('/distributions', auth, fieldController.addDistribution);
+router.get('/my-distributions', auth, fieldController.getMyDistributions);
+router.put('/distributions/:id', auth, fieldController.updateDistribution);
+router.delete('/distributions/:id', auth, fieldController.deleteDistribution);
+
 module.exports = router;

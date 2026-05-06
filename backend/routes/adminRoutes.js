@@ -61,4 +61,8 @@ router.post('/tasks', auth, auth.isAdmin, adminController.assignTask);
 router.put('/tasks/:id', auth, auth.isAdmin, adminController.updateTask);
 router.delete('/tasks/:id', auth, auth.isAdmin, adminController.deleteTask);
 
+// 7. Manajemen Penyaluran (Distributions)
+router.get('/distributions', auth, auth.isAdmin, masterController.getAllDistributions);
+router.delete('/distributions/:id', auth, auth.isAdmin, masterController.deleteDistribution);
+
 module.exports = router;

@@ -5,6 +5,21 @@ require('dotenv').config();
 // Set Timezone to Indonesia/Makassar (GMT+8)
 process.env.TZ = 'Asia/Makassar';
 
+// ============================================================
+// GLOBAL CRASH PREVENTION
+// Mencegah server mati total akibat error yang tidak tertangkap
+// ============================================================
+process.on('uncaughtException', (err) => {
+    console.error('🔴 [UNCAUGHT EXCEPTION] Server tidak jadi crash:', err.message);
+    console.error(err.stack);
+    // Server TETAP berjalan, tidak exit
+});
+
+process.on('unhandledRejection', (reason) => {
+    console.error('🔴 [UNHANDLED REJECTION] Promise gagal tanpa catch:', reason);
+    // Server TETAP berjalan, tidak exit
+});
+
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
@@ -18,24 +33,16 @@ const fieldRoutes = require('./routes/fieldRoutes');
 const prayerRoutes = require('./routes/prayerRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
+// Import Controllers yang dibutuhkan di level server
+const campaignController = require('./controllers/campaignController');
+
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 
 const app = express();
 app.set('trust proxy', 1); // Penting untuk Hostinger/Proxy agar IP asli terbaca
 
 // Security Middleware
 app.use(helmet());
-
-// Rate Limiting (DISABLED TEMPORARILY)
-/*
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 menit
-    max: 1000, // Tingkatkan batas ke 1000 agar tidak mudah terblokir
-    message: 'Terlalu banyak permintaan dari IP ini, silakan coba lagi nanti.'
-});
-app.use('/api/', limiter);
-*/
 
 // Global Middleware
 // Limit ditingkatkan ke 50mb agar data foto (Base64) tidak ditolak server (Error 413)
@@ -47,11 +54,12 @@ app.use(cors());
  * --- Definisi Route ---
  */
 
-// Route Spesifik - Pastikan rute admin berada di atas rute global api
-const campaignController = require('./controllers/campaignController');
+// Route Spesifik
 app.get(['/api/stats', '/stats'], campaignController.getStats);
+app.get('/api/cek-rute', (req, res) => res.json({ status: 'Rute Berhasil Terbaca!' }));
 
 app.use(['/api/auth', '/auth'], authRoutes);
+app.use(['/api/field', '/field'], fieldRoutes);
 app.use(['/api/admin', '/admin'], adminRoutes);
 app.use(['/api/campaigns', '/campaigns'], campaignRoutes);
 app.use(['/api/donations', '/donations'], donationRoutes);
@@ -59,19 +67,17 @@ app.use(['/api/news', '/news'], newsRoutes);
 app.use(['/api/settings', '/settings'], settingsRoutes);
 app.use(['/api/zakats', '/zakats'], zakatRoutes);
 app.use(['/api/profile', '/profile'], profileRoutes);
-app.use(['/api/field', '/field'], fieldRoutes);
 app.use(['/api/prayers', '/prayers'], prayerRoutes);
 app.use(['/api/volunteers', '/volunteers'], require('./routes/volunteerRoutes'));
 app.use(['/api/contacts', '/contacts'], require('./routes/contactRoutes'));
 app.use(['/api/newsletters', '/newsletters'], require('./routes/newsletterRoutes'));
-
 
 // Root test route
 app.get('/', (req, res) => {
     res.send('API Humanity Care is Running...');
 });
 
-// DEBUG: Cek timezone server - buka /api/debug-tz di browser
+// DEBUG: Cek timezone server
 app.get('/api/debug-tz', (req, res) => {
     const now = new Date();
     const WITA_OFFSET = 8 * 60 * 60 * 1000;
@@ -98,6 +104,7 @@ app.get('/api/health', async (req, res) => {
         res.json({
             status: 'online',
             database: 'connected',
+            uptime: Math.floor(process.uptime()) + ' detik',
             timestamp: new Date()
         });
     } catch (err) {
@@ -119,7 +126,15 @@ app.use((req, res) => {
     });
 });
 
-// Global Error Handler
+// Global Error Handler — tangkap error dari semua route agar tidak crash
+app.use((err, req, res, next) => {
+    console.error('🔴 [GLOBAL ERROR HANDLER]', err.message);
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || 'Terjadi kesalahan pada server',
+    });
+});
+
 app.use(errorHandler);
 
 // Port Handling
@@ -128,6 +143,6 @@ app.listen(PORT, () => {
     console.log(`========================================`);
     console.log(`🚀 Server berjalan di: http://localhost:${PORT}`);
     console.log(`📸 Payload Limit: 50MB (Siap menerima foto)`);
-    console.log(`📊 Stats Admin: http://localhost:${PORT}/api/admin/dashboard-stats`);
+    console.log(`🛡️  Crash prevention: AKTIF`);
     console.log(`========================================`);
 });

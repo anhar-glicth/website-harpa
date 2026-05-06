@@ -84,6 +84,99 @@
         </div>
       </div>
     </section>
+    
+    <!-- ===== MAP: DISTRIBUTIONS (MAP OF KINDNESS) ===== -->
+    <section class="py-32 bg-white relative overflow-hidden">
+      <!-- Background Accents -->
+      <div class="absolute top-0 right-0 w-1/3 h-full bg-slate-50/50 -skew-x-12 transform origin-top translate-x-20"></div>
+
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="flex flex-col lg:flex-row items-center gap-16">
+          
+          <!-- Left Side: Description -->
+          <div class="lg:w-1/3 space-y-10" data-aos="fade-right">
+            <div class="space-y-4">
+              <div class="flex items-center gap-3">
+                <span class="w-12 h-[2px] bg-green-600"></span>
+                <span class="text-green-600 font-black uppercase text-[10px] tracking-[0.4em]">Jejak Kebaikan</span>
+              </div>
+              <h2 class="text-4xl md:text-6xl font-black text-slate-900 leading-[0.9] tracking-tighter">
+                Peta <br/>
+                <span class="text-green-600 italic">Penyaluran</span>
+              </h2>
+              <p class="text-slate-500 text-lg leading-relaxed">
+                Setiap donasi Anda adalah amanah. Lihat secara real-time bagaimana bantuan tersebut tersalurkan ke berbagai titik lokasi di seluruh penjuru negeri.
+              </p>
+            </div>
+
+            <!-- Mini Stats/Info Cards -->
+            <div class="space-y-6">
+              <div class="flex items-center gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100 transition-all hover:shadow-lg hover:bg-white group">
+                <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl group-hover:bg-green-600 group-hover:text-white transition-all">
+                  📍
+                </div>
+                <div>
+                  <h4 class="font-black text-slate-900 text-sm uppercase">Titik Presisi</h4>
+                  <p class="text-xs text-slate-400">Lokasi akurat sesuai GPS petugas.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-6 p-6 bg-slate-50 rounded-3xl border border-slate-100 transition-all hover:shadow-lg hover:bg-white group">
+                <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl group-hover:bg-green-600 group-hover:text-white transition-all">
+                  📸
+                </div>
+                <div>
+                  <h4 class="font-black text-slate-900 text-sm uppercase">Dokumentasi Foto</h4>
+                  <p class="text-xs text-slate-400">Bukti visual penyaluran di tiap titik.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+              <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Live Updating System</span>
+            </div>
+          </div>
+
+          <!-- Right Side: Map -->
+          <div class="lg:w-2/3 w-full" data-aos="fade-left">
+            <div class="relative">
+              <!-- Decorative elements -->
+              <div class="absolute -top-6 -right-6 w-32 h-32 bg-green-100 rounded-full blur-3xl opacity-50"></div>
+              <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
+
+              <!-- Main Map Card -->
+              <div class="relative bg-white p-3 rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden">
+                <div id="map" class="w-full h-[500px] md:h-[600px] rounded-[2.5rem] z-10"></div>
+                
+                <!-- Floating Map Tag -->
+                <div class="absolute top-8 right-8 z-[1000] bg-slate-900/90 backdrop-blur-md text-white py-2 px-4 rounded-full text-[9px] font-black tracking-widest uppercase flex items-center gap-2">
+                  <i class="fas fa-mouse-pointer text-green-500"></i>
+                  Klik Marker Untuk Detail
+                </div>
+
+                <!-- Floating Legend Small -->
+                <div class="absolute bottom-8 left-8 z-[1000] bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-slate-100 shadow-xl hidden md:flex items-center gap-4">
+                   <div class="flex -space-x-3">
+                      <div v-for="n in 3" :key="n" class="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+                        <img :src="`https://ui-avatars.com/api/?name=User+${n}&background=random`" />
+                      </div>
+                   </div>
+                   <div class="pr-2">
+                      <p class="text-[9px] font-black text-slate-900 leading-none mb-1 uppercase tracking-tighter">Relawan Aktif</p>
+                      <p class="text-[8px] font-bold text-slate-400 uppercase leading-none">Sedang Bertugas</p>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
 
     <!-- ===== FEATURES ===== -->
     <section class="max-w-7xl mx-auto px-6 py-20">
@@ -306,6 +399,8 @@ const stats = ref([
   { value: '0', label: 'Program' },
 ]);
 const articles = ref([]);
+const distributions = ref([]);
+let map = null;
 
 const fetchData = async () => {
   try {
@@ -343,10 +438,62 @@ const fetchData = async () => {
       color: 'bg-green-600'
     })).slice(0, 3);
 
+    // 5. Fetch Distributions
+    const distRes = await api.get('/field/distributions');
+    distributions.value = distRes.data;
+    initMap();
+
   } catch (e) {
     console.error('Gagal mengambil data landing page:', e);
   }
 };
+
+const initMap = () => {
+  if (typeof L === 'undefined') {
+    setTimeout(initMap, 500);
+    return;
+  }
+  
+  if (map) map.remove();
+  
+  // Set view ke Indonesia
+  map = L.map('map', { scrollWheelZoom: false }).setView([-2.5489, 118.0149], 5);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  distributions.value.forEach(d => {
+    if (!d.latitude || !d.longitude) return;
+
+    const marker = L.marker([d.latitude, d.longitude]).addTo(map);
+    
+    const popupContent = `
+      <div class="w-64 p-2 font-sans">
+        <img src="${d.photo_url}" class="w-full h-32 object-cover rounded-xl mb-3 shadow-md" />
+        <h4 class="font-black text-slate-900 uppercase italic text-xs mb-1">${d.title}</h4>
+        <p class="text-[10px] text-slate-500 leading-relaxed mb-3">${d.description || ''}</p>
+        ${d.maps_link ? `<a href="${d.maps_link}" target="_blank" class="block w-full text-center py-2 bg-slate-50 text-slate-900 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-100 transition-all mb-3"><i class="fas fa-external-link-alt mr-1"></i> Buka di Google Maps</a>` : ''}
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+          <span class="text-[8px] font-black text-green-600 uppercase tracking-widest">Petugas: ${d.worker_name}</span>
+          <span class="text-[8px] font-bold text-slate-400 uppercase">${new Date(d.created_at).toLocaleDateString('id-ID')}</span>
+        </div>
+      </div>
+    `;
+    
+    marker.bindPopup(popupContent, {
+      className: 'custom-leaflet-popup',
+      maxWidth: 300
+    });
+  });
+
+  // Fit bounds if markers exist
+  if (distributions.value.length > 0) {
+    const group = new L.featureGroup(distributions.value.map(d => L.marker([d.latitude, d.longitude])));
+    map.fitBounds(group.getBounds().pad(0.1));
+  }
+};
+
 onMounted(() => {
   fetchData();
 });
@@ -414,4 +561,15 @@ const footerLinks = [
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 .animate-float { animation: float 6s ease-in-out infinite; }
+
+/* Custom Leaflet Styling */
+.leaflet-container { font-family: 'Inter', sans-serif; }
+.custom-leaflet-popup .leaflet-popup-content-wrapper {
+  border-radius: 1.5rem;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+.custom-leaflet-popup .leaflet-popup-content { margin: 0; width: auto !important; }
+.custom-leaflet-popup .leaflet-popup-tip-container { display: none; }
 </style>
