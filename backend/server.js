@@ -35,11 +35,17 @@ const errorHandler = require('./middleware/errorHandler');
 
 // Import Controllers yang dibutuhkan di level server
 const campaignController = require('./controllers/campaignController');
+const fieldController = require('./controllers/fieldController');
+const profileController = require('./controllers/profileController');
+const auth = require('./middleware/auth');
 
 const helmet = require('helmet');
 
 const app = express();
-app.set('trust proxy', 1); // Penting untuk Hostinger/Proxy agar IP asli terbaca
+
+// --- PROXY CONFIGURATION (MUST BE FIRST) ---
+app.set('trust proxy', 1); 
+console.log('🛡️  Trust Proxy enabled (Hostinger Compatible Mode)');
 
 // Security Middleware
 app.use(helmet());
@@ -56,6 +62,8 @@ app.use(cors());
 
 // Route Spesifik
 app.get(['/api/stats', '/stats'], campaignController.getStats);
+app.get('/api/stats/field', auth, fieldController.getFieldStats);
+app.get('/api/stats/user', auth, profileController.getUserStats);
 app.get('/api/cek-rute', (req, res) => res.json({ status: 'Rute Berhasil Terbaca!' }));
 
 app.use(['/api/auth', '/auth'], authRoutes);

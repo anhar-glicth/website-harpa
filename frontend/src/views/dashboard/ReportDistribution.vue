@@ -40,8 +40,8 @@
                 <i class="fas fa-bullhorn text-green-500"></i> Pilih Program / Kampanye
               </label>
               <select v-model="form.campaign_id" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-600 font-bold text-xs transition-all border-none appearance-none cursor-pointer" required>
-                <option value="" disabled>-- Pilih Program Terkait --</option>
-                <option v-for="c in myCampaigns" :key="c.id" :value="c.id">{{ c.title }}</option>
+                <option value="" disabled>-- Pilih Rumpun Program --</option>
+                <option v-for="g in programGroups" :key="g.id" :value="g.id">{{ g.name }}</option>
               </select>
             </div>
 
@@ -181,7 +181,7 @@ const router = useRouter();
 const submitting = ref(false);
 const locating = ref(false);
 const coords = ref(null);
-const myCampaigns = ref([]);
+const programGroups = ref([]);
 const photoInput = ref(null);
 
 const form = reactive({
@@ -197,12 +197,12 @@ const form = reactive({
   photo_preview: ''
 });
 
-const fetchMyCampaigns = async () => {
+const fetchProgramGroups = async () => {
   try {
-    const res = await api.get('/campaigns/my-campaigns');
-    myCampaigns.value = res.data;
+    const res = await api.get('/field/program-groups');
+    programGroups.value = res.data;
   } catch (error) {
-    console.error('Gagal memuat kampanye:', error);
+    console.error('Gagal memuat rumpun program:', error);
   }
 };
 
@@ -297,7 +297,7 @@ const handleSubmit = async () => {
 };
 
 onMounted(() => {
-  fetchMyCampaigns();
+  fetchProgramGroups();
   getMyLocation();
 });
 </script>

@@ -32,7 +32,7 @@ exports.toggleTodo = async (req, res) => {
     try {
         const [[todo]] = await db.query('SELECT status FROM todo_list WHERE id = ? AND user_id = ?', [id, req.user.id]);
         if (!todo) return res.status(404).json({ message: 'Tugas tidak ditemukan' });
-        
+
         const newStatus = todo.status === 'pending' ? 'completed' : 'pending';
         await db.query('UPDATE todo_list SET status = ? WHERE id = ?', [newStatus, id]);
         res.json({ message: 'Status tugas diperbarui', status: newStatus });
@@ -84,35 +84,18 @@ exports.debugTime = async (req, res) => {
 
 exports.getAttendanceStatus = async (req, res) => {
     try {
-        // Hitung awal dan akhir hari ini dalam zona waktu Asia/Makassar (UTC+8)
-        const now = new Date();
-        // Offset WITA = UTC+8 = 8*60*60*1000 ms
-        const WITA_OFFSET = 8 * 60 * 60 * 1000;
-        
-        // Waktu saat ini dalam WITA (sebagai milidetik)
-        const nowWITA = new Date(now.getTime() + WITA_OFFSET);
-        
-        // Awal hari ini jam 00:00:00 WITA (ubah ke UTC untuk query)
-        const startOfDayWITA = new Date(Date.UTC(
-            nowWITA.getUTCFullYear(),
-            nowWITA.getUTCMonth(),
-            nowWITA.getUTCDate(),
-            0, 0, 0
-        ));
-        const startOfDayUTC = new Date(startOfDayWITA.getTime() - WITA_OFFSET);
-        
-        // Akhir hari ini jam 23:59:59 WITA (ubah ke UTC untuk query)
-        const endOfDayUTC = new Date(startOfDayUTC.getTime() + 24 * 60 * 60 * 1000 - 1);
-
+        // Set timezone MySQL ke WITA (+08:00) lalu gunakan CURDATE() agar
+        // seluruh perbandingan tanggal dilakukan di sisi MySQL — menghindari
+        // timezone mismatch antara JavaScript dan MySQL.
         await db.query("SET time_zone = '+08:00'");
         const [rows] = await db.query(`
             SELECT *, 
                    DATE_FORMAT(created_at, '%H:%i') as jam_menit,
                    DATE_FORMAT(created_at, '%e %M %Y') as tgl_indo 
             FROM attendance 
-            WHERE user_id = ? AND created_at >= ? AND created_at <= ? 
+            WHERE user_id = ? AND DATE(created_at) = CURDATE()
             ORDER BY created_at DESC
-        `, [req.user.id, startOfDayUTC, endOfDayUTC]);
+        `, [req.user.id]);
         res.json(rows);
     } catch (error) {
         console.error('Attendance Status Error:', error);
@@ -124,17 +107,17 @@ exports.submitAttendance = async (req, res) => {
     const { type, location, latitude, longitude, attachment } = req.body;
     try {
         await db.query(
-            'INSERT INTO attendance (user_id, type, location, latitude, longitude, attachment) VALUES (?, ?, ?, ?, ?, ?)', 
+            'INSERT INTO attendance (user_id, type, location, latitude, longitude, attachment) VALUES (?, ?, ?, ?, ?, ?)',
             [req.user.id, type, location, latitude, longitude, attachment]
         );
         let msg = `Berhasil ${type === 'check_in' ? 'Masuk' : type === 'check_out' ? 'Pulang' : 'Kirim Keterangan'}`;
         res.status(201).json({ message: msg });
     } catch (error) {
         console.error('Attendance Submission Error:', error);
-        res.status(500).json({ 
-            message: 'Gagal melakukan absensi', 
+        res.status(500).json({
+            message: 'Gagal melakukan absensi',
             error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     }
 };
@@ -163,17 +146,17 @@ exports.getAttendanceRecap = async (req, res) => {
 exports.getFieldStats = async (req, res) => {
     try {
         const userId = req.user.id;
-        
+
         // 1. Total Campaigns Created
         const [[{ totalCampaigns }]] = await db.query('SELECT COUNT(*) as totalCampaigns FROM campaigns WHERE author_id = ?', [userId]);
-        
+
         // 2. Total News/Updates Published
         const [[{ totalNews }]] = await db.query('SELECT COUNT(*) as totalNews FROM news WHERE author_id = ?', [userId]);
         const [[{ totalUpdates }]] = await db.query('SELECT COUNT(*) as totalUpdates FROM campaign_updates WHERE user_id = ?', [userId]);
-        
+
         // 3. Total Funds Collected via their campaigns
         const [[{ totalFunds }]] = await db.query(
-            'SELECT SUM(current_amount) as totalFunds FROM campaigns WHERE author_id = ?', 
+            'SELECT SUM(current_amount) as totalFunds FROM campaigns WHERE author_id = ?',
             [userId]
         );
 
@@ -186,7 +169,7 @@ exports.getFieldStats = async (req, res) => {
         // 5. Work Effectiveness (Task Completion Rate)
         const [[{ totalTasks }]] = await db.query('SELECT COUNT(*) as total FROM todo_list WHERE user_id = ?', [userId]);
         const [[{ completedTasks }]] = await db.query('SELECT COUNT(*) as completed FROM todo_list WHERE user_id = ? AND status = "completed"', [userId]);
-        
+
         const effectiveness = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         res.json({
@@ -252,32 +235,32 @@ exports.completeTask = async (req, res) => {
  * --- DISTRIBUTION MAPPING ---
  */
 exports.addDistribution = async (req, res) => {
-    const { 
-        title, description, latitude, longitude, location_name, 
-        photo, maps_link, campaign_id, amount, 
-        recipient_name, items_distributed, distribution_date 
+    const {
+        title, description, latitude, longitude, location_name,
+        photo, maps_link, campaign_id, amount,
+        recipient_name, items_distributed, distribution_date
     } = req.body;
-    
+
     try {
         await db.query(
             `INSERT INTO distributions (
                 worker_id, title, description, latitude, longitude, 
-                location_name, photo_url, maps_link, campaign_id, 
+                location_name, photo_url, maps_link, program_id, 
                 amount, recipient_name, items_distributed, distribution_date
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                req.user.id, title, description, latitude, longitude, 
-                location_name, photo, maps_link || null, campaign_id || null, 
-                amount || 0, recipient_name || null, items_distributed || null, 
+                req.user.id, title, description, latitude, longitude,
+                location_name, photo, maps_link || null, campaign_id || null,
+                amount || 0, recipient_name || null, items_distributed || null,
                 distribution_date || null
             ]
         );
         res.status(201).json({ message: 'Laporan penyaluran berhasil disimpan!' });
     } catch (error) {
         console.error('SQL Error in addDistribution:', error);
-        res.status(500).json({ 
-            message: 'Gagal menyimpan laporan penyaluran', 
-            error: error.message 
+        res.status(500).json({
+            message: 'Gagal menyimpan laporan penyaluran',
+            error: error.message
         });
     }
 };
@@ -288,7 +271,7 @@ exports.getAllDistributions = async (req, res) => {
             SELECT d.*, u.name as worker_name, c.title as campaign_title 
             FROM distributions d 
             JOIN users u ON d.worker_id = u.id 
-            LEFT JOIN campaigns c ON d.campaign_id = c.id
+            LEFT JOIN campaigns c ON d.program_id = c.id
             ORDER BY d.created_at DESC
         `);
         res.json(rows);
@@ -304,7 +287,7 @@ exports.getMyDistributions = async (req, res) => {
         const [rows] = await db.query(
             `SELECT d.*, c.title as campaign_title 
              FROM distributions d 
-             LEFT JOIN campaigns c ON d.campaign_id = c.id 
+             LEFT JOIN campaigns c ON d.program_id = c.id 
              WHERE d.worker_id = ? 
              ORDER BY d.created_at DESC`,
             [req.user.id]
@@ -365,12 +348,12 @@ exports.bulkImportDistributions = async (req, res) => {
 
         const allowedFields = [
             'title', 'description', 'location_name', 'maps_link',
-            'campaign_id', 'amount', 'recipient_name',
+            'program_id', 'amount', 'recipient_name',
             'items_distributed', 'distribution_date'
         ];
         const labelMap = {
             'Judul': 'title', 'Deskripsi': 'description', 'Nama Lokasi': 'location_name',
-            'Link Maps': 'maps_link', 'ID Program': 'campaign_id', 'Nominal': 'amount',
+            'Link Maps': 'maps_link', 'ID Program': 'program_id', 'Nominal': 'amount',
             'Nama Penerima': 'recipient_name', 'Barang Disalurkan': 'items_distributed',
             'Tanggal': 'distribution_date'
         };
@@ -405,5 +388,17 @@ exports.bulkImportDistributions = async (req, res) => {
     } catch (error) {
         console.error('Bulk Import Distribution Error:', error);
         res.status(500).json({ message: 'Gagal memproses file Excel', error: error.message });
+    }
+};
+
+/**
+ * --- MASTER DATA FOR STAFF ---
+ */
+exports.getProgramGroups = async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT id, name FROM program_groups ORDER BY name ASC');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal mengambil data rumpun program' });
     }
 };

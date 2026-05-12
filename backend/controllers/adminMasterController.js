@@ -66,13 +66,13 @@ const moduleConfigs = {
     'distribution_list': { 
         table: 'distributions', 
         select: 'distributions.*, campaigns.title as campaign_title',
-        join: 'LEFT JOIN campaigns ON distributions.campaign_id = campaigns.id',
+        join: 'LEFT JOIN campaigns ON distributions.program_id = campaigns.id',
         orderBy: 'distributions.id DESC' 
     },
     'field_reports': { 
         table: 'distributions', 
         select: 'distributions.*, users.name as worker_name, campaigns.title as campaign_title',
-        join: 'LEFT JOIN users ON distributions.worker_id = users.id LEFT JOIN campaigns ON distributions.campaign_id = campaigns.id',
+        join: 'LEFT JOIN users ON distributions.worker_id = users.id LEFT JOIN campaigns ON distributions.program_id = campaigns.id',
         orderBy: 'distributions.created_at DESC' 
     },
     'transactions': { 
@@ -305,31 +305,26 @@ exports.bulkImport = async (req, res) => {
         }
 
         const table = config.table;
-        const fields = config.fields.map(f => f.key);
-        
-        // Filter out ID if it exists and auto-increment
-        const columns = fields.filter(f => f !== 'id');
 
         let successCount = 0;
         let errors = [];
 
         for (let i = 0; i < data.length; i++) {
             const row = data[i];
-            const insertData = {};
+            const insertData = { ...row };
             
-            columns.forEach(col => {
-                // Map Excel header to column name (case insensitive or exact)
-                // We assume Excel headers match the labels or keys
-                const excelVal = row[col] || row[config.fields.find(f => f.key === col)?.label] || null;
-                insertData[col] = excelVal;
-            });
+            // Remove id field if present (auto-increment)
+            delete insertData.id;
 
             // Special handling for some modules
             if (module === 'transactions' && !insertData.donation_date) {
                 insertData.donation_date = new Date();
             }
-            if (module === 'distributions' && !insertData.worker_id) {
+            if ((module === 'distributions' || module === 'field_reports') && !insertData.worker_id) {
                 insertData.worker_id = req.user.id;
+            }
+            if (module === 'news_mgt') {
+                insertData.author_id = req.user.id;
             }
 
             try {
@@ -379,4 +374,13 @@ exports.deleteDistribution = async (req, res) => {
     }
 };
 
-module.exports = { getData, createData, updateData, deleteData, getStats, getAllDistributions: exports.getAllDistributions, deleteDistribution: exports.deleteDistribution };
+module.exports = { 
+    getData, 
+    createData, 
+    updateData, 
+    deleteData, 
+    getStats, 
+    bulkImport: exports.bulkImport,
+    getAllDistributions: exports.getAllDistributions, 
+    deleteDistribution: exports.deleteDistribution 
+};

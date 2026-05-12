@@ -37,4 +37,7 @@ router.put('/distributions/:id', auth, fieldController.updateDistribution);
 router.delete('/distributions/:id', auth, fieldController.deleteDistribution);
 router.post('/distributions/bulk', auth, upload.single('file'), fieldController.bulkImportDistributions);
 
+// Master Data for Dropdowns
+router.get('/program-groups', auth, fieldController.getProgramGroups);
+
 module.exports = router;

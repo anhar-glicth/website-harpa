@@ -298,8 +298,8 @@
                        <p class="text-lg font-black italic tracking-tight">{{ getAttendanceTime(item.type) }}</p>
                     </div>
                     <button 
-                      @click="item.action()" 
-                      :disabled="isButtonDisabled(item.type)" 
+                      @click="handleAttendance(item.type)" 
+                      :disabled="isButtonDisabled(item.type) || submitting" 
                       :class="['w-full py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl active:scale-95', getButtonClass(item.type)]">
                        {{ getButtonLabel(item.type) }}
                     </button>
@@ -598,7 +598,7 @@
                    </div>
 
                    <button 
-                     @click="handleAttendance(leaveType)" 
+                     @click="submitLeave" 
                      :disabled="!leaveForm.attachment || submitting" 
                      :class="['w-full py-5 rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] transition-all', leaveType === 'sakit' ? 'bg-amber-500 text-white shadow-amber-100' : 'bg-emerald-500 text-white shadow-emerald-100', (!leaveForm.attachment || submitting) ? 'opacity-50' : 'hover:scale-[1.02] active:scale-95 shadow-xl']"
                    >
@@ -792,7 +792,7 @@
                            <input v-model="editDistData.location_name" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-xs transition-all" />
                         </div>
                      </div>
-                     <button @click="submitUpdateDist" class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all">Simpan Perubahan</button>
+                   <button @click="submitUpdateDist" class="w-full py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all">Simpan Perubahan</button>
                   </div>
                </div>
             </div>
@@ -806,163 +806,268 @@ import { ref, reactive, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/store/auth';
 import api from '@/api';
+import Swal from 'sweetalert2';
 
+// --- State Management ---
 const router = useRouter();
 const { clearAuth } = useAuth();
-
-const handleLogout = async () => {
-  if (confirm('Apakah Anda yakin ingin keluar?')) {
-    clearAuth();
-    router.push('/login');
-  }
-};
-
 const activeTab = ref('campaigns');
 const loading = ref(true);
 const submitting = ref(false);
+
 const myCampaigns = ref([]);
 const myNews = ref([]);
 const myDistributions = ref([]);
 const todos = ref([]);
-const newTodo = ref('');
-const newTodoDeadline = ref('');
-const newTodoDescription = ref('');
 const attendanceLogs = ref([]);
 const allAttendanceLogs = ref([]);
 const fieldStats = ref({});
+
 const showLeaveModal = ref(false);
 const showUpdateModal = ref(false);
 const showTaskResultModal = ref(false);
+const showCampaignModal = ref(false);
+const showNewsModal = ref(false);
+const showEditDistModal = ref(false);
+const editDistData = ref(null);
+
 const selectedCampaign = ref(null);
 const selectedTask = ref(null);
 const leaveType = ref('');
 const leaveForm = reactive({ attachment: '' });
 const updateForm = reactive({ title: '', content: '', image: '' });
 const taskResultForm = reactive({ attachment: '', note: '' });
+const newTodo = ref('');
+const newTodoDeadline = ref('');
+const newTodoDescription = ref('');
+
 const coords = ref(null);
 const currentLocationName = ref('');
+let watchId = null;
 
+// --- Helper Functions ---
+const formatCurrency = (val) => new Intl.NumberFormat('id-ID').format(val || 0);
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+const formatTime = (log) => {
+  if (!log) return '';
+  const dateStr = log.created_at || log;
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+};
+
+// --- Attendance Logic ---
 const attendanceTypes = [
-  { type: 'check_in', label: 'Masuk', icon: 'fas fa-sign-in-alt', iconClass: 'bg-green-100 text-green-600', action: () => handleAttendance('check_in') },
-  { type: 'check_out', label: 'Pulang', icon: 'fas fa-sign-out-alt', iconClass: 'bg-red-100 text-red-500', action: () => handleAttendance('check_out') },
-  { type: 'sakit', label: 'Sakit', icon: 'fas fa-briefcase-medical', iconClass: 'bg-amber-100 text-amber-600', action: () => openLeaveModal('sakit') },
-  { type: 'izin', label: 'Izin', icon: 'fas fa-calendar-check', iconClass: 'bg-emerald-100 text-emerald-600', action: () => openLeaveModal('izin') }
+  { type: 'check_in', label: 'Masuk', icon: 'fas fa-sign-in-alt', iconClass: 'bg-green-100 text-green-600' },
+  { type: 'check_out', label: 'Pulang', icon: 'fas fa-sign-out-alt', iconClass: 'bg-red-100 text-red-500' },
+  { type: 'sakit', label: 'Sakit', icon: 'fas fa-briefcase-medical', iconClass: 'bg-amber-100 text-amber-600' },
+  { type: 'izin', label: 'Izin', icon: 'fas fa-calendar-check', iconClass: 'bg-emerald-100 text-emerald-600' }
 ];
 
-const showCampaignModal = ref(false);
-const showNewsModal = ref(false);
-const showEditDistModal = ref(false);
-const editDistData = ref(null);
+const isAlreadyCheckedIn = computed(() => attendanceLogs.value.some(l => l.type === 'check_in'));
+const isAlreadyCheckedOut = computed(() => attendanceLogs.value.some(l => l.type === 'check_out'));
+const isAbsent = computed(() => attendanceLogs.value.some(l => l.type === 'sakit' || l.type === 'izin'));
+const isAnyAttendanceToday = computed(() => attendanceLogs.value.length > 0);
 
-const extractCoordsFromLink = () => {
-  const link = distForm.maps_link;
-  if (!link) return;
+const isButtonDisabled = (type) => {
+  if (type === 'check_in') return isAlreadyCheckedIn.value || isAbsent.value;
+  if (type === 'check_out') return isAlreadyCheckedOut.value || !isAlreadyCheckedIn.value || isAbsent.value;
+  return isAnyAttendanceToday.value;
+};
 
-  // Regex untuk link Google Maps (@lat,lng)
-  const regexNormal = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
-  // Regex untuk iframe src (!2d longitude !3d latitude)
-  const regexIframe = /!2d(-?\d+\.\d+)!3d(-?\d+\.\d+)/;
+const getButtonLabel = (type) => {
+  if (type === 'check_in') return isAlreadyCheckedIn.value ? 'Selesai' : 'Check-In';
+  if (type === 'check_out') return isAlreadyCheckedOut.value ? 'Selesai' : 'Check-Out';
+  return isAnyAttendanceToday.value ? 'Sudah Terisi' : type.charAt(0).toUpperCase() + type.slice(1);
+};
 
-  let match = link.match(regexNormal);
-  if (match) {
-    coords.value = { latitude: parseFloat(match[1]), longitude: parseFloat(match[2]) };
-    currentLocationName.value = 'Lokasi dari Link Maps';
+const getButtonClass = (type) => {
+  if (isButtonDisabled(type)) return 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none';
+  const map = {
+    check_in: 'bg-green-600 text-white shadow-green-100 hover:bg-green-700',
+    check_out: 'bg-red-500 text-white shadow-red-100 hover:bg-red-600',
+    sakit: 'bg-amber-500 text-white shadow-amber-100 hover:bg-amber-600',
+    izin: 'bg-emerald-500 text-white shadow-emerald-100 hover:bg-emerald-600'
+  };
+  return map[type];
+};
+
+const getAttendanceTime = (type) => {
+  const log = attendanceLogs.value.find(l => l.type === type);
+  return log ? new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+};
+
+const getAttendanceClass = (type) => {
+  const map = {
+    check_in: 'bg-green-50/30 border-green-100 shadow-green-900/5',
+    check_out: 'bg-red-50/30 border-red-100 shadow-red-900/5',
+    sakit: 'bg-amber-50/30 border-amber-100 shadow-amber-900/5',
+    izin: 'bg-emerald-50/30 border-emerald-100 shadow-emerald-900/5'
+  };
+  return map[type];
+};
+
+async function handleAttendance(type) {
+  if (type === 'sakit' || type === 'izin') {
+    openLeaveModal(type);
     return;
   }
 
-  match = link.match(regexIframe);
-  if (match) {
-    coords.value = { latitude: parseFloat(match[2]), longitude: parseFloat(match[1]) };
-    currentLocationName.value = 'Lokasi dari Iframe Maps';
+  submitting.value = true;
+  try {
+    const payload = {
+      type,
+      location: currentLocationName.value || 'Lokasi Tidak Diketahui',
+      latitude: coords.value?.latitude || null,
+      longitude: coords.value?.longitude || null
+    };
+    
+    await api.post('/field/attendance', payload);
+    
+    await Swal.fire({
+      icon: 'success',
+      title: 'Berhasil!',
+      text: `Absensi ${type === 'check_in' ? 'Masuk' : 'Pulang'} berhasil dicatat.`,
+      timer: 1500,
+      showConfirmButton: false
+    });
+
+    await fetchData();
+  } catch (err) {
+    const errorMsg = err.response?.data?.message || err.message;
+    Swal.fire('Gagal', errorMsg, 'error');
+  } finally {
+    submitting.value = false;
   }
+}
+
+async function submitLeave() {
+  if (!leaveForm.attachment) {
+    Swal.fire('Peringatan', 'Harap unggah bukti (foto/surat)', 'warning');
+    return;
+  }
+
+  submitting.value = true;
+  try {
+    const payload = {
+      type: leaveType.value,
+      location: currentLocationName.value || 'Lokasi Tidak Diketahui',
+      latitude: coords.value?.latitude || null,
+      longitude: coords.value?.longitude || null,
+      attachment: leaveForm.attachment
+    };
+    
+    await api.post('/field/attendance', payload);
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Berhasil',
+      text: 'Keterangan izin/sakit berhasil dikirim',
+      timer: 2000
+    });
+
+    showLeaveModal.value = false;
+    leaveForm.attachment = '';
+    await fetchData();
+  } catch (err) {
+    Swal.fire('Gagal', err.response?.data?.message || 'Gagal mengirim izin', 'error');
+  } finally {
+    submitting.value = false;
+  }
+}
+
+const openLeaveModal = (type) => {
+  leaveType.value = type;
+  leaveForm.attachment = '';
+  showLeaveModal.value = true;
 };
 
-const handleDistPhoto = (e) => {
+const handleLeaveFileChange = (e) => {
   const file = e.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = (event) => {
-      distForm.photo_preview = event.target.result;
-    };
+    reader.onload = (event) => leaveForm.attachment = event.target.result;
     reader.readAsDataURL(file);
   }
 };
 
-
-
-const startEditDist = (dist) => {
-  editDistData.value = { ...dist };
-  showEditDistModal.value = true;
-};
-
-const submitUpdateDist = async () => {
-  if (!editDistData.value.title) return alert('Judul tidak boleh kosong');
-  submitting.value = true;
-  try {
-    await api.put(`/field/distributions/${editDistData.value.id}`, {
-      title: editDistData.value.title,
-      description: editDistData.value.description,
-      location_name: editDistData.value.location_name,
-      maps_link: editDistData.value.maps_link
-    });
-    showEditDistModal.value = false;
-    alert('Laporan berhasil diperbarui!');
-    fetchData();
-  } catch (err) {
-    alert('Gagal memperbarui laporan');
-  } finally {
-    submitting.value = false;
-  }
-};
-
-const deleteDist = async (id) => {
-  if (!confirm('Hapus laporan ini secara permanen?')) return;
-  try {
-    await api.delete(`/field/distributions/${id}`);
-    alert('Laporan dihapus');
-    fetchData();
-  } catch (err) {
-    alert('Gagal menghapus laporan');
-  }
-};
-
-const categories = ['Sosial', 'Medis', 'Pendidikan', 'Bencana', 'Lingkungan', 'Yatim'];
-const form = reactive({ title: '', description: '', category: 'Sosial', target_amount: '', foto: '' });
-const newsForm = reactive({ title: '', content: '', image: '' });
-
+// --- Data Fetching ---
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [campRes, newsRes, todoRes, attendRes, allAttendRes, statsRes] = await Promise.all([
+    const [campRes, newsRes, todoRes, attendRes, allAttendRes, statsRes, distRes] = await Promise.all([
       api.get('/campaigns/my-campaigns'),
       api.get('/news/my-news'),
       api.get('/field/todos'),
       api.get('/field/attendance'),
       api.get('/field/attendance/recap'),
-      api.get('/field/stats')
+      api.get('/field/stats'),
+      api.get('/field/my-distributions')
     ]);
     myCampaigns.value = campRes.data;
     myNews.value = newsRes.data;
     todos.value = todoRes.data;
-    
-    // Ambil riwayat distribusi
-    const distRes = await api.get('/field/my-distributions');
-    myDistributions.value = distRes.data;
-
-    // Filter absensi berdasarkan tanggal LOKAL browser (bukan tanggal server)
-    // Ini memastikan absensi kemarin tidak muncul sebagai absensi hari ini
-    const todayLocal = new Date().toLocaleDateString('en-CA'); // Format: YYYY-MM-DD
-    attendanceLogs.value = attendRes.data.filter(log => {
-      const logDate = new Date(log.created_at).toLocaleDateString('en-CA');
-      return logDate === todayLocal;
-    });
-
+    attendanceLogs.value = attendRes.data;
     allAttendanceLogs.value = allAttendRes.data;
     fieldStats.value = statsRes.data;
+    myDistributions.value = distRes.data;
   } catch (err) {
-    console.error(err);
+    console.error('Fetch Data Error:', err);
   } finally {
     loading.value = false;
+  }
+};
+
+// --- Geolocation ---
+const getMyLocation = () => {
+  if (!navigator.geolocation) {
+    currentLocationName.value = 'Browser tidak mendukung GPS';
+    return;
+  }
+
+  locationLoading.value = true;
+  const options = { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 };
+  let bestAccuracy = Infinity;
+
+  watchId = navigator.geolocation.watchPosition(
+    async (position) => {
+      const { latitude, longitude, accuracy } = position.coords;
+      coords.value = { latitude, longitude, accuracy };
+      locationLoading.value = false;
+      if (accuracy < bestAccuracy) {
+        bestAccuracy = accuracy;
+        await reverseGeocode(latitude, longitude);
+      }
+      if (accuracy <= 15) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    },
+    (error) => {
+      locationLoading.value = false;
+      const messages = { 1: 'Izin lokasi ditolak', 2: 'Sinyal GPS lemah', 3: 'Timeout GPS' };
+      currentLocationName.value = messages[error.code] || 'Gagal mendapatkan lokasi';
+    },
+    options
+  );
+};
+
+const reverseGeocode = async (lat, lon) => {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18`);
+    const data = await res.json();
+    currentLocationName.value = data.display_name.split(',').slice(0, 3).join(',');
+  } catch (err) {
+    currentLocationName.value = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  }
+};
+
+// --- Other Handlers (News, Tasks, etc) ---
+const handleLogout = async () => {
+  if (confirm('Apakah Anda yakin ingin keluar?')) {
+    clearAuth();
+    router.push('/login');
   }
 };
 
@@ -979,7 +1084,7 @@ const handleAddTodo = async () => {
     newTodoDescription.value = '';
     fetchData();
   } catch (err) {
-    alert('Gagal menambah tugas');
+    Swal.fire('Gagal', 'Gagal menambah tugas', 'error');
   }
 };
 
@@ -988,308 +1093,21 @@ const handleToggleTodo = async (id) => {
     await api.put(`/field/todos/${id}`);
     fetchData();
   } catch (err) {
-    alert('Gagal memperbarui tugas');
+    Swal.fire('Gagal', 'Gagal memperbarui tugas', 'error');
   }
 };
 
-const isOverdue = (todo) => {
-  if (!todo.deadline || todo.status === 'completed') return false;
-  return new Date(todo.deadline) < new Date();
-};
-
-const formatDeadline = (dateStr) => {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleString('id-ID', {
-    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
-};
-
 const handleDeleteTodo = async (id) => {
+  if (!confirm('Hapus tugas ini?')) return;
   try {
     await api.delete(`/field/todos/${id}`);
     fetchData();
   } catch (err) {
-    alert('Gagal menghapus tugas');
+    Swal.fire('Gagal', 'Gagal menghapus tugas', 'error');
   }
 };
 
-const handleAttendance = async (type) => {
-  submitting.value = true;
-  try {
-    const payload = {
-      type,
-      location: currentLocationName.value || 'Lokasi Tidak Diketahui',
-      latitude: coords.value?.latitude || null,
-      longitude: coords.value?.longitude || null,
-      attachment: (type === 'sakit' || type === 'izin') ? leaveForm.attachment : null
-    };
-    
-    await api.post('/field/attendance', payload);
-    showLeaveModal.value = false;
-    leaveForm.attachment = '';
-    fetchData();
-  } catch (err) {
-    const errorMsg = err.response?.data?.error || err.response?.data?.message || err.message;
-    alert('Gagal melakukan absensi: ' + errorMsg);
-  } finally {
-    submitting.value = false;
-  }
-};
-
-const openLeaveModal = (type) => {
-  leaveType.value = type;
-  leaveForm.attachment = '';
-  showLeaveModal.value = true;
-};
-
-const handleLeaveFileChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    leaveForm.attachment = event.target.result;
-  };
-  reader.readAsDataURL(file);
-};
-
-const locationLoading = ref(false);
-
-const getMyLocation = () => {
-  if (!navigator.geolocation) {
-    currentLocationName.value = 'Browser tidak mendukung GPS';
-    return;
-  }
-
-  locationLoading.value = true;
-  currentLocationName.value = 'Mendeteksi lokasi GPS...';
-
-  const options = {
-    enableHighAccuracy: true,
-    maximumAge: 0,
-    timeout: 15000
-  };
-
-  let watchId = null;
-  let bestAccuracy = Infinity;
-
-  // Simpan watchId ke scope yang lebih luas agar bisa dibersihkan saat unmount
-  window._currentLocationWatchId = null;
-
-  window._currentLocationWatchId = navigator.geolocation.watchPosition(
-    async (position) => {
-      const { latitude, longitude, accuracy } = position.coords;
-      
-      // Simpan koordinat terbaru
-      coords.value = { latitude, longitude, accuracy };
-      
-      // Selalu update nama lokasi, tapi tandai jika masih proses "mencari yang terbaik"
-      if (accuracy < bestAccuracy) {
-        bestAccuracy = accuracy;
-        await reverseGeocode(latitude, longitude);
-      }
-
-      // Jika akurasi sudah sangat bagus (di bawah 15 meter), kunci lokasi ini
-      if (accuracy <= 15) {
-        navigator.geolocation.clearWatch(watchId);
-        locationLoading.value = false;
-      }
-    },
-    (error) => {
-      locationLoading.value = false;
-      if (watchId) navigator.geolocation.clearWatch(watchId);
-      const messages = {
-        1: 'Izin lokasi ditolak — aktifkan di pengaturan browser',
-        2: 'Sinyal GPS lemah — coba di area terbuka',
-        3: 'Timeout GPS — coba refresh halaman'
-      };
-      currentLocationName.value = messages[error.code] || 'Gagal mendapatkan lokasi';
-      console.warn('Geolocation error:', error.code, error.message);
-    },
-    options
-  );
-
-  // Stop pemantauan setelah 10 detik agar tidak menguras baterai, ambil yang terbaik yang didapat
-  setTimeout(() => {
-    if (locationLoading.value) {
-      navigator.geolocation.clearWatch(watchId);
-      locationLoading.value = false;
-    }
-  }, 10000);
-};
-
-const reverseGeocode = async (lat, lon) => {
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
-      { headers: { 'Accept-Language': 'id,en' } }
-    );
-    if (!res.ok) throw new Error('Nominatim error');
-    const data = await res.json();
-
-    // Ambil nama gedung/tempat + jalan + kelurahan untuk presisi maksimal
-    const addr = data.address || {};
-    
-    // Identifikasi nama tempat (gedung, kantor, toko, dll)
-    const place = addr.building || addr.amenity || addr.office || addr.shop || addr.tourism || addr.historic || addr.man_made;
-    const road = addr.road;
-    const houseNo = addr.house_number;
-    
-    // Konstruksi baris utama (Gedung + Jalan + No atau Jalan + No)
-    let primary = "";
-    const roadWithNo = road ? (houseNo ? `${road} No. ${houseNo}` : road) : "";
-
-    if (place && roadWithNo) {
-      primary = `${place}, ${roadWithNo}`;
-    } else if (place) {
-      primary = place;
-    } else if (roadWithNo) {
-      primary = roadWithNo;
-    }
-
-    // Kelurahan & Kecamatan & Kota
-    const kel = addr.suburb || addr.village || addr.neighbourhood;
-    const kec = addr.city_district;
-    const kota = addr.city || addr.town || addr.county;
-
-    const parts = [
-      primary,
-      kel ? (kel.toLowerCase().includes('kel') || kel.toLowerCase().includes('desa') ? kel : `Kel. ${kel}`) : null,
-      kec ? (kec.toLowerCase().includes('kec') ? kec : `Kec. ${kec}`) : null,
-      kota
-    ].filter(Boolean);
-
-    currentLocationName.value = parts.length > 0
-      ? parts.join(', ')
-      : data.display_name.split(',').slice(0, 3).join(',');
-  } catch (err) {
-    // Fallback ke koordinat jika reverse geocode gagal
-    currentLocationName.value = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
-    console.warn('Reverse geocode gagal:', err);
-  }
-};
-
-const getAttendanceClass = (type) => {
-  const map = {
-    check_in: 'bg-green-50/30 border-green-100 shadow-green-900/5',
-    check_out: 'bg-red-50/30 border-red-100 shadow-red-900/5',
-    sakit: 'bg-amber-50/30 border-amber-100 shadow-amber-900/5',
-    izin: 'bg-emerald-50/30 border-emerald-100 shadow-emerald-900/5'
-  };
-  return map[type];
-};
-
-const getButtonClass = (type) => {
-  if (isButtonDisabled(type)) return 'bg-gray-100 text-gray-300 cursor-not-allowed shadow-none';
-  const map = {
-    check_in: 'bg-green-600 text-white shadow-green-100 hover:bg-green-700',
-    check_out: 'bg-red-500 text-white shadow-red-100 hover:bg-red-600',
-    sakit: 'bg-amber-500 text-white shadow-amber-100 hover:bg-amber-600',
-    izin: 'bg-emerald-500 text-white shadow-emerald-100 hover:bg-emerald-600'
-  };
-  return map[type];
-};
-
-const isButtonDisabled = (type) => {
-  if (type === 'check_in') return isAlreadyCheckedIn.value || isAbsent.value;
-  if (type === 'check_out') return isAlreadyCheckedOut.value || !isAlreadyCheckedIn.value || isAbsent.value;
-  return isAnyAttendanceToday.value;
-};
-
-const getButtonLabel = (type) => {
-  if (type === 'check_in') return isAlreadyCheckedIn.value ? 'Selesai' : 'Check-In';
-  if (type === 'check_out') return isAlreadyCheckedOut.value ? 'Selesai' : 'Check-Out';
-  return isAnyAttendanceToday.value ? 'Sudah Terisi' : type.charAt(0).toUpperCase() + type.slice(1);
-};
-
-const getAttendanceTime = (type) => {
-  const log = attendanceLogs.value.find(l => l.type === type);
-  return log ? new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '--:--';
-};
-
-const getStatusBadgeClass = (type) => {
-  const map = {
-    check_in: 'bg-green-100 text-green-600',
-    check_out: 'bg-red-100 text-red-600',
-    sakit: 'bg-amber-100 text-amber-600',
-    izin: 'bg-emerald-100 text-emerald-600'
-  };
-  return map[type];
-};
-
-const formatTime = (log) => {
-  if (!log) return '';
-  const dateStr = log.created_at || log;
-  const date = new Date(dateStr);
-  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
-};
-
-const isAlreadyCheckedIn = computed(() => attendanceLogs.value.some(l => l.type === 'check_in'));
-const isAlreadyCheckedOut = computed(() => attendanceLogs.value.some(l => l.type === 'check_out'));
-const isAbsent = computed(() => attendanceLogs.value.some(l => l.type === 'sakit' || l.type === 'izin'));
-const isAnyAttendanceToday = computed(() => attendanceLogs.value.length > 0);
-
-// Filter state untuk riwayat absensi
-const filterMonth = ref(''); // '01' - '12' atau '' untuk semua
-const filterYear = ref('');  // '2026' atau '' untuk semua
-const filterDay = ref('');   // '1'-'31' atau '' untuk semua
-
-const availableYears = computed(() => {
-  const years = new Set(allAttendanceLogs.value.map(l => new Date(l.created_at).getFullYear()));
-  return [...years].sort((a, b) => b - a);
-});
-
-const groupedAttendance = computed(() => {
-  const groups = {};
-  allAttendanceLogs.value.forEach(log => {
-    const d = new Date(log.created_at);
-    // Filter berdasarkan bulan, tahun, hari
-    if (filterYear.value && d.getFullYear() !== parseInt(filterYear.value)) return;
-    if (filterMonth.value && (d.getMonth() + 1) !== parseInt(filterMonth.value)) return;
-    if (filterDay.value && d.getDate() !== parseInt(filterDay.value)) return;
-
-    const dateKey = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    if (!groups[dateKey]) {
-      groups[dateKey] = { date: dateKey, rawDate: d, check_in: null, check_out: null, other: null };
-    }
-    if (log.type === 'check_in') groups[dateKey].check_in = log;
-    else if (log.type === 'check_out') groups[dateKey].check_out = log;
-    else groups[dateKey].other = log;
-  });
-  // Urutkan dari tanggal terbaru ke terlama
-  return Object.values(groups).sort((a, b) => b.rawDate - a.rawDate);
-});
-
-const resetFilter = () => {
-  filterMonth.value = '';
-  filterYear.value = '';
-  filterDay.value = '';
-};
-
-const todayDate = computed(() => {
-  return new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-});
-
-const downloadAttendanceCSV = () => {
-  const headers = ['Tanggal', 'Jam Masuk', 'Lokasi Masuk', 'Jam Pulang', 'Lokasi Pulang', 'Keterangan'];
-  const rows = groupedAttendance.value.map(g => [
-    g.date,
-    g.check_in ? formatTime(g.check_in.created_at) : '-',
-    g.check_in ? (g.check_in.location || '-') : '-',
-    g.check_out ? formatTime(g.check_out.created_at) : '-',
-    g.check_out ? (g.check_out.location || '-') : '-',
-    g.other ? g.other.type.toUpperCase() : 'Hadir'
-  ]);
-  const csvContent = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
-  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `Rekap_Absensi_${new Date().toLocaleDateString('en-CA')}.csv`;
-  link.click();
-  URL.revokeObjectURL(url);
-};
-
+// --- Campaign & News Handlers ---
 const openCampaignModal = () => {
   form.title = '';
   form.description = '';
@@ -1297,13 +1115,6 @@ const openCampaignModal = () => {
   form.target_amount = '';
   form.foto = '';
   showCampaignModal.value = true;
-};
-
-const openNewsModal = () => {
-  newsForm.title = '';
-  newsForm.content = '';
-  newsForm.image = '';
-  showNewsModal.value = true;
 };
 
 const handleFileChange = (e, type) => {
@@ -1318,43 +1129,109 @@ const handleFileChange = (e, type) => {
 };
 
 const handleCreateCampaign = async () => {
-  if (!form.foto) return alert('Harap unggah foto kampanye!');
+  if (!form.foto) return Swal.fire('Error', 'Harap unggah foto kampanye!', 'error');
   submitting.value = true;
   try {
     await api.post('/campaigns', form);
     showCampaignModal.value = false;
+    Swal.fire('Berhasil', 'Kampanye berhasil diajukan', 'success');
     fetchData();
   } catch (err) {
-    alert('Gagal membuat kampanye.');
+    Swal.fire('Error', 'Gagal membuat kampanye', 'error');
   } finally {
     submitting.value = false;
   }
 };
 
+const openNewsModal = () => {
+  newsForm.title = '';
+  newsForm.content = '';
+  newsForm.image = '';
+  showNewsModal.value = true;
+};
+
 const handleCreateNews = async () => {
-  if (!newsForm.image) return alert('Harap unggah foto dokumentasi!');
+  if (!newsForm.image) return Swal.fire('Error', 'Harap unggah foto dokumentasi!', 'error');
   submitting.value = true;
   try {
     await api.post('/news', newsForm);
     showNewsModal.value = false;
+    Swal.fire('Berhasil', 'Berita berhasil diterbitkan', 'success');
     fetchData();
   } catch (err) {
-    alert('Gagal menerbitkan berita.');
+    Swal.fire('Error', 'Gagal menerbitkan berita', 'error');
   } finally {
     submitting.value = false;
   }
 };
 
 const handleDeleteNews = async (id) => {
-  if (!confirm('Hapus berita ini?')) return;
-  try {
-    await api.post(`/news/delete/${id}`); // We'll update backend to use post or delete properly
-    fetchData();
-  } catch (err) {
-    alert('Gagal menghapus berita.');
+  const result = await Swal.fire({
+    title: 'Hapus berita?',
+    text: "Tindakan ini tidak dapat dibatalkan!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Ya, Hapus!'
+  });
+  if (result.isConfirmed) {
+    try {
+      await api.post(`/news/delete/${id}`);
+      Swal.fire('Terhapus!', 'Berita telah dihapus.', 'success');
+      fetchData();
+    } catch (err) {
+      Swal.fire('Gagal', 'Gagal menghapus berita', 'error');
+    }
   }
 };
 
+// --- Distribution Handlers ---
+const startEditDist = (dist) => {
+  editDistData.value = { ...dist };
+  showEditDistModal.value = true;
+};
+
+const submitUpdateDist = async () => {
+  if (!editDistData.value.title) return Swal.fire('Peringatan', 'Judul tidak boleh kosong', 'warning');
+  submitting.value = true;
+  try {
+    await api.put(`/field/distributions/${editDistData.value.id}`, {
+      title: editDistData.value.title,
+      description: editDistData.value.description,
+      location_name: editDistData.value.location_name,
+      maps_link: editDistData.value.maps_link
+    });
+    showEditDistModal.value = false;
+    Swal.fire('Berhasil', 'Laporan berhasil diperbarui!', 'success');
+    fetchData();
+  } catch (err) {
+    Swal.fire('Gagal', 'Gagal memperbarui laporan', 'error');
+  } finally {
+    submitting.value = false;
+  }
+};
+
+const deleteDist = async (id) => {
+  const result = await Swal.fire({
+    title: 'Hapus laporan?',
+    text: "Laporan penyaluran akan dihapus permanen.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Ya, Hapus!'
+  });
+  if (result.isConfirmed) {
+    try {
+      await api.delete(`/field/distributions/${id}`);
+      Swal.fire('Terhapus!', 'Laporan telah dihapus.', 'success');
+      fetchData();
+    } catch (err) {
+      Swal.fire('Gagal', 'Gagal menghapus laporan', 'error');
+    }
+  }
+};
+
+// --- Impact Update Handlers ---
 const openUpdateModal = (campaign) => {
   selectedCampaign.value = campaign;
   updateForm.title = '';
@@ -1365,16 +1242,15 @@ const openUpdateModal = (campaign) => {
 
 const handleUpdateFileChange = (e) => {
   const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    updateForm.image = event.target.result;
-  };
-  reader.readAsDataURL(file);
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => updateForm.image = event.target.result;
+    reader.readAsDataURL(file);
+  }
 };
 
 const handleCreateUpdate = async () => {
-  if (!updateForm.image) return alert('Harap unggah foto dokumentasi!');
+  if (!updateForm.image) return Swal.fire('Peringatan', 'Harap unggah foto dokumentasi!', 'warning');
   submitting.value = true;
   try {
     await api.post('/field/updates', {
@@ -1382,15 +1258,16 @@ const handleCreateUpdate = async () => {
       ...updateForm
     });
     showUpdateModal.value = false;
-    alert('Kabar terbaru berhasil dikirim!');
+    Swal.fire('Berhasil', 'Kabar terbaru berhasil dikirim!', 'success');
     fetchData();
   } catch (err) {
-    alert('Gagal mengirim update');
+    Swal.fire('Gagal', 'Gagal mengirim kabar terbaru', 'error');
   } finally {
     submitting.value = false;
   }
 };
 
+// --- Task Completion Handlers ---
 const openTaskResultModal = (task) => {
   selectedTask.value = task;
   taskResultForm.attachment = '';
@@ -1400,16 +1277,15 @@ const openTaskResultModal = (task) => {
 
 const handleTaskResultFileChange = (e) => {
   const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    taskResultForm.attachment = event.target.result;
-  };
-  reader.readAsDataURL(file);
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => taskResultForm.attachment = event.target.result;
+    reader.readAsDataURL(file);
+  }
 };
 
 const handleCompleteTask = async () => {
-  if (!taskResultForm.attachment) return alert('Harap unggah bukti hasil pekerjaan!');
+  if (!taskResultForm.attachment) return Swal.fire('Peringatan', 'Harap unggah bukti hasil pekerjaan!', 'warning');
   submitting.value = true;
   try {
     await api.post(`/field/todos/${selectedTask.value.id}/complete`, {
@@ -1417,34 +1293,16 @@ const handleCompleteTask = async () => {
       result_note: taskResultForm.note
     });
     showTaskResultModal.value = false;
-    alert('Tugas berhasil diselesaikan!');
+    Swal.fire('Berhasil', 'Tugas berhasil diselesaikan!', 'success');
     fetchData();
   } catch (err) {
-    alert('Gagal menyelesaikan tugas.');
+    Swal.fire('Gagal', 'Gagal menyelesaikan tugas', 'error');
   } finally {
     submitting.value = false;
   }
 };
 
-const statCards = computed(() => [
-  { label: 'Kampanye Saya', value: fieldStats.value.totalCampaigns || 0, icon: 'fas fa-hand-holding-heart' },
-  { label: 'Update Dampak', value: fieldStats.value.totalContent || 0, icon: 'fas fa-newspaper' },
-  { label: 'Dana Terkumpul', value: 'Rp ' + formatCurrency(fieldStats.value.totalFunds), icon: 'fas fa-coins' },
-  { label: 'Kehadiran (Bln)', value: fieldStats.value.presentDays + ' Hari', icon: 'fas fa-user-check' }
-]);
-
-const formatCurrency = (val) => new Intl.NumberFormat('id-ID').format(val || 0);
-const formatDate = (dateStr) => {
-  if (!dateStr) return '';
-  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-};
-
-onMounted(() => {
-  fetchData();
-  getMyLocation();
-});
-
-// ===== BULK IMPORT DISTRIBUTIONS (Staff) =====
+// --- Bulk Import Logic ---
 const showFieldBulkImport = ref(false);
 const fieldImportFile = ref(null);
 const fieldImporting = ref(false);
@@ -1458,65 +1316,189 @@ const openFieldBulkImport = () => {
 
 const handleFieldFileSelect = (event) => {
   fieldImportFile.value = event.target.files[0] || null;
-  fieldImportResult.value = null;
 };
 
 const downloadDistTemplate = () => {
-  const headers = ['title', 'description', 'location_name', 'campaign_id', 'amount', 'recipient_name', 'items_distributed', 'distribution_date'];
-  const labels = ['Judul', 'Deskripsi', 'Nama Lokasi', 'ID Program', 'Nominal', 'Nama Penerima', 'Barang Disalurkan', 'Tanggal (YYYY-MM-DD)'];
-  const example = ['Pemberian Sembako', 'Distribusi rutin bulanan', 'Masjid Al-Ikhlas', '1', '500000', 'Bapak Ahmad', 'Beras 5kg, Minyak 2L', new Date().toISOString().split('T')[0]];
-
-  if (typeof window.XLSX !== 'undefined') {
-    const wb = window.XLSX.utils.book_new();
-    const ws = window.XLSX.utils.aoa_to_sheet([headers, labels, example]);
-    window.XLSX.utils.book_append_sheet(wb, ws, 'Template Penyaluran');
-    window.XLSX.writeFile(wb, 'template_penyaluran.xlsx');
-  } else {
-    const csvContent = [headers.join(','), example.map(v => `"${v}"`).join(',')].join('\n');
-    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'template_penyaluran.csv';
-    link.click();
-    URL.revokeObjectURL(url);
-  }
+  const headers = ['Judul', 'Deskripsi', 'Nama Lokasi', 'ID Program', 'Nominal', 'Nama Penerima', 'Barang Disalurkan', 'Tanggal (YYYY-MM-DD)'];
+  const csvContent = headers.join(',') + '\n' + ['Pemberian Sembako', 'Distribusi rutin', 'Masjid Al-Ikhlas', '1', '500000', 'Bapak Ahmad', 'Beras 5kg', '2026-05-12'].join(',');
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'template_penyaluran.csv';
+  link.click();
 };
 
 const submitFieldBulkImport = async () => {
   if (!fieldImportFile.value) return;
   fieldImporting.value = true;
-  fieldImportResult.value = null;
-
   try {
     const formDataObj = new FormData();
     formDataObj.append('file', fieldImportFile.value);
-
     const res = await api.post('/field/distributions/bulk', formDataObj, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
-
     fieldImportResult.value = res.data;
-    if (res.data.successCount > 0) {
-      fetchData();
-    }
+    if (res.data.successCount > 0) fetchData();
   } catch (e) {
-    fieldImportResult.value = {
-      message: e.response?.data?.message || 'Gagal mengimpor data.',
-      successCount: 0,
-      failureCount: 1,
-      errors: [e.response?.data?.message || e.message]
-    };
+    Swal.fire('Gagal', 'Gagal memproses impor data', 'error');
   } finally {
     fieldImporting.value = false;
   }
 };
 
-onUnmounted(() => {
-  if (window._currentLocationWatchId) {
-    navigator.geolocation.clearWatch(window._currentLocationWatchId);
-  }
+// --- View Helpers ---
+const categories = ['Sosial', 'Medis', 'Pendidikan', 'Bencana', 'Lingkungan', 'Yatim'];
+const form = reactive({ title: '', description: '', category: 'Sosial', target_amount: '', foto: '' });
+const newsForm = reactive({ title: '', content: '', image: '' });
+
+const statCards = computed(() => [
+  { label: 'Kampanye Saya', value: fieldStats.value.totalCampaigns || 0, icon: 'fas fa-hand-holding-heart' },
+  { label: 'Update Dampak', value: fieldStats.value.totalContent || 0, icon: 'fas fa-newspaper' },
+  { label: 'Dana Terkumpul', value: 'Rp ' + formatCurrency(fieldStats.value.totalFunds), icon: 'fas fa-coins' },
+  { label: 'Kehadiran (Bln)', value: (fieldStats.value.presentDays || 0) + ' Hari', icon: 'fas fa-user-check' }
+]);
+
+const isOverdue = (todo) => {
+  if (!todo.deadline || todo.status === 'completed') return false;
+  return new Date(todo.deadline) < new Date();
+};
+
+const formatDeadline = (dateStr) => {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+};
+
+// --- Reactive State ---
+const locationLoading = ref(false);
+const filterMonth = ref('');
+const filterYear = ref('');
+const filterDay = ref('');
+const showDistributionModal = ref(false);
+const distForm = reactive({
+  title: '',
+  description: '',
+  maps_link: '',
+  photo_preview: '',
+  photo_file: null
+});
+
+// --- Computed Properties ---
+const todayDate = computed(() => {
+  return new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+});
+
+const availableYears = computed(() => {
+  const years = new Set(allAttendanceLogs.value.map(l => new Date(l.created_at).getFullYear()));
+  return [...years].sort((a, b) => b - a);
+});
+
+const groupedAttendance = computed(() => {
+  const groups = {};
+  allAttendanceLogs.value.forEach(log => {
+    const d = new Date(log.created_at);
+    if (filterYear.value && d.getFullYear() !== parseInt(filterYear.value)) return;
+    if (filterMonth.value && (d.getMonth() + 1) !== parseInt(filterMonth.value)) return;
+    if (filterDay.value && d.getDate() !== parseInt(filterDay.value)) return;
+
+    const dateKey = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (!groups[dateKey]) {
+      groups[dateKey] = { date: dateKey, rawDate: d, check_in: null, check_out: null, other: null };
+    }
+    if (log.type === 'check_in') groups[dateKey].check_in = log;
+    else if (log.type === 'check_out') groups[dateKey].check_out = log;
+    else groups[dateKey].other = log;
   });
+  return Object.values(groups).sort((a, b) => b.rawDate - a.rawDate);
+});
+
+// --- Methods ---
+const resetFilter = () => {
+  filterMonth.value = '';
+  filterYear.value = '';
+  filterDay.value = '';
+};
+
+const getStatusBadgeClass = (type) => {
+  const map = {
+    check_in: 'bg-green-100 text-green-600',
+    check_out: 'bg-red-100 text-red-600',
+    sakit: 'bg-amber-100 text-amber-600',
+    izin: 'bg-emerald-100 text-emerald-600'
+  };
+  return map[type] || 'bg-gray-100 text-gray-600';
+};
+
+const downloadAttendanceCSV = () => {
+  const headers = ['Tanggal', 'Jam Masuk', 'Lokasi Masuk', 'Jam Pulang', 'Lokasi Pulang', 'Keterangan'];
+  const rows = groupedAttendance.value.map(g => [
+    g.date,
+    g.check_in ? formatTime(g.check_in) : '-',
+    g.check_in ? (g.check_in.location || '-') : '-',
+    g.check_out ? formatTime(g.check_out) : '-',
+    g.check_out ? (g.check_out.location || '-') : '-',
+    g.other ? g.other.type.toUpperCase() : 'Hadir'
+  ]);
+  const csvContent = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Rekap_Absensi_${new Date().toLocaleDateString('en-CA')}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
+const extractCoordsFromLink = () => {
+  const link = distForm.maps_link;
+  if (!link) return;
+  const regexNormal = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
+  const match = link.match(regexNormal);
+  if (match) {
+    coords.value = { latitude: parseFloat(match[1]), longitude: parseFloat(match[2]) };
+    currentLocationName.value = 'Lokasi dari Link Maps';
+  }
+};
+
+const handleDistPhoto = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    distForm.photo_file = file;
+    const reader = new FileReader();
+    reader.onload = (event) => distForm.photo_preview = event.target.result;
+    reader.readAsDataURL(file);
+  }
+};
+
+const submitDistribution = async () => {
+  if (!distForm.title || !distForm.photo_preview) return Swal.fire('Peringatan', 'Harap lengkapi data!', 'warning');
+  submitting.value = true;
+  try {
+    await api.post('/field/distributions', {
+      ...distForm,
+      latitude: coords.value?.latitude,
+      longitude: coords.value?.longitude,
+      location_name: currentLocationName.value
+    });
+    showDistributionModal.value = false;
+    Swal.fire('Berhasil', 'Laporan penyaluran berhasil dikirim!', 'success');
+    fetchData();
+  } catch (err) {
+    Swal.fire('Gagal', 'Gagal mengirim laporan', 'error');
+  } finally {
+    submitting.value = false;
+  }
+};
+
+// --- Lifecycle ---
+onMounted(() => {
+  fetchData();
+  getMyLocation();
+});
+
+onUnmounted(() => {
+  if (watchId) navigator.geolocation.clearWatch(watchId);
+});
 </script>
 
 <style scoped>

@@ -24,7 +24,7 @@ const getDistributionDashboardData = async (req, res) => {
                     SUM(d.pm_count) as total_pm,
                     SUM(d.amount) as total_amount
                 FROM distributions d
-                LEFT JOIN campaigns c ON d.campaign_id = c.id
+                LEFT JOIN campaigns c ON d.program_id = c.id
                 ${whereClause}
                 GROUP BY ${groupBy}
                 ORDER BY total_amount DESC

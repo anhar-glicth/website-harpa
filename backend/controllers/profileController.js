@@ -59,7 +59,43 @@ const updateProfile = async (req, res) => {
     }
 };
 
+const getUserStats = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // 1. Total Nominal Donasi
+        const [[{ total_donations }]] = await db.query(
+            "SELECT SUM(amount) as total_donations FROM donations WHERE user_id = ? AND payment_status = 'Success'",
+            [userId]
+        );
+
+        // 2. Jumlah Program Didukung
+        const [[{ programs_supported }]] = await db.query(
+            "SELECT COUNT(DISTINCT campaign_id) as programs_supported FROM donations WHERE user_id = ? AND payment_status = 'Success'",
+            [userId]
+        );
+
+        // 3. Estimasi Dampak (Keluarga Terbantu & KG Beras)
+        // Logika sederhana: 1 keluarga per program, 1kg beras per Rp 15.000
+        const total = parseFloat(total_donations || 0);
+        const families_helped = programs_supported || 0;
+        const rice_kg = Math.floor(total / 15000);
+
+        res.json({
+            total_donations: `Rp ${total.toLocaleString('id-ID')}`,
+            families_helped: `${families_helped} Keluarga`,
+            rice_kg: `${rice_kg} KG`,
+            programs_supported: `${programs_supported} Program`
+        });
+
+    } catch (error) {
+        console.error('Error fetching user stats:', error);
+        res.status(500).json({ message: 'Gagal mengambil statistik profil' });
+    }
+};
+
 module.exports = {
     getProfile,
-    updateProfile
+    updateProfile,
+    getUserStats
 };

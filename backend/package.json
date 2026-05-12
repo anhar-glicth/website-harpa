@@ -17,6 +17,9 @@
     "mysql2": "^3.16.0",
     "mysqldump": "^3.2.0",
     "nodemailer": "^8.0.7",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "overrides": {
+    "mysql2": "^3.16.0"
   }
 }
