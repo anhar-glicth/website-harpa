@@ -2241,72 +2241,41 @@ const formatDate = (log) => {
 const fetchData = async () => {
   loading.value = true;
   try {
-    const delay = (ms) => new Promise(res => setTimeout(res, ms));
+    // Run all requests in parallel for maximum speed
+    // Use /admin/stats (lightweight) instead of /admin/all-dashboard-data (heavy)
+    const results = await Promise.allSettled([
+      api.get('/admin/stats'),
+      api.get('/admin/users'),
+      api.get('/admin/attendances'),
+      api.get('/admin/worker-performance'),
+      api.get('/admin/tasks'),
+      api.get('/admin/pending-campaigns'),
+      api.get('/admin/pending-donations'),
+      api.get('/admin/master/zakats'),
+      api.get('/settings')
+    ]);
 
-    // 1. Fetch Basic Stats
-    try {
-      const resStats = await api.get('/admin/all-dashboard-data'); // Tetap pakai ini tapi ambil stats saja
-      stats.value = resStats.data.stats || {};
-      recentActivities.value = resStats.data.stats.recent_activities || [];
-    } catch (e) { console.error('Stats failed', e); }
-
-    await delay(500); // Tunggu 0.5 detik
-
-    // 2. Fetch Users
-    try {
-      const resUsers = await api.get('/admin/users');
-      users.value = resUsers.data || [];
-    } catch (e) { console.error('Users failed', e); }
-
-    await delay(500);
-
-    // 3. Fetch Monitoring (Attendances & Performance)
-    try {
-      const [resAtt, resPerf] = await Promise.all([
-        api.get('/admin/attendances'),
-        api.get('/admin/worker-performance')
-      ]);
-      allAttendances.value = resAtt.data || [];
-      workerPerformance.value = resPerf.data || [];
-    } catch (e) { console.error('Monitoring failed', e); }
-
-    await delay(500);
-
-    // 4. Fetch Tasks & Pending
-    try {
-      const resTasks = await api.get('/admin/tasks');
-      allTasks.value = resTasks.data || [];
-    } catch (e) { console.error('Tasks failed', e); }
-
-    await delay(300);
-
-    try {
-      const resCamp = await api.get('/admin/pending-campaigns');
-      pendingCampaigns.value = resCamp.data || [];
-    } catch (e) { console.error('Campaigns failed', e); }
-
-    await delay(300);
-
-    try {
-      const resDon = await api.get('/admin/pending-donations');
-      pendingDonations.value = resDon.data || [];
-    } catch (e) { console.error('Donations failed', e); }
-
-    await delay(300);
-
-    try {
-      const resZakat = await api.get('/admin/master/zakats');
+    // Map results to state
+    // /admin/stats returns data directly (no .stats wrapper)
+    if (results[0].status === 'fulfilled') {
+      const statsData = results[0].value.data;
+      stats.value = statsData || {};
+      recentActivities.value = statsData?.recent_activities || [];
+    }
+    if (results[1].status === 'fulfilled') users.value = results[1].value.data || [];
+    if (results[2].status === 'fulfilled') allAttendances.value = results[2].value.data || [];
+    if (results[3].status === 'fulfilled') workerPerformance.value = results[3].value.data || [];
+    if (results[4].status === 'fulfilled') allTasks.value = results[4].value.data || [];
+    if (results[5].status === 'fulfilled') pendingCampaigns.value = results[5].value.data || [];
+    if (results[6].status === 'fulfilled') pendingDonations.value = results[6].value.data || [];
+    if (results[7].status === 'fulfilled') {
+      const resZakat = results[7].value;
       pendingZakats.value = (resZakat.data && resZakat.data.rows) || resZakat.data || [];
-    } catch (e) { console.error('Zakats failed', e); }
-
-    // Fetch site settings
-    try {
-       const resSet = await api.get('/settings');
-       settingsData.value = resSet.data || {};
-    } catch (e) {}
+    }
+    if (results[8].status === 'fulfilled') settingsData.value = results[8].value.data || {};
 
   } catch (error) {
-    console.error('Fetch Error:', error);
+    console.error('Global Fetch Error:', error);
   } finally {
     loading.value = false;
   }

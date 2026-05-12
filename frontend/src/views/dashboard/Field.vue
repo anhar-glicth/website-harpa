@@ -1,14 +1,28 @@
 <template>
-  <div class="flex-grow space-y-6 lg:space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full pb-28 lg:pb-0">
+  <div class="flex-grow space-y-6 lg:space-y-8 animate-in fade-in slide-in-from-right-4 duration-700 w-full pb-28 lg:pb-0 relative">
+    <!-- Global Loading Overlay -->
+    <div v-if="loading && activeTab !== 'campaigns'" class="fixed inset-0 z-[60] bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center">
+       <div class="animate-spin h-10 w-10 border-4 border-green-600 border-t-transparent rounded-full mb-4"></div>
+       <p class="text-[10px] font-black uppercase tracking-[0.2em] text-green-600 animate-pulse">Menghubungkan ke Server...</p>
+    </div>
         <!-- Header -->
         <!-- Header -->
         <header class="flex flex-col md:flex-row md:items-center justify-between gap-5 bg-white p-5 sm:p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
-          <div class="space-y-1.5 relative z-10 text-center md:text-left">
+          <div class="space-y-1.5 relative z-10 text-center md:text-left flex-grow">
             <div class="flex items-center justify-center md:justify-start gap-3">
               <h1 class="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight leading-none uppercase italic">Panel <span class="text-green-600">Staff</span></h1>
               <span class="bg-green-600 text-white text-[8px] sm:text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-green-100">Live</span>
             </div>
-            <p class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">Manajemen Lapangan & Warta Kebaikan</p>
+            <p class="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">Halo, {{ user?.name || 'Staff' }} — Manajemen Lapangan</p>
+          </div>
+          
+          <!-- Header Clock & Connection Status -->
+          <div class="flex flex-col items-center md:items-end justify-center px-4 md:px-6 md:border-l border-gray-100">
+            <div class="flex items-center gap-2 mb-1">
+              <span :class="loading ? 'bg-amber-500 animate-pulse' : 'bg-green-500'" class="w-2 h-2 rounded-full"></span>
+              <p class="text-[8px] md:text-[9px] font-black text-gray-300 uppercase tracking-widest">{{ loading ? 'Menghubungkan...' : 'Terhubung ke Server' }}</p>
+            </div>
+            <p class="text-xl md:text-2xl font-black text-gray-900 italic tracking-tighter leading-none">{{ currentTime }}</p>
           </div>
           
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -283,7 +297,8 @@
                     <p class="text-[10px] font-black text-green-600 uppercase tracking-widest">Sistem Absensi Digital</p>
                  </div>
                  <h3 class="text-4xl font-black text-gray-900 uppercase tracking-tighter italic leading-none">Presensi <span class="text-green-600">Kehadiran</span></h3>
-                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ todayDate }}</p>
+                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ user?.name }}</p>
+                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ todayDate }} — <span class="text-green-600">{{ currentTime }}</span></p>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
@@ -810,7 +825,8 @@ import Swal from 'sweetalert2';
 
 // --- State Management ---
 const router = useRouter();
-const { clearAuth } = useAuth();
+const { clearAuth, state: authState } = useAuth();
+const user = authState.user;
 const activeTab = ref('campaigns');
 const loading = ref(true);
 const submitting = ref(false);
@@ -853,10 +869,14 @@ const formatDate = (dateStr) => {
 };
 const formatTime = (log) => {
   if (!log) return '';
+  if (log.jam_menit) return log.jam_menit;
   const dateStr = log.created_at || log;
   const date = new Date(dateStr);
   return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 };
+
+const currentTime = ref(new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':'));
+let clockInterval = null;
 
 // --- Attendance Logic ---
 const attendanceTypes = [
@@ -896,7 +916,9 @@ const getButtonClass = (type) => {
 
 const getAttendanceTime = (type) => {
   const log = attendanceLogs.value.find(l => l.type === type);
-  return log ? new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '--:--';
+  if (!log) return '--:--';
+  if (log.jam_menit) return log.jam_menit;
+  return new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 };
 
 const getAttendanceClass = (type) => {
@@ -1015,6 +1037,16 @@ const fetchData = async () => {
     myDistributions.value = distRes.data;
   } catch (err) {
     console.error('Fetch Data Error:', err);
+    const status = err.response?.status;
+    const errorMsg = err.response?.data?.message || err.message;
+    Swal.fire({
+      icon: 'error',
+      title: 'Koneksi Gagal',
+      text: `Gagal terhubung ke backend (${status || 'Network Error'}). Pesan: ${errorMsg}. Pastikan URL API di .env sudah benar.`,
+      confirmButtonText: 'Coba Lagi'
+    }).then(() => {
+      setTimeout(fetchData, 5000);
+    });
   } finally {
     loading.value = false;
   }
@@ -1494,10 +1526,14 @@ const submitDistribution = async () => {
 onMounted(() => {
   fetchData();
   getMyLocation();
+  clockInterval = setInterval(() => {
+    currentTime.value = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':');
+  }, 1000);
 });
 
 onUnmounted(() => {
   if (watchId) navigator.geolocation.clearWatch(watchId);
+  if (clockInterval) clearInterval(clockInterval);
 });
 </script>
 

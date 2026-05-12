@@ -7,45 +7,36 @@ const bcrypt = require('bcryptjs');
  */
 exports.getStats = async (req, res) => {
     try {
-        const [[donations]] = await db.query('SELECT SUM(amount) as total FROM donations WHERE payment_status = "Success"');
-        const [[donors]] = await db.query('SELECT COUNT(DISTINCT donor_name) as total FROM donations');
-        const [[campaigns]] = await db.query('SELECT COUNT(*) as total FROM campaigns');
-        const [[successCampaigns]] = await db.query('SELECT COUNT(*) as total FROM campaigns WHERE current_amount >= target_amount');
-
-        // Fetch Recent Activities
-        const [recentDonations] = await db.query('SELECT donor_name as name, "Donasi" as type, amount as detail, donation_date as date FROM donations ORDER BY donation_date DESC LIMIT 3');
-        const [recentCampaigns] = await db.query('SELECT title as name, "Kampanye" as type, category as detail, created_at as date FROM campaigns ORDER BY created_at DESC LIMIT 2');
+        // Run all queries in parallel for maximum speed
+        const [
+            [[donations]],
+            [[donors]],
+            [[campaigns]],
+            [[successCampaigns]],
+            [recentDonations],
+            [recentCampaigns],
+            [monthlyDonations],
+            [categoryDistribution]
+        ] = await Promise.all([
+            db.query('SELECT SUM(amount) as total FROM donations WHERE payment_status = "Success"'),
+            db.query('SELECT COUNT(DISTINCT donor_name) as total FROM donations'),
+            db.query('SELECT COUNT(*) as total FROM campaigns'),
+            db.query('SELECT COUNT(*) as total FROM campaigns WHERE current_amount >= target_amount'),
+            db.query('SELECT donor_name as name, "Donasi" as type, amount as detail, donation_date as date FROM donations ORDER BY donation_date DESC LIMIT 3'),
+            db.query('SELECT title as name, "Kampanye" as type, category as detail, created_at as date FROM campaigns ORDER BY created_at DESC LIMIT 2'),
+            db.query(`SELECT DATE_FORMAT(donation_date, '%b') as month, SUM(amount) as total FROM donations WHERE payment_status = 'Success' AND donation_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH) GROUP BY DATE_FORMAT(donation_date, '%Y-%m') ORDER BY donation_date ASC`),
+            db.query(`SELECT c.category as name, SUM(d.amount) as value FROM donations d JOIN campaigns c ON d.campaign_id = c.id WHERE d.payment_status = 'Success' GROUP BY c.category`)
+        ]);
 
         const recent_activities = [...recentDonations, ...recentCampaigns]
             .sort((a, b) => new Date(b.date) - new Date(a.date))
             .slice(0, 5);
 
-        // Monthly Trends (Last 6 Months)
-        const [monthlyDonations] = await db.query(`
-            SELECT 
-                DATE_FORMAT(donation_date, '%b') as month, 
-                SUM(amount) as total 
-            FROM donations 
-            WHERE payment_status = 'Success'
-            AND donation_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-            GROUP BY DATE_FORMAT(donation_date, '%Y-%m')
-            ORDER BY donation_date ASC
-        `);
-
-        // Category Distribution
-        const [categoryDistribution] = await db.query(`
-            SELECT c.category as name, SUM(d.amount) as value
-            FROM donations d
-            JOIN campaigns c ON d.campaign_id = c.id
-            WHERE d.payment_status = 'Success'
-            GROUP BY c.category
-        `);
-
         res.json({
-            totalDonations: donations.total || 0,
-            totalDonors: donors.total || 0,
-            activeCampaigns: campaigns.total || 0,
-            successCampaigns: successCampaigns.total || 0,
+            totalDonations: donations?.total || 0,
+            totalDonors: donors?.total || 0,
+            activeCampaigns: campaigns?.total || 0,
+            successCampaigns: successCampaigns?.total || 0,
             recent_activities,
             monthlyDonations,
             categoryDistribution
@@ -354,10 +345,9 @@ exports.verifyDonation = async (req, res) => {
 // 1. Ambil seluruh absensi pegawai
 exports.getAllAttendances = async (req, res) => {
     try {
-        await db.query("SET time_zone = '+08:00'");
-        await db.query("SET lc_time_names = 'id_ID'");
+        // time_zone sudah diset otomatis oleh pool.on('connection') di db.js
         const [rows] = await db.query(`
-            SELECT a.*, 
+            SELECT a.id, a.user_id, a.type, a.location, a.latitude, a.longitude, a.created_at,
                    DATE_FORMAT(a.created_at, '%H:%i') as jam_menit,
                    DATE_FORMAT(a.created_at, '%e %M %Y') as tgl_indo,
                    u.name as employee_name, 
@@ -365,9 +355,11 @@ exports.getAllAttendances = async (req, res) => {
             FROM attendance a 
             JOIN users u ON a.user_id = u.id 
             ORDER BY a.created_at DESC
+            LIMIT 500
         `);
         res.json(rows);
     } catch (error) {
+        console.error('getAllAttendances Error:', error.message);
         res.status(500).json({ message: 'Gagal memuat data absensi' });
     }
 };

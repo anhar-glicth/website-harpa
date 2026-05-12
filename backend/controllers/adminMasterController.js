@@ -12,21 +12,30 @@ const moduleConfigs = {
     'users_mgt': { table: 'users', orderBy: 'role ASC, created_at DESC' },
     'donors': { 
         table: 'users', 
-        filter: 'users.role = "user"',
-        select: `users.*, 
+        // OPTIMASI: Gunakan JOIN agregat tunggal daripada 5 subquery per baris
+        select: `users.id, users.name, users.email, users.phone, users.gender, users.profile_type,
+                 users.category, users.badge, users.segment, users.source_info, users.created_at,
+                 users.office_id, users.pic_prospect_id,
                  offices.name as office_name, 
-                 pic.name as pic_name, 
-                 media.name as last_media_name,
-                 (SELECT COUNT(*) FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success') as total_transactions,
-                 (SELECT COALESCE(SUM(amount), 0) FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success') as total_nominal,
-                 (SELECT donation_date FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success' ORDER BY donation_date DESC LIMIT 1) as last_transaction_date,
-                 (SELECT campaigns.title FROM donations JOIN campaigns ON donations.campaign_id = campaigns.id WHERE donations.user_id = users.id AND donations.payment_status = 'Success' ORDER BY donations.donation_date DESC LIMIT 1) as last_program_title,
-                 (SELECT amount FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success' ORDER BY donation_date DESC LIMIT 1) as last_amount,
-                 (SELECT payment_via.name FROM donations JOIN payment_via ON donations.payment_via_id = payment_via.id WHERE donations.user_id = users.id AND donations.payment_status = 'Success' ORDER BY donations.donation_date DESC LIMIT 1) as last_payment_via_name,
-                 (SELECT proof_image FROM donations WHERE donations.user_id = users.id AND payment_status = 'Success' ORDER BY donation_date DESC LIMIT 1) as last_donation_proof`,
-        join: 'LEFT JOIN offices ON users.office_id = offices.id LEFT JOIN users pic ON users.pic_prospect_id = pic.id LEFT JOIN prospect_media media ON users.last_prospect_media_id = media.id',
-        filter: 'users.role = "user" AND users.id IN (SELECT user_id FROM donations WHERE payment_status = "Success")',
-        orderBy: 'users.created_at DESC' 
+                 pic.name as pic_name,
+                 COALESCE(don_agg.total_transactions, 0) as total_transactions,
+                 COALESCE(don_agg.total_nominal, 0) as total_nominal,
+                 don_agg.last_transaction_date,
+                 don_agg.last_amount`,
+        join: `LEFT JOIN offices ON users.office_id = offices.id 
+               LEFT JOIN users pic ON users.pic_prospect_id = pic.id
+               LEFT JOIN (
+                   SELECT user_id,
+                          COUNT(*) as total_transactions,
+                          SUM(amount) as total_nominal,
+                          MAX(donation_date) as last_transaction_date,
+                          (SELECT amount FROM donations d2 WHERE d2.user_id = donations.user_id AND d2.payment_status = 'Success' ORDER BY d2.donation_date DESC LIMIT 1) as last_amount
+                   FROM donations
+                   WHERE payment_status = 'Success'
+                   GROUP BY user_id
+               ) don_agg ON users.id = don_agg.user_id`,
+        filter: 'users.role = "user" AND don_agg.user_id IS NOT NULL',
+        orderBy: 'don_agg.total_nominal DESC' 
     },
     'office': { table: 'offices', orderBy: 'name ASC' },
     'employees': { 
@@ -65,19 +74,22 @@ const moduleConfigs = {
     },
     'distribution_list': { 
         table: 'distributions', 
-        select: 'distributions.*, campaigns.title as campaign_title',
+        select: 'distributions.id, distributions.worker_id, distributions.program_id, distributions.title, distributions.amount, distributions.recipient_name, distributions.items_distributed, distributions.distribution_date, distributions.status, distributions.created_at, campaigns.title as campaign_title',
         join: 'LEFT JOIN campaigns ON distributions.program_id = campaigns.id',
         orderBy: 'distributions.id DESC' 
     },
     'field_reports': { 
         table: 'distributions', 
-        select: 'distributions.*, users.name as worker_name, campaigns.title as campaign_title',
+        // OPTIMASI: Jangan tarik photo_url di daftar agar tidak lelet (Base64 sangat berat)
+        // Pastikan kolom yang ditarik ada di DB dan sesuai dengan UI
+        select: 'distributions.id, distributions.title, distributions.worker_id, distributions.program_id, distributions.location_name, distributions.created_at, users.name as worker_name, campaigns.title as campaign_title',
         join: 'LEFT JOIN users ON distributions.worker_id = users.id LEFT JOIN campaigns ON distributions.program_id = campaigns.id',
         orderBy: 'distributions.created_at DESC' 
     },
     'transactions': { 
         table: 'donations', 
-        select: 'donations.*, users.name as donor_name, users.phone as donor_phone, campaigns.title as campaign_title, payment_via.name as payment_via_name',
+        // OPTIMASI: Kecualikan proof_image dari list utama
+        select: 'donations.id, donations.user_id, donations.campaign_id, donations.amount, donations.payment_via_id, donations.payment_status, donations.donation_date, donations.created_at, users.name as donor_name, users.phone as donor_phone, campaigns.title as campaign_title, payment_via.name as payment_via_name',
         join: 'LEFT JOIN users ON donations.user_id = users.id LEFT JOIN campaigns ON donations.campaign_id = campaigns.id LEFT JOIN payment_via ON donations.payment_via_id = payment_via.id',
         orderBy: 'donations.donation_date DESC' 
     },
@@ -116,7 +128,8 @@ const getData = async (req, res) => {
         const whereClause = config.filter ? `WHERE ${config.filter}` : '';
         const orderBy = config.orderBy || 'id DESC';
         
-        const query = `SELECT ${selectFields} FROM ${config.table} ${joinClause} ${whereClause} ORDER BY ${orderBy}`;
+        // LIMIT 500 untuk mencegah overload memori jika data sangat besar
+        const query = `SELECT ${selectFields} FROM ${config.table} ${joinClause} ${whereClause} ORDER BY ${orderBy} LIMIT 500`;
         
         const [rows] = await db.query(query);
         res.json(rows);

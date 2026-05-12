@@ -84,10 +84,7 @@ exports.debugTime = async (req, res) => {
 
 exports.getAttendanceStatus = async (req, res) => {
     try {
-        // Set timezone MySQL ke WITA (+08:00) lalu gunakan CURDATE() agar
-        // seluruh perbandingan tanggal dilakukan di sisi MySQL — menghindari
-        // timezone mismatch antara JavaScript dan MySQL.
-        await db.query("SET time_zone = '+08:00'");
+        // time_zone sudah diset otomatis oleh pool.on('connection') di db.js
         const [rows] = await db.query(`
             SELECT *, 
                    DATE_FORMAT(created_at, '%H:%i') as jam_menit,
@@ -124,7 +121,7 @@ exports.submitAttendance = async (req, res) => {
 
 exports.getAttendanceRecap = async (req, res) => {
     try {
-        await db.query("SET time_zone = '+08:00'");
+        // time_zone sudah diset otomatis oleh pool.on('connection') di db.js
         const [rows] = await db.query(`
             SELECT *, 
                    DATE_FORMAT(created_at, '%H:%i') as jam_menit,
@@ -147,34 +144,30 @@ exports.getFieldStats = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // 1. Total Campaigns Created
-        const [[{ totalCampaigns }]] = await db.query('SELECT COUNT(*) as totalCampaigns FROM campaigns WHERE author_id = ?', [userId]);
-
-        // 2. Total News/Updates Published
-        const [[{ totalNews }]] = await db.query('SELECT COUNT(*) as totalNews FROM news WHERE author_id = ?', [userId]);
-        const [[{ totalUpdates }]] = await db.query('SELECT COUNT(*) as totalUpdates FROM campaign_updates WHERE user_id = ?', [userId]);
-
-        // 3. Total Funds Collected via their campaigns
-        const [[{ totalFunds }]] = await db.query(
-            'SELECT SUM(current_amount) as totalFunds FROM campaigns WHERE author_id = ?',
-            [userId]
-        );
-
-        // 4. Attendance Stats (last 30 days)
-        const [[{ presentDays }]] = await db.query(
-            'SELECT COUNT(DISTINCT DATE(created_at)) as presentDays FROM attendance WHERE user_id = ? AND type = "check_in"',
-            [userId]
-        );
-
-        // 5. Work Effectiveness (Task Completion Rate)
-        const [[{ totalTasks }]] = await db.query('SELECT COUNT(*) as total FROM todo_list WHERE user_id = ?', [userId]);
-        const [[{ completedTasks }]] = await db.query('SELECT COUNT(*) as completed FROM todo_list WHERE user_id = ? AND status = "completed"', [userId]);
+        // Jalankan semua query secara paralel untuk kecepatan maksimal
+        const [
+            [[{ totalCampaigns }]],
+            [[{ totalNews }]],
+            [[{ totalUpdates }]],
+            [[{ totalFunds }]],
+            [[{ presentDays }]],
+            [[{ totalTasks }]],
+            [[{ completedTasks }]]
+        ] = await Promise.all([
+            db.query('SELECT COUNT(*) as totalCampaigns FROM campaigns WHERE author_id = ?', [userId]),
+            db.query('SELECT COUNT(*) as totalNews FROM news WHERE author_id = ?', [userId]),
+            db.query('SELECT COUNT(*) as totalUpdates FROM campaign_updates WHERE user_id = ?', [userId]),
+            db.query('SELECT COALESCE(SUM(current_amount), 0) as totalFunds FROM campaigns WHERE author_id = ?', [userId]),
+            db.query('SELECT COUNT(DISTINCT DATE(created_at)) as presentDays FROM attendance WHERE user_id = ? AND type = "check_in"', [userId]),
+            db.query('SELECT COUNT(*) as totalTasks FROM todo_list WHERE user_id = ?', [userId]),
+            db.query('SELECT COUNT(*) as completedTasks FROM todo_list WHERE user_id = ? AND status = "completed"', [userId])
+        ]);
 
         const effectiveness = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         res.json({
             totalCampaigns,
-            totalContent: totalNews + totalUpdates,
+            totalContent: (totalNews || 0) + (totalUpdates || 0),
             totalFunds: totalFunds || 0,
             presentDays,
             effectiveness
@@ -281,15 +274,19 @@ exports.getAllDistributions = async (req, res) => {
     }
 };
 
-// Petugas melihat laporan miliknya sendiri
+// Petugas melihat laporan miliknya sendiri (tanpa photo_url agar ringan)
 exports.getMyDistributions = async (req, res) => {
     try {
         const [rows] = await db.query(
-            `SELECT d.*, c.title as campaign_title 
+            `SELECT d.id, d.worker_id, d.program_id, d.title, d.amount, d.recipient_name,
+                    d.items_distributed, d.distribution_date, d.description,
+                    d.latitude, d.longitude, d.location_name, d.maps_link,
+                    d.status, d.created_at, c.title as campaign_title 
              FROM distributions d 
              LEFT JOIN campaigns c ON d.program_id = c.id 
              WHERE d.worker_id = ? 
-             ORDER BY d.created_at DESC`,
+             ORDER BY d.created_at DESC
+             LIMIT 50`,
             [req.user.id]
         );
         res.json(rows);
