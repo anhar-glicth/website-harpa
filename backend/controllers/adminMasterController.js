@@ -65,13 +65,13 @@ const moduleConfigs = {
     'distribution_list': { 
         table: 'distributions', 
         select: 'distributions.*, campaigns.title as campaign_title',
-        join: 'LEFT JOIN campaigns ON distributions.program_id = campaigns.id',
+        join: 'LEFT JOIN campaigns ON distributions.campaign_id = campaigns.id',
         orderBy: 'distributions.id DESC' 
     },
     'field_reports': { 
         table: 'distributions', 
-        select: 'distributions.*, users.name as worker_name',
-        join: 'LEFT JOIN users ON distributions.worker_id = users.id',
+        select: 'distributions.*, users.name as worker_name, campaigns.title as campaign_title',
+        join: 'LEFT JOIN users ON distributions.worker_id = users.id LEFT JOIN campaigns ON distributions.campaign_id = campaigns.id',
         orderBy: 'distributions.created_at DESC' 
     },
     'transactions': { 
@@ -80,7 +80,6 @@ const moduleConfigs = {
         join: 'LEFT JOIN users ON donations.user_id = users.id LEFT JOIN campaigns ON donations.campaign_id = campaigns.id LEFT JOIN payment_via ON donations.payment_via_id = payment_via.id',
         orderBy: 'donations.donation_date DESC' 
     },
-    'programs': { table: 'campaigns', orderBy: 'created_at DESC' },
     'news_mgt': { table: 'news', orderBy: 'created_at DESC' },
     'mualaf_mgt': { table: 'muallaf_requests', orderBy: 'created_at DESC' },
     'recruitment': { table: 'volunteers', orderBy: 'created_at DESC' },

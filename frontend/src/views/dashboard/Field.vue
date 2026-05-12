@@ -13,7 +13,7 @@
           
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <button @click="openNewsModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-50 text-green-600 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-100 transition-all border border-green-100">Tulis Berita</button>
-            <button @click="showDistributionModal = true" class="flex-1 sm:flex-none px-6 py-3 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-blue-100 transition-all border border-blue-100">Lapor Penyaluran</button>
+            <button @click="router.push('/dashboard/report-distribution')" class="flex-1 sm:flex-none px-6 py-3 bg-green-50 text-green-600 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-100 transition-all border border-green-100">Lapor Penyaluran</button>
             <button @click="openCampaignModal" class="flex-1 sm:flex-none px-6 py-3 bg-green-600 text-white rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100">Kampanye Baru</button>
             <button @click="handleLogout" class="flex-1 sm:flex-none px-6 py-3 bg-red-50 text-red-500 rounded-xl sm:rounded-2xl font-black uppercase text-[9px] sm:text-[10px] tracking-widest hover:bg-red-100 transition-all border border-red-100">
               <i class="fas fa-power-off"></i>
@@ -174,11 +174,15 @@
                      </div>
                   </div>
                   <div class="space-y-2">
-                     <p class="text-[8px] font-black text-blue-600 uppercase tracking-widest">{{ formatDate(d.created_at) }}</p>
+                     <div class="flex justify-between items-start">
+                        <p class="text-[8px] font-black text-green-600 uppercase tracking-widest">{{ formatDate(d.created_at) }}</p>
+                        <p v-if="d.amount" class="text-[10px] font-black text-green-600 italic">Rp {{ formatCurrency(d.amount) }}</p>
+                     </div>
                      <h4 class="font-black text-gray-900 uppercase italic text-sm line-clamp-1">{{ d.title }}</h4>
+                     <p v-if="d.campaign_title" class="text-[8px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-2 py-0.5 rounded-full inline-block">Program: {{ d.campaign_title }}</p>
                      <p class="text-[10px] text-gray-400 font-medium line-clamp-2 leading-relaxed">{{ d.description }}</p>
                      <div class="pt-2 flex items-center gap-2 text-[9px] font-bold text-gray-500 italic">
-                        <i class="fas fa-map-marker-alt text-blue-500"></i>
+                        <i class="fas fa-map-marker-alt text-green-500"></i>
                         <span class="truncate">{{ d.location_name }}</span>
                      </div>
                   </div>
@@ -770,17 +774,8 @@ const attendanceTypes = [
 
 const showCampaignModal = ref(false);
 const showNewsModal = ref(false);
-const showDistributionModal = ref(false);
 const showEditDistModal = ref(false);
 const editDistData = ref(null);
-
-const distForm = reactive({
-  title: '',
-  description: '',
-  maps_link: '',
-  photo: null,
-  photo_preview: ''
-});
 
 const extractCoordsFromLink = () => {
   const link = distForm.maps_link;
@@ -816,41 +811,7 @@ const handleDistPhoto = (e) => {
   }
 };
 
-const submitDistribution = async () => {
-  if (!distForm.title || !distForm.photo_preview) {
-    alert('Harap isi Judul dan ambil Foto bukti terlebih dahulu.');
-    return;
-  }
-  submitting.value = true;
-  try {
-    await api.post('/field/distributions', {
-      title: distForm.title,
-      description: distForm.description,
-      maps_link: distForm.maps_link,
-      latitude: coords.value.latitude,
-      longitude: coords.value.longitude,
-      location_name: currentLocationName.value,
-      photo: distForm.photo_preview
-    });
 
-    showDistributionModal.value = false;
-    // Reset form
-    distForm.title = '';
-    distForm.description = '';
-    distForm.maps_link = '';
-    distForm.photo = null;
-    distForm.photo_preview = '';
-    
-    alert('Laporan penyaluran berhasil disimpan!');
-    fetchData();
-  } catch (err) {
-    console.error(err);
-    const msg = err.response?.data?.message || 'Gagal mengirim laporan. Pastikan database sudah terupdate.';
-    alert('Error: ' + msg);
-  } finally {
-    submitting.value = false;
-  }
-};
 
 const startEditDist = (dist) => {
   editDistData.value = { ...dist };

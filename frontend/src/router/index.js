@@ -20,6 +20,7 @@ const Overview = () => import('../views/dashboard/Overview.vue');
 const UserDashboard = () => import('../views/dashboard/User.vue');
 const AdminDashboard = () => import('../views/dashboard/Admin.vue');
 const FieldDashboard = () => import('../views/dashboard/Field.vue');
+const ReportDistribution = () => import('../views/dashboard/ReportDistribution.vue');
 
 const routes = [
   {
@@ -131,6 +132,12 @@ const routes = [
         path: 'field',
         name: 'FieldDashboard',
         component: FieldDashboard,
+        meta: { role: 'field_worker' }
+      },
+      {
+        path: 'report-distribution',
+        name: 'ReportDistribution',
+        component: ReportDistribution,
         meta: { role: 'field_worker' }
       },
       {

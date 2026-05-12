@@ -1147,7 +1147,7 @@
                <select v-if="field.type === 'select' || ['office_id', 'group_id', 'payment_via_id', 'pic_prospect_id', 'last_prospect_media_id'].includes(field.key)" v-model="moduleFormData[field.key]" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-sm">
                  <option v-if="['office_id', 'group_id', 'payment_via_id', 'pic_prospect_id', 'last_prospect_media_id'].includes(field.key)" value="">-- Pilih --</option>
                  <option v-if="field.key === 'office_id'" v-for="o in (moduleData.office || [])" :key="o.id" :value="o.id">{{ o.name }}</option>
-                 <option v-else-if="field.key === 'group_id'" v-for="g in (moduleData.program_group || [])" :key="g.id" :value="g.name">{{ g.name }}</option>
+                 <option v-else-if="field.key === 'group_id'" v-for="g in (moduleData.program_group || [])" :key="g.id" :value="g.id">{{ g.name }}</option>
                  <option v-else-if="field.key === 'payment_via_id'" v-for="p in (moduleData.payment_via || [])" :key="p.id" :value="p.id">{{ p.name }} ({{ p.provider }})</option>
                  <option v-else-if="field.key === 'pic_prospect_id'" v-for="u in (moduleData.all_users || [])" :key="u.id" :value="u.id">{{ u.name }} ({{ u.role }})</option>
                  <option v-else-if="field.key === 'last_prospect_media_id'" v-for="m in (moduleData.prospect_media || [])" :key="m.id" :value="m.id">{{ m.name }}</option>
@@ -1412,8 +1412,8 @@ const managementTabs = [
   { id: 'office', label: 'Kantor', icon: 'fas fa-map-marked-alt' },
   { id: 'employees', label: 'Karyawan', icon: 'fas fa-id-badge' },
   { id: 'donor_channel', label: 'Channel Donasi', icon: 'fas fa-network-wired' },
-  { id: 'program_group', label: 'Rumpun Program', icon: 'fas fa-layer-group' },
-  { id: 'programs', label: 'Program', icon: 'fas fa-project-diagram' },
+  { id: 'program_group', label: 'Master Rumpun', icon: 'fas fa-layer-group' },
+  { id: 'programs', label: 'Master Program', icon: 'fas fa-project-diagram' },
   { id: 'payment_via', label: 'Via Bayar', icon: 'fas fa-credit-card' },
   { id: 'prospect_media', label: 'Media Prospek', icon: 'fas fa-photo-video' },
   { id: 'prospect_method', label: 'Metode Prospek', icon: 'fas fa-bullhorn' },
@@ -1483,13 +1483,32 @@ const moduleConfigs = {
     columns: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
     fields: [{ key: 'name', label: 'Nama Channel' }, { key: 'type', label: 'Tipe' }, { key: 'account', label: 'No. Rekening/Akun' }, { key: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Non-Aktif'] }] },
 
-  program_group: { title: 'Rumpun Program', entity: 'Rumpun', description: 'Klaster pengelompokan program', icon: 'fas fa-layer-group',
-    columns: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode' }, { key: 'description', label: 'Deskripsi' }],
-    fields: [{ key: 'name', label: 'Nama Rumpun' }, { key: 'code', label: 'Kode' }, { key: 'description', label: 'Deskripsi', type: 'textarea' }] },
+  program_group: { title: 'Master Rumpun Program', entity: 'Rumpun Program', description: 'Klaster pengelompokan program', icon: 'fas fa-layer-group',
+    columns: [
+      { key: 'name', label: 'Rumpun Program' }, 
+      { key: 'status', label: 'Aktif', type: 'badge', badgeClass: (v) => v === 'y' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }
+    ],
+    fields: [
+      { key: 'name', label: 'Nama Rumpun' }, 
+      { key: 'code', label: 'Kode' }, 
+      { key: 'description', label: 'Deskripsi', type: 'textarea' },
+      { key: 'status', label: 'Aktif (y/n)', type: 'select', options: ['y', 'n'] }
+    ] },
 
-  programs:    { title: 'Program (Kampanye)', entity: 'Program', description: 'Program sosial & kemanusiaan aktif', icon: 'fas fa-project-diagram',
-    columns: [{ key: 'title', label: 'Nama Program' }, { key: 'group_name', label: 'Rumpun' }, { key: 'target_amount', label: 'Target Dana', type: 'currency' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'approved' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
-    fields: [{ key: 'title', label: 'Nama Program' }, { key: 'group_id', label: 'Rumpun Program' }, { key: 'description', label: 'Deskripsi', type: 'textarea' }, { key: 'target_amount', label: 'Target Dana', type: 'number' }, { key: 'status', label: 'Status', type: 'select', options: ['pending', 'approved', 'rejected'] }] },
+  programs:    { title: 'Master Program', entity: 'Program', description: 'Program sosial & kemanusiaan aktif', icon: 'fas fa-project-diagram',
+    columns: [
+      { key: 'title', label: 'Program' }, 
+      { key: 'group_name', label: 'Rumpun Program' }, 
+      { key: 'is_active', label: 'Aktif', type: 'badge', badgeClass: (v) => v === 'y' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }
+    ],
+    fields: [
+      { key: 'title', label: 'Nama Program' }, 
+      { key: 'group_id', label: 'Rumpun Program' }, 
+      { key: 'description', label: 'Deskripsi', type: 'textarea' }, 
+      { key: 'target_amount', label: 'Target Dana', type: 'number' }, 
+      { key: 'is_active', label: 'Aktif (y/n)', type: 'select', options: ['y', 'n'] },
+      { key: 'status', label: 'Status Approval', type: 'select', options: ['pending', 'approved', 'rejected'] }
+    ] },
 
   payment_via: { title: 'Via Bayar', entity: 'Metode Bayar', description: 'Metode pembayaran yang diterima', icon: 'fas fa-credit-card',
     columns: [{ key: 'name', label: 'Nama Metode' }, { key: 'provider', label: 'Provider' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Aktif' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500' }],
@@ -1525,7 +1544,7 @@ const moduleConfigs = {
 
   distribution_list: { title: 'List Penyaluran', entity: 'Penyaluran', description: 'Histori distribusi bantuan ke penerima', icon: 'fas fa-clipboard-list',
     columns: [{ key: 'recipient_name', label: 'Penerima' }, { key: 'campaign_title', label: 'Program' }, { key: 'amount', label: 'Nilai', type: 'currency' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'badge', badgeClass: (v) => v === 'Tersalur' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600' }],
-    fields: [{ key: 'recipient_name', label: 'Nama Penerima' }, { key: 'program_id', label: 'ID Program (Numeric)' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'select', options: ['Tersalur', 'Proses'] }] },
+    fields: [{ key: 'recipient_name', label: 'Nama Penerima' }, { key: 'campaign_id', label: 'ID Program (Numeric)' }, { key: 'amount', label: 'Nilai Bantuan', type: 'number' }, { key: 'distribution_date', label: 'Tanggal', type: 'date' }, { key: 'status', label: 'Status', type: 'select', options: ['Tersalur', 'Proses'] }] },
 
   field_reports: { title: 'Laporan Lapangan (Peta)', entity: 'Laporan', table: 'distributions', description: 'Laporan penyaluran real-time dari petugas lapangan', icon: 'fas fa-map-marked-alt',
     columns: [

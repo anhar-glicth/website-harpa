@@ -251,17 +251,31 @@ exports.completeTask = async (req, res) => {
  * --- DISTRIBUTION MAPPING ---
  */
 exports.addDistribution = async (req, res) => {
-    const { title, description, latitude, longitude, location_name, photo, maps_link } = req.body;
+    const { 
+        title, description, latitude, longitude, location_name, 
+        photo, maps_link, campaign_id, amount, 
+        recipient_name, items_distributed, distribution_date 
+    } = req.body;
+    
     try {
         await db.query(
-            'INSERT INTO distributions (worker_id, title, description, latitude, longitude, location_name, photo_url, maps_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [req.user.id, title, description, latitude, longitude, location_name, photo, maps_link || null]
+            `INSERT INTO distributions (
+                worker_id, title, description, latitude, longitude, 
+                location_name, photo_url, maps_link, campaign_id, 
+                amount, recipient_name, items_distributed, distribution_date
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                req.user.id, title, description, latitude, longitude, 
+                location_name, photo, maps_link || null, campaign_id || null, 
+                amount || 0, recipient_name || null, items_distributed || null, 
+                distribution_date || null
+            ]
         );
-        res.status(201).json({ message: 'Titik penyaluran berhasil ditandai!' });
+        res.status(201).json({ message: 'Laporan penyaluran berhasil disimpan!' });
     } catch (error) {
         console.error('SQL Error in addDistribution:', error);
         res.status(500).json({ 
-            message: 'Gagal menyimpan titik penyaluran', 
+            message: 'Gagal menyimpan laporan penyaluran', 
             error: error.message 
         });
     }
@@ -270,9 +284,10 @@ exports.addDistribution = async (req, res) => {
 exports.getAllDistributions = async (req, res) => {
     try {
         const [rows] = await db.query(`
-            SELECT d.*, u.name as worker_name 
+            SELECT d.*, u.name as worker_name, c.title as campaign_title 
             FROM distributions d 
             JOIN users u ON d.worker_id = u.id 
+            LEFT JOIN campaigns c ON d.campaign_id = c.id
             ORDER BY d.created_at DESC
         `);
         res.json(rows);
@@ -286,7 +301,11 @@ exports.getAllDistributions = async (req, res) => {
 exports.getMyDistributions = async (req, res) => {
     try {
         const [rows] = await db.query(
-            'SELECT * FROM distributions WHERE worker_id = ? ORDER BY created_at DESC',
+            `SELECT d.*, c.title as campaign_title 
+             FROM distributions d 
+             LEFT JOIN campaigns c ON d.campaign_id = c.id 
+             WHERE d.worker_id = ? 
+             ORDER BY d.created_at DESC`,
             [req.user.id]
         );
         res.json(rows);
