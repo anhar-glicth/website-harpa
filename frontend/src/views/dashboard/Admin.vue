@@ -835,7 +835,7 @@
               <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 <div
                   v-for="worker in filteredWorkerPerformance" :key="worker.id"
-                  @click="$router.push(`/dashboard/admin/worker/${worker.id}`)"
+                  @click="openWorkerDetail(worker)"
                   class="bg-white p-4 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group cursor-pointer hover:border-green-200 hover:shadow-xl transition-all duration-300 active:scale-[0.98]"
                 >
                   <div class="absolute -right-4 -top-4 w-20 h-20 bg-green-50 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
@@ -2239,42 +2239,30 @@ const formatDate = (log) => {
 
 const fetchData = async () => {
   loading.value = true;
+  console.log('🔄 Memulai sinkronisasi data dashboard...');
   try {
-    // Run all requests in parallel for maximum speed
-    // Use /admin/stats (lightweight) instead of /admin/all-dashboard-data (heavy)
-    const results = await Promise.allSettled([
-      api.get('/admin/stats'),
-      api.get('/admin/users'),
-      api.get('/admin/attendances'),
-      api.get('/admin/worker-performance'),
-      api.get('/admin/tasks'),
-      api.get('/admin/pending-campaigns'),
-      api.get('/admin/pending-donations'),
-      api.get('/admin/master/zakats'),
-      api.get('/settings')
-    ]);
+    const { data } = await api.get('/admin/all-dashboard-data');
+    
+    // Map response data to state
+    stats.value = data.stats || {};
+    recentActivities.value = data.stats?.recent_activities || [];
+    users.value = data.users || [];
+    workerPerformance.value = data.workerPerformance || [];
+    allTasks.value = data.tasks || [];
+    allAttendances.value = data.attendances || [];
+    pendingCampaigns.value = data.pendingCampaigns || [];
+    pendingDonations.value = data.pendingDonations || [];
+    pendingZakats.value = data.pendingZakats || [];
+    settingsData.value = data.settings || {};
 
-    // Map results to state
-    // /admin/stats returns data directly (no .stats wrapper)
-    if (results[0].status === 'fulfilled') {
-      const statsData = results[0].value.data;
-      stats.value = statsData || {};
-      recentActivities.value = statsData?.recent_activities || [];
-    }
-    if (results[1].status === 'fulfilled') users.value = results[1].value.data || [];
-    if (results[2].status === 'fulfilled') allAttendances.value = results[2].value.data || [];
-    if (results[3].status === 'fulfilled') workerPerformance.value = results[3].value.data || [];
-    if (results[4].status === 'fulfilled') allTasks.value = results[4].value.data || [];
-    if (results[5].status === 'fulfilled') pendingCampaigns.value = results[5].value.data || [];
-    if (results[6].status === 'fulfilled') pendingDonations.value = results[6].value.data || [];
-    if (results[7].status === 'fulfilled') {
-      const resZakat = results[7].value;
-      pendingZakats.value = (resZakat.data && resZakat.data.rows) || resZakat.data || [];
-    }
-    if (results[8].status === 'fulfilled') settingsData.value = results[8].value.data || {};
-
+    console.log('✅ Data dashboard disinkronkan:', {
+      tasks: allTasks.value.length,
+      workers: workerPerformance.value.length
+    });
   } catch (error) {
-    console.error('Global Fetch Error:', error);
+    console.error('🔴 Fetch Data Error:', error);
+    // If 401/403, the interceptor or guard will handle it, 
+    // but we log it here for debugging.
   } finally {
     loading.value = false;
   }

@@ -48,7 +48,10 @@ auth.optional = (req, res, next) => {
  */
 auth.authorizeRole = (...roles) => {
     return (req, res, next) => {
-        if (!req.user || !roles.includes(req.user.role)) {
+        const userRole = req.user?.role?.toLowerCase().trim();
+        const allowedRoles = roles.map(r => r.toLowerCase().trim());
+        
+        if (!req.user || !allowedRoles.includes(userRole)) {
             return res.status(403).json({ 
                 status: 'error',
                 message: `Akses ditolak: Peran '${req.user?.role || 'tanpa peran'}' tidak memiliki izin.` 

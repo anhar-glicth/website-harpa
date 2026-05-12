@@ -22,7 +22,7 @@ const distributionDashboardController = require('../controllers/distributionDash
 
 // 1. Statistik Dashboard
 router.get('/stats', auth, adminController.getStats);
-router.get('/all-dashboard-data', auth, adminController.getAllDashboardData);
+router.get('/all-dashboard-data', auth, auth.isAdmin, adminController.getAllDashboardData);
 router.get('/dashboard-stats', auth, adminController.getStats); // Alias tambahan
 
 // 2. Manajemen User

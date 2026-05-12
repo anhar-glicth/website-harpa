@@ -176,11 +176,18 @@ const router = createRouter({
  */
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
-  const userRole = localStorage.getItem('role');
+  const userRole = localStorage.getItem('role')?.toLowerCase().trim();
   const isAuthenticated = !!token;
+
+  console.log(`[Router] Navigating to: ${to.path}`, { 
+    isAuthenticated, 
+    userRole, 
+    requiredRole: to.meta.role 
+  });
 
   // 1. Cek jika rute butuh login tapi user belum login
   if (to.meta.requiresAuth && !isAuthenticated) {
+    console.warn('[Router] Unauthenticated access to protected route. Redirecting to login.');
     return next('/login');
   }
 
@@ -190,7 +197,8 @@ router.beforeEach((to, from, next) => {
   }
 
   // 3. Cek Proteksi Role (Mencegah User masuk ke Admin)
-  if (to.meta.role && to.meta.role !== userRole) {
+  if (to.meta.role && to.meta.role.toLowerCase() !== userRole) {
+    console.warn(`[Router] Role mismatch. Required: ${to.meta.role}, Actual: ${userRole}. Redirecting to dashboard.`);
     // Jika role tidak cocok, lempar ke dashboard masing-masing
     return next('/dashboard');
   }

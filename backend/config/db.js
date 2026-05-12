@@ -8,9 +8,8 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 25,
     queueLimit: 0,
-
 });
 
 // Pastikan zona waktu benar-benar terpasang di sesi setiap kali ada koneksi baru
