@@ -446,3 +446,72 @@ exports.deleteTask = async (req, res) => {
         res.status(500).json({ message: 'Gagal menghapus tugas' });
     }
 };
+
+/**
+ * Mengambil detail performa dan tugas pegawai spesifik dengan filter waktu
+ */
+exports.getWorkerDetail = async (req, res) => {
+    const { id } = req.params;
+    const { day, month, year } = req.query;
+
+    try {
+        // 1. Ambil info user
+        const [[worker]] = await db.query('SELECT id, name, email, role FROM users WHERE id = ?', [id]);
+        if (!worker) return res.status(404).json({ message: 'Pegawai tidak ditemukan' });
+
+        // 2. Build filter query untuk todo_list
+        let filterSql = ' WHERE user_id = ?';
+        let params = [id];
+
+        if (year) {
+            filterSql += ' AND YEAR(created_at) = ?';
+            params.push(year);
+        }
+        if (month) {
+            filterSql += ' AND MONTH(created_at) = ?';
+            params.push(month);
+        }
+        if (day) {
+            filterSql += ' AND DAY(created_at) = ?';
+            params.push(day);
+        }
+
+        // 3. Ambil statistik terfilter
+        const [[stats]] = await db.query(`
+            SELECT 
+                COUNT(*) as total_tasks,
+                SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_tasks,
+                SUM(CASE WHEN status != 'completed' THEN 1 ELSE 0 END) as pending_tasks
+            FROM todo_list
+            ${filterSql}
+        `, params);
+
+        const total = stats.total_tasks || 0;
+        const completed = stats.completed_tasks || 0;
+        const pending = stats.pending_tasks || 0;
+        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        // 4. Ambil daftar tugas terfilter
+        const [tasks] = await db.query(`
+            SELECT t.*, a.name as assigner_name
+            FROM todo_list t
+            LEFT JOIN users a ON t.assigned_by = a.id
+            ${filterSql.replace('WHERE', 'WHERE t.')}
+            ORDER BY t.created_at DESC
+        `, params);
+
+        res.json({
+            worker,
+            stats: {
+                total,
+                completed,
+                pending,
+                percentage
+            },
+            tasks
+        });
+    } catch (error) {
+        console.error('getWorkerDetail Error:', error);
+        res.status(500).json({ message: 'Gagal memuat detail pegawai' });
+    }
+};

@@ -835,7 +835,7 @@
               <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 <div
                   v-for="worker in filteredWorkerPerformance" :key="worker.id"
-                  @click="openWorkerDetail(worker)"
+                  @click="$router.push(`/dashboard/admin/worker/${worker.id}`)"
                   class="bg-white p-4 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group cursor-pointer hover:border-green-200 hover:shadow-xl transition-all duration-300 active:scale-[0.98]"
                 >
                   <div class="absolute -right-4 -top-4 w-20 h-20 bg-green-50 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
@@ -1927,13 +1927,21 @@ const openEditTask = (task) => {
   assignTaskForm.task = task.task;
   assignTaskForm.description = task.description;
   // Format deadline for datetime-local input (YYYY-MM-DDTHH:mm)
-  const d = new Date(task.deadline);
-  const formattedDeadline = d.getFullYear() + '-' + 
-    String(d.getMonth() + 1).padStart(2, '0') + '-' + 
-    String(d.getDate()).padStart(2, '0') + 'T' + 
-    String(d.getHours()).padStart(2, '0') + ':' + 
-    String(d.getMinutes()).padStart(2, '0');
-  assignTaskForm.deadline = formattedDeadline;
+  // Guard: jika deadline null/invalid, gunakan string kosong agar input datetime-local tidak crash
+  if (task.deadline) {
+    const d = new Date(task.deadline);
+    if (!isNaN(d.getTime())) {
+      assignTaskForm.deadline = d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0') + 'T' +
+        String(d.getHours()).padStart(2, '0') + ':' +
+        String(d.getMinutes()).padStart(2, '0');
+    } else {
+      assignTaskForm.deadline = '';
+    }
+  } else {
+    assignTaskForm.deadline = '';
+  }
   showAssignModal.value = true;
 };
 
@@ -2182,23 +2190,8 @@ const openAssignModal = (worker) => {
   showAssignModal.value = true;
 };
 
-// Worker Detail Modal State
-const selectedWorker = ref(null);
-const showWorkerDetailModal = ref(false);
-
-const workerTasks = computed(() => {
-  if (!selectedWorker.value) return [];
-  return allTasks.value.filter(t => t.user_id === selectedWorker.value.id);
-});
-
 const openWorkerDetail = (worker) => {
-  selectedWorker.value = worker;
-  showWorkerDetailModal.value = true;
-};
-
-const openAssignFromDetail = () => {
-  showWorkerDetailModal.value = false;
-  openAssignModal(selectedWorker.value);
+  router.push(`/dashboard/admin/worker/${worker.id}`);
 };
 
 const handleAssignTask = async () => {
@@ -2227,15 +2220,20 @@ const viewAttachment = (url) => {
 
 const formatTime = (log) => {
   if (!log) return '';
-  const dateStr = log.created_at || log;
+  const dateStr = typeof log === 'object' ? (log.created_at || log) : log;
+  if (!dateStr) return '';
   const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '';
   return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 };
 
 const formatDate = (log) => {
   if (!log) return '';
-  if (log.tgl_indo) return log.tgl_indo; // Prioritas data dari server (WITA)
-  const date = new Date(log.created_at || log);
+  if (typeof log === 'object' && log.tgl_indo) return log.tgl_indo; 
+  const dateStr = typeof log === 'object' ? (log.created_at || log) : log;
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '';
   return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
