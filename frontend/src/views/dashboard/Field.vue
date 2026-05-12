@@ -163,6 +163,22 @@
 
                  <!-- Tab: My Distributions (Laporan Saya) -->
          <div v-if="activeTab === 'distributions'" class="space-y-8">
+            <!-- Header with Import button -->
+            <div class="flex flex-wrap justify-between items-center gap-3">
+              <div>
+                <h3 class="font-black text-gray-900 uppercase tracking-tighter italic text-lg">Laporan <span class="text-green-600">Penyaluran</span></h3>
+                <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{{ myDistributions.length }} laporan tercatat</p>
+              </div>
+              <div class="flex gap-3">
+                <button @click="router.push('/dashboard/report-distribution')" class="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-100">
+                  <i class="fas fa-plus"></i> Lapor Baru
+                </button>
+                <button @click="openFieldBulkImport" class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-600 transition-all shadow-lg shadow-amber-100">
+                  <i class="fas fa-file-excel"></i> Import Excel
+                </button>
+              </div>
+            </div>
+
             <div v-if="myDistributions.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                <div v-for="d in myDistributions" :key="d.id" class="bg-white p-5 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
                   <div class="relative h-40 rounded-[2rem] overflow-hidden mb-4">
@@ -191,6 +207,67 @@
             <div v-else class="py-20 text-center bg-white rounded-[3rem] border border-dashed border-gray-100">
                <p class="text-gray-400 font-bold italic uppercase tracking-widest text-xs">Anda belum pernah mengirim laporan penyaluran.</p>
             </div>
+         </div>
+
+         <!-- Modal: Bulk Import Distributions (Staff) -->
+         <div v-if="showFieldBulkImport" class="fixed inset-0 bg-gray-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+           <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+             <div class="p-8 bg-gradient-to-br from-amber-500 to-orange-500 text-white flex justify-between items-center shrink-0">
+               <div>
+                 <h3 class="text-xl font-black uppercase tracking-tighter italic">Import <span class="text-amber-100">Excel</span></h3>
+                 <p class="text-[9px] font-bold text-white/70 uppercase tracking-widest mt-1">Input Massal — Laporan Penyaluran</p>
+               </div>
+               <button @click="showFieldBulkImport = false; fieldImportResult = null; fieldImportFile = null" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-colors">✕</button>
+             </div>
+             <div class="p-8 space-y-6 overflow-y-auto">
+               <!-- Step 1: Template -->
+               <div class="p-5 bg-amber-50 rounded-2xl border border-amber-100">
+                 <p class="text-[9px] font-black text-amber-700 uppercase tracking-widest mb-1">Langkah 1 — Unduh Template</p>
+                 <p class="text-[10px] text-amber-600 font-medium mb-3">Download template Excel dan isi data laporan Anda.</p>
+                 <button @click="downloadDistTemplate" class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-600 transition-all">
+                   <i class="fas fa-download"></i> Download Template .xlsx
+                 </button>
+               </div>
+               <!-- Kolom Info -->
+               <div class="p-4 bg-gray-50 rounded-2xl">
+                 <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2"><i class="fas fa-columns mr-1"></i>Kolom yang dibutuhkan:</p>
+                 <div class="flex flex-wrap gap-2">
+                   <span v-for="col in ['title','description','location_name','campaign_id','amount','recipient_name','items_distributed','distribution_date']" :key="col"
+                     class="px-3 py-1 bg-white border border-gray-200 rounded-lg text-[9px] font-black text-gray-600">{{ col }}</span>
+                 </div>
+               </div>
+               <!-- Step 2: Upload -->
+               <div class="space-y-3">
+                 <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Langkah 2 — Upload File Excel</p>
+                 <label class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:border-amber-400 hover:bg-amber-50/40 transition-all group">
+                   <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-105 transition-transform">
+                     <i class="fas fa-file-excel"></i>
+                   </div>
+                   <p class="text-[10px] font-black text-gray-700 uppercase tracking-widest">{{ fieldImportFile ? fieldImportFile.name : 'Pilih file .xlsx / .xls' }}</p>
+                   <p class="text-[9px] text-gray-400 mt-1">Klik untuk memilih file</p>
+                   <input type="file" accept=".xlsx,.xls" @change="handleFieldFileSelect" class="hidden" />
+                 </label>
+               </div>
+               <!-- Result -->
+               <div v-if="fieldImportResult" class="p-5 rounded-2xl" :class="fieldImportResult.failureCount > 0 ? 'bg-yellow-50 border border-yellow-200' : 'bg-green-50 border border-green-200'">
+                 <p class="text-[10px] font-black uppercase tracking-widest mb-2" :class="fieldImportResult.failureCount > 0 ? 'text-yellow-700' : 'text-green-700'">
+                   <i :class="fieldImportResult.failureCount > 0 ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle'" class="mr-1"></i>
+                   {{ fieldImportResult.message }}
+                 </p>
+                 <ul v-if="fieldImportResult.errors?.length" class="space-y-1 mt-2 max-h-24 overflow-y-auto">
+                   <li v-for="err in fieldImportResult.errors" :key="err" class="text-[9px] text-red-600 font-medium">• {{ err }}</li>
+                 </ul>
+               </div>
+             </div>
+             <div class="p-8 pt-4 shrink-0 flex gap-3">
+               <button @click="showFieldBulkImport = false; fieldImportResult = null; fieldImportFile = null" class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-[2rem] font-black uppercase tracking-widest text-[10px] hover:bg-gray-100 transition-all">Tutup</button>
+               <button @click="submitFieldBulkImport" :disabled="!fieldImportFile || fieldImporting"
+                 class="flex-1 py-4 bg-amber-500 text-white rounded-[2rem] font-black uppercase tracking-widest text-[10px] hover:bg-amber-600 shadow-xl shadow-amber-100 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                 <i v-if="fieldImporting" class="fas fa-circle-notch animate-spin"></i>
+                 {{ fieldImporting ? 'Memproses...' : 'Impor Sekarang' }}
+               </button>
+             </div>
+           </div>
          </div>
 
          <!-- Tab: Absensi -->
@@ -1367,11 +1444,79 @@ onMounted(() => {
   getMyLocation();
 });
 
+// ===== BULK IMPORT DISTRIBUTIONS (Staff) =====
+const showFieldBulkImport = ref(false);
+const fieldImportFile = ref(null);
+const fieldImporting = ref(false);
+const fieldImportResult = ref(null);
+
+const openFieldBulkImport = () => {
+  fieldImportFile.value = null;
+  fieldImportResult.value = null;
+  showFieldBulkImport.value = true;
+};
+
+const handleFieldFileSelect = (event) => {
+  fieldImportFile.value = event.target.files[0] || null;
+  fieldImportResult.value = null;
+};
+
+const downloadDistTemplate = () => {
+  const headers = ['title', 'description', 'location_name', 'campaign_id', 'amount', 'recipient_name', 'items_distributed', 'distribution_date'];
+  const labels = ['Judul', 'Deskripsi', 'Nama Lokasi', 'ID Program', 'Nominal', 'Nama Penerima', 'Barang Disalurkan', 'Tanggal (YYYY-MM-DD)'];
+  const example = ['Pemberian Sembako', 'Distribusi rutin bulanan', 'Masjid Al-Ikhlas', '1', '500000', 'Bapak Ahmad', 'Beras 5kg, Minyak 2L', new Date().toISOString().split('T')[0]];
+
+  if (typeof window.XLSX !== 'undefined') {
+    const wb = window.XLSX.utils.book_new();
+    const ws = window.XLSX.utils.aoa_to_sheet([headers, labels, example]);
+    window.XLSX.utils.book_append_sheet(wb, ws, 'Template Penyaluran');
+    window.XLSX.writeFile(wb, 'template_penyaluran.xlsx');
+  } else {
+    const csvContent = [headers.join(','), example.map(v => `"${v}"`).join(',')].join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'template_penyaluran.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+};
+
+const submitFieldBulkImport = async () => {
+  if (!fieldImportFile.value) return;
+  fieldImporting.value = true;
+  fieldImportResult.value = null;
+
+  try {
+    const formDataObj = new FormData();
+    formDataObj.append('file', fieldImportFile.value);
+
+    const res = await api.post('/field/distributions/bulk', formDataObj, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    fieldImportResult.value = res.data;
+    if (res.data.successCount > 0) {
+      fetchData();
+    }
+  } catch (e) {
+    fieldImportResult.value = {
+      message: e.response?.data?.message || 'Gagal mengimpor data.',
+      successCount: 0,
+      failureCount: 1,
+      errors: [e.response?.data?.message || e.message]
+    };
+  } finally {
+    fieldImporting.value = false;
+  }
+};
+
 onUnmounted(() => {
   if (window._currentLocationWatchId) {
     navigator.geolocation.clearWatch(window._currentLocationWatchId);
   }
-});
+  });
 </script>
 
 <style scoped>

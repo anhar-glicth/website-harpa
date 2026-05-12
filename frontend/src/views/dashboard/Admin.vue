@@ -442,9 +442,12 @@
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{{ activeModule.description }}</p>
                       </div>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 flex-wrap">
                       <button @click="exportToCSV" class="bg-slate-900 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2">
                         <i class="fas fa-file-export"></i> Ekspor CSV
+                      </button>
+                      <button @click="openBulkImportModal" class="bg-amber-500 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-amber-600 transition-all shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                        <i class="fas fa-file-excel"></i> Import Excel
                       </button>
                       <button @click="openModuleModal()" class="bg-green-600 text-white px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all shadow-lg shadow-green-500/20 flex items-center gap-2">
                         <i class="fas fa-plus"></i> Tambah {{ activeModule.entity }}
@@ -1177,6 +1180,61 @@
          <div class="p-8 pt-4 shrink-0">
            <button @click="handleSaveModuleData" class="w-full py-5 bg-green-600 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-100 active:scale-95 transition-all">
              {{ moduleFormData._index !== undefined ? 'Update' : 'Simpan' }} Data {{ activeModule.entity }}
+           </button>
+         </div>
+       </div>
+    </div>
+
+    <!-- Modal: Bulk Import Excel -->
+    <div v-if="showBulkImportModal && activeModule" class="fixed inset-0 bg-gray-900/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+       <div class="bg-white rounded-[3rem] shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in duration-300">
+         <div class="p-8 bg-gradient-to-br from-amber-500 to-orange-500 text-white flex justify-between items-center shrink-0">
+           <div>
+             <h3 class="text-xl font-black uppercase tracking-tighter italic">Import <span class="text-amber-100">Excel</span></h3>
+             <p class="text-[9px] font-bold text-white/70 uppercase tracking-widest mt-1">Input Massal — {{ activeModule.title }}</p>
+           </div>
+           <button @click="showBulkImportModal = false; bulkImportResult = null; bulkImportFile = null" class="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center transition-colors">✕</button>
+         </div>
+         <div class="p-8 space-y-6 overflow-y-auto custom-scrollbar">
+           <div class="p-5 bg-amber-50 rounded-2xl border border-amber-100">
+             <p class="text-[9px] font-black text-amber-700 uppercase tracking-widest mb-1">Langkah 1 — Unduh Template</p>
+             <p class="text-[10px] text-amber-600 font-medium mb-3">Gunakan template berikut agar kolom sesuai dengan database sistem.</p>
+             <button @click="downloadImportTemplate" class="flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-600 transition-all">
+               <i class="fas fa-download"></i> Download Template .xlsx
+             </button>
+           </div>
+           <div class="p-4 bg-gray-50 rounded-2xl">
+             <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3"><i class="fas fa-columns mr-1"></i>Kolom yang Dibutuhkan (gunakan sebagai Header di Excel)</p>
+             <div class="flex flex-wrap gap-2">
+               <span v-for="field in activeModule.fields" :key="field.key" class="px-3 py-1 bg-white border border-gray-200 rounded-lg text-[9px] font-black text-gray-600">{{ field.key }}</span>
+             </div>
+           </div>
+           <div class="space-y-3">
+             <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Langkah 2 — Upload File Excel yang Sudah Diisi</p>
+             <label class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:border-amber-400 hover:bg-amber-50/40 transition-all group">
+               <div class="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-2xl mb-3 group-hover:scale-105 transition-transform">
+                 <i class="fas fa-file-excel"></i>
+               </div>
+               <p class="text-[10px] font-black text-gray-700 uppercase tracking-widest">{{ bulkImportFile ? bulkImportFile.name : 'Pilih file .xlsx / .xls' }}</p>
+               <p class="text-[9px] text-gray-400 font-medium mt-1">Klik untuk memilih file</p>
+               <input type="file" accept=".xlsx,.xls" @change="handleBulkFileSelect" class="hidden" />
+             </label>
+           </div>
+           <div v-if="bulkImportResult" class="p-5 rounded-2xl" :class="bulkImportResult.failureCount > 0 ? 'bg-yellow-50 border border-yellow-200' : 'bg-green-50 border border-green-200'">
+             <p class="text-[10px] font-black uppercase tracking-widest mb-2" :class="bulkImportResult.failureCount > 0 ? 'text-yellow-700' : 'text-green-700'">
+               <i :class="bulkImportResult.failureCount > 0 ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle'" class="mr-1"></i>
+               {{ bulkImportResult.message }}
+             </p>
+             <ul v-if="bulkImportResult.errors?.length" class="space-y-1 mt-2 max-h-24 overflow-y-auto">
+               <li v-for="err in bulkImportResult.errors" :key="err" class="text-[9px] text-red-600 font-medium">• {{ err }}</li>
+             </ul>
+           </div>
+         </div>
+         <div class="p-8 pt-4 shrink-0 flex gap-3">
+           <button @click="showBulkImportModal = false; bulkImportResult = null; bulkImportFile = null" class="flex-1 py-4 bg-gray-50 text-gray-500 rounded-[2rem] font-black uppercase tracking-widest hover:bg-gray-100 transition-all text-[10px]">Tutup</button>
+           <button @click="submitBulkImport" :disabled="!bulkImportFile || bulkImporting" class="flex-1 py-4 bg-amber-500 text-white rounded-[2rem] font-black uppercase tracking-widest hover:bg-amber-600 shadow-xl shadow-amber-100 active:scale-95 transition-all text-[10px] disabled:opacity-50 flex items-center justify-center gap-2">
+             <i v-if="bulkImporting" class="fas fa-circle-notch animate-spin"></i>
+             {{ bulkImporting ? 'Memproses...' : 'Impor Sekarang' }}
            </button>
          </div>
        </div>
@@ -2385,6 +2443,89 @@ onMounted(() => {
   fetchData();
   fetchMonitoringData();
 });
+
+// ===== BULK IMPORT EXCEL =====
+const showBulkImportModal = ref(false);
+const bulkImportFile = ref(null);
+const bulkImporting = ref(false);
+const bulkImportResult = ref(null);
+
+const openBulkImportModal = () => {
+  bulkImportFile.value = null;
+  bulkImportResult.value = null;
+  showBulkImportModal.value = true;
+};
+
+const handleBulkFileSelect = (event) => {
+  bulkImportFile.value = event.target.files[0] || null;
+  bulkImportResult.value = null;
+};
+
+// Download a ready-to-fill Excel template based on current module's fields
+const downloadImportTemplate = () => {
+  const config = activeModule.value;
+  if (!config) return;
+
+  // Build header row from field keys
+  const headers = config.fields.map(f => f.key);
+  const exampleRow = config.fields.map(f => {
+    if (f.type === 'number') return 0;
+    if (f.type === 'date') return new Date().toISOString().split('T')[0];
+    if (f.type === 'select' && f.options?.length) return f.options[0];
+    return `Contoh ${f.label}`;
+  });
+
+  // Use SheetJS from CDN if available, otherwise fallback to CSV
+  if (typeof window.XLSX !== 'undefined') {
+    const wb = window.XLSX.utils.book_new();
+    const ws = window.XLSX.utils.aoa_to_sheet([headers, exampleRow]);
+    window.XLSX.utils.book_append_sheet(wb, ws, config.title);
+    window.XLSX.writeFile(wb, `template_${currentAdminTab.value}.xlsx`);
+  } else {
+    // Fallback: download as CSV
+    const csvContent = [headers.join(','), exampleRow.map(v => `"${v}"`).join(',')].join('\n');
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `template_${currentAdminTab.value}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+};
+
+const submitBulkImport = async () => {
+  if (!bulkImportFile.value) return;
+  bulkImporting.value = true;
+  bulkImportResult.value = null;
+
+  try {
+    const formDataObj = new FormData();
+    formDataObj.append('file', bulkImportFile.value);
+
+    const res = await api.post(
+      `/admin/master/${currentAdminTab.value}/bulk`,
+      formDataObj,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+
+    bulkImportResult.value = res.data;
+
+    // Refresh table data after successful import
+    if (res.data.successCount > 0) {
+      await fetchModuleData();
+    }
+  } catch (e) {
+    bulkImportResult.value = {
+      message: e.response?.data?.message || 'Terjadi kesalahan saat mengimpor file.',
+      successCount: 0,
+      failureCount: 1,
+      errors: [e.response?.data?.message || e.message]
+    };
+  } finally {
+    bulkImporting.value = false;
+  }
+};
 </script>
 
 <style scoped>

@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const xlsx = require('xlsx');
 
 /**
  * Generic Controller for Administrative Master Data
@@ -277,6 +278,78 @@ const getStats = async (req, res) => {
     } catch (error) {
         console.error(`Error fetching stats for ${module}:`, error);
         res.status(500).json({ message: 'Gagal memuat statistik' });
+    }
+};
+
+// --- BULK IMPORT ---
+exports.bulkImport = async (req, res) => {
+    const { module } = req.params;
+    const config = moduleConfigs[module];
+    
+    if (!config) {
+        return res.status(400).json({ message: 'Modul tidak valid untuk impor' });
+    }
+
+    if (!req.file) {
+        return res.status(400).json({ message: 'File tidak ditemukan' });
+    }
+
+    try {
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const data = xlsx.utils.sheet_to_json(worksheet);
+
+        if (data.length === 0) {
+            return res.status(400).json({ message: 'File Excel kosong' });
+        }
+
+        const table = config.table;
+        const fields = config.fields.map(f => f.key);
+        
+        // Filter out ID if it exists and auto-increment
+        const columns = fields.filter(f => f !== 'id');
+
+        let successCount = 0;
+        let errors = [];
+
+        for (let i = 0; i < data.length; i++) {
+            const row = data[i];
+            const insertData = {};
+            
+            columns.forEach(col => {
+                // Map Excel header to column name (case insensitive or exact)
+                // We assume Excel headers match the labels or keys
+                const excelVal = row[col] || row[config.fields.find(f => f.key === col)?.label] || null;
+                insertData[col] = excelVal;
+            });
+
+            // Special handling for some modules
+            if (module === 'transactions' && !insertData.donation_date) {
+                insertData.donation_date = new Date();
+            }
+            if (module === 'distributions' && !insertData.worker_id) {
+                insertData.worker_id = req.user.id;
+            }
+
+            try {
+                await db.query(`INSERT INTO ${table} SET ?`, insertData);
+                successCount++;
+            } catch (err) {
+                errors.push(`Baris ${i + 2}: ${err.message}`);
+            }
+        }
+
+        res.json({ 
+            message: `Impor selesai. ${successCount} berhasil, ${errors.length} gagal.`,
+            successCount,
+            failureCount: errors.length,
+            errors: errors.slice(0, 10) // Limit error list
+        });
+
+    } catch (error) {
+        console.error('Bulk Import Error:', error);
+        res.status(500).json({ message: 'Gagal memproses file Excel' });
     }
 };
 

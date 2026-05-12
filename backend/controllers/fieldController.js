@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const xlsx = require('xlsx');
 
 /**
  * --- TO DO LIST ---
@@ -343,5 +344,66 @@ exports.deleteDistribution = async (req, res) => {
         res.json({ message: 'Laporan berhasil dihapus' });
     } catch (error) {
         res.status(500).json({ message: 'Gagal menghapus laporan' });
+    }
+};
+
+/**
+ * --- BULK IMPORT DISTRIBUTIONS (Staff) ---
+ */
+exports.bulkImportDistributions = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'File tidak ditemukan' });
+    }
+    try {
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0];
+        const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        if (data.length === 0) {
+            return res.status(400).json({ message: 'File Excel kosong' });
+        }
+
+        const allowedFields = [
+            'title', 'description', 'location_name', 'maps_link',
+            'campaign_id', 'amount', 'recipient_name',
+            'items_distributed', 'distribution_date'
+        ];
+        const labelMap = {
+            'Judul': 'title', 'Deskripsi': 'description', 'Nama Lokasi': 'location_name',
+            'Link Maps': 'maps_link', 'ID Program': 'campaign_id', 'Nominal': 'amount',
+            'Nama Penerima': 'recipient_name', 'Barang Disalurkan': 'items_distributed',
+            'Tanggal': 'distribution_date'
+        };
+
+        let successCount = 0;
+        const errors = [];
+
+        for (let i = 0; i < data.length; i++) {
+            const row = data[i];
+            const insertData = { worker_id: req.user.id };
+            allowedFields.forEach(field => {
+                const label = Object.keys(labelMap).find(l => labelMap[l] === field);
+                insertData[field] = row[field] !== undefined ? row[field] : (label && row[label] !== undefined ? row[label] : null);
+            });
+            if (!insertData.distribution_date) {
+                insertData.distribution_date = new Date().toISOString().split('T')[0];
+            }
+            try {
+                await db.query('INSERT INTO distributions SET ?', insertData);
+                successCount++;
+            } catch (err) {
+                errors.push(`Baris ${i + 2}: ${err.message}`);
+            }
+        }
+
+        res.json({
+            message: `Impor selesai. ${successCount} berhasil, ${errors.length} gagal.`,
+            successCount,
+            failureCount: errors.length,
+            errors: errors.slice(0, 10)
+        });
+    } catch (error) {
+        console.error('Bulk Import Distribution Error:', error);
+        res.status(500).json({ message: 'Gagal memproses file Excel', error: error.message });
     }
 };

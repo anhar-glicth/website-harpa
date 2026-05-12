@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 // Import Middleware
 const auth = require('../middleware/auth');
@@ -41,6 +43,7 @@ router.post('/verify-donation/:id', auth, auth.isAdmin, adminController.verifyDo
 router.get('/master/:module', auth, auth.isAdmin, masterController.getData);
 router.get('/master/stats/:module', auth, auth.isAdmin, masterController.getStats);
 router.post('/master/:module', auth, auth.isAdmin, masterController.createData);
+router.post('/master/:module/bulk', auth, upload.single('file'), masterController.bulkImport);
 router.put('/master/:module/:id', auth, auth.isAdmin, masterController.updateData);
 router.delete('/master/:module/:id', auth, auth.isAdmin, masterController.deleteData);
 

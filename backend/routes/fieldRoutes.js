@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const fieldController = require('../controllers/fieldController');
 const auth = require('../middleware/auth');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 // To Do List
 router.get('/todos', auth, fieldController.getTodos);
@@ -33,5 +35,6 @@ router.post('/distributions', auth, fieldController.addDistribution);
 router.get('/my-distributions', auth, fieldController.getMyDistributions);
 router.put('/distributions/:id', auth, fieldController.updateDistribution);
 router.delete('/distributions/:id', auth, fieldController.deleteDistribution);
+router.post('/distributions/bulk', auth, upload.single('file'), fieldController.bulkImportDistributions);
 
 module.exports = router;
