@@ -94,7 +94,13 @@ const moduleConfigs = {
         orderBy: 'donations.donation_date DESC' 
     },
     'news_mgt': { table: 'news', orderBy: 'created_at DESC' },
-    'mualaf_mgt': { table: 'muallaf_requests', orderBy: 'created_at DESC' },
+    'muallaf_mgt': { table: 'muallaf_requests', orderBy: 'created_at DESC' },
+    'zakats': { 
+        table: 'zakats', 
+        select: 'zakats.*, users.name as user_name',
+        join: 'LEFT JOIN users ON zakats.user_id = users.id',
+        orderBy: 'zakats.created_at DESC' 
+    },
     'recruitment': { table: 'volunteers', orderBy: 'created_at DESC' },
     'inbox': { table: 'contact_messages', orderBy: 'created_at DESC' },
     'newsletter_mgt': { table: 'newsletters', orderBy: 'created_at DESC' },

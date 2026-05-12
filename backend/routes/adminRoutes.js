@@ -40,8 +40,10 @@ router.get('/pending-donations', auth, auth.isAdmin, adminController.getPendingD
 router.post('/verify-donation/:id', auth, auth.isAdmin, adminController.verifyDonation);
 
 // 5. Generic Master Data Management
-router.get('/master/:module', auth, auth.isAdmin, masterController.getData);
+// PENTING: Route spesifik (stats) harus di atas route generik (:module)
+// agar Express tidak menangkap 'stats' sebagai nilai :module
 router.get('/master/stats/:module', auth, auth.isAdmin, masterController.getStats);
+router.get('/master/:module', auth, auth.isAdmin, masterController.getData);
 router.post('/master/:module', auth, auth.isAdmin, masterController.createData);
 router.post('/master/:module/bulk', auth, upload.single('file'), masterController.bulkImport);
 router.put('/master/:module/:id', auth, auth.isAdmin, masterController.updateData);

@@ -111,7 +111,7 @@ exports.getAllDashboardData = async (req, res) => {
 
         // 5. Tasks
         try {
-            const [t] = await db.query('SELECT t.*, u.name as employee_name, a.name as assigner_name FROM todo_list t JOIN users u ON t.user_id = u.id LEFT JOIN users a ON t.assigned_by = a.id ORDER BY t.created_at DESC');
+            const [t] = await db.query('SELECT t.*, u.name as employee_name, a.name as assigner_name FROM todo_list t LEFT JOIN users u ON t.user_id = u.id LEFT JOIN users a ON t.assigned_by = a.id ORDER BY t.created_at DESC');
             data.tasks = t || [];
         } catch (e) { console.error('Tasks Error:', e.message); }
 
@@ -353,7 +353,7 @@ exports.getAllAttendances = async (req, res) => {
                    u.name as employee_name, 
                    u.email as employee_email 
             FROM attendance a 
-            JOIN users u ON a.user_id = u.id 
+            LEFT JOIN users u ON a.user_id = u.id 
             ORDER BY a.created_at DESC
             LIMIT 500
         `);
@@ -376,7 +376,7 @@ exports.getWorkerPerformance = async (req, res) => {
                 SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_tasks
             FROM users u
             LEFT JOIN todo_list t ON u.id = t.user_id
-            WHERE u.role = 'field_worker'
+            WHERE u.role IN ('field_worker', 'admin')
             GROUP BY u.id
         `);
 
@@ -411,7 +411,7 @@ exports.getAllTasks = async (req, res) => {
         const [rows] = await db.query(`
             SELECT t.*, u.name as employee_name, a.name as assigner_name
             FROM todo_list t
-            JOIN users u ON t.user_id = u.id
+            LEFT JOIN users u ON t.user_id = u.id
             LEFT JOIN users a ON t.assigned_by = a.id
             ORDER BY t.created_at DESC
         `);

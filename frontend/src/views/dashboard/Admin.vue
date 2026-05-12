@@ -1780,6 +1780,7 @@ const pendingCampaigns = ref([]);
 const pendingDonations = ref([]);
 
 const pendingZakats = ref([]);
+const recentActivities = ref([]);
 const settingsData = ref({});
 const savingSettings = ref(false);
 
@@ -2409,8 +2410,9 @@ const exportToCSV = () => {
 onMounted(() => {
   console.log('Admin Dashboard Mounted, Tabs:', sidebarTabs.value.length);
   currentAdminTab.value = 'dashboard';
+  // fetchData() sudah mengambil semua data monitoring (attendances, tasks, workerPerformance)
+  // Tidak perlu memanggil fetchMonitoringData() secara terpisah karena akan menyebabkan double fetch
   fetchData();
-  fetchMonitoringData();
 });
 
 // ===== BULK IMPORT EXCEL =====
