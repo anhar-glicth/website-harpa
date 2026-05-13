@@ -129,49 +129,105 @@
                  </div>
               </div>
 
-              <div class="space-y-3">
-                 <div v-for="t in todos" :key="t.id" :class="['p-5 rounded-[2rem] border transition-all group', t.status === 'completed' ? 'bg-green-50/30 border-green-100' : 'bg-gray-50/50 border-transparent hover:border-green-100 hover:bg-white']">
-                    <div class="flex items-start justify-between gap-4">
-                       <div class="flex gap-3 flex-1">
-                          <!-- Toggle Button -->
-                          <button @click="handleToggleTodo(t.id)" :class="['w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-all hover:scale-110', t.status === 'completed' ? 'bg-green-600 text-white' : 'bg-white text-gray-300 border-2 border-gray-200 hover:border-green-400']">
-                             <i :class="t.status === 'completed' ? 'fas fa-check text-xs' : 'fas fa-circle text-[8px]'"></i>
-                          </button>
-                          <div class="space-y-1 flex-1">
-                             <h4 :class="['font-black text-xs uppercase tracking-tight', t.status === 'completed' ? 'text-gray-300 line-through' : 'text-gray-700']">{{ t.task }}</h4>
-                             <p v-if="t.description" class="text-[10px] text-gray-400 font-medium">{{ t.description }}</p>
-                             <div class="flex items-center gap-3 flex-wrap pt-1">
-                                <span v-if="t.deadline" :class="['text-[8px] font-black uppercase tracking-widest flex items-center gap-1', isOverdue(t) ? 'text-red-500' : 'text-amber-500']">
-                                   <i class="fas fa-clock"></i>
-                                   {{ formatDeadline(t.deadline) }}
-                                   <span v-if="isOverdue(t)" class="bg-red-100 text-red-500 px-1.5 py-0.5 rounded-full">Terlambat</span>
-                                </span>
-                                <span v-if="t.assigned_by" class="text-[8px] font-black uppercase tracking-widest text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Admin Assigned</span>
-                             </div>
-                          </div>
-                       </div>
-                       
-                       <div class="flex flex-col gap-1.5 items-end">
-                          <button v-if="t.status !== 'completed'" @click="openTaskResultModal(t)" class="px-4 py-2.5 bg-green-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-green-100">
-                             Upload Bukti
-                          </button>
-                          <div v-else class="flex flex-col items-end gap-1">
-                             <span class="text-[9px] font-black uppercase tracking-widest text-green-600 flex items-center gap-1"><i class="fas fa-check-double"></i> Selesai</span>
-                             <a v-if="t.result_attachment" :href="t.result_attachment" target="_blank" class="text-[8px] font-black uppercase text-blue-500 hover:underline">Lihat Bukti</a>
-                          </div>
-                          <button v-if="!t.assigned_by" @click="handleDeleteTodo(t.id)" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all text-[9px] font-bold uppercase mt-1">Hapus</button>
-                       </div>
-                    </div>
-                    <!-- Display Note/Result if exist -->
-                    <div v-if="t.status === 'completed' && t.result_note" class="mt-4 p-4 bg-green-50/50 rounded-2xl border border-green-100/50">
-                       <p class="text-[8px] font-black uppercase text-green-600 tracking-widest mb-1 italic">Catatan Hasil Pengerjaan:</p>
-                       <p class="text-[10px] text-gray-600 font-medium italic">"{{ t.result_note }}"</p>
-                    </div>
-                 </div>
-                 <div v-if="todos.length === 0" class="py-12 text-center">
-                    <p class="text-gray-400 font-bold italic uppercase tracking-widest text-[10px]">Belum ada tugas. Tambahkan tugas baru di atas!</p>
-                 </div>
-              </div>
+               <div v-if="todos.length > 0" class="space-y-8">
+                  <div v-for="(tasks, date) in groupedTodos" :key="date" class="space-y-4">
+                     <!-- Date Header Divider -->
+                     <div class="flex items-center gap-4 px-2">
+                        <div class="h-px bg-gray-100 flex-1"></div>
+                        <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] italic whitespace-nowrap">{{ date }}</span>
+                        <div class="h-px bg-gray-100 flex-1"></div>
+                     </div>
+
+                     <!-- Task Cards for this date -->
+                     <div v-for="t in tasks" :key="t.id" 
+                        @click="toggleTodoExpand(t.id)"
+                        :class="['p-5 rounded-[2rem] border transition-all duration-300 group cursor-pointer relative overflow-hidden', 
+                        t.status === 'completed' ? 'bg-green-50/30 border-green-100 opacity-80' : 'bg-gray-50/50 border-transparent hover:border-green-100 hover:bg-white shadow-sm hover:shadow-md']"
+                     >
+                        <!-- Left indicator for expansion -->
+                        <div v-if="t.status !== 'completed'" class="absolute left-0 top-0 bottom-0 w-1 bg-green-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        
+                        <div class="flex items-center justify-between gap-4">
+                           <div class="flex items-center gap-4 flex-1">
+                              <!-- Status Icon -->
+                              <div :class="['w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-sm transition-all', t.status === 'completed' ? 'bg-green-600 text-white' : 'bg-white text-gray-400 border-2 border-gray-100']">
+                                 <i :class="t.status === 'completed' ? 'fas fa-check text-xs' : 'fas fa-tasks text-[10px]'"></i>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                 <h4 :class="['font-black text-sm uppercase tracking-tight truncate', t.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-800']">{{ t.task }}</h4>
+                                 <div class="flex items-center gap-3">
+                                    <span v-if="t.deadline" :class="['text-[8px] font-black uppercase tracking-widest flex items-center gap-1', isOverdue(t) ? 'text-red-500' : 'text-amber-500']">
+                                       <i class="fas fa-clock text-[7px]"></i>
+                                       {{ formatTime(t.deadline) }}
+                                    </span>
+                                    <span v-if="t.assigned_by" class="text-[7px] font-black uppercase text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">Assigner: {{ t.assigner_name || 'Admin' }}</span>
+                                 </div>
+                              </div>
+                           </div>
+                           
+                           <!-- Right: Expand Icon / Status Badge -->
+                           <div class="flex items-center gap-3">
+                              <span v-if="t.status === 'completed'" class="text-[8px] font-black uppercase text-green-600 bg-green-100 px-3 py-1.5 rounded-xl flex items-center gap-1">
+                                 <i class="fas fa-check-circle"></i> Selesai
+                              </span>
+                              <div class="w-8 h-8 rounded-full bg-gray-100/50 flex items-center justify-center text-gray-400 transition-transform duration-300" :class="{ 'rotate-180 bg-green-50 text-green-600': expandedTodoId === t.id }">
+                                 <i class="fas fa-chevron-down text-[8px]"></i>
+                              </div>
+                           </div>
+                        </div>
+
+                        <!-- Expanded Content -->
+                        <Transition name="expand">
+                           <div v-if="expandedTodoId === t.id" class="mt-6 pt-6 border-t border-gray-100 space-y-6" @click.stop>
+                              <!-- Description -->
+                              <div v-if="t.description" class="space-y-2">
+                                 <p class="text-[9px] font-black uppercase text-gray-400 tracking-widest ml-1">Detail Tugas / Deskripsi:</p>
+                                 <div class="p-4 bg-white rounded-2xl border border-gray-50 text-[11px] text-gray-600 leading-relaxed font-medium">
+                                    {{ t.description }}
+                                 </div>
+                              </div>
+
+                              <!-- Result Notes (If Completed) -->
+                              <div v-if="t.status === 'completed' && t.result_note" class="space-y-2">
+                                 <p class="text-[9px] font-black uppercase text-green-600 tracking-widest ml-1">Laporan Hasil Anda:</p>
+                                 <div class="p-4 bg-green-50/50 rounded-2xl border border-green-100/50 text-[11px] text-gray-700 italic font-medium leading-relaxed">
+                                    "{{ t.result_note }}"
+                                 </div>
+                              </div>
+
+                              <!-- Actions Area -->
+                              <div class="flex flex-wrap items-center justify-between gap-4">
+                                 <div class="flex items-center gap-3">
+                                    <button v-if="t.status !== 'completed'" @click="openTaskResultModal(t)" class="px-6 py-3 bg-green-600 text-white rounded-[1.2rem] text-[10px] font-black uppercase tracking-widest hover:bg-green-700 transition-all shadow-xl shadow-green-100 flex items-center gap-2">
+                                       <i class="fas fa-upload text-[8px]"></i> Upload Bukti
+                                    </button>
+                                    <a v-if="t.result_attachment" :href="t.result_attachment" target="_blank" class="px-6 py-3 bg-blue-50 text-blue-600 rounded-[1.2rem] text-[10px] font-black uppercase tracking-widest hover:bg-blue-100 transition-all flex items-center gap-2">
+                                       <i class="fas fa-image text-[8px]"></i> Lihat Bukti
+                                    </a>
+                                 </div>
+
+                                 <div class="flex items-center gap-2">
+                                    <button v-if="!t.assigned_by" @click="openEditTodoModal(t)" class="px-4 py-2 text-blue-500 hover:text-blue-700 text-[9px] font-black uppercase tracking-widest hover:bg-blue-50 rounded-xl transition-all">
+                                       <i class="fas fa-edit mr-1"></i> Edit
+                                    </button>
+                                    <button @click="handleToggleTodo(t.id)" :class="['px-6 py-3 rounded-[1.2rem] text-[10px] font-black uppercase tracking-widest transition-all border', 
+                                       t.status === 'completed' ? 'border-amber-200 text-amber-600 hover:bg-amber-50' : 'border-green-200 text-green-600 hover:bg-green-50']">
+                                       {{ t.status === 'completed' ? 'Batalkan Selesai' : 'Tandai Selesai' }}
+                                    </button>
+                                 </div>
+                              </div>
+                           </div>
+                        </Transition>
+                     </div>
+                  </div>
+               </div>
+
+               <div v-else class="py-20 text-center">
+                  <div class="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-gray-200">
+                     <i class="fas fa-clipboard-list text-3xl"></i>
+                  </div>
+                  <p class="text-gray-400 font-bold italic uppercase tracking-widest text-[10px]">Belum ada tugas yang direncanakan. <br> Mulai buat tugas pertama Anda di atas!</p>
+               </div>
            </div>
         </div>
 
@@ -813,6 +869,46 @@
             </div>
          </Transition>
       </Teleport>
+      <!-- Modal: Edit Tugas -->
+      <Teleport to="body">
+         <Transition name="fade">
+            <div v-if="showEditTodoModal" class="fixed inset-0 z-[250] flex items-center justify-center p-4">
+               <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md" @click="showEditTodoModal = false"></div>
+               <div class="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in duration-300">
+                  <div class="p-8 bg-slate-900 text-white flex justify-between items-center shrink-0">
+                     <h3 class="text-xl font-black uppercase tracking-tighter italic">Edit <span class="text-blue-500">Tugas</span></h3>
+                     <button @click="showEditTodoModal = false" class="text-white/60 hover:text-white transition-colors">✕</button>
+                  </div>
+                  
+                  <div class="p-8 space-y-6 overflow-y-auto max-h-[70vh] no-scrollbar">
+                     <div class="space-y-4">
+                        <div class="space-y-1">
+                           <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Nama Tugas</label>
+                           <input v-model="editTodoForm.task" placeholder="Apa yang ingin Anda kerjakan?" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold transition-all" required />
+                        </div>
+
+                        <div class="space-y-1">
+                           <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Deskripsi / Detail</label>
+                           <textarea v-model="editTodoForm.description" placeholder="Berikan detail tugas..." class="w-full h-32 p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-medium text-xs resize-none transition-all"></textarea>
+                        </div>
+
+                        <div class="space-y-1">
+                           <label class="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-widest">Tenggat Waktu</label>
+                           <input v-model="editTodoForm.deadline" type="datetime-local" class="w-full p-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 font-bold transition-all" />
+                        </div>
+                     </div>
+
+                     <div class="flex gap-3">
+                        <button @click="handleDeleteTodo(editTodoForm.id)" class="px-6 py-5 bg-red-50 text-red-500 rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] hover:bg-red-100 transition-all">Hapus</button>
+                        <button @click="handleUpdateTodo" :disabled="submitting" class="flex-1 py-5 bg-blue-600 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all">
+                           {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </Transition>
+      </Teleport>
    </div>
 </template>
 
@@ -877,6 +973,9 @@ const groupedTodos = computed(() => {
 const newTodo = ref('');
 const newTodoDeadline = ref('');
 const newTodoDescription = ref('');
+
+const showEditTodoModal = ref(false);
+const editTodoForm = reactive({ id: null, task: '', deadline: '', description: '' });
 
 const coords = ref(null);
 const currentLocationName = ref('');
@@ -1143,20 +1242,63 @@ const handleAddTodo = async () => {
 
 const handleToggleTodo = async (id) => {
   try {
-    await api.put(`/field/todos/${id}`);
+    await api.patch(`/field/todos/${id}/toggle`);
+    fetchData();
+  } catch (err) {
+    Swal.fire('Gagal', 'Gagal memperbarui status tugas', 'error');
+  }
+};
+
+const openEditTodoModal = (todo) => {
+  editTodoForm.id = todo.id;
+  editTodoForm.task = todo.task;
+  editTodoForm.deadline = todo.deadline ? todo.deadline.substring(0, 16) : '';
+  editTodoForm.description = todo.description || '';
+  showEditTodoModal.value = true;
+};
+
+const handleUpdateTodo = async () => {
+  if (!editTodoForm.task.trim()) return;
+  submitting.value = true;
+  try {
+    await api.put(`/field/todos/${editTodoForm.id}`, {
+      task: editTodoForm.task,
+      deadline: editTodoForm.deadline || null,
+      description: editTodoForm.description || null
+    });
+    showEditTodoModal.value = false;
+    Swal.fire({
+       icon: 'success',
+       title: 'Berhasil',
+       text: 'Tugas diperbarui',
+       timer: 1500,
+       showConfirmButton: false
+    });
     fetchData();
   } catch (err) {
     Swal.fire('Gagal', 'Gagal memperbarui tugas', 'error');
+  } finally {
+    submitting.value = false;
   }
 };
 
 const handleDeleteTodo = async (id) => {
-  if (!confirm('Hapus tugas ini?')) return;
-  try {
-    await api.delete(`/field/todos/${id}`);
-    fetchData();
-  } catch (err) {
-    Swal.fire('Gagal', 'Gagal menghapus tugas', 'error');
+  const result = await Swal.fire({
+    title: 'Hapus tugas?',
+    text: "Tindakan ini tidak dapat dibatalkan!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Ya, Hapus!'
+  });
+  if (result.isConfirmed) {
+    try {
+      await api.delete(`/field/todos/${id}`);
+      Swal.fire('Terhapus!', 'Tugas telah dihapus.', 'success');
+      fetchData();
+    } catch (err) {
+      Swal.fire('Gagal', 'Gagal menghapus tugas', 'error');
+    }
   }
 };
 

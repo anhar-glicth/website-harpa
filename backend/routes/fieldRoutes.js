@@ -8,7 +8,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 // To Do List
 router.get('/todos', auth, fieldController.getTodos);
 router.post('/todos', auth, fieldController.addTodo);
-router.put('/todos/:id', auth, fieldController.toggleTodo);
+router.put('/todos/:id', auth, fieldController.updateTodo);
+router.patch('/todos/:id/toggle', auth, fieldController.toggleTodo);
 router.delete('/todos/:id', auth, fieldController.deleteTodo);
 
 // Attendance

@@ -51,6 +51,20 @@ exports.deleteTodo = async (req, res) => {
     }
 };
 
+exports.updateTodo = async (req, res) => {
+    const { id } = req.params;
+    const { task, deadline, description } = req.body;
+    try {
+        await db.query(
+            'UPDATE todo_list SET task = ?, deadline = ?, description = ? WHERE id = ? AND user_id = ?',
+            [task, deadline || null, description || null, id, req.user.id]
+        );
+        res.json({ message: 'Tugas berhasil diperbarui' });
+    } catch (error) {
+        res.status(500).json({ message: 'Gagal memperbarui tugas' });
+    }
+};
+
 /**
  * --- ATTENDANCE ---
  */
