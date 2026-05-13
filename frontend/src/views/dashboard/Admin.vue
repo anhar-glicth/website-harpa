@@ -886,21 +886,15 @@
                   <div class="p-6 border-b border-gray-50 flex flex-wrap gap-4 items-center bg-gray-50/20">
                      <div class="flex items-center gap-2 flex-wrap">
                         <span class="text-[9px] font-black uppercase tracking-widest text-gray-400"><i class="fas fa-filter mr-1"></i>Filter Absensi:</span>
-                        <select v-model="adminFilterYear" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
-                           <option value="">Tahun</option>
-                           <option v-for="y in availableAdminYears" :key="y" :value="String(y)">{{ y }}</option>
-                        </select>
-                        <select v-model="adminFilterMonth" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
-                           <option value="">Bulan</option>
-                           <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option><option value="4">April</option>
-                           <option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option>
-                           <option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
-                        </select>
-                        <select v-model="adminFilterDay" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
-                           <option value="">Tanggal</option>
-                           <option v-for="d in 31" :key="d" :value="String(d)">{{ d }}</option>
-                        </select>
-                        <button v-if="adminFilterMonth || adminFilterYear || adminFilterDay" @click="resetAdminFilter" class="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
+                        <div class="flex items-center gap-2">
+                           <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Dari</span>
+                           <input v-model="adminStartDate" type="date" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all" />
+                        </div>
+                        <div class="flex items-center gap-2">
+                           <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Sampai</span>
+                           <input v-model="adminEndDate" type="date" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all" />
+                        </div>
+                        <button v-if="adminStartDate || adminEndDate" @click="resetAdminFilter" class="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
                            <i class="fas fa-times"></i>
                         </button>
                      </div>
@@ -991,26 +985,20 @@
                    <!-- Filter Row Tugas -->
                    <div class="p-6 border-b border-gray-50 flex flex-wrap gap-3 items-center bg-gray-50/20">
                       <span class="text-[9px] font-black uppercase tracking-widest text-gray-400"><i class="fas fa-filter mr-1"></i>Filter Tugas:</span>
-                      <select v-model="taskFilterYear" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
-                         <option value="">Tahun</option>
-                         <option v-for="y in availableTaskYears" :key="y" :value="String(y)">{{ y }}</option>
-                      </select>
-                      <select v-model="taskFilterMonth" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
-                         <option value="">Bulan</option>
-                         <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maret</option><option value="4">April</option>
-                         <option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option>
-                         <option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
-                      </select>
-                      <select v-model="taskFilterDay" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
-                         <option value="">Tanggal</option>
-                         <option v-for="d in 31" :key="d" :value="String(d)">{{ d }}</option>
-                      </select>
+                      <div class="flex items-center gap-2">
+                         <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Dari</span>
+                         <input v-model="taskStartDate" type="date" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all" />
+                      </div>
+                      <div class="flex items-center gap-2">
+                         <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Sampai</span>
+                         <input v-model="taskEndDate" type="date" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all" />
+                      </div>
                       <select v-model="taskFilterStatus" class="px-3 py-2 bg-white border border-gray-200 rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all">
                          <option value="">Semua Status</option>
                          <option value="pending">Pending</option>
                          <option value="completed">Completed</option>
                       </select>
-                      <button v-if="taskFilterYear || taskFilterMonth || taskFilterDay || taskFilterStatus" @click="resetTaskFilter" class="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
+                      <button v-if="taskStartDate || taskEndDate || taskFilterStatus" @click="resetTaskFilter" class="px-3 py-2 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
                          <i class="fas fa-times"></i> Reset
                       </button>
                       <span class="ml-auto text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ filteredTasks.length }} tugas ditemukan</span>
@@ -1804,10 +1792,10 @@ const groupedAdminAttendances = computed(() => {
   const groups = {};
   allAttendances.value.forEach(att => {
     const d = new Date(att.created_at);
-    // Filter berdasarkan bulan, tahun, hari
-    if (adminFilterYear.value && d.getFullYear() !== parseInt(adminFilterYear.value)) return;
-    if (adminFilterMonth.value && (d.getMonth() + 1) !== parseInt(adminFilterMonth.value)) return;
-    if (adminFilterDay.value && d.getDate() !== parseInt(adminFilterDay.value)) return;
+    const dStr = d.toISOString().split('T')[0];
+    
+    if (adminStartDate.value && dStr < adminStartDate.value) return;
+    if (adminEndDate.value && dStr > adminEndDate.value) return;
 
     const dateStr = att.tgl_indo || formatDate(att.created_at);
     const key = `${att.user_id}_${dateStr}`;
@@ -1833,19 +1821,12 @@ const groupedAdminAttendances = computed(() => {
 });
 
 // Admin Filter State
-const adminFilterMonth = ref('');
-const adminFilterYear = ref('');
-const adminFilterDay = ref('');
-
-const availableAdminYears = computed(() => {
-  const years = new Set(allAttendances.value.map(l => new Date(l.created_at).getFullYear()));
-  return [...years].sort((a, b) => b - a);
-});
+const adminStartDate = ref('');
+const adminEndDate = ref('');
 
 const resetAdminFilter = () => {
-  adminFilterMonth.value = '';
-  adminFilterYear.value = '';
-  adminFilterDay.value = '';
+  adminStartDate.value = '';
+  adminEndDate.value = '';
 };
 
 const downloadAdminAttendanceCSV = () => {
@@ -1871,26 +1852,17 @@ const downloadAdminAttendanceCSV = () => {
 };
 
 // Task Filter State
-const taskFilterYear = ref('');
-const taskFilterMonth = ref('');
-const taskFilterDay = ref('');
+const taskStartDate = ref('');
+const taskEndDate = ref('');
 const taskFilterStatus = ref('');
-
-const availableTaskYears = computed(() => {
-  const years = new Set(allTasks.value.map(t => {
-    const date = t.deadline ? new Date(t.deadline) : new Date(t.created_at);
-    return date.getFullYear();
-  }));
-  return [...years].sort((a, b) => b - a);
-});
 
 const filteredTasks = computed(() => {
   return allTasks.value.filter(t => {
     const d = t.deadline ? new Date(t.deadline) : new Date(t.created_at);
+    const dStr = d.toISOString().split('T')[0];
     
-    if (taskFilterYear.value && d.getFullYear() !== parseInt(taskFilterYear.value)) return false;
-    if (taskFilterMonth.value && (d.getMonth() + 1) !== parseInt(taskFilterMonth.value)) return false;
-    if (taskFilterDay.value && d.getDate() !== parseInt(taskFilterDay.value)) return false;
+    if (taskStartDate.value && dStr < taskStartDate.value) return false;
+    if (taskEndDate.value && dStr > taskEndDate.value) return false;
     if (taskFilterStatus.value && t.status !== taskFilterStatus.value) return false;
     
     return true;
@@ -1898,9 +1870,8 @@ const filteredTasks = computed(() => {
 });
 
 const resetTaskFilter = () => {
-  taskFilterYear.value = '';
-  taskFilterMonth.value = '';
-  taskFilterDay.value = '';
+  taskStartDate.value = '';
+  taskEndDate.value = '';
   taskFilterStatus.value = '';
 };
 

@@ -468,8 +468,7 @@ exports.deleteTask = async (req, res) => {
  */
 exports.getWorkerDetail = async (req, res) => {
     const { id } = req.params;
-    const { day, month, year } = req.query;
-
+    const { start_date, end_date } = req.query;
     try {
         // 1. Ambil info user
         const [[worker]] = await db.query('SELECT id, name, email, role FROM users WHERE id = ?', [id]);
@@ -479,17 +478,15 @@ exports.getWorkerDetail = async (req, res) => {
         let filterSql = ' WHERE user_id = ?';
         let params = [id];
 
-        if (year) {
-            filterSql += ' AND YEAR(created_at) = ?';
-            params.push(year);
-        }
-        if (month) {
-            filterSql += ' AND MONTH(created_at) = ?';
-            params.push(month);
-        }
-        if (day) {
-            filterSql += ' AND DAY(created_at) = ?';
-            params.push(day);
+        if (start_date && end_date) {
+            filterSql += ' AND DATE(created_at) BETWEEN ? AND ?';
+            params.push(start_date, end_date);
+        } else if (start_date) {
+            filterSql += ' AND DATE(created_at) >= ?';
+            params.push(start_date);
+        } else if (end_date) {
+            filterSql += ' AND DATE(created_at) <= ?';
+            params.push(end_date);
         }
 
         // 3. Ambil statistik terfilter (Simple query on todo_list only, no ambiguity)

@@ -853,6 +853,27 @@ const leaveType = ref('');
 const leaveForm = reactive({ attachment: '' });
 const updateForm = reactive({ title: '', content: '', image: '' });
 const taskResultForm = reactive({ attachment: '', note: '' });
+const expandedTodoId = ref(null);
+const toggleTodoExpand = (id) => {
+  expandedTodoId.value = expandedTodoId.value === id ? null : id;
+};
+
+const groupedTodos = computed(() => {
+  const groups = {};
+  const sorted = [...todos.value].sort((a, b) => {
+    const dateA = new Date(a.deadline || a.created_at);
+    const dateB = new Date(b.deadline || b.created_at);
+    return dateB - dateA; // Newest first
+  });
+  
+  sorted.forEach(t => {
+    const dateStr = formatDate(t.deadline || t.created_at);
+    if (!groups[dateStr]) groups[dateStr] = [];
+    groups[dateStr].push(t);
+  });
+  return groups;
+});
+
 const newTodo = ref('');
 const newTodoDeadline = ref('');
 const newTodoDescription = ref('');
@@ -1540,4 +1561,15 @@ onUnmounted(() => {
 <style scoped>
 .fade-enter-active, .fade-leave-active { transition: opacity 0.4s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+/* Expansion Animation */
+.expand-enter-active, .expand-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 500px;
+  overflow: hidden;
+}
+.expand-enter-from, .expand-leave-to {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-10px);
+}
 </style>

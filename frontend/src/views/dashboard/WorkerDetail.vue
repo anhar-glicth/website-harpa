@@ -73,18 +73,14 @@
         </div>
 
         <div class="flex items-center gap-2 flex-wrap">
-          <select v-model="filters.year" class="px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all hover:bg-gray-100">
-            <option value="">Tahun</option>
-            <option v-for="y in availableYears" :key="y" :value="y">{{ y }}</option>
-          </select>
-          <select v-model="filters.month" class="px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all hover:bg-gray-100">
-            <option value="">Bulan</option>
-            <option v-for="(m, idx) in months" :key="idx+1" :value="idx+1">{{ m }}</option>
-          </select>
-          <select v-model="filters.day" class="px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all hover:bg-gray-100">
-            <option value="">Tanggal</option>
-            <option v-for="d in 31" :key="d" :value="d">{{ d }}</option>
-          </select>
+          <div class="flex items-center gap-2">
+            <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-2">Dari</span>
+            <input v-model="filters.start_date" type="date" class="px-4 py-2 bg-gray-50 border border-transparent rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all hover:bg-gray-100" />
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest px-2">Sampai</span>
+            <input v-model="filters.end_date" type="date" class="px-4 py-2 bg-gray-50 border border-transparent rounded-xl text-[10px] font-black text-gray-700 outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition-all hover:bg-gray-100" />
+          </div>
           <button v-if="hasFilters" @click="resetFilters" class="px-4 py-2.5 bg-red-50 text-red-500 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-all border border-red-100">
             <i class="fas fa-times"></i>
           </button>
@@ -199,7 +195,7 @@
                   <div v-if="task.result_note || task.result_attachment" class="p-5 bg-white rounded-3xl border border-gray-100 shadow-sm space-y-4">
                     <p class="text-[9px] font-black text-green-600 uppercase tracking-widest border-l-4 border-green-600 pl-3">Hasil Laporan Petugas</p>
                     <div class="flex flex-col sm:flex-row gap-5">
-                      <div v-if="task.result_attachment" class="w-full sm:w-32 h-32 bg-gray-50 rounded-2xl overflow-hidden cursor-pointer group/img" @click="viewAttachment(task.result_attachment)">
+                      <div v-if="task.result_attachment" class="w-full sm:w-32 h-32 bg-gray-50 rounded-2xl overflow-hidden cursor-pointer group/img relative" @click="viewAttachment(task.result_attachment)">
                         <img :src="task.result_attachment" class="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500" />
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center text-white text-xs transition-opacity">
                           <i class="fas fa-expand"></i>
@@ -286,7 +282,7 @@ const loading = ref(true);
 const worker = ref(null);
 const stats = ref({ total: 0, completed: 0, pending: 0, percentage: 0 });
 const tasks = ref([]);
-const filters = reactive({ day: '', month: '', year: '' });
+const filters = reactive({ start_date: '', end_date: '' });
 const availableYears = ref([new Date().getFullYear(), new Date().getFullYear() - 1]);
 const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -297,15 +293,14 @@ const attachmentUrl = ref('');
 const submitting = ref(false);
 const taskForm = reactive({ id: null, task: '', description: '', deadline: '', user_id: workerId });
 
-const hasFilters = computed(() => filters.day || filters.month || filters.year);
+const hasFilters = computed(() => filters.start_date || filters.end_date);
 
 const fetchDetail = async () => {
   loading.value = true;
   try {
     const params = {};
-    if (filters.day) params.day = filters.day;
-    if (filters.month) params.month = filters.month;
-    if (filters.year) params.year = filters.year;
+    if (filters.start_date) params.start_date = filters.start_date;
+    if (filters.end_date) params.end_date = filters.end_date;
 
     const { data } = await api.get(`/admin/worker-performance/${workerId}`, { params });
     worker.value = data.worker;
@@ -321,9 +316,8 @@ const fetchDetail = async () => {
 };
 
 const resetFilters = () => {
-  filters.day = '';
-  filters.month = '';
-  filters.year = '';
+  filters.start_date = '';
+  filters.end_date = '';
 };
 
 const formatDate = (dateStr) => {
