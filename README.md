@@ -1,8 +1,8 @@
-# 🕊️ PEDULI SESAMA - Platform Donasi Humanity
+# 🕊️ AMAL ABADI - Platform Donasi & Zakat
 
 ![Banner](https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&h=400&fit=crop)
 
-**PEDULI SESAMA** adalah platform donasi digital modern yang dirancang untuk menghubungkan kebaikan hati para donatur dengan mereka yang membutuhkan secara transparan, cepat, dan aman.
+**AMAL ABADI** adalah platform donasi dan zakat digital modern yang dirancang untuk menghubungkan kebaikan hati para donatur dengan mereka yang membutuhkan secara transparan, cepat, dan aman.
 
 ---
 
@@ -16,66 +16,60 @@
 ## 🛠️ Teknologi yang Digunakan
 Platform ini dibangun menggunakan teknologi mutakhir untuk menjamin performa dan keamanan:
 
-*   **Frontend:** [Vue.js 3](https://vuejs.org/) & [Vite](https://vitejs.dev/) - Antarmuka yang responsif dan sangat cepat.
+*   **Core Backend & Frontend:** [Laravel 12](https://laravel.com/) (Full-stack Blade & Eloquent ORM)
 *   **Styling:** [Tailwind CSS](https://tailwindcss.com/) & [Vanilla CSS Custom] - Desain premium dan estetik.
-*   **Backend:** [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/) - Server yang handal dan skalabel.
 *   **Database:** [MySQL](https://www.mysql.com/) - Penyimpanan data yang terstruktur dan aman.
 *   **Visualisasi:** [Chart.js](https://www.chartjs.org/) - Grafik analisis data donasi yang interaktif.
-*   **Keamanan:** [JWT](https://jwt.io/) & [Bcrypt](https://github.com/kelektiv/node.bcrypt.js) - Enkripsi password dan otentikasi aman.
+*   **Interaktivitas:** [Alpine.js](https://alpinejs.dev/) - Efek animasi dan kelonggaran navigasi (Accordion, Dropdown, Modals).
 
 ---
 
-## 🔐 Akses Akun (Demo)
-Gunakan akun berikut untuk menguji berbagai peran di dalam sistem:
+## 🔐 Akses Akun (Demo & Pengujian)
+Gunakan akun berikut untuk menguji berbagai peran di dalam sistem Amal Abadi:
 
 | Peran | Email | Password | Hak Akses |
 | :--- | :--- | :--- | :--- |
-| **🛡️ Admin** | `admin@humanity.org` | `password123` | Manajemen total, Verifikasi, Data Analis |
-| **👷 Petugas** | `petugas@humanity.org` | `password123` | Kelola Kampanye, Berita, Absensi, To-Do |
-| **👤 Donatur** | `donatur@humanity.org` | `password123` | Berdonasi, Cek Riwayat, Profil |
+| **🛡️ Admin** | `admin@humanity.org` | `password123` | Manajemen total, Verifikasi Bukti, Data Analis, Monitoring Staff |
+| **👷 Petugas** | `petugas@humanity.org` | `password123` | Kelola Kampanye, Berita Dampak, Absensi GPS, To-Do List, CRM Prospek |
+| **👤 Donatur** | `donatur@humanity.org` | `password123` | Kalkulator & Bayar Zakat, Donasi Program, Cek Riwayat & Tracking, Papan Doa |
 
 ---
 
 ## 🚀 Cara Menjalankan Website
 
-### 1. Persiapan Database
+### 1. Persiapan Database (XAMPP)
 1. Pastikan **XAMPP (MySQL)** sudah dalam status **Running**.
-2. Masuk ke folder backend: `cd backend`.
-3. Jalankan skrip pengaturan database otomatis:
+2. Buat database baru bernama `humanity_db` melalui phpMyAdmin.
+
+### 2. Konfigurasi & Migrasi Laravel
+1. Buka terminal lalu masuk ke folder `laravel`:
    ```bash
-   node setup_final_database.js
-   node seed_final_data.js
+   cd laravel
+   ```
+2. Jalankan migrasi tabel database dan masukkan data demo awal (seeding):
+   ```bash
+   php artisan migrate:fresh --seed
    ```
 
-### 2. Jalankan Backend
-1. Buka terminal baru di folder `backend`.
-2. Instal dependensi (jika belum): `npm install`.
-3. Jalankan server:
+### 3. Jalankan Server Lokal
+1. Jalankan perintah server development Laravel:
    ```bash
-   npm run dev
+   php artisan serve
    ```
-   *Server akan berjalan di: `http://localhost:5000`*
-
-### 3. Jalankan Frontend
-1. Buka terminal baru di folder `frontend`.
-2. Instal dependensi (jika belum): `npm install`.
-3. Jalankan aplikasi:
-   ```bash
-   npm run dev
-   ```
-   *Aplikasi akan tersedia di: `http://localhost:3000` (atau port lain yang muncul)*
+2. Buka browser dan akses aplikasi melalui alamat:
+   **[http://localhost:8000](http://localhost:8000)**
 
 ---
 
 ## ✨ Fitur Unggulan
 *   📊 **Dashboard Analitik**: Grafik donasi bulanan dan distribusi program yang interaktif.
-*   ✅ **Verifikasi Bukti Transfer**: Sistem validasi donasi oleh Admin.
-*   📍 **Absensi GPS**: Petugas lapangan dapat melakukan absensi dengan deteksi lokasi otomatis.
-*   📝 **To-Do List Terintegrasi**: Manajemen tugas petugas langsung dari dashboard.
-*   📰 **Update Dampak (Impact Stories)**: Donatur dapat melihat hasil nyata dari donasi mereka.
+*   📡 **Monitoring Staff Terpadu**: Admin dapat melacak kehadiran GPS petugas, delegasi tugas lapangan, dan memantau persentase efektivitas kerja staff secara real-time.
+*   📍 **Absensi GPS Petugas**: Petugas lapangan dapat melakukan absensi check-in/out dengan deteksi koordinat otomatis (HTML5 Geolocation API).
+*   📋 **CRM Prospek Donatur**: Pelacakan interaksi calon donatur baru lengkap dengan log respon follow-up.
+*   🤲 **Papan Doa Bersama**: Donatur dapat saling mengirimkan doa dan mengaminkan doa donatur lainnya secara real-time.
 
 ---
 
 > "Kebaikan kecil yang Anda lakukan hari ini, adalah harapan besar bagi mereka yang membutuhkan."
 
-Copyright © 2026 **Anhar Glicth** - All Rights Reserved.
+Copyright © 2026 **Amal Abadi & Anhar Glicth** - All Rights Reserved.

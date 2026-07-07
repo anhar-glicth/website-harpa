@@ -178,12 +178,12 @@
                         <h4 class="text-[10px] font-black uppercase tracking-wider text-slate-400">Buat Tugas Lapangan Mandiri</h4>
                         <form action="{{ route('field.todo.store') }}" method="POST" class="space-y-4">
                             @csrf
-                            <input type="text" name="task" required placeholder="Judul tugas lapangan..." class="w-full p-4 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 font-bold text-xs transition-all uppercase">
-                            <textarea name="description" placeholder="Catatan tambahan / rincian pengerjaan tugas..." class="w-full p-4 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 font-semibold text-xs transition-all h-20 resize-none"></textarea>
+                            <input type="text" name="task" required placeholder="Judul tugas lapangan..." class="w-full p-4 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 font-bold text-xs transition-all uppercase">
+                            <textarea name="description" placeholder="Catatan tambahan / rincian pengerjaan tugas..." class="w-full p-4 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 font-semibold text-xs transition-all h-20 resize-none"></textarea>
                             <div class="flex flex-col sm:flex-row gap-3 items-end">
                                 <div class="flex-grow w-full">
                                     <label class="text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block ml-1">Tenggat Waktu (Deadline)</label>
-                                    <input name="deadline" type="datetime-local" class="w-full p-3.5 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 font-bold text-xs transition-all">
+                                    <input name="deadline" type="datetime-local" class="w-full p-3.5 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 font-bold text-xs transition-all">
                                 </div>
                                 <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-black uppercase text-xs tracking-wider shrink-0">Simpan Tugas</button>
                             </div>
@@ -329,7 +329,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Tipe Absen</label>
-                                <select name="type" required class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                                <select name="type" required class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
                                     <option value="check_in">Check-In Masuk</option>
                                     <option value="check_out">Check-Out Pulang</option>
                                     <option value="izin">Izin</option>
@@ -338,13 +338,13 @@
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Bukti / Selfi (Opsional)</label>
-                                <input type="file" name="attachment" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                                <input type="file" name="attachment" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
                             </div>
                         </div>
 
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Lokasi / Keterangan Tambahan</label>
-                            <input type="text" name="location" placeholder="Contoh: Kantor Cabang / Alamat Penyaluran" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                            <input type="text" name="location" placeholder="Contoh: Kantor Cabang / Alamat Penyaluran" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
                         </div>
 
                         <div id="gps-status" class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">

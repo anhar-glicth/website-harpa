@@ -6,38 +6,7 @@
         
         <!-- Sidebar Links -->
         <div class="lg:col-span-1 space-y-6">
-            <div class="bg-white border border-slate-100 p-8 rounded-3xl space-y-6 shadow-sm">
-                <div class="flex items-center space-x-3">
-                    @if(Auth::user()->profile_photo)
-                        <img src="{{ Auth::user()->profile_photo }}" class="w-12 h-12 rounded-2xl object-cover" alt="">
-                    @else
-                        <div class="w-12 h-12 bg-primary-100 text-primary-700 rounded-2xl flex items-center justify-center font-bold text-base uppercase">
-                            {{ substr(Auth::user()->name, 0, 2) }}
-                        </div>
-                    @endif
-                    <div>
-                        <h4 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 leading-tight">{{ Auth::user()->name }}</h4>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase block tracking-wider mt-1">{{ Auth::user()->email }}</span>
-                    </div>
-                </div>
-                
-                <hr class="border-slate-100">
-
-                <div class="flex flex-col space-y-2 font-bold text-[10px] uppercase tracking-wider text-slate-500">
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl bg-primary-50 text-primary-700">
-                        <i class="fa-solid fa-gauge"></i>
-                        <span>Ringkasan</span>
-                    </a>
-                    <a href="{{ route('zakat.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        <i class="fa-solid fa-calculator"></i>
-                        <span>Bayar Zakat</span>
-                    </a>
-                    <a href="{{ route('profile.custom') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        <i class="fa-solid fa-user-pen"></i>
-                        <span>Edit Profil</span>
-                    </a>
-                </div>
-            </div>
+            @include('layouts.donor-sidebar', ['active' => 'dashboard'])
         </div>
 
         <!-- Dashboard Content -->
@@ -52,7 +21,7 @@
             <!-- Stats -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <!-- Total Donated -->
-                <div class="bg-white border border-slate-100 p-8 rounded-3xl shadow-sm flex items-center space-x-6">
+                <div class="bg-white border border-slate-100 p-8 rounded-3xl shadow-sm flex items-center space-x-6 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
                     <div class="bg-emerald-50 text-emerald-600 w-16 h-16 rounded-2xl flex items-center justify-center text-2xl shrink-0">
                         <i class="fa-solid fa-hand-holding-heart"></i>
                     </div>
@@ -65,7 +34,7 @@
                 </div>
 
                 <!-- Total Zakat Paid -->
-                <div class="bg-white border border-slate-100 p-8 rounded-3xl shadow-sm flex items-center space-x-6">
+                <div class="bg-white border border-slate-100 p-8 rounded-3xl shadow-sm flex items-center space-x-6 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
                     <div class="bg-primary-50 text-primary-600 w-16 h-16 rounded-2xl flex items-center justify-center text-2xl shrink-0">
                         <i class="fa-solid fa-handshake"></i>
                     </div>
@@ -80,54 +49,67 @@
 
             <!-- Donation History -->
             <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
-                <h3 class="font-montserrat font-black uppercase text-sm text-slate-800 tracking-wider">Riwayat Donasi Kebaikan</h3>
+                <h3 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 tracking-wider">Riwayat Donasi Kebaikan</h3>
                 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                                <th class="pb-4">Kampanye</th>
-                                <th class="pb-4">Jumlah</th>
-                                <th class="pb-4">Status Pembayaran</th>
-                                <th class="pb-4">Status Tracking</th>
-                                <th class="pb-4 text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-xs font-semibold text-slate-600 uppercase tracking-wide">
-                            @forelse($donations as $don)
-                                <tr class="border-b border-slate-50 last:border-0">
-                                    <td class="py-4 pr-4 max-w-[200px] line-clamp-1 mt-3">{{ $don->campaign->title }}</td>
-                                    <td class="py-4">Rp {{ number_format($don->amount, 0, ',', '.') }}</td>
-                                    <td class="py-4">
-                                        @if($don->payment_status === 'Success')
-                                            <span class="bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Success</span>
-                                        @elseif($don->payment_status === 'Pending')
-                                            <span class="bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Pending</span>
-                                        @else
-                                            <span class="bg-rose-50 text-rose-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Failed</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-4">
-                                        <span class="bg-slate-100 text-slate-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">
-                                            {{ $don->tracking_status }}
-                                        </span>
-                                    </td>
-                                    <td class="py-4 text-right">
-                                        <a href="{{ route('donations.receipt', $don->id) }}" class="text-primary-600 hover:text-primary-800 font-black">Detail</a>
-                                    </td>
+                @if($donations->count() > 0)
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                    <th class="pb-4">Kampanye</th>
+                                    <th class="pb-4">Jumlah</th>
+                                    <th class="pb-4">Status Pembayaran</th>
+                                    <th class="pb-4">Status Tracking</th>
+                                    <th class="pb-4 text-right">Aksi</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="py-8 text-center text-slate-400 font-bold uppercase tracking-wider">Anda belum pernah melakukan donasi.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <div>
-                    {{ $donations->links() }}
-                </div>
+                            </thead>
+                            <tbody class="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+                                @foreach($donations as $don)
+                                    <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/45 transition-colors">
+                                        <td class="py-4 pr-4">
+                                            <span class="block text-slate-850 font-bold truncate max-w-[250px]">{{ $don->campaign->title ?? 'Umum' }}</span>
+                                            <span class="block text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">ID: #DON-{{ $don->id }}</span>
+                                        </td>
+                                        <td class="py-4 text-primary-700 font-bold">Rp {{ number_format($don->amount, 0, ',', '.') }}</td>
+                                        <td class="py-4">
+                                            @if($don->payment_status === 'Success')
+                                                <span class="bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SUCCESS</span>
+                                            @elseif($don->payment_status === 'Pending')
+                                                <span class="bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PENDING</span>
+                                            @else
+                                                <span class="bg-rose-50 text-rose-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">FAILED</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-4">
+                                            @if($don->tracking_status === 'Disalurkan')
+                                                <span class="bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border border-emerald-100">DISALURKAN</span>
+                                            @elseif($don->tracking_status === 'Diproses')
+                                                <span class="bg-blue-50 text-blue-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border border-blue-100">DIPROSES</span>
+                                            @else
+                                                <span class="bg-slate-100 text-slate-600 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border border-slate-200/50">
+                                                    {{ strtoupper($don->tracking_status ?? 'MENUNGGU') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="py-4 text-right">
+                                            <a href="{{ route('donations.receipt', $don->id) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-primary-650 text-white rounded-lg text-[9px] font-black uppercase tracking-wider transition-all">
+                                                Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pt-4">
+                        {{ $donations->links() }}
+                    </div>
+                @else
+                    <div class="py-16 text-center text-slate-400 font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-heart-crack text-slate-200 text-4xl mb-3 block"></i>
+                        Anda belum pernah melakukan donasi kebaikan.
+                    </div>
+                @endif
             </div>
 
         </div>

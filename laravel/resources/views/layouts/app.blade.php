@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Peduli Sesama - Platform Donasi Humanity' }}</title>
+    <title>{{ $title ?? 'Amal Abadi - Platform Donasi & Zakat' }}</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,13 +24,33 @@
                     },
                     colors: {
                         primary: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            200: '#bbf7d0',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                        },
+                        secondary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            500: '#29abe2',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                        },
+                        emerald: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#29abe2',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
                         }
                     }
                 }
@@ -61,14 +81,14 @@
         <nav x-data="{ open: false }" class="max-w-7xl mx-auto bg-white/80 backdrop-blur-xl border border-slate-200/50 rounded-2xl sm:rounded-3xl shadow-sm px-6 py-4 flex items-center justify-between transition-all duration-300">
             <!-- Logo & Brand -->
             <a href="{{ route('home') }}" class="flex items-center space-x-2 group">
-                <div class="bg-primary-600 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-primary-600/20 group-hover:scale-105 transition-transform duration-300">
-                    <i class="fa-solid fa-dove text-lg"></i>
+                <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-hands-holding-child text-lg"></i>
                 </div>
                 <div>
                     <span class="font-montserrat font-black uppercase tracking-tighter text-sm sm:text-base leading-none block text-slate-900">
-                        Peduli <span class="text-primary-600">Sesama</span>
+                        <span class="text-primary-500">Amal</span> <span class="text-secondary-500">Abadi</span>
                     </span>
-                    <span class="text-[9px] uppercase font-bold tracking-widest text-slate-400 block -mt-0.5">Platform Humanity</span>
+                    <span class="text-[9px] uppercase font-bold tracking-widest text-slate-450 block -mt-0.5">amalabadi.org</span>
                 </div>
             </a>
 
@@ -262,14 +282,14 @@
             <!-- Brand & Tagline -->
             <div class="space-y-4">
                 <div class="flex items-center space-x-2">
-                    <div class="bg-primary-600 text-white w-10 h-10 rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-dove text-lg"></i>
+                    <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white w-10 h-10 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-hands-holding-child text-lg"></i>
                     </div>
                     <div>
                         <span class="font-montserrat font-black uppercase tracking-tighter text-base leading-none block text-white">
-                            Peduli <span class="text-primary-500">Sesama</span>
+                            <span class="text-primary-500">Amal</span> <span class="text-secondary-500">Abadi</span>
                         </span>
-                        <span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 block -mt-0.5">Platform Humanity</span>
+                        <span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 block -mt-0.5">amalabadi.org</span>
                     </div>
                 </div>
                 <p class="text-xs font-medium leading-relaxed">

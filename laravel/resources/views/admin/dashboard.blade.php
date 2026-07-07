@@ -21,7 +21,7 @@
             <!-- Stats Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <!-- Total Donations -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
+                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
                     <div class="bg-emerald-50 text-emerald-600 w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0">
                         <i class="fa-solid fa-hand-holding-dollar"></i>
                     </div>
@@ -34,7 +34,7 @@
                 </div>
 
                 <!-- Total Zakat -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
+                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
                     <div class="bg-primary-50 text-primary-600 w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0">
                         <i class="fa-solid fa-handshake"></i>
                     </div>
@@ -47,7 +47,7 @@
                 </div>
 
                 <!-- Pending Proof Verifications -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
+                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
                     <div class="bg-amber-50 text-amber-600 w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                     </div>
