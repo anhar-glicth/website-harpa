@@ -63,6 +63,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
     Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');
+    
+    // Global Staff Monitoring Routes
+    Route::get('/admin/attendance', [AdminController::class, 'attendanceList'])->name('admin.attendance');
+    Route::get('/admin/tasks', [AdminController::class, 'taskList'])->name('admin.tasks');
+    Route::post('/admin/tasks/store', [AdminController::class, 'storeTask'])->name('admin.tasks.store');
+    Route::get('/admin/performance', [AdminController::class, 'performanceList'])->name('admin.performance');
+    
     Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
     Route::post('/admin/settings/update', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
 });

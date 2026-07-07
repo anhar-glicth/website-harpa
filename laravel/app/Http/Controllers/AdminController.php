@@ -231,4 +231,70 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Tugas berhasil diberikan kepada petugas.');
     }
+
+    public function attendanceList()
+    {
+        $attendances = \App\Models\Attendance::with('user')->latest()->paginate(15);
+        return view('admin.attendance', compact('attendances'));
+    }
+
+    public function taskList()
+    {
+        $todos = \App\Models\TodoList::with(['user', 'assigner'])->latest()->paginate(15);
+        $workers = User::where('role', 'field_worker')->get();
+        return view('admin.tasks', compact('todos', 'workers'));
+    }
+
+    public function storeTask(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'task' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'deadline' => 'nullable|date',
+        ]);
+
+        \App\Models\TodoList::create([
+            'user_id' => $request->user_id,
+            'assigned_by' => auth()->id(),
+            'task' => $request->task,
+            'description' => $request->description,
+            'deadline' => $request->deadline,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->back()->with('success', 'Tugas berhasil diberikan.');
+    }
+
+    public function performanceList()
+    {
+        $workers = User::where('role', 'field_worker')->get();
+        
+        $workerPerformance = [];
+        foreach ($workers as $worker) {
+            $myCampaigns = Campaign::where('author_id', $worker->id)->latest()->get();
+            $myDistributions = Distribution::where('worker_id', $worker->id)->latest()->get();
+            $todos = \App\Models\TodoList::where('user_id', $worker->id)->get();
+            
+            $totalCampaigns = $myCampaigns->count();
+            $totalFunds = $myCampaigns->sum('current_amount');
+            $presentDays = \App\Models\Attendance::where('user_id', $worker->id)->where('type', 'check_in')->count();
+            $totalTasks = $todos->count();
+            $completedTasks = $todos->where('status', 'completed')->count();
+            $effectiveness = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+            
+            $workerPerformance[] = [
+                'worker' => $worker,
+                'totalCampaigns' => $totalCampaigns,
+                'totalFunds' => $totalFunds,
+                'presentDays' => $presentDays,
+                'totalTasks' => $totalTasks,
+                'completedTasks' => $completedTasks,
+                'effectiveness' => $effectiveness,
+                'latest_attendance' => \App\Models\Attendance::where('user_id', $worker->id)->latest()->first()
+            ];
+        }
+
+        return view('admin.performance', compact('workerPerformance'));
+    }
 }
