@@ -15,6 +15,7 @@ class TodoList extends Model
         'deadline',
         'status',
         'result_attachment',
+        'result_note',
         'completed_at',
     ];
 

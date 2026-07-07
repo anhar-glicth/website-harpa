@@ -1,0 +1,98 @@
+<!-- Info Admin Card -->
+<div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+    <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-650/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+    <div class="relative z-10 space-y-4 text-center">
+        <div class="w-16 h-16 bg-primary-50 text-primary-650 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div class="space-y-1">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Super Admin</p>
+            <p class="text-base font-black text-slate-900 tracking-tighter truncate">{{ Auth::user()->name }}</p>
+        </div>
+        <div class="flex gap-2 justify-center pt-2">
+            <a href="{{ route('admin.settings') }}" class="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:text-primary-600 hover:bg-primary-50 transition-all shadow-sm">
+                <i class="fa-solid fa-cog"></i>
+            </a>
+            <a href="{{ route('admin.users') }}" class="px-4 py-2.5 bg-primary-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary-100 hover:bg-primary-700 transition-all">
+                + Staff
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Menu Navigasi Admin Accordion Card -->
+<nav class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+    
+    <!-- 1. MENU UTAMA GROUP -->
+    <div x-data="{ isOpen: true }">
+        <div @click="isOpen = !isOpen" class="bg-slate-800 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-slate-950 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider">Menu Utama</span>
+            <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
+        </div>
+        <div x-show="isOpen" x-collapse class="p-3 space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+            <!-- Tab: Dashboard -->
+            <a href="{{ route('admin.dashboard') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'dashboard' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'dashboard' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-chart-pie text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard</span>
+            </a>
+
+            <!-- Tab: Kelola Kampanye -->
+            <a href="{{ route('admin.campaigns') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'campaigns' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'campaigns' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-gift text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Kelola Kampanye</span>
+            </a>
+
+            <!-- Tab: Verifikasi Donasi -->
+            <a href="{{ route('admin.donations') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'donations' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'donations' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-file-invoice-dollar text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Verifikasi Donasi</span>
+            </a>
+
+            <!-- Tab: Distribusi -->
+            <a href="{{ route('admin.distributions') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'distributions' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'distributions' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-truck-ramp-box text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Distribusi</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. ADMIN MANAGEMENT GROUP -->
+    <div x-data="{ isOpen: true }" class="border-t border-slate-100">
+        <div @click="isOpen = !isOpen" class="bg-primary-600 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-primary-750 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider">Admin Management</span>
+            <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
+        </div>
+        <div x-show="isOpen" x-collapse class="p-3 space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+            <!-- Tab: Kelola Pengguna -->
+            <a href="{{ route('admin.users') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'users' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'users' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-users text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Kelola Pengguna</span>
+            </a>
+
+            <!-- Tab: Pengaturan Web -->
+            <a href="{{ route('admin.settings') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'settings' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'settings' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-gears text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Pengaturan Web</span>
+            </a>
+        </div>
+    </div>
+
+</nav>

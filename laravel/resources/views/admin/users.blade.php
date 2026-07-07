@@ -6,36 +6,7 @@
         
         <!-- Sidebar Menu -->
         <div class="lg:col-span-1 space-y-6">
-            <div class="bg-white border border-slate-100 p-8 rounded-3xl space-y-6 shadow-sm">
-                <h3 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 tracking-wider">Navigasi Admin</h3>
-                <hr class="border-slate-100">
-                <div class="flex flex-col space-y-2 font-bold text-[10px] uppercase tracking-wider text-slate-500">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        <i class="fa-solid fa-chart-pie"></i>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="{{ route('admin.campaigns') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        <i class="fa-solid fa-gift"></i>
-                        <span>Kelola Kampanye</span>
-                    </a>
-                    <a href="{{ route('admin.donations') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                        <span>Verifikasi Donasi</span>
-                    </a>
-                    <a href="{{ route('admin.distributions') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        <i class="fa-solid fa-truck-ramp-box"></i>
-                        <span>Distribusi</span>
-                    </a>
-                    <a href="{{ route('admin.users') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl bg-primary-50 text-primary-700">
-                        <i class="fa-solid fa-users"></i>
-                        <span>Kelola Pengguna</span>
-                    </a>
-                    <a href="{{ route('admin.settings') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-slate-50 hover:text-slate-800 transition-colors">
-                        <i class="fa-solid fa-gears"></i>
-                        <span>Pengaturan Web</span>
-                    </a>
-                </div>
-            </div>
+            @include('admin.sidebar', ['active' => 'users'])
         </div>
 
         <!-- Dashboard Content -->
@@ -58,6 +29,7 @@
                                 <th class="pb-4">Peran / Hak Akses</th>
                                 <th class="pb-4">No. Telp</th>
                                 <th class="pb-4">Terdaftar</th>
+                                <th class="pb-4 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="text-xs font-semibold text-slate-600 uppercase tracking-wide">
@@ -76,6 +48,15 @@
                                     </td>
                                     <td class="py-4">{{ $user->phone ?? '-' }}</td>
                                     <td class="py-4">{{ $user->created_at->format('d M Y') }}</td>
+                                    <td class="py-4 text-right">
+                                        @if($user->role === 'field_worker')
+                                            <a href="{{ route('admin.users.monitoring', $user->id) }}" class="inline-flex items-center gap-1.5 px-3 py-2 bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all border border-primary-100">
+                                                <i class="fa-solid fa-gauge-high"></i> Pantau Kinerja
+                                            </a>
+                                        @else
+                                            <span class="text-slate-400 font-bold">-</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>

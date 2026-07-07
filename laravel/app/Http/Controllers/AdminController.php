@@ -177,4 +177,58 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Pengaturan tampilan berhasil diperbarui.');
     }
+
+    public function userMonitoring($id)
+    {
+        $user = User::findOrFail($id);
+        
+        if ($user->role !== 'field_worker') {
+            return redirect()->route('admin.users')->with('error', 'Hanya petugas lapangan yang dapat dipantau.');
+        }
+
+        $attendances = \App\Models\Attendance::where('user_id', $id)->latest()->paginate(10, ['*'], 'attendance_page');
+        $todos = \App\Models\TodoList::where('user_id', $id)->latest()->paginate(10, ['*'], 'todo_page');
+        $myCampaigns = Campaign::where('author_id', $id)->latest()->get();
+        $myDistributions = Distribution::with('campaign')->where('worker_id', $id)->latest()->get();
+
+        $totalCampaigns = $myCampaigns->count();
+        $totalFunds = $myCampaigns->sum('current_amount');
+        $presentDays = \App\Models\Attendance::where('user_id', $id)->where('type', 'check_in')->count();
+        $totalTasks = \App\Models\TodoList::where('user_id', $id)->count();
+        $completedTasks = \App\Models\TodoList::where('user_id', $id)->where('status', 'completed')->count();
+        $effectiveness = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+
+        $stats = [
+            'totalCampaigns' => $totalCampaigns,
+            'totalFunds' => $totalFunds,
+            'presentDays' => $presentDays,
+            'totalTasks' => $totalTasks,
+            'completedTasks' => $completedTasks,
+            'effectiveness' => $effectiveness
+        ];
+
+        return view('admin.monitoring', compact('user', 'attendances', 'todos', 'myCampaigns', 'myDistributions', 'stats'));
+    }
+
+    public function assignTask(Request $request, $id)
+    {
+        $request->validate([
+            'task' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'deadline' => 'nullable|date',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        \App\Models\TodoList::create([
+            'user_id' => $user->id,
+            'assigned_by' => auth()->id(),
+            'task' => $request->task,
+            'description' => $request->description,
+            'deadline' => $request->deadline,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->back()->with('success', 'Tugas berhasil diberikan kepada petugas.');
+    }
 }
