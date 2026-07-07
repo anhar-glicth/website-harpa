@@ -1,0 +1,107 @@
+@extends('layouts.app')
+
+@section('content')
+<section class="max-w-7xl mx-auto px-6 py-20">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-end mb-12 gap-6">
+        <div>
+            <h1 class="text-3xl sm:text-5xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                Daftar <span class="text-primary-600">Kampanye Kebaikan</span>
+            </h1>
+            <p class="text-slate-400 font-bold text-xs tracking-widest uppercase mt-2">Dukung program kemanusiaan pilihan Anda secara langsung</p>
+        </div>
+
+        @auth
+            <a href="{{ route('campaigns.create') }}" class="bg-primary-600 hover:bg-primary-700 text-white text-xs font-black uppercase tracking-widest px-6 py-4 rounded-2xl shadow-lg shadow-primary-600/10 hover:shadow-primary-600/20 transition duration-300">
+                Buat Kampanye Baru <i class="fa-solid fa-plus ml-1"></i>
+            </a>
+        @endauth
+    </div>
+
+    <!-- Category Filters -->
+    <div class="flex overflow-x-auto no-scrollbar gap-2 mb-10 -mx-6 px-6 md:mx-0 md:px-0">
+        <a 
+            href="{{ route('campaigns.index') }}"
+            class="px-5 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap shadow-sm border {{ !$category ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200' }}"
+        >
+            Semua Program
+        </a>
+        @foreach($categories as $cat)
+            <a 
+                href="{{ route('campaigns.index', ['category' => $cat]) }}"
+                class="px-5 py-3 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap shadow-sm border {{ $category === $cat ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200' }}"
+            >
+                {{ $cat }}
+            </a>
+        @endforeach
+    </div>
+
+    <!-- Campaigns Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        @forelse($campaigns as $c)
+            @php
+                $percent = $c->target_amount > 0 ? min(100, ($c->current_amount / $c->target_amount) * 100) : 0;
+            @endphp
+            <div class="bg-white rounded-3xl border border-slate-100 hover:border-slate-200/80 hover:shadow-2xl shadow-sm transition-all duration-300 flex flex-col group overflow-hidden">
+                <!-- Cover Image -->
+                <div class="relative h-56 overflow-hidden">
+                    <img 
+                        src="{{ $c->foto ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&fit=crop' }}" 
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        alt="{{ $c->title }}"
+                    >
+                    <span class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border border-white/10">
+                        {{ $c->category }}
+                    </span>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-6 sm:p-8 flex-grow flex flex-col justify-between space-y-6">
+                    <div class="space-y-3">
+                        <h3 class="font-montserrat font-black uppercase text-base text-slate-800 leading-tight group-hover:text-primary-600 transition-colors duration-200">
+                            {{ $c->title }}
+                        </h3>
+                        <p class="text-xs text-slate-500 font-medium line-clamp-3 leading-relaxed">
+                            {{ $c->description }}
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Progress Bar -->
+                        <div class="space-y-1.5">
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                <div class="bg-primary-600 h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                <span>{{ number_format($percent, 1) }}% Terkumpul</span>
+                                <span>Target: Rp {{ number_format($c->target_amount, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase block tracking-wider leading-none">Terkumpul</span>
+                                <span class="text-base font-montserrat font-black text-slate-800 leading-none">
+                                    Rp {{ number_format($c->current_amount, 0, ',', '.') }}
+                                </span>
+                            </div>
+                            <a href="{{ route('campaigns.show', $c->id) }}" class="bg-primary-50 hover:bg-primary-600 hover:text-white text-primary-700 text-xs font-black uppercase tracking-wider px-5 py-3 rounded-xl transition-all duration-300">
+                                Detail <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-span-3 text-center py-20 bg-white rounded-3xl border border-slate-100">
+                <i class="fa-solid fa-circle-info text-slate-300 text-4xl mb-4"></i>
+                <p class="text-sm font-bold text-slate-500 uppercase tracking-wider">Belum ada kampanye aktif di kategori ini.</p>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Pagination -->
+    <div>
+        {{ $campaigns->links() }}
+    </div>
+</section>
+@endsection
