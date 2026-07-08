@@ -42,6 +42,35 @@ class AdminController extends Controller
 
         $recentTransactions = Donation::with('campaign')->latest()->take(5)->get();
 
+        // 1. Analisa Pegawai & Kegiatan
+        $totalStaff = User::where('role', 'field_worker')->count();
+        $totalTasks = \App\Models\TodoList::count();
+        $completedTasks = \App\Models\TodoList::where('status', 'completed')->count();
+        $presentToday = \App\Models\Attendance::where('type', 'check_in')
+            ->whereDate('created_at', today())
+            ->distinct('user_id')
+            ->count('user_id');
+
+        // 2. Analisa Berita
+        $totalNews = \App\Models\News::count();
+
+        // 3. Analisa Penyaluran
+        $totalDistributionsCount = Distribution::count();
+        $totalFundsDistributed = Distribution::sum('amount');
+
+        // 4. Analisa Pegawai Chart Data (Kinerja/Efektivitas Tugas)
+        $workers = User::where('role', 'field_worker')->get();
+        $staffChartData = [];
+        foreach ($workers as $worker) {
+            $totalWTasks = \App\Models\TodoList::where('user_id', $worker->id)->count();
+            $completedWTasks = \App\Models\TodoList::where('user_id', $worker->id)->where('status', 'completed')->count();
+            $eff = $totalWTasks > 0 ? round(($completedWTasks / $totalWTasks) * 100) : 0;
+            $staffChartData[] = [
+                'name' => $worker->name,
+                'effectiveness' => $eff
+            ];
+        }
+
         return view('admin.dashboard', compact(
             'totalDonationAmount',
             'totalZakatAmount',
@@ -51,7 +80,15 @@ class AdminController extends Controller
             'pendingDonations',
             'monthlyData',
             'categoryData',
-            'recentTransactions'
+            'recentTransactions',
+            'totalStaff',
+            'totalTasks',
+            'completedTasks',
+            'presentToday',
+            'totalNews',
+            'totalDistributionsCount',
+            'totalFundsDistributed',
+            'staffChartData'
         ));
     }
 

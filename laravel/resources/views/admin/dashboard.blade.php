@@ -61,17 +61,102 @@
             </div>
 
             <!-- Charts Section (Chart.js via CDN) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Bar Chart (Monthly) -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
+                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
                     <h3 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider mb-4">Donasi Bulanan</h3>
-                    <canvas id="monthlyChart" height="200"></canvas>
+                    <div class="relative h-[220px]">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
                 </div>
 
                 <!-- Pie Chart (Categories) -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm">
+                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
                     <h3 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider mb-4">Donasi Per Kategori</h3>
-                    <canvas id="categoryChart" height="200"></canvas>
+                    <div class="relative h-[220px] flex items-center justify-center">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bar Chart (Staff Performance) -->
+                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+                    <h3 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider mb-4">Kinerja Pegawai (% Selesai)</h3>
+                    <div class="relative h-[220px]">
+                        <canvas id="staffChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analisa Operasional Section -->
+            <div class="space-y-4">
+                <h3 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 tracking-wider italic">
+                    Analisa <span class="text-primary-500">Operasional & Kinerja</span>
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- 1. Analisa Pegawai -->
+                    <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm space-y-4 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Analisa Pegawai</span>
+                            <span class="w-8 h-8 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-users-gear text-sm"></i></span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-2xl font-montserrat font-black text-slate-800">{{ $totalStaff }} Orang</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wide block mt-1">Total Pegawai</span>
+                        </div>
+                        <div class="pt-2 border-t border-slate-50 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-slate-500">
+                            <span>Hadir Hari Ini:</span>
+                            <span class="text-secondary-600 font-bold bg-secondary-50 px-2 py-0.5 rounded">{{ $presentToday }} Orang</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Analisa Kegiatan Pegawai -->
+                    <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm space-y-4 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Analisa Kegiatan</span>
+                            <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-clipboard-check text-sm"></i></span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-2xl font-montserrat font-black text-slate-800">{{ $totalTasks }} Tugas</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wide block mt-1">Total Penugasan</span>
+                        </div>
+                        <div class="pt-2 border-t border-slate-50 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-slate-500">
+                            <span>Selesai Kerja:</span>
+                            <span class="text-secondary-600 font-bold bg-secondary-50 px-2 py-0.5 rounded">{{ $completedTasks }} Selesai</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Analisa Berita -->
+                    <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm space-y-4 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Analisa Berita</span>
+                            <span class="w-8 h-8 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-newspaper text-sm"></i></span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-2xl font-montserrat font-black text-slate-800">{{ $totalNews }} Post</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wide block mt-1">Dampak Terbit</span>
+                        </div>
+                        <div class="pt-2 border-t border-slate-50 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-slate-500">
+                            <span>Kabar Terbit:</span>
+                            <span class="text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded">Berita Dampak</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. Analisa Penyaluran -->
+                    <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm space-y-4 hover:shadow-lg hover:shadow-primary-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Analisa Penyaluran</span>
+                            <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-550 flex items-center justify-center"><i class="fa-solid fa-truck-ramp-box text-sm"></i></span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-base font-montserrat font-black text-slate-800 block truncate">Rp {{ number_format($totalFundsDistributed, 0, ',', '.') }}</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wide block mt-1">Total Penyaluran</span>
+                        </div>
+                        <div class="pt-2 border-t border-slate-50 flex items-center justify-between text-[9px] font-black uppercase tracking-wider text-slate-500">
+                            <span>Frekuensi Alokasi:</span>
+                            <span class="text-secondary-600 font-bold bg-secondary-50 px-2 py-0.5 rounded">{{ $totalDistributionsCount }} Kali</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -136,7 +221,7 @@
             datasets: [{
                 label: 'Total Donasi (Rp)',
                 data: monthlyTotals,
-                backgroundColor: '#22c55e',
+                backgroundColor: '#f97316',
                 borderRadius: 8
             }]
         },
@@ -165,11 +250,52 @@
             labels: categories,
             datasets: [{
                 data: categoryTotals,
-                backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
+                backgroundColor: ['#f97316', '#29abe2', '#ea580c', '#0284c7', '#fed7aa', '#bae6fd']
             }]
         },
         options: {
-            responsive: true
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // 3. Staff Performance Chart (Horizontal Bar Chart)
+    const staffNames = [];
+    const staffEffectiveness = [];
+    @foreach($staffChartData as $data)
+        staffNames.push('{{ $data["name"] }}');
+        staffEffectiveness.push({{ $data["effectiveness"] }});
+    @endforeach
+
+    new Chart(document.getElementById('staffChart'), {
+        type: 'bar',
+        data: {
+            labels: staffNames,
+            datasets: [{
+                label: 'Efektivitas Kerja (%)',
+                data: staffEffectiveness,
+                backgroundColor: '#29abe2',
+                borderRadius: 8
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { 
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            }
         }
     });
 </script>

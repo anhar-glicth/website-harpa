@@ -346,7 +346,7 @@
 
         <!-- Copyright -->
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-widest text-center gap-4">
-            <p>Copyright &copy; 2026 Peduli Sesama. All Rights Reserved.</p>
+            <p>Copyright &copy; 2026 Amal Abadi. All Rights Reserved.</p>
             <p>Dikembangkan oleh <span class="text-slate-300">Anhar Glicth</span></p>
         </div>
     </footer>
