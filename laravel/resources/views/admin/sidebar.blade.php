@@ -25,7 +25,7 @@
     
     <!-- 1. MENU UTAMA GROUP -->
     <div x-data="{ isOpen: true }">
-        <div @click="isOpen = !isOpen" class="bg-slate-800 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-slate-950 transition-colors">
+        <div @click="isOpen = !isOpen" class="bg-slate-900 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-slate-950 transition-colors">
             <span class="text-[11px] font-bold uppercase tracking-wider">Menu Utama</span>
             <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
         </div>
@@ -37,6 +37,15 @@
                     <i class="fa-solid fa-chart-pie text-xs"></i>
                 </div>
                 <span class="whitespace-nowrap">Dashboard</span>
+            </a>
+
+            <!-- Tab: Analisa Data & RFM -->
+            <a href="{{ route('admin.analytics') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'analytics' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'analytics' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-brain text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Analisa Data & RFM</span>
             </a>
 
             <!-- Tab: Kelola Kampanye -->
@@ -70,7 +79,7 @@
 
     <!-- 2. MONITORING STAFF GROUP -->
     <div x-data="{ isOpen: true }" class="border-t border-slate-100">
-        <div @click="isOpen = !isOpen" class="bg-indigo-600 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-indigo-700 transition-colors">
+        <div @click="isOpen = !isOpen" class="bg-secondary-600 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-secondary-700 transition-colors">
             <span class="text-[11px] font-bold uppercase tracking-wider">Monitoring Staff</span>
             <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
         </div>

@@ -15,5 +15,8 @@ class SiteSetting extends Model
         'about_image',
         'impact_title',
         'impact_image',
+        'stats_beneficiaries',
+        'stats_projects',
+        'stats_volunteers',
     ];
 }

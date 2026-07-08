@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
 // Admin Protected Routes
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
     Route::get('/admin/campaigns', [AdminController::class, 'campaigns'])->name('admin.campaigns');
     Route::post('/admin/campaigns/{id}/approve', [AdminController::class, 'approveCampaign'])->name('admin.campaigns.approve');
     Route::post('/admin/campaigns/{id}/reject', [AdminController::class, 'rejectCampaign'])->name('admin.campaigns.reject');

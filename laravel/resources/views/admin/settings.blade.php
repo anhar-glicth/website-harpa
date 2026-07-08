@@ -86,6 +86,28 @@
                         </div>
                     </div>
 
+                    <hr class="border-slate-100">
+
+                    <!-- Counter Statistics Settings -->
+                    <div class="space-y-4">
+                        <h4 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider">Bagian Counter Statistik</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Penerima Manfaat</label>
+                                <input type="text" name="stats_beneficiaries" value="{{ $settings->stats_beneficiaries ?? '2.500 +' }}" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Project Kebaikan</label>
+                                <input type="text" name="stats_projects" value="{{ $settings->stats_projects ?? '95 +' }}" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Perwakilan Relawan</label>
+                                <input type="text" name="stats_volunteers" value="{{ $settings->stats_volunteers ?? '20 +' }}" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="pt-4 border-t border-slate-150">
                         <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">
                             Perbarui Pengaturan <i class="fa-solid fa-cloud-arrow-up ml-2"></i>

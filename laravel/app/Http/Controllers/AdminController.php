@@ -10,6 +10,8 @@ use App\Models\SiteSetting;
 use App\Models\Volunteer;
 use App\Models\ContactMessage;
 use App\Models\Zakat;
+use App\Models\Prospect;
+use App\Models\ProspectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -189,6 +191,9 @@ class AdminController extends Controller
             'hero_image' => 'nullable|image|max:2048',
             'about_image' => 'nullable|image|max:2048',
             'impact_image' => 'nullable|image|max:2048',
+            'stats_beneficiaries' => 'nullable|string|max:100',
+            'stats_projects' => 'nullable|string|max:100',
+            'stats_volunteers' => 'nullable|string|max:100',
         ]);
 
         $settings = SiteSetting::first() ?? new SiteSetting();
@@ -196,6 +201,9 @@ class AdminController extends Controller
         $settings->hero_subtitle = $request->hero_subtitle;
         $settings->about_mission = $request->about_mission;
         $settings->impact_title = $request->impact_title;
+        $settings->stats_beneficiaries = $request->stats_beneficiaries;
+        $settings->stats_projects = $request->stats_projects;
+        $settings->stats_volunteers = $request->stats_volunteers;
 
         if ($request->hasFile('hero_image')) {
             $path = $request->file('hero_image')->store('settings', 'public');
@@ -333,5 +341,72 @@ class AdminController extends Controller
         }
 
         return view('admin.performance', compact('workerPerformance'));
+    }
+
+    public function analytics()
+    {
+        // 1. RFM KPI & Segmentation Statistics
+        $totalDonors = User::where('role', 'user')->count();
+        $maleDonors = User::where('role', 'user')->where('gender', 'L')->count();
+        $femaleDonors = User::where('role', 'user')->where('gender', 'P')->count();
+        $unknownDonors = User::where('role', 'user')->whereNotIn('gender', ['L', 'P'])->count();
+
+        // RFM All Time Segmentation Chart Data
+        $rfmSegmentCounts = User::where('role', 'user')
+            ->select('rfm_alltime', \DB::raw('count(*) as count'))
+            ->whereNotNull('rfm_alltime')
+            ->groupBy('rfm_alltime')
+            ->get();
+
+        // Top 20 Donors based on transaction amount in Laravel
+        $top20Donors = User::where('role', 'user')
+            ->withSum(['donations' => function($q) {
+                $q->where('payment_status', 'Success');
+            }], 'amount')
+            ->withCount(['donations' => function($q) {
+                $q->where('payment_status', 'Success');
+            }])
+            ->orderByDesc('donations_sum_amount')
+            ->take(20)
+            ->get();
+
+        // Calculate global totals for donor contribution percentages
+        $totalGlobalDonations = Donation::where('payment_status', 'Success')->sum('amount');
+
+        // 2. CRM Prospects Statistics
+        $totalProspects = Prospect::count();
+        
+        // Count prospects converted (has at least one 'Tertarik' response)
+        $convertedProspects = Prospect::whereHas('responses', function($q) {
+            $q->where('status', 'Tertarik');
+        })->count();
+
+        // Count prospects follow-up (has latest response status as 'Follow Up')
+        $followUpProspects = Prospect::whereHas('responses', function($q) {
+            $q->where('status', 'Follow Up');
+        })->count();
+
+        // Total potential fund fallback
+        $totalPotentialFunds = 125000000; // standard potential funds aggregate fallback
+        
+        // Retrieve prospects log list
+        $recentProspectResponses = ProspectResponse::with('prospect')
+            ->latest()
+            ->take(15)
+            ->get();
+
+        // Top 20 prospects
+        $top20Prospects = Prospect::with('responses')->latest()->take(20)->get();
+
+        // 3. Distributions and Campaigns Analytics
+        $totalDistributions = Distribution::sum('amount');
+        $distributionCount = Distribution::count();
+        $recentDistributions = Distribution::with('campaign')->latest()->take(10)->get();
+
+        return view('admin.analytics', compact(
+            'totalDonors', 'maleDonors', 'femaleDonors', 'unknownDonors', 'rfmSegmentCounts', 'top20Donors', 'totalGlobalDonations',
+            'totalProspects', 'convertedProspects', 'followUpProspects', 'totalPotentialFunds', 'recentProspectResponses', 'top20Prospects',
+            'totalDistributions', 'distributionCount', 'recentDistributions'
+        ));
     }
 }

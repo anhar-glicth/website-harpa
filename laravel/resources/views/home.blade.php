@@ -43,42 +43,42 @@
 <section class="max-w-7xl mx-auto px-4 -mt-16 sm:-mt-24 relative z-20">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         
-        <!-- Total Donasi -->
+        <!-- Penerima Manfaat -->
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
             <div class="bg-emerald-50 w-16 h-16 rounded-2xl flex items-center justify-center text-emerald-600 text-2xl shrink-0">
-                <i class="fa-solid fa-hand-holding-heart"></i>
+                <i class="fa-solid fa-users"></i>
             </div>
             <div>
                 <h4 class="text-xl sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
-                    Rp {{ number_format(\App\Models\Donation::where('payment_status', 'Success')->sum('amount'), 0, ',', '.') }}
+                    {{ $settings->stats_beneficiaries ?? '2.500 +' }}
                 </h4>
-                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Total Terkumpul</p>
+                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Penerima Manfaat</p>
             </div>
         </div>
 
-        <!-- Kampanye Aktif -->
+        <!-- Project Kebaikan -->
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
             <div class="bg-primary-50 w-16 h-16 rounded-2xl flex items-center justify-center text-primary-600 text-2xl shrink-0">
                 <i class="fa-solid fa-gift"></i>
             </div>
             <div>
                 <h4 class="text-xl sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
-                    {{ $campaigns->count() }}+
+                    {{ $settings->stats_projects ?? '95 +' }}
                 </h4>
-                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Kampanye Aktif</p>
+                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Project Kebaikan</p>
             </div>
         </div>
 
-        <!-- Jangkauan Penyaluran -->
+        <!-- Perwakilan Relawan -->
         <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
             <div class="bg-amber-50 w-16 h-16 rounded-2xl flex items-center justify-center text-amber-600 text-2xl shrink-0">
-                <i class="fa-solid fa-globe"></i>
+                <i class="fa-solid fa-hands-holding-child"></i>
             </div>
             <div>
                 <h4 class="text-xl sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
-                    3 Cabang
+                    {{ $settings->stats_volunteers ?? '20 +' }}
                 </h4>
-                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Kantor Cabang</p>
+                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Perwakilan Relawan</p>
             </div>
         </div>
 
