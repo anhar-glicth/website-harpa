@@ -22,6 +22,9 @@
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         montserrat: ['Montserrat', 'sans-serif'],
                     },
+                    spacing: {
+                        '4.5': '1.125rem',
+                    },
                     colors: {
                         primary: {
                             50: '#fff7ed',
@@ -350,16 +353,16 @@
 
     <!-- ================= LOGIN MODAL ================= -->
     <div x-show="loginOpen" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition duration-300">
-        <div @click.away="loginOpen = false" class="bg-slate-900 border border-white/10 w-full max-w-md rounded-3xl p-8 sm:p-10 shadow-2xl relative space-y-6">
-            <button @click="loginOpen = false" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <div @click.away="loginOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-8 sm:p-10 shadow-2xl relative space-y-6">
+            <button @click="loginOpen = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-800"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="space-y-1">
-                <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-white tracking-tight italic">Selamat <span class="text-primary-500">Datang Kembali</span></h2>
+                <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight italic">Selamat <span class="text-primary-500">Datang Kembali</span></h2>
                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Masuk untuk melanjutkan kebaikan Anda</p>
             </div>
 
             <!-- Session Status & Errors -->
             @if ($errors->any() && !($errors->has('name') || $errors->has('password_confirmation')))
-                <div class="bg-red-500/10 border border-red-500/20 text-red-200 text-[10px] font-bold uppercase tracking-wider p-4 rounded-2xl">
+                <div class="bg-red-50 border border-red-150 text-red-800 text-[10px] font-bold uppercase tracking-wider p-4 rounded-2xl">
                     Ada beberapa kesalahan dalam data yang dimasukkan.
                 </div>
             @endif
@@ -367,10 +370,10 @@
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
                 <div class="space-y-1.5">
-                    <label for="modal_login_email" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Alamat Email</label>
+                    <label for="modal_login_email" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Alamat Email</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-envelope text-xs"></i></span>
-                        <input id="modal_login_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-950/50 border border-slate-850 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-600 outline-none transition-all">
+                        <input id="modal_login_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                     @if ($errors->has('email'))
                         <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('email') }}</span>
@@ -378,16 +381,16 @@
                 </div>
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
-                        <label for="modal_login_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Kata Sandi</label>
+                        <label for="modal_login_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Kata Sandi</label>
                     </div>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
-                        <input id="modal_login_password" type="password" name="password" required placeholder="••••••••" class="w-full bg-slate-950/50 border border-slate-850 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-600 outline-none transition-all">
+                        <input id="modal_login_password" type="password" name="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <input id="modal_login_remember" type="checkbox" name="remember" class="rounded border-slate-800 bg-slate-950/50 text-primary-600 focus:ring-primary-500/20">
-                    <label for="modal_login_remember" class="text-[9px] font-black uppercase tracking-wider text-slate-400 select-none cursor-pointer">Ingat Saya</label>
+                    <input id="modal_login_remember" type="checkbox" name="remember" class="rounded border-slate-300 bg-slate-50 text-primary-650 focus:ring-primary-500/20">
+                    <label for="modal_login_remember" class="text-[9px] font-black uppercase tracking-wider text-slate-450 select-none cursor-pointer">Ingat Saya</label>
                 </div>
                 <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Masuk Akun <i class="fa-solid fa-right-to-bracket ml-2"></i></button>
             </form>
@@ -400,16 +403,16 @@
 
     <!-- ================= REGISTER MODAL ================= -->
     <div x-show="registerOpen" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition duration-300">
-        <div @click.away="registerOpen = false" class="bg-slate-900 border border-white/10 w-full max-w-md rounded-3xl p-8 sm:p-10 shadow-2xl relative space-y-6">
-            <button @click="registerOpen = false" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <div @click.away="registerOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-8 sm:p-10 shadow-2xl relative space-y-6">
+            <button @click="registerOpen = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-800"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="space-y-1">
-                <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-white tracking-tight italic">Buat <span class="text-primary-500">Akun Baru</span></h2>
+                <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight italic">Buat <span class="text-primary-500">Akun Baru</span></h2>
                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Daftar untuk mulai berbagi kebaikan bersama kami</p>
             </div>
 
             <!-- Validation Errors -->
             @if ($errors->any() && ($errors->has('name') || $errors->has('password_confirmation')))
-                <div class="bg-red-500/10 border border-red-500/20 text-red-200 text-[10px] font-bold uppercase tracking-wider p-4 rounded-2xl">
+                <div class="bg-red-50 border border-red-150 text-red-800 text-[10px] font-bold uppercase tracking-wider p-4 rounded-2xl">
                     Ada beberapa kesalahan dalam data pendaftaran.
                 </div>
             @endif
@@ -417,40 +420,40 @@
             <form method="POST" action="{{ route('register') }}" class="space-y-4">
                 @csrf
                 <div class="space-y-1.5">
-                    <label for="modal_reg_name" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Nama Lengkap</label>
+                    <label for="modal_reg_name" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Nama Lengkap</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-user text-xs"></i></span>
-                        <input id="modal_reg_name" type="text" name="name" value="{{ old('name') }}" required placeholder="Nama Lengkap" class="w-full bg-slate-950/50 border border-slate-850 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-600 outline-none transition-all">
+                        <input id="modal_reg_name" type="text" name="name" value="{{ old('name') }}" required placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                     @if ($errors->has('name'))
                         <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('name') }}</span>
                     @endif
                 </div>
                 <div class="space-y-1.5">
-                    <label for="modal_reg_email" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Alamat Email</label>
+                    <label for="modal_reg_email" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Alamat Email</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-envelope text-xs"></i></span>
-                        <input id="modal_reg_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-950/50 border border-slate-850 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-600 outline-none transition-all">
+                        <input id="modal_reg_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                     @if ($errors->has('email') && ($errors->has('name') || $errors->has('password_confirmation')))
                         <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('email') }}</span>
                     @endif
                 </div>
                 <div class="space-y-1.5">
-                    <label for="modal_reg_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Kata Sandi</label>
+                    <label for="modal_reg_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Kata Sandi</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
-                        <input id="modal_reg_password" type="password" name="password" required placeholder="Minimal 8 karakter" class="w-full bg-slate-950/50 border border-slate-850 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-600 outline-none transition-all">
+                        <input id="modal_reg_password" type="password" name="password" required placeholder="Minimal 8 karakter" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                     @if ($errors->has('password'))
                         <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('password') }}</span>
                     @endif
                 </div>
                 <div class="space-y-1.5">
-                    <label for="modal_reg_confirm" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Konfirmasi Sandi</label>
+                    <label for="modal_reg_confirm" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Konfirmasi Sandi</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-circle-check text-xs"></i></span>
-                        <input id="modal_reg_confirm" type="password" name="password_confirmation" required placeholder="Ulangi kata sandi" class="w-full bg-slate-950/50 border border-slate-850 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-600 outline-none transition-all">
+                        <input id="modal_reg_confirm" type="password" name="password_confirmation" required placeholder="Ulangi kata sandi" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Daftar Akun <i class="fa-solid fa-user-plus ml-2"></i></button>

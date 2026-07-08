@@ -631,7 +631,10 @@
 
 <!-- GPS Geolocation Script -->
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    function requestGPSLocation() {
+        const gpsStatus = document.getElementById('gps-status');
+        gpsStatus.innerHTML = '<i class="fa-solid fa-location-crosshairs animate-pulse mr-1"></i> Mendapatkan koordinat GPS Anda...';
+        
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 function(position) {
@@ -648,15 +651,17 @@
                         document.getElementById('dist_lng').value = lng;
                     }
                     
-                    document.getElementById('gps-status').innerHTML = '<i class="fa-solid fa-location-dot text-emerald-500 mr-1"></i> KOORDINAT GPS BERHASIL DIDAPATKAN';
+                    gpsStatus.innerHTML = '<i class="fa-solid fa-location-dot text-emerald-500 mr-1"></i> KOORDINAT GPS BERHASIL DIDAPATKAN (' + lat.toFixed(6) + ', ' + lng.toFixed(6) + ')';
                 },
                 function(error) {
-                    document.getElementById('gps-status').innerHTML = '<i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> GAGAL MENDAPATKAN LOKASI GPS (IZINKAN AKSES LOKASI)';
+                    gpsStatus.innerHTML = '<span class="text-rose-500"><i class="fa-solid fa-location-dot mr-1"></i> GAGAL MENDAPATKAN LOKASI GPS (IZINKAN AKSES LOKASI)</span> <button type="button" onclick="requestGPSLocation()" class="ml-2 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all inline-flex items-center gap-1"><i class="fa-solid fa-arrows-rotate animate-spin"></i> Coba Lagi</button>';
                 }
             );
         } else {
-            document.getElementById('gps-status').innerHTML = '<i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> BROWSER TIDAK MENDUKUNG GPS';
+            gpsStatus.innerHTML = '<i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> BROWSER TIDAK MENDUKUNG GPS';
         }
-    });
+    }
+
+    document.addEventListener("DOMContentLoaded", requestGPSLocation);
 </script>
 @endsection

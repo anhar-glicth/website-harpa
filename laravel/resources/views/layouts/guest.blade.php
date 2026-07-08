@@ -22,6 +22,9 @@
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         montserrat: ['Montserrat', 'sans-serif'],
                     },
+                    spacing: {
+                        '4.5': '1.125rem',
+                    },
                     colors: {
                         primary: {
                             50: '#fff7ed',

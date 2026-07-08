@@ -33,7 +33,7 @@
                 <!-- Prayers Board List (Left/Top) -->
                 <div class="xl:col-span-2 space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        @foreach($prayers as $p)
+                        @forelse($prayers as $p)
                             <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm hover:shadow-lg hover:border-primary-100 transition duration-300 flex flex-col justify-between min-h-[180px]">
                                 <div class="space-y-3">
                                     <p class="text-xs text-slate-650 font-semibold italic leading-relaxed">
@@ -55,7 +55,12 @@
                                     </form>
                                 </div>
                             </div>
-                        @endforeach
+                        @empty
+                            <div class="col-span-2 py-16 text-center text-slate-400 font-bold uppercase tracking-wider text-xs bg-white border border-slate-100 rounded-3xl w-full">
+                                <i class="fa-solid fa-hands-praying text-slate-200 text-3xl mb-2 block"></i>
+                                Belum ada doa kebaikan yang dikirimkan.
+                            </div>
+                        @endforelse
                     </div>
 
                     <div>

@@ -11,7 +11,13 @@
         @endif
         
         <div class="space-y-1">
-            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Donatur Kehormatan</p>
+            @if(Auth::user()->role === 'admin')
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Administrator</p>
+            @elseif(Auth::user()->role === 'field_worker')
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Petugas Lapangan</p>
+            @else
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Donatur Kehormatan</p>
+            @endif
             <p class="text-base font-black text-slate-900 tracking-tighter truncate">{{ Auth::user()->name }}</p>
             <span class="text-[10px] font-bold text-slate-400 block tracking-wider">{{ Auth::user()->email }}</span>
         </div>
