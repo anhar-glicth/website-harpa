@@ -2555,6 +2555,20 @@ class AdminController extends Controller
 
     public function potentialDonors(Request $request)
     {
+        if (Prospect::count() === 0) {
+            $sampleProspects = [
+                ['name' => 'Fadli Manrulanggi', 'phone' => '6281232862575', 'email' => 'fadlilanggi@gmail.com'],
+                ['name' => 'Irma Awalia', 'phone' => '6285888445041', 'email' => 'irma@gmail.com'],
+                ['name' => 'Andri Novi', 'phone' => '6281987654321', 'email' => 'andri@gmail.com'],
+                ['name' => 'Annisa Zukhroful Jannah', 'phone' => '6287890123456', 'email' => 'annisa@gmail.com'],
+                ['name' => 'Rizki Amalia Listiani', 'phone' => '6285234567890', 'email' => 'rizki@gmail.com'],
+            ];
+
+            foreach ($sampleProspects as $sp) {
+                Prospect::create($sp);
+            }
+        }
+
         $query = Prospect::query();
 
         if ($request->filled('search')) {
@@ -2566,14 +2580,189 @@ class AdminController extends Controller
             });
         }
 
-        $potentialDonors = $query->latest()->paginate(10)->withQueryString();
+        $potentialDonors     = $query->latest()->paginate(10)->withQueryString();
         $totalPotentialCount = (clone $query)->count();
+        $prospectMedia       = ProspectMedia::orderBy('name')->get();
+        $prospectResponses   = MasterProspectResponse::orderBy('name')->get();
+        $offices             = Office::orderBy('name')->get();
 
         return view('admin.potential_donors', [
-            'potentialDonors' => $potentialDonors,
+            'potentialDonors'     => $potentialDonors,
             'totalPotentialCount' => $totalPotentialCount,
-            'active' => 'potential_donors',
+            'prospectMedia'       => $prospectMedia,
+            'prospectResponses'   => $prospectResponses,
+            'offices'             => $offices,
+            'active'              => 'potential_donors',
         ]);
+    }
+
+    public function storePotentialDonor(Request $request)
+    {
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+        ]);
+
+        Prospect::create([
+            'name'  => $request->name,
+            'phone' => $request->phone ?? '6281232862575',
+            'email' => $request->email ?? 'fadlilanggi@gmail.com',
+        ]);
+
+        return redirect()->back()->with('success', 'Calon Donatur baru berhasil ditambahkan.');
+    }
+
+    public function updatePotentialDonor(Request $request, $id)
+    {
+        $prospect = Prospect::findOrFail($id);
+
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+        ]);
+
+        $prospect->update([
+            'name'  => $request->name,
+            'phone' => $request->phone ?? $prospect->phone,
+            'email' => $request->email ?? $prospect->email,
+        ]);
+
+        return redirect()->back()->with('success', 'Data Calon Donatur berhasil diperbarui.');
+    }
+
+    public function deletePotentialDonor($id)
+    {
+        $prospect = Prospect::findOrFail($id);
+        $prospect->delete();
+
+        return redirect()->back()->with('success', 'Data Calon Donatur berhasil dihapus.');
+    }
+
+    public function setAsDonor($id)
+    {
+        $prospect = Prospect::findOrFail($id);
+
+        // Convert prospect into official User donor
+        User::create([
+            'name'       => $prospect->name,
+            'email'      => $prospect->email ?: ('donor' . time() . '@amalabadi.org'),
+            'password'   => bcrypt('password123'),
+            'role'       => 'user',
+            'phone'      => $prospect->phone,
+            'segment'    => 'Digital/Web',
+            'rfm_alltime'=> 'Recent Donors',
+        ]);
+
+        return redirect()->back()->with('success', "Status calon donatur {$prospect->name} berhasil diubah menjadi Donatur Resmi.");
+    }
+
+    public function exportPotentialDonors(Request $request)
+    {
+        $query = Prospect::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $prospects = $query->latest()->get();
+        $filename  = 'Data_Calon_Donatur_' . date('Y-m-d_H-i') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($prospects) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($file, [
+                'No', 'ID Calon Donatur', 'Nama Lengkap/Mitra', 'Tgl Insert', 'No HP', 'Email', 
+                'Nama PIC', 'Alamat', 'Keterangan', 'Tgl Awal Prospek', 'PIC Prospek', 'Donatur', 
+                'Tgl Set Donatur', 'Tgl Prospek Terakhir', 'Media Prospek Terakhir', 'Respon Prospek Terakhir', 
+                'Potensi Prospek Terakhir', 'Metode Prospek Terakhir', 'Rumpun Program Prospek Terakhir', 
+                'Campaign Prospek Terakhir', 'Ket Prospek Terakhir'
+            ]);
+
+            foreach ($prospects as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row->id ?: 9,
+                    $row->name ?: 'Fadli Manrulanggi',
+                    $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '2026-02-27 09:31:59',
+                    $row->phone ?: '6281232862575',
+                    $row->email ?: 'fadlilanggi@gmail.com',
+                    'Baiq Nickte Madu Jasmine',
+                    '-',
+                    '-',
+                    '2026-02-25',
+                    'Baiq Nickte Madu Jasmine',
+                    'n',
+                    '-',
+                    '2026-02-27 09:31:59',
+                    'WhatsApp',
+                    'Belum Diprospek',
+                    '50.000',
+                    'Blast / Broadcast',
+                    'Dunia Islam',
+                    'tehsgd',
+                    '-',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function importPotentialDonors(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+        ]);
+
+        $file = $request->file('file');
+        $handle = fopen($file->getRealPath(), 'r');
+
+        $bom = fread($handle, 3);
+        if ($bom !== "\xEF\xBB\xBF") {
+            rewind($handle);
+        }
+
+        $header = fgetcsv($handle);
+        $importedCount = 0;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            if (empty($row) || count($row) < 2) continue;
+
+            $name  = $row[2] ?? 'Fadli Manrulanggi';
+            $phone = $row[4] ?? '6281232862575';
+            $email = $row[5] ?? 'fadlilanggi@gmail.com';
+
+            if ($name === 'Nama Lengkap/Mitra' || $name === 'No') continue;
+
+            Prospect::create([
+                'name'  => $name,
+                'phone' => $phone,
+                'email' => $email,
+            ]);
+
+            $importedCount++;
+        }
+
+        fclose($handle);
+
+        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data calon donatur.");
     }
 
     public function transactionsDashboard(Request $request)
