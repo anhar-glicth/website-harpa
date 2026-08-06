@@ -80,7 +80,20 @@ class DatabaseSeeder extends Seeder
         foreach ($prospectMethodItems as $pmMethodName) {
             \App\Models\ProspectMethod::firstOrCreate(['name' => $pmMethodName], ['status' => 'Aktif']);
         }
-        \App\Models\ProspectType::firstOrCreate(['name' => 'Premium'], ['priority' => 'Tinggi']);
+        $prospectTypeItems = [
+            'LAPORAN',
+            'KWITANSI',
+            'FU 3',
+            'FU 2',
+            'FU 1',
+            'Pengiriman Bukti Terima Donasi',
+            'Follow up Non Prospek',
+            'Penawaran UpSelling',
+            'Loyalti Ucapan Milad'
+        ];
+        foreach ($prospectTypeItems as $ptName) {
+            \App\Models\ProspectType::firstOrCreate(['name' => $ptName], ['status' => 'Aktif', 'priority' => 'Sedang']);
+        }
 
         // 6. Users (Admin, Field Worker, User)
         $commonPassword = bcrypt('password123');

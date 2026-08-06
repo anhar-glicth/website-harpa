@@ -107,6 +107,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/prospect-methods/store', [AdminController::class, 'storeProspectMethod'])->name('admin.prospect_methods.store');
     Route::put('/admin/prospect-methods/{id}/update', [AdminController::class, 'updateProspectMethod'])->name('admin.prospect_methods.update');
     Route::delete('/admin/prospect-methods/{id}/delete', [AdminController::class, 'deleteProspectMethod'])->name('admin.prospect_methods.delete');
+
+    // Master Jenis Prospek Routes
+    Route::get('/admin/prospect-types', [AdminController::class, 'prospectTypesList'])->name('admin.prospect_types');
+    Route::post('/admin/prospect-types/store', [AdminController::class, 'storeProspectType'])->name('admin.prospect_types.store');
+    Route::put('/admin/prospect-types/{id}/update', [AdminController::class, 'updateProspectType'])->name('admin.prospect_types.update');
+    Route::delete('/admin/prospect-types/{id}/delete', [AdminController::class, 'deleteProspectType'])->name('admin.prospect_types.delete');
     
     // Global Staff Monitoring Routes
     Route::get('/admin/attendance', [AdminController::class, 'attendanceList'])->name('admin.attendance');

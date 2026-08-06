@@ -2,9 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProspectType extends Model
 {
-    protected $fillable = ['name', 'priority'];
+    use HasFactory;
+
+    protected $table = 'prospect_types';
+
+    protected $fillable = ['name', 'priority', 'status'];
 }

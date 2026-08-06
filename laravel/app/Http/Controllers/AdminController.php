@@ -20,6 +20,7 @@ use App\Models\Program;
 use App\Models\PaymentVia;
 use App\Models\ProspectMedia;
 use App\Models\ProspectMethod;
+use App\Models\ProspectType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -949,5 +950,64 @@ class AdminController extends Controller
         $method->delete();
 
         return redirect()->back()->with('success', 'Metode Prospek berhasil dihapus.');
+    }
+
+    // ===================== MASTER JENIS PROSPEK =====================
+
+    public function prospectTypesList(Request $request)
+    {
+        $query = ProspectType::query();
+
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where('name', 'like', "%{$keyword}%");
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $prospectTypes = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.prospect_types', [
+            'prospectTypes' => $prospectTypes,
+            'active'        => 'prospect_types',
+        ]);
+    }
+
+    public function storeProspectType(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'priority' => 'nullable|in:Tinggi,Sedang,Rendah',
+            'status'   => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        ProspectType::create($request->only('name', 'priority', 'status'));
+
+        return redirect()->back()->with('success', 'Jenis Prospek berhasil ditambahkan.');
+    }
+
+    public function updateProspectType(Request $request, $id)
+    {
+        $type = ProspectType::findOrFail($id);
+
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'priority' => 'nullable|in:Tinggi,Sedang,Rendah',
+            'status'   => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        $type->update($request->only('name', 'priority', 'status'));
+
+        return redirect()->back()->with('success', 'Jenis Prospek berhasil diperbarui.');
+    }
+
+    public function deleteProspectType($id)
+    {
+        $type = ProspectType::findOrFail($id);
+        $type->delete();
+
+        return redirect()->back()->with('success', 'Jenis Prospek berhasil dihapus.');
     }
 }
