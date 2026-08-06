@@ -115,6 +115,15 @@ class DatabaseSeeder extends Seeder
             \App\Models\MasterProspectResponse::firstOrCreate(['name' => $rName], ['status' => 'Aktif']);
         }
 
+        $sampleTargets = [
+            ['target_code' => 'TGT-2026-08', 'target_date' => '2026-08-01', 'target_amount' => 50000000, 'notes' => 'Target Bulan Agustus 2026'],
+            ['target_code' => 'TGT-2026-07', 'target_date' => '2026-07-01', 'target_amount' => 45000000, 'notes' => 'Target Bulan Juli 2026'],
+            ['target_code' => 'TGT-2026-06', 'target_date' => '2026-06-01', 'target_amount' => 40000000, 'notes' => 'Target Bulan Juni 2026'],
+        ];
+        foreach ($sampleTargets as $st) {
+            \App\Models\MasterTarget::updateOrCreate(['target_code' => $st['target_code']], $st);
+        }
+
         // 6. Users (Admin, Field Worker, User)
         $commonPassword = bcrypt('password123');
 

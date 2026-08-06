@@ -125,6 +125,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/prospect-responses/store', [AdminController::class, 'storeProspectResponseMaster'])->name('admin.prospect_responses.store');
     Route::put('/admin/prospect-responses/{id}/update', [AdminController::class, 'updateProspectResponseMaster'])->name('admin.prospect_responses.update');
     Route::delete('/admin/prospect-responses/{id}/delete', [AdminController::class, 'deleteProspectResponseMaster'])->name('admin.prospect_responses.delete');
+
+    // Master Target Routes
+    Route::get('/admin/targets', [AdminController::class, 'targetsList'])->name('admin.targets');
+    Route::post('/admin/targets/store', [AdminController::class, 'storeTarget'])->name('admin.targets.store');
+    Route::put('/admin/targets/{id}/update', [AdminController::class, 'updateTarget'])->name('admin.targets.update');
+    Route::delete('/admin/targets/{id}/delete', [AdminController::class, 'deleteTarget'])->name('admin.targets.delete');
+    Route::get('/admin/targets/export', [AdminController::class, 'exportTargets'])->name('admin.targets.export');
     
     // Global Staff Monitoring Routes
     Route::get('/admin/attendance', [AdminController::class, 'attendanceList'])->name('admin.attendance');

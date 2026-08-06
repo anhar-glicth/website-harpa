@@ -23,6 +23,7 @@ use App\Models\ProspectMethod;
 use App\Models\ProspectType;
 use App\Models\Fundraiser;
 use App\Models\MasterProspectResponse;
+use App\Models\MasterTarget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -1137,5 +1138,139 @@ class AdminController extends Controller
         $item->delete();
 
         return redirect()->back()->with('success', 'Respon Prospek berhasil dihapus.');
+    }
+
+    // ===================== MASTER TARGET =====================
+
+    public function targetsList(Request $request)
+    {
+        $query = MasterTarget::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('target_code', 'like', "%{$search}%")
+                  ->orWhere('notes', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('target_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('target_date', '<=', $request->end_date);
+        }
+
+        // Calculate total nominal target for filtered dataset
+        $totalNominalTarget = (clone $query)->sum('target_amount');
+
+        $targets = $query->orderBy('target_date', 'desc')->paginate(10)->withQueryString();
+
+        return view('admin.targets', [
+            'targets'            => $targets,
+            'totalNominalTarget' => $totalNominalTarget,
+            'active'             => 'targets',
+        ]);
+    }
+
+    public function storeTarget(Request $request)
+    {
+        $request->validate([
+            'target_code'   => 'required|string|max:50|unique:master_targets,target_code',
+            'target_date'   => 'required|date',
+            'target_amount' => 'required|numeric|min:0',
+            'notes'         => 'nullable|string|max:500',
+        ]);
+
+        MasterTarget::create($request->only('target_code', 'target_date', 'target_amount', 'notes'));
+
+        return redirect()->back()->with('success', 'Master Target berhasil ditambahkan.');
+    }
+
+    public function updateTarget(Request $request, $id)
+    {
+        $target = MasterTarget::findOrFail($id);
+
+        $request->validate([
+            'target_code'   => 'required|string|max:50|unique:master_targets,target_code,' . $id,
+            'target_date'   => 'required|date',
+            'target_amount' => 'required|numeric|min:0',
+            'notes'         => 'nullable|string|max:500',
+        ]);
+
+        $target->update($request->only('target_code', 'target_date', 'target_amount', 'notes'));
+
+        return redirect()->back()->with('success', 'Master Target berhasil diperbarui.');
+    }
+
+    public function deleteTarget($id)
+    {
+        $target = MasterTarget::findOrFail($id);
+        $target->delete();
+
+        return redirect()->back()->with('success', 'Master Target berhasil dihapus.');
+    }
+
+    public function exportTargets(Request $request)
+    {
+        $query = MasterTarget::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('target_code', 'like', "%{$search}%")
+                  ->orWhere('notes', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('target_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('target_date', '<=', $request->end_date);
+        }
+
+        $targets = $query->orderBy('target_date', 'desc')->get();
+
+        $filename = 'Master_Target_' . date('Y-m-d_H-i') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($targets) {
+            $file = fopen('php://output', 'w');
+
+            // Write BOM for UTF-8 Excel compatibility
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Header row
+            fputcsv($file, ['No', 'ID Target', 'Bulan Target', 'Nominal Target', 'Keterangan']);
+
+            $totalNominal = 0;
+            foreach ($targets as $index => $row) {
+                $totalNominal += $row->target_amount;
+                fputcsv($file, [
+                    $index + 1,
+                    $row->target_code,
+                    $row->target_date ? $row->target_date->format('Y-m-d') : '',
+                    $row->target_amount,
+                    $row->notes ?? '-',
+                ]);
+            }
+
+            // Total summary row
+            fputcsv($file, ['TOTAL', '', '', $totalNominal, '']);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
