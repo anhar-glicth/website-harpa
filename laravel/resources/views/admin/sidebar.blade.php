@@ -129,6 +129,73 @@
                 <span class="whitespace-nowrap">Kelola Pengguna</span>
             </a>
 
+            <!-- Tab: Master Karyawan -->
+            <a href="{{ route('admin.karyawan') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'karyawan' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'karyawan' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-id-card text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Master Karyawan</span>
+            </a>
+
+            <!-- Tab: Channel Donasi -->
+            <a href="{{ route('admin.donor_channels') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'donor_channels' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'donor_channels' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-layer-group text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Channel Donasi</span>
+            </a>
+
+            <!-- Tab: Rumpun Program -->
+            <a href="{{ route('admin.program_groups') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'program_groups' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'program_groups' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-sitemap text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Rumpun Program</span>
+            </a>
+
+            <!-- Tab: Master Program -->
+            <a href="{{ route('admin.programs') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'programs' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'programs' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-clipboard-list text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Master Program</span>
+            </a>
+
+            <!-- Tab: Via Bayar -->
+            <a href="{{ route('admin.payment_via') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'payment_via' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'payment_via' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-credit-card text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Via Bayar</span>
+            </a>
+
+            <!-- Tab: Media Prospek -->
+            <a href="{{ route('admin.prospect_media') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'prospect_media' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'prospect_media' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-bullhorn text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Media Prospek</span>
+            </a>
+
+            <!-- Tab: Metode Prospek -->
+            <a href="{{ route('admin.prospect_methods') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'prospect_methods' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'prospect_methods' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-handshake-angle text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Metode Prospek</span>
+            </a>
+
+
+
+
+
             <!-- Tab: Pengaturan Web -->
             <a href="{{ route('admin.settings') }}" 
                class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'settings' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">

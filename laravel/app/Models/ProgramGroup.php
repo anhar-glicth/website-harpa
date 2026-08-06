@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProgramGroup extends Model
 {
-    protected $fillable = ['name', 'code', 'description'];
+    use HasFactory;
+
+    protected $table = 'program_groups';
+
+    protected $fillable = ['name', 'code', 'description', 'status'];
 
     public function campaigns()
     {

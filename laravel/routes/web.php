@@ -65,6 +65,49 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
     Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');
     
+    // Master Karyawan Routes
+    Route::get('/admin/karyawan', [AdminController::class, 'karyawanList'])->name('admin.karyawan');
+    Route::post('/admin/karyawan/store', [AdminController::class, 'storeKaryawan'])->name('admin.karyawan.store');
+    Route::put('/admin/karyawan/{id}/update', [AdminController::class, 'updateKaryawan'])->name('admin.karyawan.update');
+    Route::delete('/admin/karyawan/{id}/delete', [AdminController::class, 'deleteKaryawan'])->name('admin.karyawan.delete');
+    Route::get('/admin/karyawan/export', [AdminController::class, 'exportKaryawan'])->name('admin.karyawan.export');
+    
+    // Master Channel Donasi Routes
+    Route::get('/admin/donor-channels', [AdminController::class, 'donorChannelsList'])->name('admin.donor_channels');
+    Route::post('/admin/donor-channels/store', [AdminController::class, 'storeDonorChannel'])->name('admin.donor_channels.store');
+    Route::put('/admin/donor-channels/{id}/update', [AdminController::class, 'updateDonorChannel'])->name('admin.donor_channels.update');
+    Route::delete('/admin/donor-channels/{id}/delete', [AdminController::class, 'deleteDonorChannel'])->name('admin.donor_channels.delete');
+
+    // Master Rumpun Program Routes
+    Route::get('/admin/program-groups', [AdminController::class, 'programGroupsList'])->name('admin.program_groups');
+    Route::post('/admin/program-groups/store', [AdminController::class, 'storeProgramGroup'])->name('admin.program_groups.store');
+    Route::put('/admin/program-groups/{id}/update', [AdminController::class, 'updateProgramGroup'])->name('admin.program_groups.update');
+    Route::delete('/admin/program-groups/{id}/delete', [AdminController::class, 'deleteProgramGroup'])->name('admin.program_groups.delete');
+
+    // Master Program Routes
+    Route::get('/admin/programs', [AdminController::class, 'programList'])->name('admin.programs');
+    Route::post('/admin/programs/store', [AdminController::class, 'storeProgram'])->name('admin.programs.store');
+    Route::put('/admin/programs/{id}/update', [AdminController::class, 'updateProgram'])->name('admin.programs.update');
+    Route::delete('/admin/programs/{id}/delete', [AdminController::class, 'deleteProgram'])->name('admin.programs.delete');
+
+    // Master Via Bayar Routes
+    Route::get('/admin/payment-via', [AdminController::class, 'paymentViaList'])->name('admin.payment_via');
+    Route::post('/admin/payment-via/store', [AdminController::class, 'storePaymentVia'])->name('admin.payment_via.store');
+    Route::put('/admin/payment-via/{id}/update', [AdminController::class, 'updatePaymentVia'])->name('admin.payment_via.update');
+    Route::delete('/admin/payment-via/{id}/delete', [AdminController::class, 'deletePaymentVia'])->name('admin.payment_via.delete');
+
+    // Master Media Prospek Routes
+    Route::get('/admin/prospect-media', [AdminController::class, 'prospectMediaList'])->name('admin.prospect_media');
+    Route::post('/admin/prospect-media/store', [AdminController::class, 'storeProspectMedia'])->name('admin.prospect_media.store');
+    Route::put('/admin/prospect-media/{id}/update', [AdminController::class, 'updateProspectMedia'])->name('admin.prospect_media.update');
+    Route::delete('/admin/prospect-media/{id}/delete', [AdminController::class, 'deleteProspectMedia'])->name('admin.prospect_media.delete');
+
+    // Master Metode Prospek Routes
+    Route::get('/admin/prospect-methods', [AdminController::class, 'prospectMethodsList'])->name('admin.prospect_methods');
+    Route::post('/admin/prospect-methods/store', [AdminController::class, 'storeProspectMethod'])->name('admin.prospect_methods.store');
+    Route::put('/admin/prospect-methods/{id}/update', [AdminController::class, 'updateProspectMethod'])->name('admin.prospect_methods.update');
+    Route::delete('/admin/prospect-methods/{id}/delete', [AdminController::class, 'deleteProspectMethod'])->name('admin.prospect_methods.delete');
+    
     // Global Staff Monitoring Routes
     Route::get('/admin/attendance', [AdminController::class, 'attendanceList'])->name('admin.attendance');
     Route::get('/admin/tasks', [AdminController::class, 'taskList'])->name('admin.tasks');

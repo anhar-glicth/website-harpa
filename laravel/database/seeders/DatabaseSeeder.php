@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Cabang Surabaya', 'address' => 'Jl. Tunjungan No. 5, Surabaya', 'status' => 'Aktif']
         ];
         foreach ($offices as $office) {
-            \App\Models\Office::create($office);
+            \App\Models\Office::updateOrCreate(['name' => $office['name']], $office);
         }
 
         // 2. Program Groups
@@ -33,66 +33,90 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Dakwah', 'code' => 'DKW', 'description' => 'Program syiar Islam dan pembangunan masjid']
         ];
         foreach ($groups as $group) {
-            \App\Models\ProgramGroup::create($group);
+            \App\Models\ProgramGroup::updateOrCreate(['code' => $group['code']], $group);
         }
 
         // 3. Donor Channels
         $channels = [
+            ['name' => 'WEB', 'code' => 'WEB', 'status' => 'Aktif'],
+            ['name' => 'Sosial Media', 'code' => 'SOSMED', 'status' => 'Aktif'],
+            ['name' => 'Sekolah', 'code' => 'SKL', 'status' => 'Aktif'],
+            ['name' => 'Retail', 'code' => 'RTL', 'status' => 'Aktif'],
+            ['name' => 'Perusahaan', 'code' => 'PRSH', 'status' => 'Aktif'],
+            ['name' => 'Galda', 'code' => 'GLD', 'status' => 'Aktif'],
+            ['name' => 'Digital/Web', 'code' => 'DIGI', 'status' => 'Aktif'],
+            ['name' => 'Celengan', 'code' => 'CLG', 'status' => 'Aktif'],
+            ['name' => 'Cash', 'code' => 'CSH', 'status' => 'Aktif'],
             ['name' => 'Instagram', 'code' => 'IG', 'status' => 'Aktif'],
             ['name' => 'Facebook', 'code' => 'FB', 'status' => 'Aktif'],
             ['name' => 'WhatsApp', 'code' => 'WA', 'status' => 'Aktif'],
-            ['name' => 'Website Direct', 'code' => 'WEB', 'status' => 'Aktif'],
-            ['name' => 'Event Offline', 'code' => 'OFF', 'status' => 'Aktif']
         ];
         foreach ($channels as $channel) {
-            \App\Models\DonorChannel::create($channel);
+            \App\Models\DonorChannel::updateOrCreate(['name' => $channel['name']], $channel);
         }
 
         // 4. Payment Via
         $payments = [
-            ['name' => 'Bank Mandiri', 'provider' => 'Transfer Bank', 'account_no' => '123-456-7890', 'status' => 'Aktif'],
-            ['name' => 'Bank BCA', 'provider' => 'Transfer Bank', 'account_no' => '098-765-4321', 'status' => 'Aktif'],
-            ['name' => 'GOPAY', 'provider' => 'E-Wallet', 'account_no' => '08123456789', 'status' => 'Aktif']
+            ['name' => 'BSI-337', 'provider' => 'Bank Syariah Indonesia', 'account_no' => '712337337', 'status' => 'Aktif'],
+            ['name' => 'Mandiri 001', 'provider' => 'Bank Mandiri', 'account_no' => '1370001001', 'status' => 'Aktif'],
+            ['name' => 'Mandiri 737', 'provider' => 'Bank Mandiri', 'account_no' => '1370000737', 'status' => 'Aktif'],
+            ['name' => 'Tripay', 'provider' => 'Payment Gateway', 'account_no' => 'TRIPAY-PG', 'status' => 'Aktif'],
+            ['name' => 'Bank Permata', 'provider' => 'Bank Permata', 'account_no' => '00987654321', 'status' => 'Aktif'],
+            ['name' => 'BMT', 'provider' => 'BMT Synergy', 'account_no' => '5544332211', 'status' => 'Aktif'],
+            ['name' => 'Gopay', 'provider' => 'GoTo / E-Wallet', 'account_no' => '08123456789', 'status' => 'Aktif'],
+            ['name' => 'Dana', 'provider' => 'Dana Indonesia', 'account_no' => '08123456788', 'status' => 'Aktif'],
+            ['name' => 'ShopeePay', 'provider' => 'Shopee E-Wallet', 'account_no' => '08123456787', 'status' => 'Aktif'],
         ];
         foreach ($payments as $payment) {
-            \App\Models\PaymentVia::create($payment);
+            \App\Models\PaymentVia::updateOrCreate(['name' => $payment['name']], $payment);
         }
 
         // 5. Prospect Media, Methods, Types
-        \App\Models\ProspectMedia::create(['name' => 'Brosur', 'status' => 'Aktif']);
-        \App\Models\ProspectMedia::create(['name' => 'Online Ads', 'status' => 'Aktif']);
-        \App\Models\ProspectMethod::create(['name' => 'Cold Call', 'description' => 'Telepon langsung']);
-        \App\Models\ProspectType::create(['name' => 'Premium', 'priority' => 'Tinggi']);
+        $prospectMediaItems = ['Visit', 'Crowdfunding', 'Ads', 'Email', 'WhatsApp'];
+        foreach ($prospectMediaItems as $pmName) {
+            \App\Models\ProspectMedia::firstOrCreate(['name' => $pmName], ['status' => 'Aktif']);
+        }
+        $prospectMethodItems = ['Presentasi', 'Blast / Broadcast', 'Prospek 2 Arah'];
+        foreach ($prospectMethodItems as $pmMethodName) {
+            \App\Models\ProspectMethod::firstOrCreate(['name' => $pmMethodName], ['status' => 'Aktif']);
+        }
+        \App\Models\ProspectType::firstOrCreate(['name' => 'Premium'], ['priority' => 'Tinggi']);
 
         // 6. Users (Admin, Field Worker, User)
         $commonPassword = bcrypt('password123');
 
-        $admin = User::create([
-            'name' => 'Admin Humanity',
-            'email' => 'admin@humanity.org',
-            'username' => 'admin',
-            'password' => $commonPassword,
-            'role' => 'admin',
-            'office_id' => 1
-        ]);
+        $admin = \App\Models\User::updateOrCreate(
+            ['email' => 'admin@humanity.org'],
+            [
+                'name' => 'Admin Humanity',
+                'username' => 'admin',
+                'password' => $commonPassword,
+                'role' => 'admin',
+                'office_id' => 1
+            ]
+        );
 
-        $staff = User::create([
-            'name' => 'Petugas Lapangan',
-            'email' => 'petugas@humanity.org',
-            'username' => 'petugas',
-            'password' => $commonPassword,
-            'role' => 'field_worker',
-            'office_id' => 1
-        ]);
+        $staff = \App\Models\User::updateOrCreate(
+            ['email' => 'petugas@humanity.org'],
+            [
+                'name' => 'Budi Petugas Lapangan',
+                'username' => 'petugas',
+                'password' => $commonPassword,
+                'role' => 'field',
+                'office_id' => 1
+            ]
+        );
 
-        $donor = User::create([
-            'name' => 'Andi Donatur',
-            'email' => 'donatur@humanity.org',
-            'username' => 'donatur',
-            'password' => $commonPassword,
-            'role' => 'user',
-            'office_id' => 1
-        ]);
+        $donor = \App\Models\User::updateOrCreate(
+            ['email' => 'donatur@humanity.org'],
+            [
+                'name' => 'Ahmad Donatur',
+                'username' => 'donatur',
+                'password' => $commonPassword,
+                'role' => 'user',
+                'office_id' => 1
+            ]
+        );
 
         // 7. Campaigns
         $campaign = \App\Models\Campaign::create([
@@ -174,5 +198,48 @@ class DatabaseSeeder extends Seeder
             'distribution_date' => now()->subDays(2),
             'status' => 'Tersalur'
         ]);
+
+        // 13. Karyawan Master Data
+        $manager = \App\Models\Karyawan::updateOrCreate(
+            ['karyawan_code' => 'KRY-001'],
+            [
+                'nama_lengkap' => 'Budi Santoso, S.E.',
+                'jabatan' => 'Branch Manager',
+                'no_hp' => '081234567890',
+                'email' => 'budi.santoso@humanity.org',
+                'alamat' => 'Jl. Sudirman No. 45, Jakarta Pusat',
+                'status' => 'Aktif',
+                'office_id' => 1,
+                'parent_id' => null,
+            ]
+        );
+
+        $supervisor = \App\Models\Karyawan::updateOrCreate(
+            ['karyawan_code' => 'KRY-002'],
+            [
+                'nama_lengkap' => 'Siti Nurhaliza, M.M.',
+                'jabatan' => 'Supervisor Lapangan',
+                'no_hp' => '082198765432',
+                'email' => 'siti.nurhaliza@humanity.org',
+                'alamat' => 'Jl. Asia Afrika No. 88, Bandung',
+                'status' => 'Aktif',
+                'office_id' => 2,
+                'parent_id' => $manager->id,
+            ]
+        );
+
+        \App\Models\Karyawan::updateOrCreate(
+            ['karyawan_code' => 'KRY-003'],
+            [
+                'nama_lengkap' => 'Ahmad Rifa\'i',
+                'jabatan' => 'Staf Operasional',
+                'no_hp' => '085712344321',
+                'email' => 'ahmad.rifai@humanity.org',
+                'alamat' => 'Jl. Pemuda No. 12, Surabaya',
+                'status' => 'Aktif',
+                'office_id' => 3,
+                'parent_id' => $supervisor->id,
+            ]
+        );
     }
 }
