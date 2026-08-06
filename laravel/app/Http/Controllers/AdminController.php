@@ -2347,40 +2347,31 @@ class AdminController extends Controller
     {
         if (Prospect::count() === 0) {
             $sampleProspects = [
-                ['name' => 'Fadli Manrulanggi', 'phone' => '6281232862575', 'email' => 'fadlilanggi@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Follow up via WA'],
-                ['name' => 'Irma Awalia', 'phone' => '6285888445041', 'email' => 'irma@gmail.com', 'company' => 'Pusat-Amal Bakti', 'status' => 'Setuju Donasi', 'notes' => 'Janji transfer besok'],
-                ['name' => 'Andri Novi', 'phone' => '6281987654321', 'email' => 'andri@gmail.com', 'company' => 'Lombok', 'status' => 'Tertarik', 'notes' => 'Minta proposal'],
-                ['name' => 'Annisa Zukhroful Jannah', 'phone' => '6287890123456', 'email' => 'annisa@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Follow up tanggal 10'],
-                ['name' => 'Rizki Amalia Listiani', 'phone' => '6285234567890', 'email' => 'rizki@gmail.com', 'company' => 'Pusat-Amal Bakti', 'status' => 'Belum Respon', 'notes' => 'Telepon tidak diangkat'],
-                ['name' => 'Ahadin Rikzi', 'phone' => '6287711223344', 'email' => 'ahadin@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Tertarik program yatim'],
-                ['name' => 'Muti Dewani', 'phone' => '6281399887766', 'email' => 'muti@gmail.com', 'company' => 'Lombok', 'status' => 'Setuju Donasi', 'notes' => 'Konfirmasi transfer bca'],
-                ['name' => 'Atut Dwi Sartika', 'phone' => '6285644332211', 'email' => 'atut@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Minta brosur digital'],
-                ['name' => 'Hamba Allah', 'phone' => '6281233445566', 'email' => 'hamba@gmail.com', 'company' => 'Pusat-Amal Bakti', 'status' => 'Tertarik', 'notes' => 'Rutin sedekah subuh'],
-                ['name' => 'Ayura', 'phone' => '6287899001122', 'email' => 'ayura@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Prospek media wa'],
+                ['name' => 'Fadli Manrulanggi', 'phone' => '6281232862575', 'email' => 'fadlilanggi@gmail.com'],
+                ['name' => 'Irma Awalia', 'phone' => '6285888445041', 'email' => 'irma@gmail.com'],
+                ['name' => 'Andri Novi', 'phone' => '6281987654321', 'email' => 'andri@gmail.com'],
+                ['name' => 'Annisa Zukhroful Jannah', 'phone' => '6287890123456', 'email' => 'annisa@gmail.com'],
+                ['name' => 'Rizki Amalia Listiani', 'phone' => '6285234567890', 'email' => 'rizki@gmail.com'],
+                ['name' => 'Ahadin Rikzi', 'phone' => '6287711223344', 'email' => 'ahadin@gmail.com'],
+                ['name' => 'Muti Dewani', 'phone' => '6281399887766', 'email' => 'muti@gmail.com'],
+                ['name' => 'Atut Dwi Sartika', 'phone' => '6285644332211', 'email' => 'atut@gmail.com'],
+                ['name' => 'Hamba Allah', 'phone' => '6281233445566', 'email' => 'hamba@gmail.com'],
+                ['name' => 'Ayura', 'phone' => '6287899001122', 'email' => 'ayura@gmail.com'],
             ];
 
             foreach ($sampleProspects as $sp) {
-                Prospect::create([
-                    'name'            => $sp['name'],
-                    'phone'           => $sp['phone'],
-                    'email'           => $sp['email'],
-                    'company'         => $sp['company'],
-                    'potential_level' => 'High',
-                    'status'          => $sp['status'],
-                    'notes'           => $sp['notes'],
-                ]);
+                Prospect::create($sp);
             }
         }
 
-        $query = Prospect::with(['karyawan', 'responses']);
+        $query = Prospect::with(['responses']);
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('notes', 'like', "%{$search}%");
+                  ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -2424,13 +2415,9 @@ class AdminController extends Controller
         ]);
 
         Prospect::create([
-            'name'            => $request->name,
-            'phone'           => $request->phone ?? '6281232862575',
-            'email'           => $request->email ?? 'fadlilanggi@gmail.com',
-            'company'         => 'CRM',
-            'potential_level' => 'High',
-            'status'          => 'Belum Diprospek',
-            'notes'           => $request->notes ?? 'Prospective Donor',
+            'name'  => $request->name,
+            'phone' => $request->phone ?? '6281232862575',
+            'email' => $request->email ?? 'fadlilanggi@gmail.com',
         ]);
 
         return redirect()->back()->with('success', 'Data Prospek baru berhasil ditambahkan.');
@@ -2450,7 +2437,6 @@ class AdminController extends Controller
             'name'  => $request->name,
             'phone' => $request->phone ?? $prospect->phone,
             'email' => $request->email ?? $prospect->email,
-            'notes' => $request->notes ?? $prospect->notes,
         ]);
 
         return redirect()->back()->with('success', 'Data Prospek berhasil diperbarui.');
@@ -2515,7 +2501,7 @@ class AdminController extends Controller
                     'Yatim',
                     'Sedekah Subuh',
                     'Tertarik',
-                    $row->notes ?: 'Follow up via WA',
+                    'Follow up via WA',
                     '100.000',
                     'Fadli',
                 ]);
@@ -2554,13 +2540,9 @@ class AdminController extends Controller
             if ($name === 'Nama Lengkap' || $name === 'No') continue;
 
             Prospect::create([
-                'name'            => $name,
-                'phone'           => $phone,
-                'email'           => $email,
-                'company'         => 'CRM',
-                'potential_level' => 'High',
-                'status'          => 'Belum Diprospek',
-                'notes'           => 'Imported Prospect',
+                'name'  => $name,
+                'phone' => $phone,
+                'email' => $email,
             ]);
 
             $importedCount++;
@@ -2573,7 +2555,7 @@ class AdminController extends Controller
 
     public function potentialDonors(Request $request)
     {
-        $query = Prospect::where('status', 'Tertarik')->orWhere('potential_level', 'High')->with('karyawan');
+        $query = Prospect::query();
 
         if ($request->filled('search')) {
             $search = $request->search;
