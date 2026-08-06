@@ -1849,26 +1849,260 @@ class AdminController extends Controller
 
     public function donorsList(Request $request)
     {
-        $query = User::where('role', 'user')->withCount('donations')->withSum(['donations' => function($q) {
-            $q->where('payment_status', 'Success');
-        }], 'amount');
+        $query = User::where('role', 'user')
+            ->with(['office'])
+            ->withCount('donations')
+            ->withSum(['donations' => function($q) {
+                $q->where('payment_status', 'Success');
+            }], 'amount');
 
+        // Simple Search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('id', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
+        // Advance Search Filters
+        if ($request->filled('start_reg_date')) {
+            $query->whereDate('created_at', '>=', $request->start_reg_date);
+        }
+        if ($request->filled('end_reg_date')) {
+            $query->whereDate('created_at', '<=', $request->end_reg_date);
+        }
+        if ($request->filled('gender') && $request->gender !== 'All') {
+            $query->where('gender', $request->gender);
+        }
+        if ($request->filled('segment')) {
+            $query->where('segment', 'like', "%{$request->segment}%");
+        }
+        if ($request->filled('office_id')) {
+            $query->where('office_id', $request->office_id);
+        }
+        if ($request->filled('has_phone')) {
+            if ($request->has_phone === 'Ya') {
+                $query->whereNotNull('phone')->where('phone', '!=', '');
+            } elseif ($request->has_phone === 'Tidak') {
+                $query->where(function($q) { $q->whereNull('phone')->orWhere('phone', ''); });
+            }
+        }
+        if ($request->filled('has_email')) {
+            if ($request->has_email === 'Ya') {
+                $query->whereNotNull('email')->where('email', '!=', '');
+            } elseif ($request->has_email === 'Tidak') {
+                $query->where(function($q) { $q->whereNull('email')->orWhere('email', ''); });
+            }
+        }
+        if ($request->filled('rfm_alltime') && $request->rfm_alltime !== 'All') {
+            $query->where('rfm_alltime', $request->rfm_alltime);
+        }
+
         $donors = $query->latest()->paginate(10)->withQueryString();
         $totalDonorsCount = User::where('role', 'user')->count();
+        $offices = Office::orderBy('name')->get();
+        $donorChannels = DonorChannel::orderBy('name')->get();
+        $prospectMedia = ProspectMedia::orderBy('name')->get();
 
         return view('admin.donors_list', [
             'donors' => $donors,
             'totalDonorsCount' => $totalDonorsCount,
+            'offices' => $offices,
+            'donorChannels' => $donorChannels,
+            'prospectMedia' => $prospectMedia,
             'active' => 'donors_list',
+        ]);
+    }
+
+    public function storeDonor(Request $request)
+    {
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'nullable|email|max:255|unique:users,email',
+            'phone'     => 'nullable|string|max:50',
+            'gender'    => 'nullable|in:L,P',
+            'office_id' => 'nullable|exists:offices,id',
+            'segment'   => 'nullable|string|max:100',
+            'address'   => 'nullable|string',
+        ]);
+
+        User::create([
+            'name'       => $request->name,
+            'email'      => $request->email ?: 'donor_' . time() . '_' . rand(100,999) . '@abadintb.org',
+            'password'   => bcrypt('password123'),
+            'role'       => 'user',
+            'phone'      => $request->phone,
+            'gender'     => $request->gender ?: 'L',
+            'office_id'  => $request->office_id,
+            'segment'    => $request->segment ?: 'Donatur Umum',
+            'address'    => $request->address,
+            'rfm_alltime'=> 'Recent Donors',
+        ]);
+
+        return redirect()->back()->with('success', 'Data Donatur baru berhasil ditambahkan.');
+    }
+
+    public function updateDonor(Request $request, $id)
+    {
+        $donor = User::where('role', 'user')->findOrFail($id);
+
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'nullable|email|max:255|unique:users,email,' . $id,
+            'phone'     => 'nullable|string|max:50',
+            'gender'    => 'nullable|in:L,P',
+            'office_id' => 'nullable|exists:offices,id',
+            'segment'   => 'nullable|string|max:100',
+            'address'   => 'nullable|string',
+        ]);
+
+        $donor->update([
+            'name'      => $request->name,
+            'email'     => $request->email ?: $donor->email,
+            'phone'     => $request->phone,
+            'gender'    => $request->gender ?: $donor->gender,
+            'office_id' => $request->office_id,
+            'segment'   => $request->segment ?: $donor->segment,
+            'address'   => $request->address,
+        ]);
+
+        return redirect()->back()->with('success', 'Data Donatur berhasil diperbarui.');
+    }
+
+    public function deleteDonor($id)
+    {
+        $donor = User::where('role', 'user')->findOrFail($id);
+        $donor->delete();
+
+        return redirect()->back()->with('success', 'Data Donatur berhasil dihapus.');
+    }
+
+    public function exportDonors(Request $request)
+    {
+        $query = User::where('role', 'user')
+            ->with(['office'])
+            ->withCount('donations')
+            ->withSum(['donations' => function($q) {
+                $q->where('payment_status', 'Success');
+            }], 'amount');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('id', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $donors = $query->latest()->get();
+
+        $filename = 'Data_Donatur_' . date('Y-m-d_H-i') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($donors) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($file, [
+                'No', 'ID Donatur', 'Nama Lengkap', 'Jenis Kelamin', 'No HP', 'Email', 
+                'Kantor Layanan', 'Segmen', 'Profil', 'RFM Last 90 Days', 'RFM All Time', 
+                'Kategori', 'Badge', 'Total Transaksi', 'Total Nominal', 'Tgl Regis'
+            ]);
+
+            foreach ($donors as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    'DNR-' . str_pad($row->id, 5, '0', STR_PAD_LEFT),
+                    $row->name,
+                    $row->gender === 'L' ? 'Laki-Laki' : ($row->gender === 'P' ? 'Perempuan' : '-'),
+                    $row->phone ?: '-',
+                    $row->email ?: '-',
+                    $row->office ? $row->office->name : 'Kantor Pusat',
+                    $row->segment ?: 'Donatur Umum',
+                    'Profil Umum',
+                    $row->rfm_alltime ?: 'Recent Donors',
+                    $row->rfm_alltime ?: 'Recent Donors',
+                    'Reguler',
+                    'Active Donor',
+                    $row->donations_count ?? 0,
+                    $row->donations_sum_amount ?? 0,
+                    $row->created_at ? $row->created_at->format('Y-m-d H:i') : '',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function importDonors(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+        ]);
+
+        $file = $request->file('file');
+        $handle = fopen($file->getRealPath(), 'r');
+
+        $bom = fread($handle, 3);
+        if ($bom !== "\xEF\xBB\xBF") {
+            rewind($handle);
+        }
+
+        $header = fgetcsv($handle);
+        $importedCount = 0;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            if (empty($row) || count($row) < 2) continue;
+
+            $name   = $row[2] ?? $row[1] ?? 'Donatur';
+            $gender = (isset($row[3]) && in_array(strtoupper($row[3]), ['L', 'P', 'LAKI-LAKI', 'PEREMPUAN'])) ? (str_contains(strtoupper($row[3]), 'P') ? 'P' : 'L') : 'L';
+            $phone  = $row[4] ?? '-';
+            $email  = (!empty($row[5]) && filter_var($row[5], FILTER_VALIDATE_EMAIL)) ? $row[5] : ('donor_' . time() . '_' . rand(1000,9999) . '@abadintb.org');
+            $seg    = $row[7] ?? 'Donatur Umum';
+
+            if ($name === 'TOTAL' || $name === 'No' || $name === 'Nama Lengkap') continue;
+
+            User::create([
+                'name'       => $name,
+                'email'      => $email,
+                'password'   => bcrypt('password123'),
+                'role'       => 'user',
+                'phone'      => $phone,
+                'gender'     => $gender,
+                'segment'    => $seg,
+                'rfm_alltime'=> 'Recent Donors',
+            ]);
+
+            $importedCount++;
+        }
+
+        fclose($handle);
+
+        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data donatur.");
+    }
+
+    public function donorReceipt($id)
+    {
+        $donor = User::where('role', 'user')->with(['donations.campaign'])->findOrFail($id);
+        $lastDonation = $donor->donations()->latest()->first();
+
+        return view('admin.donor_receipt', [
+            'donor'        => $donor,
+            'lastDonation' => $lastDonation,
         ]);
     }
 
