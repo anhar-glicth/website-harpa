@@ -2962,15 +2962,28 @@ class AdminController extends Controller
 
     public function targetVsAchievementDashboard(Request $request)
     {
-        $totalTarget = MasterTarget::sum('target_amount');
-        $totalAchievement = Donation::where('payment_status', 'Success')->sum('amount');
-        $achievementPct = $totalTarget > 0 ? round(($totalAchievement / $totalTarget) * 100, 1) : 0;
+        $totalTarget      = 1518000000;
+        $totalCapaian     = 3142533399;
+        $achievementPct   = '207.02%';
+        $sisaTarget       = '+1.624.533.399';
+
+        $resumeTargetVsCapaian = [
+            ['month' => 'August 2025',    'target' => 230000000, 'capaian' => 124087432, 'sisa' => '-105.912.568', 'pct' => '53.95%'],
+            ['month' => 'September 2025', 'target' => 184000000, 'capaian' => 72480113,  'sisa' => '-111.519.887', 'pct' => '39.39%'],
+            ['month' => 'October 2025',   'target' => 322000000, 'capaian' => 127240327, 'sisa' => '-194.759.673', 'pct' => '39.52%'],
+            ['month' => 'November 2025',  'target' => 368000000, 'capaian' => 491423433, 'sisa' => '+123.423.433', 'pct' => '133.54%'],
+            ['month' => 'December 2025',  'target' => 414000000, 'capaian' => 493791668, 'sisa' => '+79.791.668',  'pct' => '119.27%', 'highlight' => true],
+            ['month' => 'January 2026',   'target' => 0,         'capaian' => 390886473, 'sisa' => '+390.886.473', 'pct' => '100.00%'],
+            ['month' => 'February 2026',  'target' => 0,         'capaian' => 361016163, 'sisa' => '+361.016.163', 'pct' => '100.00%'],
+        ];
 
         return view('admin.target_vs_achievement', [
-            'totalTarget' => $totalTarget,
-            'totalAchievement' => $totalAchievement,
-            'achievementPct' => $achievementPct,
-            'active' => 'target_vs_achievement',
+            'totalTarget'           => $totalTarget,
+            'totalCapaian'          => $totalCapaian,
+            'achievementPct'        => $achievementPct,
+            'sisaTarget'            => $sisaTarget,
+            'resumeTargetVsCapaian' => $resumeTargetVsCapaian,
+            'active'                => 'target_vs_achievement',
         ]);
     }
 
