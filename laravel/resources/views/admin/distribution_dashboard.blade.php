@@ -142,13 +142,13 @@
                 </form>
             </div>
 
-            {{-- Summary Banner Bar (Presisi Sesuai Red Top Header Box - Screenshot 1) --}}
-            <div class="bg-white border border-rose-200 rounded-3xl overflow-hidden shadow-sm">
-                <div class="grid grid-cols-2 sm:grid-cols-5 text-center divide-x divide-rose-100 bg-rose-50/50">
+            {{-- Summary Banner Bar (Presisi Sesuai Website Primary Theme - Emerald Green) --}}
+            <div class="bg-white border border-emerald-200 rounded-3xl overflow-hidden shadow-sm">
+                <div class="grid grid-cols-2 sm:grid-cols-5 text-center divide-x divide-emerald-100 bg-emerald-50/50">
 
                     {{-- Σ Quantity --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Quantity
                         </div>
                         <p class="text-2xl font-black text-slate-900">{{ number_format($sumQuantity) }}</p>
@@ -156,7 +156,7 @@
 
                     {{-- Σ Kota --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Kota
                         </div>
                         <p class="text-2xl font-black text-slate-900">{{ number_format($sumKota) }}</p>
@@ -164,7 +164,7 @@
 
                     {{-- Σ Provinsi --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Provinsi
                         </div>
                         <p class="text-2xl font-black text-slate-900">{{ number_format($sumProvinsi) }}</p>
@@ -172,7 +172,7 @@
 
                     {{-- Σ Penerima Manfaat --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Penerima Manfaat
                         </div>
                         <p class="text-2xl font-black text-slate-900">{{ number_format($sumPM) }}</p>
@@ -180,7 +180,7 @@
 
                     {{-- Σ Dana Penyaluran --}}
                     <div class="p-4 space-y-1 col-span-2 sm:col-span-1">
-                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Dana Penyaluran
                         </div>
                         <p class="text-2xl font-black text-emerald-600">
@@ -295,6 +295,153 @@
                         <div id="chartProgramNamePie" class="w-full h-[320px] flex items-center justify-center"></div>
                     </div>
 
+                </div>
+
+            </div>
+
+            {{-- ==================== 4 RESUME TABLES (Presisi Sesuai Website Primary Theme - Emerald Green) ==================== --}}
+            <div class="space-y-6 pt-4">
+
+                {{-- 1. Resume Penyaluran By Asnaf --}}
+                <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                        <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Asnaf</span>
+                        <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'asnaf'])) }}" class="text-white/80 hover:text-white transition-colors" title="Export Data Resume Asnaf Excel">
+                            <i class="fa-solid fa-file-excel text-base"></i>
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-700">
+                                    <th class="py-3 px-6">Asnaf</th>
+                                    <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
+                                    <th class="py-3 px-4 text-center">Total PM</th>
+                                    <th class="py-3 px-4 text-right">Nominal Penyaluran</th>
+                                    <th class="py-3 px-6 text-right">% Dana Penyaluran</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
+                                @foreach($resumeAsnaf as $item)
+                                    @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
+                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                        <td class="py-3 px-6 font-bold text-slate-900">{{ $item->asnaf_name }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_count) }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_pm) }}</td>
+                                        <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
+                                        <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- 2. Resume Penyaluran By Kota --}}
+                <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                        <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Kota</span>
+                        <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'kota'])) }}" class="text-white/80 hover:text-white transition-colors" title="Export Data Resume Kota Excel">
+                            <i class="fa-solid fa-file-excel text-base"></i>
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-700">
+                                    <th class="py-3 px-6">Kota</th>
+                                    <th class="py-3 px-4">Provinsi</th>
+                                    <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
+                                    <th class="py-3 px-4 text-center">Total PM</th>
+                                    <th class="py-3 px-4 text-right">Nominal Penyaluran</th>
+                                    <th class="py-3 px-6 text-right">% Dana Penyaluran</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
+                                @foreach($resumeKota as $item)
+                                    @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
+                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                        <td class="py-3 px-6 font-bold text-slate-900">{{ $item->city_name }}</td>
+                                        <td class="py-3 px-4 text-slate-600">{{ $item->province_name }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_count) }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_pm) }}</td>
+                                        <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
+                                        <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- 3. Resume Penyaluran By Kategori Program --}}
+                <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                        <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Kategori Program</span>
+                        <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'kategori'])) }}" class="text-white/80 hover:text-white transition-colors" title="Export Data Resume Kategori Excel">
+                            <i class="fa-solid fa-file-excel text-base"></i>
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-700">
+                                    <th class="py-3 px-6">Kategori Program</th>
+                                    <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
+                                    <th class="py-3 px-4 text-center">Total PM</th>
+                                    <th class="py-3 px-4 text-right">Nominal Penyaluran</th>
+                                    <th class="py-3 px-6 text-right">% Dana Penyaluran</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
+                                @foreach($resumeKategori as $item)
+                                    @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
+                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                        <td class="py-3 px-6 font-bold text-slate-900">{{ $item->category_name }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_count) }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_pm) }}</td>
+                                        <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
+                                        <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- 4. Resume Penyaluran By Program --}}
+                <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                        <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Program</span>
+                        <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'program'])) }}" class="text-white/80 hover:text-white transition-colors" title="Export Data Resume Program Excel">
+                            <i class="fa-solid fa-file-excel text-base"></i>
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-700">
+                                    <th class="py-3 px-6">Nama Program</th>
+                                    <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
+                                    <th class="py-3 px-4 text-center">Total PM</th>
+                                    <th class="py-3 px-4 text-right">Nominal Penyaluran</th>
+                                    <th class="py-3 px-6 text-right">% Dana Penyaluran</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
+                                @foreach($resumeProgram as $item)
+                                    @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
+                                    <tr class="hover:bg-slate-50/80 transition-colors">
+                                        <td class="py-3 px-6 font-bold text-slate-900">{{ $item->program_title }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_count) }}</td>
+                                        <td class="py-3 px-4 text-center font-mono">{{ number_format($item->total_pm) }}</td>
+                                        <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
+                                        <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>

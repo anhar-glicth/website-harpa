@@ -88,9 +88,9 @@
                 </div>
             @endif
 
-            {{-- Dashboard Info Banner (Sesuai Screenshot: Red Top Bar Info) --}}
-            <div class="bg-white border border-rose-100 rounded-3xl overflow-hidden shadow-sm">
-                <div class="bg-rose-600 px-6 py-2.5 text-center text-white text-xs font-black uppercase tracking-wider">
+            {{-- Dashboard Info Banner (Sesuai Website Primary Theme - Emerald Green) --}}
+            <div class="bg-white border border-emerald-100 rounded-3xl overflow-hidden shadow-sm">
+                <div class="bg-emerald-600 px-6 py-2.5 text-center text-white text-xs font-black uppercase tracking-wider">
                     Informasi Penyaluran
                 </div>
                 <div class="p-6 text-center">
@@ -103,12 +103,12 @@
                         <div class="flex flex-wrap items-center justify-around gap-4 text-slate-700">
                             <div>
                                 <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Penyaluran Terfilter</p>
-                                <p class="text-xl font-black text-rose-600">Rp {{ number_format($totalFilteredAmount, 0, ',', '.') }}</p>
+                                <p class="text-xl font-black text-emerald-600">Rp {{ number_format($totalFilteredAmount, 0, ',', '.') }}</p>
                             </div>
                             <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
                             <div>
                                 <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Jumlah Transaksi</p>
-                                <p class="text-xl font-black text-slate-900">{{ number_format($distributions->total(), 0, ',', '.') }} Record</p>
+                                <p class="text-xl font-black text-slate-900">{{ number_format($distributions->total()) }} Laporan</p>
                             </div>
                         </div>
                     @endif

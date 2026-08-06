@@ -273,17 +273,27 @@ class AdminController extends Controller
             $sourceValues = [84.1, 14.4, 1.0, 0.5];
         }
 
+        // Fetch all matching distributions with relationships for PHP collection processing (100% safe against MySQL strict mode)
+        $distributionRecords = (clone $query)->with(['campaign.group'])->get();
+
         // 7. Distribusi Program Penyaluran Pie Chart Data
-        $programGroupPie = (clone $query)
-            ->leftJoin('campaigns', 'distributions.program_id', '=', 'campaigns.id')
-            ->leftJoin('program_groups', 'campaigns.group_id', '=', 'program_groups.id')
-            ->select(
-                DB::raw("COALESCE(NULLIF(program_groups.name, ''), NULLIF(campaigns.category, ''), NULLIF(distributions.category_name, ''), 'Insidental Kemanusiaan') as label_group"),
-                DB::raw('SUM(distributions.amount) as total_nominal')
-            )
-            ->groupBy('label_group')
-            ->orderBy('total_nominal', 'desc')
-            ->get();
+        $programGroupPie = $distributionRecords->groupBy(function($item) {
+            if ($item->campaign && $item->campaign->group && !empty($item->campaign->group->name)) {
+                return $item->campaign->group->name;
+            }
+            if ($item->campaign && !empty($item->campaign->category)) {
+                return $item->campaign->category;
+            }
+            if (!empty($item->category_name)) {
+                return $item->category_name;
+            }
+            return 'Insidental Kemanusiaan';
+        })->map(function($items, $key) {
+            return (object)[
+                'label_group' => $key,
+                'total_nominal' => (float)$items->sum('amount')
+            ];
+        })->sortByDesc('total_nominal')->values();
 
         $programGroupLabels = $programGroupPie->pluck('label_group')->toArray();
         $programGroupValues = array_map('floatval', $programGroupPie->pluck('total_nominal')->toArray());
@@ -294,15 +304,20 @@ class AdminController extends Controller
         }
 
         // 8. Distribusi Nama Program Pie Chart Data
-        $programNamePie = (clone $query)
-            ->leftJoin('campaigns', 'distributions.program_id', '=', 'campaigns.id')
-            ->select(
-                DB::raw("COALESCE(campaigns.title, distributions.title, 'Program Penyaluran Ummat') as label_program"),
-                DB::raw('SUM(distributions.amount) as total_nominal')
-            )
-            ->groupBy('label_program')
-            ->orderBy('total_nominal', 'desc')
-            ->get();
+        $programNamePie = $distributionRecords->groupBy(function($item) {
+            if ($item->campaign && !empty($item->campaign->title)) {
+                return $item->campaign->title;
+            }
+            if (!empty($item->title)) {
+                return $item->title;
+            }
+            return 'Program Penyaluran Ummat';
+        })->map(function($items, $key) {
+            return (object)[
+                'label_program' => $key,
+                'total_nominal' => (float)$items->sum('amount')
+            ];
+        })->sortByDesc('total_nominal')->values();
 
         $programNameLabels = $programNamePie->pluck('label_program')->toArray();
         $programNameValues = array_map('floatval', $programNamePie->pluck('total_nominal')->toArray());
@@ -324,6 +339,120 @@ class AdminController extends Controller
             $sumDana     = 2119754069;
         }
 
+        // ----------------- RESUME TABLES AGGREGATION -----------------
+        $denomDana = $sumDana > 0 ? $sumDana : 2119754069;
+
+        // 1. Resume Penyaluran By Asnaf
+        $resumeAsnaf = $distributionRecords->groupBy(function($item) {
+            return !empty($item->asnaf) ? $item->asnaf : 'Non Asnaf';
+        })->map(function($items, $key) {
+            return (object)[
+                'asnaf_name'   => $key,
+                'total_count'  => $items->count(),
+                'total_pm'     => (int)$items->sum('pm_count'),
+                'total_amount' => (float)$items->sum('amount')
+            ];
+        })->sortByDesc('total_amount')->values();
+
+        if ($resumeAsnaf->isEmpty()) {
+            $resumeAsnaf = collect([
+                (object)['asnaf_name' => 'Non Asnaf', 'total_count' => 120, 'total_pm' => 22100, 'total_amount' => 1466870000],
+                (object)['asnaf_name' => 'Fakir', 'total_count' => 35, 'total_pm' => 5800, 'total_amount' => 347640000],
+                (object)['asnaf_name' => 'Miskin', 'total_count' => 22, 'total_pm' => 3200, 'total_amount' => 205615000],
+                (object)['asnaf_name' => 'Fisabilillah', 'total_count' => 10, 'total_pm' => 1850, 'total_amount' => 44514000],
+                (object)['asnaf_name' => 'Mualaf', 'total_count' => 5, 'total_pm' => 950, 'total_amount' => 31796000],
+                (object)['asnaf_name' => 'Ibnusabil', 'total_count' => 3, 'total_pm' => 501, 'total_amount' => 21197069],
+            ]);
+        }
+
+        // 2. Resume Penyaluran By Kota
+        $resumeKota = $distributionRecords->groupBy(function($item) {
+            $c = !empty($item->city) ? $item->city : 'Kota Mataram';
+            $p = !empty($item->province) ? $item->province : 'Nusa Tenggara Barat';
+            return $c . '|||' . $p;
+        })->map(function($items, $key) {
+            $parts = explode('|||', $key);
+            return (object)[
+                'city_name'     => $parts[0] ?? 'Kota Mataram',
+                'province_name' => $parts[1] ?? 'Nusa Tenggara Barat',
+                'total_count'   => $items->count(),
+                'total_pm'      => (int)$items->sum('pm_count'),
+                'total_amount'  => (float)$items->sum('amount')
+            ];
+        })->sortByDesc('total_amount')->values();
+
+        if ($resumeKota->isEmpty()) {
+            $resumeKota = collect([
+                (object)['city_name' => 'Kota Mataram', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 65, 'total_pm' => 12500, 'total_amount' => 850000000],
+                (object)['city_name' => 'Kab. Ende', 'province_name' => 'Nusa Tenggara Timur', 'total_count' => 38, 'total_pm' => 7800, 'total_amount' => 480000000],
+                (object)['city_name' => 'Kab. Sumbawa', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 28, 'total_pm' => 5400, 'total_amount' => 320000000],
+                (object)['city_name' => 'Kab. Bima', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 24, 'total_pm' => 4200, 'total_amount' => 250000000],
+                (object)['city_name' => 'Kota Kupang', 'province_name' => 'Nusa Tenggara Timur', 'total_count' => 22, 'total_pm' => 3000, 'total_amount' => 150000000],
+                (object)['city_name' => 'Kab. Dompu', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 18, 'total_pm' => 1501, 'total_amount' => 69754069],
+            ]);
+        }
+
+        // 3. Resume Penyaluran By Kategori Program
+        $resumeKategori = $distributionRecords->groupBy(function($item) {
+            if ($item->campaign && $item->campaign->group && !empty($item->campaign->group->name)) {
+                return $item->campaign->group->name;
+            }
+            if ($item->campaign && !empty($item->campaign->category)) {
+                return $item->campaign->category;
+            }
+            if (!empty($item->category_name)) {
+                return $item->category_name;
+            }
+            return 'Insidental Kemanusiaan';
+        })->map(function($items, $key) {
+            return (object)[
+                'category_name' => $key,
+                'total_count'   => $items->count(),
+                'total_pm'      => (int)$items->sum('pm_count'),
+                'total_amount'  => (float)$items->sum('amount')
+            ];
+        })->sortByDesc('total_amount')->values();
+
+        if ($resumeKategori->isEmpty()) {
+            $resumeKategori = collect([
+                (object)['category_name' => 'Insidental Kemanusiaan', 'total_count' => 95, 'total_pm' => 18500, 'total_amount' => 1303648752],
+                (object)['category_name' => 'Kesehatan', 'total_count' => 45, 'total_pm' => 8200, 'total_amount' => 532058271],
+                (object)['category_name' => 'Pendidikan', 'total_count' => 25, 'total_pm' => 3800, 'total_amount' => 108107457],
+                (object)['category_name' => 'Ekonomi', 'total_count' => 15, 'total_pm' => 2100, 'total_amount' => 76311146],
+                (object)['category_name' => 'Insidental Bencana', 'total_count' => 10, 'total_pm' => 1200, 'total_amount' => 65712376],
+                (object)['category_name' => 'Capacity Building & Lingkungan', 'total_count' => 5, 'total_pm' => 601, 'total_amount' => 33916067],
+            ]);
+        }
+
+        // 4. Resume Penyaluran By Program
+        $resumeProgram = $distributionRecords->groupBy(function($item) {
+            if ($item->campaign && !empty($item->campaign->title)) {
+                return $item->campaign->title;
+            }
+            if (!empty($item->title)) {
+                return $item->title;
+            }
+            return 'Program Penyaluran Ummat';
+        })->map(function($items, $key) {
+            return (object)[
+                'program_title' => $key,
+                'total_count'   => $items->count(),
+                'total_pm'      => (int)$items->sum('pm_count'),
+                'total_amount'  => (float)$items->sum('amount')
+            ];
+        })->sortByDesc('total_amount')->values();
+
+        if ($resumeProgram->isEmpty()) {
+            $resumeProgram = collect([
+                (object)['program_title' => 'Asesment Medis & Pengobatan Dhuafa', 'total_count' => 48, 'total_pm' => 9500, 'total_amount' => 650000000],
+                (object)['program_title' => 'Penyaluran Qurban Terbaik NTB & NTT', 'total_count' => 35, 'total_pm' => 8200, 'total_amount' => 540000000],
+                (object)['program_title' => 'Bantuan Logistik Bencana Banjir Bandang', 'total_count' => 30, 'total_pm' => 6400, 'total_amount' => 420000000],
+                (object)['program_title' => 'Beasiswa Yatim & Dhuafa Nusantara', 'total_count' => 25, 'total_pm' => 4800, 'total_amount' => 280000000],
+                (object)['program_title' => 'Pembinaan Keagamaan Mualaf Pelosok', 'total_count' => 20, 'total_pm' => 3200, 'total_amount' => 150000000],
+                (object)['program_title' => 'Program Pemberdayaan Ekonomi Ummat', 'total_count' => 17, 'total_pm' => 2301, 'total_amount' => 79754069],
+            ]);
+        }
+
         // Filter Dropdown Lists
         $programGroups = ProgramGroup::all();
         $programs      = Campaign::where('status', 'approved')->get();
@@ -340,6 +469,7 @@ class AdminController extends Controller
             'sumProvinsi'        => $sumProvinsi,
             'sumPM'              => $sumPM,
             'sumDana'            => $sumDana,
+            'denomDana'          => $denomDana,
 
             'dailyDates'         => $dailyDates,
             'dailyNominalData'   => $dailyNominalData,
@@ -360,6 +490,11 @@ class AdminController extends Controller
 
             'programNameLabels'  => $programNameLabels,
             'programNameValues'  => $programNameValues,
+
+            'resumeAsnaf'        => $resumeAsnaf,
+            'resumeKota'         => $resumeKota,
+            'resumeKategori'     => $resumeKategori,
+            'resumeProgram'      => $resumeProgram,
 
             'programGroups'      => $programGroups,
             'programs'           => $programs,
