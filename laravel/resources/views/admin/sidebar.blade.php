@@ -264,4 +264,96 @@
         </div>
     </div>
 
+    <!-- 5. TRANSACTION MANAGEMENT GROUP (Sesuai Screenshot User) -->
+    <div x-data="{ isOpen: true }" class="border-t border-slate-100">
+        <div @click="isOpen = !isOpen" class="bg-rose-600 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-rose-700 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider">Transaction Management</span>
+            <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
+        </div>
+        <div x-show="isOpen" x-collapse class="p-3 space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+            
+            <!-- 1. List Donatur -->
+            <a href="{{ route('admin.donors_list') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'donors_list' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'donors_list' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-users text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">List Donatur</span>
+            </a>
+
+            <!-- 2. List Transaksi -->
+            <a href="{{ route('admin.transactions_list') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'transactions_list' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'transactions_list' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-receipt text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">List Transaksi</span>
+            </a>
+
+            <!-- 3. List Prospek -->
+            <a href="{{ route('admin.prospects_list') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'prospects_list' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'prospects_list' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-address-book text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">List Prospek</span>
+            </a>
+
+            <!-- 4. List Calon Donatur -->
+            <a href="{{ route('admin.potential_donors') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'potential_donors' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'potential_donors' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-user-plus text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">List Calon Donatur</span>
+            </a>
+
+            <!-- 5. Dashboard Transaksi -->
+            <a href="{{ route('admin.transactions_dashboard') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'transactions_dashboard' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'transactions_dashboard' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-chart-pie text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard Transaksi</span>
+            </a>
+
+            <!-- 6. Dashboard Donatur -->
+            <a href="{{ route('admin.donors_dashboard') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'donors_dashboard' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'donors_dashboard' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-chart-column text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard Donatur</span>
+            </a>
+
+            <!-- 7. Dashboard Prospek -->
+            <a href="{{ route('admin.prospects_dashboard') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'prospects_dashboard' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'prospects_dashboard' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-chart-line text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard Prospek</span>
+            </a>
+
+            <!-- 8. Dashboard Target Vs Capaian -->
+            <a href="{{ route('admin.target_vs_achievement') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'target_vs_achievement' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'target_vs_achievement' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-bullseye text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard Target Vs Capaian</span>
+            </a>
+
+            <!-- 9. Dashboard RFM -->
+            <a href="{{ route('admin.rfm_dashboard') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'rfm_dashboard' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'rfm_dashboard' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-layer-group text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard RFM</span>
+            </a>
+
+        </div>
+    </div>
+
 </nav>

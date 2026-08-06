@@ -1842,4 +1842,189 @@ class AdminController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    // ==========================================
+    // TRANSACTION MANAGEMENT MODULES
+    // ==========================================
+
+    public function donorsList(Request $request)
+    {
+        $query = User::where('role', 'user')->withCount('donations')->withSum(['donations' => function($q) {
+            $q->where('payment_status', 'Success');
+        }], 'amount');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $donors = $query->latest()->paginate(10)->withQueryString();
+        $totalDonorsCount = User::where('role', 'user')->count();
+
+        return view('admin.donors_list', [
+            'donors' => $donors,
+            'totalDonorsCount' => $totalDonorsCount,
+            'active' => 'donors_list',
+        ]);
+    }
+
+    public function transactionsList(Request $request)
+    {
+        $query = Donation::with(['user', 'campaign', 'paymentVia']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('donor_name', 'like', "%{$search}%")
+                  ->orWhere('donor_email', 'like', "%{$search}%")
+                  ->orWhere('donor_phone', 'like', "%{$search}%")
+                  ->orWhere('transaction_id', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('payment_status', $request->status);
+        }
+
+        $totalTransactionAmount = (clone $query)->where('payment_status', 'Success')->sum('amount');
+        $donations = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.transactions_list', [
+            'donations' => $donations,
+            'totalTransactionAmount' => $totalTransactionAmount,
+            'active' => 'transactions_list',
+        ]);
+    }
+
+    public function prospectsList(Request $request)
+    {
+        $query = Prospect::with(['karyawan', 'responses']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('company', 'like', "%{$search}%");
+            });
+        }
+
+        $prospects = $query->latest()->paginate(10)->withQueryString();
+        $totalProspects = Prospect::count();
+
+        return view('admin.prospects_list', [
+            'prospects' => $prospects,
+            'totalProspects' => $totalProspects,
+            'active' => 'prospects_list',
+        ]);
+    }
+
+    public function potentialDonors(Request $request)
+    {
+        $query = Prospect::where('status', 'Tertarik')->orWhere('potential_level', 'High')->with('karyawan');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $potentialDonors = $query->latest()->paginate(10)->withQueryString();
+        $totalPotentialCount = (clone $query)->count();
+
+        return view('admin.potential_donors', [
+            'potentialDonors' => $potentialDonors,
+            'totalPotentialCount' => $totalPotentialCount,
+            'active' => 'potential_donors',
+        ]);
+    }
+
+    public function transactionsDashboard(Request $request)
+    {
+        $totalAmount = Donation::where('payment_status', 'Success')->sum('amount');
+        $successCount = Donation::where('payment_status', 'Success')->count();
+        $pendingCount = Donation::where('payment_status', 'Pending')->count();
+        $recentTransactions = Donation::with('campaign')->latest()->take(10)->get();
+
+        return view('admin.transactions_dashboard', [
+            'totalAmount' => $totalAmount,
+            'successCount' => $successCount,
+            'pendingCount' => $pendingCount,
+            'recentTransactions' => $recentTransactions,
+            'active' => 'transactions_dashboard',
+        ]);
+    }
+
+    public function donorsDashboard(Request $request)
+    {
+        $totalDonors = User::where('role', 'user')->count();
+        $maleDonors = User::where('role', 'user')->where('gender', 'L')->count();
+        $femaleDonors = User::where('role', 'user')->where('gender', 'P')->count();
+        $topDonors = User::where('role', 'user')
+            ->withSum(['donations' => function($q) { $q->where('payment_status', 'Success'); }], 'amount')
+            ->orderByDesc('donations_sum_amount')
+            ->take(10)
+            ->get();
+
+        return view('admin.donors_dashboard', [
+            'totalDonors' => $totalDonors,
+            'maleDonors' => $maleDonors,
+            'femaleDonors' => $femaleDonors,
+            'topDonors' => $topDonors,
+            'active' => 'donors_dashboard',
+        ]);
+    }
+
+    public function prospectsDashboard(Request $request)
+    {
+        $totalProspects = Prospect::count();
+        $convertedProspects = Prospect::where('status', 'Tertarik')->count();
+        $followUpProspects = Prospect::where('status', 'Follow Up')->count();
+
+        return view('admin.prospects_dashboard', [
+            'totalProspects' => $totalProspects,
+            'convertedProspects' => $convertedProspects,
+            'followUpProspects' => $followUpProspects,
+            'active' => 'prospects_dashboard',
+        ]);
+    }
+
+    public function targetVsAchievementDashboard(Request $request)
+    {
+        $totalTarget = MasterTarget::sum('target_amount');
+        $totalAchievement = Donation::where('payment_status', 'Success')->sum('amount');
+        $achievementPct = $totalTarget > 0 ? round(($totalAchievement / $totalTarget) * 100, 1) : 0;
+
+        return view('admin.target_vs_achievement', [
+            'totalTarget' => $totalTarget,
+            'totalAchievement' => $totalAchievement,
+            'achievementPct' => $achievementPct,
+            'active' => 'target_vs_achievement',
+        ]);
+    }
+
+    public function rfmDashboard(Request $request)
+    {
+        $totalDonors = User::where('role', 'user')->count();
+        $rfmSegmentCounts = User::where('role', 'user')
+            ->select('rfm_alltime', DB::raw('count(*) as count'))
+            ->whereNotNull('rfm_alltime')
+            ->groupBy('rfm_alltime')
+            ->get();
+
+        return view('admin.rfm_dashboard', [
+            'totalDonors' => $totalDonors,
+            'rfmSegmentCounts' => $rfmSegmentCounts,
+            'active' => 'rfm_dashboard',
+        ]);
+    }
 }
+

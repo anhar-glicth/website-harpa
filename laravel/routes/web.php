@@ -146,6 +146,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/tasks/store', [AdminController::class, 'storeTask'])->name('admin.tasks.store');
     Route::get('/admin/performance', [AdminController::class, 'performanceList'])->name('admin.performance');
     
+    // Transaction Management Routes
+    Route::get('/admin/donors-list', [AdminController::class, 'donorsList'])->name('admin.donors_list');
+    Route::get('/admin/transactions-list', [AdminController::class, 'transactionsList'])->name('admin.transactions_list');
+    Route::get('/admin/prospects-list', [AdminController::class, 'prospectsList'])->name('admin.prospects_list');
+    Route::get('/admin/potential-donors', [AdminController::class, 'potentialDonors'])->name('admin.potential_donors');
+    Route::get('/admin/transactions-dashboard', [AdminController::class, 'transactionsDashboard'])->name('admin.transactions_dashboard');
+    Route::get('/admin/donors-dashboard', [AdminController::class, 'donorsDashboard'])->name('admin.donors_dashboard');
+    Route::get('/admin/prospects-dashboard', [AdminController::class, 'prospectsDashboard'])->name('admin.prospects_dashboard');
+    Route::get('/admin/target-vs-achievement', [AdminController::class, 'targetVsAchievementDashboard'])->name('admin.target_vs_achievement');
+    Route::get('/admin/rfm-dashboard', [AdminController::class, 'rfmDashboard'])->name('admin.rfm_dashboard');
+
     Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
     Route::post('/admin/settings/update', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
 });
