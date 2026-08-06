@@ -22,6 +22,7 @@ use App\Models\ProspectMedia;
 use App\Models\ProspectMethod;
 use App\Models\ProspectType;
 use App\Models\Fundraiser;
+use App\Models\MasterProspectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -1073,5 +1074,68 @@ class AdminController extends Controller
         $fundraiser->delete();
 
         return redirect()->back()->with('success', 'Fundraiser berhasil dihapus.');
+    }
+
+    // ===================== MASTER RESPON PROSPEK =====================
+
+    public function prospectResponsesList(Request $request)
+    {
+        $query = MasterProspectResponse::query();
+
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where('name', 'like', "%{$keyword}%");
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $prospectResponses = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.prospect_responses', [
+            'prospectResponses' => $prospectResponses,
+            'active'            => 'prospect_responses',
+        ]);
+    }
+
+    public function storeProspectResponseMaster(Request $request)
+    {
+        $request->validate([
+            'name'   => 'required|string|max:255',
+            'status' => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        MasterProspectResponse::create([
+            'name'   => $request->name,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Respon Prospek berhasil ditambahkan.');
+    }
+
+    public function updateProspectResponseMaster(Request $request, $id)
+    {
+        $item = MasterProspectResponse::findOrFail($id);
+
+        $request->validate([
+            'name'   => 'required|string|max:255',
+            'status' => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        $item->update([
+            'name'   => $request->name,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Respon Prospek berhasil diperbarui.');
+    }
+
+    public function deleteProspectResponseMaster($id)
+    {
+        $item = MasterProspectResponse::findOrFail($id);
+        $item->delete();
+
+        return redirect()->back()->with('success', 'Respon Prospek berhasil dihapus.');
     }
 }

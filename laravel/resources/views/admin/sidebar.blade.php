@@ -210,6 +210,16 @@
                 <span class="whitespace-nowrap">Master Fundraiser</span>
             </a>
 
+            <!-- Tab: Respon Prospek -->
+            <a href="{{ route('admin.prospect_responses') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'prospect_responses' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'prospect_responses' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-reply-all text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Respon Prospek</span>
+            </a>
+
+
 
 
 

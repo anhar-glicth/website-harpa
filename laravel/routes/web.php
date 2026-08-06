@@ -119,6 +119,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/fundraisers/store', [AdminController::class, 'storeFundraiser'])->name('admin.fundraisers.store');
     Route::put('/admin/fundraisers/{id}/update', [AdminController::class, 'updateFundraiser'])->name('admin.fundraisers.update');
     Route::delete('/admin/fundraisers/{id}/delete', [AdminController::class, 'deleteFundraiser'])->name('admin.fundraisers.delete');
+
+    // Master Respon Prospek Routes
+    Route::get('/admin/prospect-responses', [AdminController::class, 'prospectResponsesList'])->name('admin.prospect_responses');
+    Route::post('/admin/prospect-responses/store', [AdminController::class, 'storeProspectResponseMaster'])->name('admin.prospect_responses.store');
+    Route::put('/admin/prospect-responses/{id}/update', [AdminController::class, 'updateProspectResponseMaster'])->name('admin.prospect_responses.update');
+    Route::delete('/admin/prospect-responses/{id}/delete', [AdminController::class, 'deleteProspectResponseMaster'])->name('admin.prospect_responses.delete');
     
     // Global Staff Monitoring Routes
     Route::get('/admin/attendance', [AdminController::class, 'attendanceList'])->name('admin.attendance');

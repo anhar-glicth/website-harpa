@@ -100,6 +100,21 @@ class DatabaseSeeder extends Seeder
             \App\Models\Fundraiser::firstOrCreate(['name' => $fName], ['status' => 'Aktif']);
         }
 
+        $masterResponseItems = [
+            'Read',
+            'Centang 2',
+            'Centang 1',
+            'Donasi / Closing',
+            'Pertimbangan',
+            'Nomor Tidak Aktif',
+            'Tidak Berdonasi',
+            'Promise To Donate',
+            'Belum Respon'
+        ];
+        foreach ($masterResponseItems as $rName) {
+            \App\Models\MasterProspectResponse::firstOrCreate(['name' => $rName], ['status' => 'Aktif']);
+        }
+
         // 6. Users (Admin, Field Worker, User)
         $commonPassword = bcrypt('password123');
 
