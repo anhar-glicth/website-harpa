@@ -66,14 +66,6 @@
                 <span class="whitespace-nowrap">Verifikasi Donasi</span>
             </a>
 
-            <!-- Tab: Distribusi -->
-            <a href="{{ route('admin.distributions') }}" 
-               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'distributions' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
-                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'distributions' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
-                    <i class="fa-solid fa-truck-ramp-box text-xs"></i>
-                </div>
-                <span class="whitespace-nowrap">Distribusi</span>
-            </a>
         </div>
     </div>
 
@@ -243,6 +235,31 @@
                     <i class="fa-solid fa-gears text-xs"></i>
                 </div>
                 <span class="whitespace-nowrap">Pengaturan Web</span>
+            </a>
+        </div>
+    <!-- 4. DISTRIBUSI MANAGEMENT GROUP -->
+    <div x-data="{ isOpen: true }" class="border-t border-slate-100">
+        <div @click="isOpen = !isOpen" class="bg-emerald-700 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-emerald-800 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider">Distribusi Management</span>
+            <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
+        </div>
+        <div x-show="isOpen" x-collapse class="p-3 space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+            <!-- Tab: Dashboard Penyaluran -->
+            <a href="{{ route('admin.distribution_dashboard') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'distribution_dashboard' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'distribution_dashboard' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-chart-line text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard Penyaluran</span>
+            </a>
+
+            <!-- Tab: List Penyaluran -->
+            <a href="{{ route('admin.distributions') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'distributions' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'distributions' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-truck-ramp-box text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">List Penyaluran</span>
             </a>
         </div>
     </div>

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Distribution extends Model
 {
     protected $fillable = [
+        'distribution_code',
         'program_id',
         'worker_id',
         'title',
@@ -17,6 +18,8 @@ class Distribution extends Model
         'photo_url',
         'maps_link',
         'recipient_name',
+        'pic_name',
+        'pic_phone',
         'amount',
         'distribution_date',
         'status',

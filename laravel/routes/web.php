@@ -59,8 +59,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/campaigns/{id}/reject', [AdminController::class, 'rejectCampaign'])->name('admin.campaigns.reject');
     Route::get('/admin/donations', [AdminController::class, 'donations'])->name('admin.donations');
     Route::post('/admin/donations/{id}/verify', [AdminController::class, 'verifyDonation'])->name('admin.donations.verify');
+    
+    // Distribusi Management Routes
+    Route::get('/admin/distribution-dashboard', [AdminController::class, 'distributionDashboard'])->name('admin.distribution_dashboard');
     Route::get('/admin/distributions', [AdminController::class, 'distributions'])->name('admin.distributions');
     Route::post('/admin/distributions/store', [AdminController::class, 'storeDistribution'])->name('admin.distributions.store');
+    Route::put('/admin/distributions/{id}/update', [AdminController::class, 'updateDistribution'])->name('admin.distributions.update');
+    Route::delete('/admin/distributions/{id}/delete', [AdminController::class, 'deleteDistribution'])->name('admin.distributions.delete');
+    Route::get('/admin/distributions/export', [AdminController::class, 'exportDistributions'])->name('admin.distributions.export');
+    Route::post('/admin/distributions/import', [AdminController::class, 'importDistributions'])->name('admin.distributions.import');
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
     Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');

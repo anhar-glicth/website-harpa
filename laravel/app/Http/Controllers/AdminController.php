@@ -156,29 +156,281 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Verifikasi donasi berhasil disimpan.');
     }
 
-    public function distributions()
+    public function distributionDashboard(Request $request)
     {
-        $distributions = Distribution::with('campaign')->latest()->paginate(10);
+        $totalNominal       = Distribution::sum('amount');
+        $totalRecords       = Distribution::count();
+        $thisMonthNominal   = Distribution::whereMonth('distribution_date', now()->month)
+                                         ->whereYear('distribution_date', now()->year)
+                                         ->sum('amount');
+        $totalBeneficiaries = Distribution::sum('pm_count');
+
+        $statusTersalur     = Distribution::where('status', 'Tersalur')->count();
+        $statusProses       = Distribution::where('status', 'Proses')->count();
+
+        $recentDistributions = Distribution::with('campaign')->latest()->take(8)->get();
+
+        $topAsnaf = Distribution::select('asnaf', DB::raw('SUM(amount) as total_amount'), DB::raw('COUNT(*) as total_count'))
+                                ->whereNotNull('asnaf')
+                                ->groupBy('asnaf')
+                                ->orderBy('total_amount', 'desc')
+                                ->get();
+
+        return view('admin.distribution_dashboard', [
+            'totalNominal'        => $totalNominal,
+            'totalRecords'        => $totalRecords,
+            'thisMonthNominal'    => $thisMonthNominal,
+            'totalBeneficiaries'  => $totalBeneficiaries,
+            'statusTersalur'      => $statusTersalur,
+            'statusProses'        => $statusProses,
+            'recentDistributions' => $recentDistributions,
+            'topAsnaf'            => $topAsnaf,
+            'active'              => 'distribution_dashboard',
+        ]);
+    }
+
+    public function distributions(Request $request)
+    {
+        $query = Distribution::with('campaign');
+
+        // Search: ID Penyaluran / Nama / Kontak PIC / Program / Alamat / City / Province
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('distribution_code', 'like', "%{$search}%")
+                  ->orWhere('pic_name', 'like', "%{$search}%")
+                  ->orWhere('pic_phone', 'like', "%{$search}%")
+                  ->orWhere('recipient_name', 'like', "%{$search}%")
+                  ->orWhere('location_name', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('province', 'like', "%{$search}%")
+                  ->orWhereHas('campaign', function ($cq) use ($search) {
+                      $cq->where('title', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Tgl Penyaluran range
+        if ($request->filled('start_date')) {
+            $query->whereDate('distribution_date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('distribution_date', '<=', $request->end_date);
+        }
+
+        // Advance search extra filters
+        if ($request->filled('program_id')) {
+            $query->where('program_id', $request->program_id);
+        }
+        if ($request->filled('city')) {
+            $query->where('city', 'like', "%{$request->city}%");
+        }
+        if ($request->filled('province')) {
+            $query->where('province', 'like', "%{$request->province}%");
+        }
+        if ($request->filled('asnaf')) {
+            $query->where('asnaf', $request->asnaf);
+        }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $totalFilteredAmount = (clone $query)->sum('amount');
+        $distributions = $query->orderBy('distribution_date', 'desc')->paginate(10)->withQueryString();
         $campaigns = Campaign::where('status', 'approved')->get();
-        return view('admin.distributions', compact('distributions', 'campaigns'));
+
+        return view('admin.distributions', [
+            'distributions'       => $distributions,
+            'campaigns'           => $campaigns,
+            'totalFilteredAmount' => $totalFilteredAmount,
+            'active'              => 'distributions',
+        ]);
     }
 
     public function storeDistribution(Request $request)
     {
         $request->validate([
-            'program_id' => 'required|exists:campaigns,id',
-            'recipient_name' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:1000',
+            'distribution_code' => 'nullable|string|max:50',
+            'program_id'        => 'required|exists:campaigns,id',
+            'recipient_name'    => 'required|string|max:255',
+            'pic_name'          => 'nullable|string|max:255',
+            'pic_phone'         => 'nullable|string|max:50',
+            'amount'            => 'required|numeric|min:1000',
             'distribution_date' => 'required|date',
-            'notes' => 'nullable|string',
-            'asnaf' => 'nullable|string',
-            'city' => 'nullable|string',
-            'province' => 'nullable|string',
+            'notes'             => 'nullable|string',
+            'asnaf'             => 'nullable|string',
+            'city'              => 'nullable|string',
+            'province'          => 'nullable|string',
+            'status'            => 'nullable|in:Proses,Tersalur',
         ]);
 
-        Distribution::create($request->all());
+        $data = $request->all();
+        if (empty($data['distribution_code'])) {
+            $data['distribution_code'] = 'DIS-' . date('Ym') . '-' . rand(100, 999);
+        }
+        if (empty($data['pic_name'])) {
+            $data['pic_name'] = $data['recipient_name'];
+        }
+
+        Distribution::create($data);
 
         return redirect()->back()->with('success', 'Distribusi bantuan berhasil dicatat.');
+    }
+
+    public function updateDistribution(Request $request, $id)
+    {
+        $dis = Distribution::findOrFail($id);
+
+        $request->validate([
+            'distribution_code' => 'nullable|string|max:50',
+            'program_id'        => 'required|exists:campaigns,id',
+            'recipient_name'    => 'required|string|max:255',
+            'pic_name'          => 'nullable|string|max:255',
+            'pic_phone'         => 'nullable|string|max:50',
+            'amount'            => 'required|numeric|min:1000',
+            'distribution_date' => 'required|date',
+            'notes'             => 'nullable|string',
+            'asnaf'             => 'nullable|string',
+            'city'              => 'nullable|string',
+            'province'          => 'nullable|string',
+            'status'            => 'nullable|in:Proses,Tersalur',
+        ]);
+
+        $dis->update($request->all());
+
+        return redirect()->back()->with('success', 'Data penyaluran berhasil diperbarui.');
+    }
+
+    public function deleteDistribution($id)
+    {
+        $dis = Distribution::findOrFail($id);
+        $dis->delete();
+
+        return redirect()->back()->with('success', 'Data penyaluran berhasil dihapus.');
+    }
+
+    public function exportDistributions(Request $request)
+    {
+        $query = Distribution::with('campaign');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('distribution_code', 'like', "%{$search}%")
+                  ->orWhere('pic_name', 'like', "%{$search}%")
+                  ->orWhere('pic_phone', 'like', "%{$search}%")
+                  ->orWhere('recipient_name', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('province', 'like', "%{$search}%");
+            });
+        }
+        if ($request->filled('start_date')) {
+            $query->whereDate('distribution_date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('distribution_date', '<=', $request->end_date);
+        }
+
+        $distributions = $query->orderBy('distribution_date', 'desc')->get();
+
+        $filename = 'List_Penyaluran_' . date('Y-m-d_H-i') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($distributions) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($file, [
+                'No', 'ID Penyaluran', 'Tgl Penyaluran', 'Program', 'Nominal', 'Nama PIC', 'Kontak PIC', 'Tgl Insert', 'Kota/Kab', 'Provinsi', 'Status'
+            ]);
+
+            $total = 0;
+            foreach ($distributions as $index => $row) {
+                $total += $row->amount;
+                fputcsv($file, [
+                    $index + 1,
+                    $row->distribution_code ?: ('DIS-' . $row->id),
+                    $row->distribution_date ? $row->distribution_date->format('Y-m-d') : '',
+                    $row->campaign ? $row->campaign->title : 'Program Umum',
+                    $row->amount,
+                    $row->pic_name ?: $row->recipient_name,
+                    $row->pic_phone ?: '-',
+                    $row->created_at ? $row->created_at->format('Y-m-d H:i') : '',
+                    $row->city ?: '-',
+                    $row->province ?: '-',
+                    $row->status ?: 'Proses',
+                ]);
+            }
+
+            fputcsv($file, ['TOTAL', '', '', '', $total, '', '', '', '', '', '']);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function importDistributions(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+        ]);
+
+        $file = $request->file('file');
+        $handle = fopen($file->getRealPath(), 'r');
+        
+        // Skip BOM if present
+        $bom = fread($handle, 3);
+        if ($bom !== "\xEF\xBB\xBF") {
+            rewind($handle);
+        }
+
+        // Header row
+        $header = fgetcsv($handle);
+        
+        $importedCount = 0;
+        $firstCampaign = Campaign::where('status', 'approved')->first();
+        $defaultCampaignId = $firstCampaign ? $firstCampaign->id : 1;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            if (empty($row) || count($row) < 2) continue;
+
+            $code  = !empty($row[1]) ? $row[1] : ('DIS-' . date('Ym') . '-' . rand(100,999));
+            $tgl   = !empty($row[2]) ? date('Y-m-d', strtotime($row[2])) : date('Y-m-d');
+            $nom   = isset($row[4]) && is_numeric($row[4]) ? floatval($row[4]) : 100000;
+            $pic   = $row[5] ?? 'PIC Penyaluran';
+            $phone = $row[6] ?? '-';
+            $city  = $row[8] ?? '-';
+            $prov  = $row[9] ?? '-';
+
+            if ($code === 'TOTAL' || $code === 'No' || $code === 'ID Penyaluran') continue;
+
+            Distribution::create([
+                'distribution_code' => $code,
+                'program_id'        => $defaultCampaignId,
+                'recipient_name'    => $pic,
+                'pic_name'          => $pic,
+                'pic_phone'         => $phone,
+                'amount'            => $nom,
+                'distribution_date' => $tgl,
+                'city'              => $city,
+                'province'          => $prov,
+                'status'            => 'Tersalur',
+            ]);
+
+            $importedCount++;
+        }
+
+        fclose($handle);
+
+        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data penyaluran.");
     }
 
     public function users()

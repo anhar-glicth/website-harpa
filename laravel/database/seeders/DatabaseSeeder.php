@@ -124,6 +124,40 @@ class DatabaseSeeder extends Seeder
             \App\Models\MasterTarget::updateOrCreate(['target_code' => $st['target_code']], $st);
         }
 
+        $sampleDistributions = [
+            [
+                'distribution_code' => 'DIS-2026-001',
+                'program_id'        => 1,
+                'recipient_name'    => 'Ustadz Ahmad Syahid',
+                'pic_name'          => 'Ustadz Ahmad Syahid',
+                'pic_phone'         => '081234567890',
+                'amount'            => 15000000,
+                'distribution_date' => '2026-08-02',
+                'city'              => 'Mataram',
+                'province'          => 'Nusa Tenggara Barat',
+                'asnaf'             => 'Fakir',
+                'status'            => 'Tersalur',
+                'notes'             => 'Penyaluran sembako & modal usaha warga fakir.'
+            ],
+            [
+                'distribution_code' => 'DIS-2026-002',
+                'program_id'        => 2,
+                'recipient_name'    => 'Pengurus Panti Asuhan Al-Hidayah',
+                'pic_name'          => 'H. Ridwan Hakim',
+                'pic_phone'         => '085298765432',
+                'amount'            => 25000000,
+                'distribution_date' => '2026-08-04',
+                'city'              => 'Ende',
+                'province'          => 'Nusa Tenggara Timur',
+                'asnaf'             => 'Yatim',
+                'status'            => 'Tersalur',
+                'notes'             => 'Beasiswa pendidikan & renovasi panti.'
+            ],
+        ];
+        foreach ($sampleDistributions as $sd) {
+            \App\Models\Distribution::updateOrCreate(['distribution_code' => $sd['distribution_code']], $sd);
+        }
+
         // 6. Users (Admin, Field Worker, User)
         $commonPassword = bcrypt('password123');
 
