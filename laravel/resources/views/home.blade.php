@@ -15,10 +15,6 @@
 
     <!-- Hero Content -->
     <div class="relative z-10 w-full max-w-4xl mx-auto space-y-8">
-        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full shadow-lg">
-            <span class="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span>
-            <span class="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-white">YAYASAN TERVERIFIKASI KEMENAG</span>
-        </div>
         
         <h1 class="text-3xl sm:text-5xl md:text-7xl font-montserrat font-black leading-tight tracking-tight uppercase break-words px-4">
             {{ $settings->hero_title ?? 'Uluran Tangan Anda, Harapan Mereka' }}

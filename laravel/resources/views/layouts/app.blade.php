@@ -84,15 +84,7 @@
         <nav x-data="{ open: false }" class="max-w-7xl mx-auto bg-white/80 backdrop-blur-xl border border-slate-200/50 rounded-2xl sm:rounded-3xl shadow-sm px-6 py-4 flex items-center justify-between transition-all duration-300">
             <!-- Logo & Brand -->
             <a href="{{ route('home') }}" class="flex items-center space-x-2 group">
-                <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:scale-105 transition-transform duration-300">
-                    <i class="fa-solid fa-hands-holding-child text-lg"></i>
-                </div>
-                <div>
-                    <span class="font-montserrat font-black uppercase tracking-tighter text-sm sm:text-base leading-none block text-slate-900">
-                        <span class="text-primary-500">Amal</span> <span class="text-secondary-500">Abadi</span>
-                    </span>
-                    <span class="text-[9px] uppercase font-bold tracking-widest text-slate-450 block -mt-0.5">amalabadi.org</span>
-                </div>
+                <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300" alt="Amal Abadi">
             </a>
 
             <!-- Desktop Menu Links -->
@@ -191,9 +183,8 @@
                 </button>
             </div>
         </nav>
-
         <!-- Mobile Menu -->
-        <div x-show="open" @click.away="open = false" class="md:hidden mt-2 max-w-7xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-4">
+        <div x-show="open" @click.away="open = false" style="display: none;" class="md:hidden mt-2 max-w-7xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-4 max-h-[85vh] overflow-y-auto">
             <div class="flex flex-col space-y-2 font-bold text-xs uppercase tracking-wider text-slate-500">
                 <a href="{{ route('home') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700' : '' }}">Home</a>
                 <a href="{{ route('campaigns.index') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700' : '' }}">Kampanye</a>
@@ -284,16 +275,8 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             <!-- Brand & Tagline -->
             <div class="space-y-4">
-                <div class="flex items-center space-x-2">
-                    <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white w-10 h-10 rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-hands-holding-child text-lg"></i>
-                    </div>
-                    <div>
-                        <span class="font-montserrat font-black uppercase tracking-tighter text-base leading-none block text-white">
-                            <span class="text-primary-500">Amal</span> <span class="text-secondary-500">Abadi</span>
-                        </span>
-                        <span class="text-[9px] uppercase font-bold tracking-widest text-slate-500 block -mt-0.5">amalabadi.org</span>
-                    </div>
+                <div class="inline-block bg-white p-2.5 rounded-2xl shadow-sm">
+                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 w-auto object-contain" alt="Amal Abadi">
                 </div>
                 <p class="text-xs font-medium leading-relaxed">
                     Menghubungkan kebaikan hati Anda untuk mendukung kehidupan sesama yang membutuhkan secara transparan dan tepercaya.

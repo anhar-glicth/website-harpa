@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Telepon</span>
-                        <span class="text-sm font-bold text-slate-800 tracking-wider block mt-1">+62 812-3456-7890</span>
+                        <span class="text-sm font-bold text-slate-800 tracking-wider block mt-1">+6287816431029</span>
                     </div>
                 </div>
 
@@ -33,22 +33,11 @@
                     <div class="w-12 h-12 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-envelope text-lg"></i>
                     </div>
-                    <div>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Email</span>
-                        <span class="text-sm font-bold text-slate-800 tracking-wider block mt-1">support@pedulisesama.org</span>
-                    </div>
+                   
                 </div>
 
                 <!-- Address -->
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-map-location-dot text-lg"></i>
-                    </div>
-                    <div>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Alamat Kantor</span>
-                        <span class="text-sm font-bold text-slate-800 tracking-wider block mt-1">Jl. Jenderal Sudirman No. 1, Jakarta Pusat, Indonesia</span>
-                    </div>
-                </div>
+              
             </div>
         </div>
 

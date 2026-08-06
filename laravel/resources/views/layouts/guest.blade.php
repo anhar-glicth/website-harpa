@@ -84,14 +84,8 @@
             
             <!-- Logo -->
             <a href="/" class="flex items-center space-x-2 group relative z-10">
-                <div class="bg-white text-primary-600 w-10 h-10 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
-                    <i class="fa-solid fa-hands-holding-child text-lg"></i>
-                </div>
-                <div>
-                    <span class="font-montserrat font-black uppercase tracking-tighter text-sm leading-none block">
-                        Amal <span class="text-slate-100">Abadi</span>
-                    </span>
-                    <span class="text-[8px] uppercase font-bold tracking-widest text-slate-100 block -mt-0.5">amalabadi.org</span>
+                <div class="bg-white p-2 rounded-xl shadow-lg group-hover:scale-105 transition-transform duration-300">
+                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-8 w-auto object-contain" alt="Amal Abadi">
                 </div>
             </a>
 
@@ -115,13 +109,9 @@
         <div class="col-span-1 md:col-span-7 p-8 sm:p-12 flex flex-col justify-center bg-slate-900/50">
             <!-- Mobile Brand Header (Visible only on mobile) -->
             <div class="md:hidden flex flex-col items-center mb-8">
-                <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg mb-3">
-                    <i class="fa-solid fa-hands-holding-child text-xl"></i>
+                <div class="bg-white p-3 rounded-2xl shadow-lg mb-3">
+                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 w-auto object-contain" alt="Amal Abadi">
                 </div>
-                <span class="font-montserrat font-black uppercase tracking-tighter text-base text-white">
-                    <span class="text-primary-500">Amal</span> <span class="text-secondary-500">Abadi</span>
-                </span>
-                <span class="text-[9px] uppercase font-bold tracking-widest text-slate-400 mt-0.5">amalabadi.org</span>
             </div>
 
             <div class="w-full max-w-sm mx-auto space-y-6">
