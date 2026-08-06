@@ -201,6 +201,16 @@
                 <span class="whitespace-nowrap">Jenis Prospek</span>
             </a>
 
+            <!-- Tab: Master Fundraiser -->
+            <a href="{{ route('admin.fundraisers') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'fundraisers' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'fundraisers' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-user-group text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Master Fundraiser</span>
+            </a>
+
+
 
 
 

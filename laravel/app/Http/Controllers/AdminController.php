@@ -21,6 +21,7 @@ use App\Models\PaymentVia;
 use App\Models\ProspectMedia;
 use App\Models\ProspectMethod;
 use App\Models\ProspectType;
+use App\Models\Fundraiser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -1009,5 +1010,68 @@ class AdminController extends Controller
         $type->delete();
 
         return redirect()->back()->with('success', 'Jenis Prospek berhasil dihapus.');
+    }
+
+    // ===================== MASTER FUNDRAISER =====================
+
+    public function fundraisersList(Request $request)
+    {
+        $query = Fundraiser::query();
+
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where('name', 'like', "%{$keyword}%");
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $fundraisers = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.fundraisers', [
+            'fundraisers' => $fundraisers,
+            'active'      => 'fundraisers',
+        ]);
+    }
+
+    public function storeFundraiser(Request $request)
+    {
+        $request->validate([
+            'name'   => 'required|string|max:255',
+            'status' => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        Fundraiser::create([
+            'name'   => $request->name,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Fundraiser berhasil ditambahkan.');
+    }
+
+    public function updateFundraiser(Request $request, $id)
+    {
+        $fundraiser = Fundraiser::findOrFail($id);
+
+        $request->validate([
+            'name'   => 'required|string|max:255',
+            'status' => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        $fundraiser->update([
+            'name'   => $request->name,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Fundraiser berhasil diperbarui.');
+    }
+
+    public function deleteFundraiser($id)
+    {
+        $fundraiser = Fundraiser::findOrFail($id);
+        $fundraiser->delete();
+
+        return redirect()->back()->with('success', 'Fundraiser berhasil dihapus.');
     }
 }

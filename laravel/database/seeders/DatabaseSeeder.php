@@ -95,6 +95,11 @@ class DatabaseSeeder extends Seeder
             \App\Models\ProspectType::firstOrCreate(['name' => $ptName], ['status' => 'Aktif', 'priority' => 'Sedang']);
         }
 
+        $fundraiserItems = ['Mitra', 'Volunteer', 'CRM', 'Crowdfunding', 'Booth', 'Digital Marketing'];
+        foreach ($fundraiserItems as $fName) {
+            \App\Models\Fundraiser::firstOrCreate(['name' => $fName], ['status' => 'Aktif']);
+        }
+
         // 6. Users (Admin, Field Worker, User)
         $commonPassword = bcrypt('password123');
 

@@ -113,6 +113,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/prospect-types/store', [AdminController::class, 'storeProspectType'])->name('admin.prospect_types.store');
     Route::put('/admin/prospect-types/{id}/update', [AdminController::class, 'updateProspectType'])->name('admin.prospect_types.update');
     Route::delete('/admin/prospect-types/{id}/delete', [AdminController::class, 'deleteProspectType'])->name('admin.prospect_types.delete');
+
+    // Master Fundraiser Routes
+    Route::get('/admin/fundraisers', [AdminController::class, 'fundraisersList'])->name('admin.fundraisers');
+    Route::post('/admin/fundraisers/store', [AdminController::class, 'storeFundraiser'])->name('admin.fundraisers.store');
+    Route::put('/admin/fundraisers/{id}/update', [AdminController::class, 'updateFundraiser'])->name('admin.fundraisers.update');
+    Route::delete('/admin/fundraisers/{id}/delete', [AdminController::class, 'deleteFundraiser'])->name('admin.fundraisers.delete');
     
     // Global Staff Monitoring Routes
     Route::get('/admin/attendance', [AdminController::class, 'attendanceList'])->name('admin.attendance');
