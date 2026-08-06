@@ -105,11 +105,9 @@
                 </form>
             </div>
 
-            {{-- 4 Summary Card Headers (Presisi Screenshot User) --}}
+            {{-- 4 Summary Card Headers --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
-                    
-                    {{-- Σ Capaian Total --}}
                     <div class="p-4 space-y-1">
                         <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Capaian Total
@@ -117,7 +115,6 @@
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalCapaian, 0, ',', '.') }}</p>
                     </div>
 
-                    {{-- Σ Donatur --}}
                     <div class="p-4 space-y-1">
                         <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Donatur
@@ -125,7 +122,6 @@
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalDonorsCount) }}</p>
                     </div>
 
-                    {{-- Σ Transaksi --}}
                     <div class="p-4 space-y-1">
                         <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Σ Transaksi
@@ -133,26 +129,32 @@
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalTransactionsCount) }}</p>
                     </div>
 
-                    {{-- Rata-rata Donasi --}}
                     <div class="p-4 space-y-1">
                         <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Rata-rata Donasi
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($averageDonation, 0, ',', '.') }}</p>
                     </div>
-
                 </div>
             </div>
 
-            {{-- Highcharts Analytics Container (Dark Theme #0f172a Presisi Screenshot User) --}}
+            {{-- Highcharts Analytics Container (With Zoom-In/Out & Pan Controls) --}}
             <div class="space-y-6">
 
-                {{-- Chart 1: Dashboard Transaksi Per Tanggal (Full Width) --}}
+                {{-- Hint Notification for Zooming & Panning --}}
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 text-xs text-sky-400 font-semibold flex items-center justify-between shadow-md">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-plus text-sky-400 text-sm"></i>
+                        <span><strong>Fitur Zoom & Pan Grafik Active:</strong> Klik & drag (tahan mouse) pada area grafik untuk memperbesar (Zoom-In) rentang tanggal/bulan. Tahan tombol <code>Shift</code> sambil drag untuk me-pan area grafik.</span>
+                    </span>
+                </div>
+
+                {{-- Chart 1: Dashboard Transaksi Per Tanggal --}}
                 <div class="bg-[#0f172a] rounded-2xl p-5 border border-slate-800 shadow-xl">
                     <div id="chartPerTanggal" class="w-full h-80"></div>
                 </div>
 
-                {{-- Chart 2: Dashboard Transaksi Per Bulan (Full Width) --}}
+                {{-- Chart 2: Dashboard Transaksi Per Bulan --}}
                 <div class="bg-[#0f172a] rounded-2xl p-5 border border-slate-800 shadow-xl">
                     <div id="chartPerBulan" class="w-full h-80"></div>
                 </div>
@@ -187,6 +189,121 @@
                     </div>
                 </div>
 
+                {{-- Chart 9 & 10 Grid: Distribusi Via Bayar & Distribusi Channel Donasi (PIE CHARTS) --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-[#0f172a] rounded-2xl p-5 border border-slate-800 shadow-xl">
+                        <div id="chartViaBayar" class="w-full h-80"></div>
+                    </div>
+                    <div class="bg-[#0f172a] rounded-2xl p-5 border border-slate-800 shadow-xl">
+                        <div id="chartChannelDonasi" class="w-full h-80"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- Resume Tables Section (Matching User Screenshot 2) --}}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
+
+                {{-- Table 1: Resume Capaian PIC Prospek (Col 7) --}}
+                <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                        <span class="font-black text-xs uppercase tracking-wider">Resume Capaian PIC Prospek</span>
+                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
+                            <thead class="bg-slate-50 text-[11px] font-bold text-slate-900 border-b border-slate-200">
+                                <tr>
+                                    <th class="py-2.5 px-3 text-center">No</th>
+                                    <th class="py-2.5 px-3">PIC Prospek</th>
+                                    <th class="py-2.5 px-3 text-right">Capaian</th>
+                                    <th class="py-2.5 px-3 text-right">% Kontribusi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach($resumePicList as $idx => $rPic)
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="py-2 px-3 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2 px-3 font-semibold text-slate-900">{{ $rPic['name'] }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-slate-800">{{ number_format($rPic['amount'], 0, ',', '.') }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">{{ $rPic['percent'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Table 2: Resume Capaian Per Kantor (Col 5) --}}
+                <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                        <span class="font-black text-xs uppercase tracking-wider">Resume Capaian Per Kantor</span>
+                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
+                            <thead class="bg-slate-50 text-[11px] font-bold text-slate-900 border-b border-slate-200">
+                                <tr>
+                                    <th class="py-2.5 px-3 text-center">No</th>
+                                    <th class="py-2.5 px-3">Kantor</th>
+                                    <th class="py-2.5 px-3 text-right">Capaian</th>
+                                    <th class="py-2.5 px-3 text-right">% Kontribusi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach($resumeOfficeList as $idx => $rOfc)
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="py-2 px-3 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2 px-3 font-semibold text-slate-900">{{ $rOfc['name'] }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-slate-800">{{ number_format($rOfc['amount'], 0, ',', '.') }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">{{ $rOfc['percent'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- Table 3: Top 20 Donatur Base On Kontribusi Donasi (Full Width) --}}
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <span class="font-black text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi</span>
+                    <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
+                        <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                            <tr>
+                                <th class="py-3 px-4 text-center">No</th>
+                                <th class="py-3 px-4">Nama Donatur</th>
+                                <th class="py-3 px-4">ID Donatur</th>
+                                <th class="py-3 px-4">Kantor</th>
+                                <th class="py-3 px-4">Segmen</th>
+                                <th class="py-3 px-4">Profil</th>
+                                <th class="py-3 px-4">PIC Prospek</th>
+                                <th class="py-3 px-4 text-right">Total Donasi</th>
+                                <th class="py-3 px-4 text-right">% Kontribusi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach($topDonorsList as $idx => $td)
+                                <tr class="{{ !empty($td['highlight']) ? 'bg-amber-100 font-bold' : 'hover:bg-slate-50' }}">
+                                    <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                    <td class="py-3 px-4 font-bold text-slate-900">{{ $td['name'] }}</td>
+                                    <td class="py-3 px-4 font-mono text-emerald-700 font-bold">{{ $td['id_donatur'] }}</td>
+                                    <td class="py-3 px-4 text-slate-700">{{ $td['office'] }}</td>
+                                    <td class="py-3 px-4 text-slate-800">{{ $td['segment'] }}</td>
+                                    <td class="py-3 px-4 text-slate-700">{{ $td['profile'] }}</td>
+                                    <td class="py-3 px-4 font-bold text-slate-800">{{ $td['pic'] }}</td>
+                                    <td class="py-3 px-4 text-right font-mono font-black text-slate-900">{{ number_format($td['amount'], 0, ',', '.') }}</td>
+                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ $td['percent'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
@@ -201,12 +318,34 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Global Highcharts Dark Theme Options
         const darkTheme = {
-            chart: { backgroundColor: '#0f172a', style: { fontFamily: 'Segoe UI, sans-serif' } },
+            chart: { 
+                backgroundColor: '#0f172a', 
+                style: { fontFamily: 'Segoe UI, sans-serif' },
+                zoomType: 'x',
+                panning: { enabled: true, type: 'x' },
+                panKey: 'shift',
+                resetZoomButton: {
+                    position: { align: 'right', x: -10, y: 10 },
+                    theme: { 
+                        fill: '#1e293b', 
+                        stroke: '#38bdf8', 
+                        r: 6, 
+                        states: { hover: { fill: '#38bdf8', style: { color: '#ffffff' } } }, 
+                        style: { color: '#38bdf8', fontWeight: 'bold', fontSize: '11px' } 
+                    }
+                }
+            },
             title: { style: { color: '#ffffff', fontWeight: 'bold', fontSize: '15px' } },
-            xAxis: { labels: { style: { color: '#94a3b8', fontSize: '10px' } }, lineColor: '#334155' },
-            yAxis: { labels: { style: { color: '#94a3b8' } }, gridLineColor: '#1e293b', title: { style: { color: '#94a3b8' } } },
+            xAxis: { 
+                labels: { style: { color: '#94a3b8', fontSize: '10px' } }, 
+                lineColor: '#334155' 
+            },
+            yAxis: { 
+                labels: { style: { color: '#94a3b8' } }, 
+                gridLineColor: '#1e293b', 
+                title: { style: { color: '#94a3b8' } } 
+            },
             legend: { itemStyle: { color: '#cbd5e1' } },
             credits: { enabled: false }
         };
@@ -220,8 +359,7 @@
             series: [{
                 name: 'Total Nominal',
                 data: [360000000, 15000000, 60000000, 20000000, 15000000, 45000000, 450000000, 240000000, 90000000, 35000000, 50000000, 25000000, 60000000, 30000000, 20000000, 35000000, 40000000],
-                color: '#38bdf8',
-                fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(56, 189, 248, 0.4)'], [1, 'rgba(56, 189, 248, 0.0)']] }
+                color: '#38bdf8'
             }]
         }));
 
@@ -234,8 +372,7 @@
             series: [{
                 name: 'Total Nominal',
                 data: [404419727, 124287432, 72400113, 127248327, 491423433, 493791668, 390886473, 361016163, 299139038, 223318069, 181131406, 377959517],
-                color: '#38bdf8',
-                dataLabels: { enabled: true, style: { color: '#38bdf8', fontSize: '9px' }, formatter: function() { return (this.y / 1000000).toFixed(0) + 'M'; } }
+                color: '#38bdf8'
             }]
         }));
 
@@ -245,11 +382,7 @@
             title: { text: 'Dashboard Transaksi Per Hari' },
             xAxis: { categories: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] },
             yAxis: { title: { text: 'Nominal Transaksi' } },
-            series: [{
-                name: 'Total Nominal',
-                data: [300000000, 580000000, 310000000, 1220000000, 540000000, 328737870, 260000000],
-                color: '#38bdf8'
-            }]
+            series: [{ name: 'Total Nominal', data: [300000000, 580000000, 310000000, 1220000000, 540000000, 328737870, 260000000], color: '#38bdf8' }]
         }));
 
         // 4. Chart Per Jam
@@ -258,11 +391,7 @@
             title: { text: 'Dashboard Transaksi Per Jam' },
             xAxis: { categories: ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] },
             yAxis: { title: { text: 'Nominal Transaksi' } },
-            series: [{
-                name: 'Total Nominal',
-                data: [1750000000, 25000000, 30000000, 80000000, 210000000, 330000000, 180000000, 85000000, 80000000, 75000000, 60000000, 50000000, 45000000, 40000000, 42000000, 38000000, 45000000, 55000000, 48000000, 42000000, 39000000, 35000000, 30000000, 25000000],
-                color: '#38bdf8'
-            }]
+            series: [{ name: 'Total Nominal', data: [1750000000, 25000000, 30000000, 80000000, 210000000, 330000000, 180000000, 85000000, 80000000, 75000000, 60000000, 50000000, 45000000, 40000000, 42000000, 38000000, 45000000, 55000000, 48000000, 42000000, 39000000, 35000000, 30000000, 25000000], color: '#38bdf8' }]
         }));
 
         // 5. Chart Per Rumpun Program
@@ -271,11 +400,7 @@
             title: { text: 'Total Nominal Berdasarkan Rumpun Program' },
             xAxis: { categories: ['Air Bersih', 'Dhuafa', 'Difabel', 'Dunia Islam', 'Fidyah', 'Infrastruktur', 'Kebencanaan', 'Lansia', 'Medis', 'Palestina', 'Qurban', 'Ramadhan', 'Wakaf', 'Yatim', 'Zakat Maal'] },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{
-                name: 'Total Nominal',
-                data: [80000000, 5000000, 15000000, 520000000, 20000000, 1350000000, 290000000, 35000000, 180000000, 1020000000, 10000000, 12000000, 5000000, 45000000, 8000000],
-                color: '#38bdf8'
-            }]
+            series: [{ name: 'Total Nominal', data: [80000000, 5000000, 15000000, 520000000, 20000000, 1350000000, 290000000, 35000000, 180000000, 1020000000, 10000000, 12000000, 5000000, 45000000, 8000000], color: '#38bdf8' }]
         }));
 
         // 6. Chart Per Program
@@ -284,11 +409,7 @@
             title: { text: 'Total Nominal Berdasarkan Program' },
             xAxis: { categories: ['Adik Aila', 'Bantu Bangun Masjid', 'Berbagi Bahagia', 'Disabilitas', 'Infaq Dhuafa', 'Klinik Sedekah', 'Lansia Dhuafa', 'Makanan Siap Saji', 'Medis Aila', 'Paletina Umum', 'Sedekah Daging', 'Sepinggan Kasih', 'Wakaf Al-Quran', 'Yatim Ziya'] },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{
-                name: 'Total Nominal',
-                data: [15000000, 440000000, 500000000, 25000000, 220000000, 40000000, 30000000, 390000000, 50000000, 480000000, 150000000, 320000000, 45000000, 60000000],
-                color: '#38bdf8'
-            }]
+            series: [{ name: 'Total Nominal', data: [15000000, 440000000, 500000000, 25000000, 220000000, 40000000, 30000000, 390000000, 50000000, 480000000, 150000000, 320000000, 45000000, 60000000], color: '#38bdf8' }]
         }));
 
         // 7. Chart Per Kantor
@@ -297,11 +418,7 @@
             title: { text: 'Total Nominal Berdasarkan Kantor' },
             xAxis: { categories: ['Pusat-Amal Bakti Dunia Islam'] },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{
-                name: 'Total Nominal',
-                data: [3546953126],
-                color: '#38bdf8'
-            }]
+            series: [{ name: 'Total Nominal', data: [3546953126], color: '#38bdf8' }]
         }));
 
         // 8. Chart Per PIC Prospek
@@ -310,10 +427,66 @@
             title: { text: 'Total Nominal Berdasarkan PIC Prospek' },
             xAxis: { categories: ['Digital Marketing', 'CRM', 'Perusahaan', 'Fundraising', 'Front Office', 'Customer Service', 'Baiq Nickte Madu Jasmine'] },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
+            series: [{ name: 'Total Nominal', data: [2450000000, 850000000, 220000000, 25000000, 5000000, 2000000, 1000000], color: '#38bdf8' }]
+        }));
+
+        // 9. Chart Distribusi Via Bayar (PIE CHART)
+        Highcharts.chart('chartViaBayar', Highcharts.merge(darkTheme, {
+            chart: { type: 'pie' },
+            title: { text: 'Distribusi Via Bayar' },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } }
+                }
+            },
             series: [{
-                name: 'Total Nominal',
-                data: [2450000000, 850000000, 220000000, 25000000, 5000000, 2000000, 1000000],
-                color: '#38bdf8'
+                name: 'Persentase',
+                data: [
+                    { name: 'BSI an. AMAL BAKTI DUNIA ISLAM', y: 33.2 },
+                    { name: 'BCA an. Amal Bakti Dunia Islam', y: 23.5 },
+                    { name: 'BNI an. Yayasan Amal Bakti Dunia Islam', y: 7.2 },
+                    { name: 'Mandiri an. Amal Bakti Dunia Islam', y: 3.4 },
+                    { name: 'Gopay', y: 1.0 },
+                    { name: 'Dana', y: 0.5 },
+                    { name: 'Cash-BSI', y: 0.9 },
+                    { name: 'Cash', y: 0.6 },
+                    { name: 'Virtual Account BCA', y: 0.4 },
+                    { name: 'QRIS', y: 0.4 },
+                    { name: 'an. Amal Bakti Dunia Islam', y: 3.7 },
+                    { name: 'an. Muhamad Yasin', y: 2.1 },
+                    { name: 'Bank BCA', y: 0.2 },
+                    { name: 'Bank BRI', y: 0.3 },
+                    { name: 'Bank BSI', y: 0.4 },
+                    { name: 'Bank Mandiri', y: 0.6 },
+                    { name: 'BCA', y: 0.3 }
+                ]
+            }]
+        }));
+
+        // 10. Chart Distribusi Channel Donasi (PIE CHART)
+        Highcharts.chart('chartChannelDonasi', Highcharts.merge(darkTheme, {
+            chart: { type: 'pie' },
+            title: { text: 'Distribusi Channel Donasi' },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } }
+                }
+            },
+            series: [{
+                name: 'Persentase',
+                data: [
+                    { name: 'WEB', y: 94.7 },
+                    { name: 'WA Marketing', y: 3.9 },
+                    { name: 'Kotak Amal', y: 1.2 },
+                    { name: 'Sekolah', y: 0.1 },
+                    { name: 'Gajda', y: 0.0 },
+                    { name: 'Celengan', y: 0.0 },
+                    { name: 'Cash', y: 0.1 }
+                ]
             }]
         }));
 
