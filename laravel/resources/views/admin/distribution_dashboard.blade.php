@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+{{-- ApexCharts CDN for interactive charts & native ☰ menu export (SVG, PNG, CSV) --}}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
 <section class="max-w-7xl mx-auto px-6 py-20">
 
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 items-start">
@@ -11,250 +14,289 @@
         </aside>
 
         {{-- Main Content --}}
-        <div class="space-y-8">
+        <div class="space-y-6">
 
-            {{-- Header --}}
+            {{-- Page Header --}}
             <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm flex items-center justify-between gap-4">
                 <div class="space-y-1">
                     <h1 class="text-2xl font-black text-slate-900 tracking-tight">Dashboard Penyaluran</h1>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Distribusi Management → Dashboard Penyaluran</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Distribusi Management → Dashboard Analytics & Grafik Penyaluran</p>
                 </div>
                 <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm">
-                    <i class="fa-solid fa-truck-ramp-box text-lg"></i>
+                    <i class="fa-solid fa-chart-line text-lg"></i>
                 </div>
             </div>
 
-            {{-- Stat Cards Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                
-                {{-- Total Nominal --}}
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-3 relative overflow-hidden group">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base font-bold">
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Penyaluran</p>
-                        <p class="text-xl font-black text-slate-900 tracking-tight mt-0.5">
-                            Rp {{ number_format($totalNominal, 0, ',', '.') }}
-                        </p>
-                    </div>
-                    <div class="text-[11px] font-bold text-slate-400 flex items-center gap-1">
-                        <i class="fa-solid fa-layer-group text-slate-300"></i> Akumulasi Seluruh Distribusi
-                    </div>
-                </div>
+            {{-- Filter Bar (Presisi Sesuai Screenshot 1) --}}
+            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                <form method="GET" action="{{ route('admin.distribution_dashboard') }}" class="space-y-4">
 
-                {{-- Penyaluran Bulan Ini --}}
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-3 relative overflow-hidden group">
-                    <div class="w-10 h-10 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center text-base font-bold">
-                        <i class="fa-solid fa-calendar-check"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Penyaluran Bulan Ini</p>
-                        <p class="text-xl font-black text-slate-900 tracking-tight mt-0.5">
-                            Rp {{ number_format($thisMonthNominal, 0, ',', '.') }}
-                        </p>
-                    </div>
-                    <div class="text-[11px] font-bold text-emerald-600 flex items-center gap-1">
-                        <i class="fa-solid fa-arrow-trend-up"></i> {{ now()->translatedFormat('F Y') }}
-                    </div>
-                </div>
+                    {{-- Row 1: Tgl Penyaluran, Program Penyaluran, Nama Program, Asnaf --}}
+                    <div class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700">
 
-                {{-- Total Penerima Manfaat --}}
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-3 relative overflow-hidden group">
-                    <div class="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-base font-bold">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Penerima Manfaat</p>
-                        <p class="text-xl font-black text-slate-900 tracking-tight mt-0.5">
-                            {{ number_format($totalBeneficiaries, 0, ',', '.') }} <span class="text-xs font-semibold text-slate-500">PM</span>
-                        </p>
-                    </div>
-                    <div class="text-[11px] font-bold text-slate-400 flex items-center gap-1">
-                        <i class="fa-solid fa-heart text-rose-400"></i> Jiwa / Lembaga Penerima
-                    </div>
-                </div>
+                        {{-- Tgl Penyaluran Range --}}
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-slate-500 font-bold whitespace-nowrap">Tgl Penyaluran :</span>
+                            <input type="date"
+                                   name="start_date"
+                                   value="{{ request('start_date', $startDate) }}"
+                                   class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                            <span class="text-slate-400 font-bold">s/d</span>
+                            <input type="date"
+                                   name="end_date"
+                                   value="{{ request('end_date', $endDate) }}"
+                                   class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                        </div>
 
-                {{-- Total Transaksi --}}
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm space-y-3 relative overflow-hidden group">
-                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-base font-bold">
-                        <i class="fa-solid fa-box-archive"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Laporan Penyaluran</p>
-                        <p class="text-xl font-black text-slate-900 tracking-tight mt-0.5">
-                            {{ number_format($totalRecords, 0, ',', '.') }} <span class="text-xs font-semibold text-slate-500">Laporan</span>
-                        </p>
-                    </div>
-                    <div class="text-[11px] font-bold text-slate-400 flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> {{ $statusTersalur }} Tersalur / {{ $statusProses }} Proses
-                    </div>
-                </div>
+                        {{-- Program Penyaluran (Group) --}}
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500 font-bold whitespace-nowrap">Program Penyaluran :</span>
+                            <select name="program_group_id" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none max-w-[180px]">
+                                <option value="">All</option>
+                                @foreach($programGroups as $pg)
+                                    <option value="{{ $pg->id }}" {{ request('program_group_id') == $pg->id ? 'selected' : '' }}>
+                                        {{ $pg->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
+                        {{-- Nama Program --}}
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500 font-bold whitespace-nowrap">Nama Program :</span>
+                            <select name="program_id" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none max-w-[200px]">
+                                <option value="">All</option>
+                                @foreach($programs as $p)
+                                    <option value="{{ $p->id }}" {{ request('program_id') == $p->id ? 'selected' : '' }}>
+                                        {{ Str::limit($p->title, 25) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Asnaf --}}
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500 font-bold whitespace-nowrap">Asnaf :</span>
+                            <select name="asnaf" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none min-w-[100px]">
+                                <option value="All">All</option>
+                                <option value="Fakir" {{ request('asnaf') === 'Fakir' ? 'selected' : '' }}>Fakir</option>
+                                <option value="Miskin" {{ request('asnaf') === 'Miskin' ? 'selected' : '' }}>Miskin</option>
+                                <option value="Fisabilillah" {{ request('asnaf') === 'Fisabilillah' ? 'selected' : '' }}>Fisabilillah</option>
+                                <option value="Mualaf" {{ request('asnaf') === 'Mualaf' ? 'selected' : '' }}>Mualaf</option>
+                                <option value="Ibnusabil" {{ request('asnaf') === 'Ibnusabil' ? 'selected' : '' }}>Ibnusabil</option>
+                                <option value="Yatim" {{ request('asnaf') === 'Yatim' ? 'selected' : '' }}>Yatim</option>
+                                <option value="Non Asnaf" {{ request('asnaf') === 'Non Asnaf' ? 'selected' : '' }}>Non Asnaf</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    {{-- Row 2: Kota/Kab, Provinsi, Sumber Dana, Action Buttons --}}
+                    <div class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700">
+
+                        {{-- Kota / Kab --}}
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500 font-bold whitespace-nowrap">Kota / Kab :</span>
+                            <select name="city" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none min-w-[140px]">
+                                <option value="All">All</option>
+                                @foreach($cities as $c)
+                                    <option value="{{ $c }}" {{ request('city') === $c ? 'selected' : '' }}>{{ $c }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Provinsi --}}
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500 font-bold whitespace-nowrap">Provinsi :</span>
+                            <select name="province" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none min-w-[160px]">
+                                <option value="All">All</option>
+                                @foreach($provinces as $pr)
+                                    <option value="{{ $pr }}" {{ request('province') === $pr ? 'selected' : '' }}>{{ $pr }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Sumber Dana --}}
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-500 font-bold whitespace-nowrap">Sumber Dana :</span>
+                            <select name="source_of_fund" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none min-w-[140px]">
+                                <option value="All">All</option>
+                                @foreach($sourceList as $s)
+                                    <option value="{{ $s }}" {{ request('source_of_fund') === $s ? 'selected' : '' }}>{{ $s }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Action Buttons --}}
+                        <div class="flex items-center gap-2 ml-auto">
+                            <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                                <i class="fa-solid fa-magnifying-glass text-xs"></i> Show
+                            </button>
+                            <a href="{{ route('admin.distribution_dashboard') }}" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all" title="Reset Filter">
+                                <i class="fa-solid fa-rotate text-xs"></i>
+                            </a>
+                        </div>
+
+                    </div>
+
+                </form>
             </div>
 
-            {{-- Asnaf & Status Grid --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- Summary Banner Bar (Presisi Sesuai Red Top Header Box - Screenshot 1) --}}
+            <div class="bg-white border border-rose-200 rounded-3xl overflow-hidden shadow-sm">
+                <div class="grid grid-cols-2 sm:grid-cols-5 text-center divide-x divide-rose-100 bg-rose-50/50">
 
-                {{-- Distribusi per Asnaf --}}
-                <div class="lg:col-span-2 bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-base font-black text-slate-900">Distribusi per Asnaf</h3>
-                            <p class="text-xs font-semibold text-slate-400">Ringkasan penyaluran berdasarkan kategori asnaf zakat/infaq</p>
+                    {{-- Σ Quantity --}}
+                    <div class="p-4 space-y-1">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Σ Quantity
                         </div>
-                        <div class="w-8 h-8 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-filter"></i>
-                        </div>
+                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumQuantity) }}</p>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                                    <th class="pb-3">Kategori Asnaf</th>
-                                    <th class="pb-3 text-center">Jumlah Transaksi</th>
-                                    <th class="pb-3 text-right">Total Penyaluran</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-xs font-semibold text-slate-700">
-                                @forelse($topAsnaf as $asnaf)
-                                    <tr class="border-b border-slate-50 hover:bg-slate-50/60 transition-colors">
-                                        <td class="py-3 font-bold text-slate-900">
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[11px]">
-                                                <i class="fa-solid fa-tag text-[9px]"></i>
-                                                {{ $asnaf->asnaf ?: 'Umum / Tidak Didefinisikan' }}
-                                            </span>
-                                        </td>
-                                        <td class="py-3 text-center font-mono">
-                                            {{ number_format($asnaf->total_count, 0, ',', '.') }}
-                                        </td>
-                                        <td class="py-3 text-right font-black text-slate-900">
-                                            Rp {{ number_format($asnaf->total_amount, 0, ',', '.') }}
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="py-8 text-center text-slate-400 font-bold uppercase tracking-wider">
-                                            Belum ada data distribusi per asnaf.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    {{-- Σ Kota --}}
+                    <div class="p-4 space-y-1">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Σ Kota
+                        </div>
+                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumKota) }}</p>
                     </div>
+
+                    {{-- Σ Provinsi --}}
+                    <div class="p-4 space-y-1">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Σ Provinsi
+                        </div>
+                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumProvinsi) }}</p>
+                    </div>
+
+                    {{-- Σ Penerima Manfaat --}}
+                    <div class="p-4 space-y-1">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Σ Penerima Manfaat
+                        </div>
+                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumPM) }}</p>
+                    </div>
+
+                    {{-- Σ Dana Penyaluran --}}
+                    <div class="p-4 space-y-1 col-span-2 sm:col-span-1">
+                        <div class="bg-gradient-to-r from-rose-600 to-rose-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Σ Dana Penyaluran
+                        </div>
+                        <p class="text-2xl font-black text-emerald-600">
+                            Rp {{ number_format($sumDana, 0, ',', '.') }}
+                        </p>
+                    </div>
+
                 </div>
-
-                {{-- Status Penyaluran Card --}}
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-base font-black text-slate-900">Status Penyaluran</h3>
-                        <p class="text-xs font-semibold text-slate-400">Status pengerjaan tim distribusi</p>
-
-                        <div class="space-y-4 mt-6">
-                            <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-base">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-black text-emerald-900">Tersalur</p>
-                                        <p class="text-[11px] text-emerald-700 font-semibold">Telah sampai ke penerima</p>
-                                    </div>
-                                </div>
-                                <span class="text-2xl font-black text-emerald-700">{{ $statusTersalur }}</span>
-                            </div>
-
-                            <div class="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base">
-                                        <i class="fa-solid fa-clock-rotate-left"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-black text-amber-900">Dalam Proses</p>
-                                        <p class="text-[11px] text-amber-700 font-semibold">Sedang diproses/dikirim</p>
-                                    </div>
-                                </div>
-                                <span class="text-2xl font-black text-amber-700">{{ $statusProses }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="{{ route('admin.distributions') }}"
-                       class="w-full py-3 bg-slate-900 hover:bg-slate-950 text-white text-center rounded-2xl text-xs font-bold transition-all shadow-sm block">
-                        <i class="fa-solid fa-plus-circle text-xs mr-1"></i> Input / Kelola Penyaluran
-                    </a>
-                </div>
-
             </div>
 
-            {{-- Recent Distributions Table Card --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-lg font-black text-slate-900">Penyaluran Bantuan Terbaru</h3>
-                        <p class="text-xs font-semibold text-slate-400">8 riwayat laporan penyaluran bantuan terakhir</p>
+            {{-- ==================== CHARTS CONTAINER (CLEAN WHITE DESIGN SYSTEM - MODERN & HIGH READABILITY) ==================== --}}
+            <div class="space-y-6">
+
+                {{-- Chart 1: Dashboard Dana Penyaluran Per Tanggal --}}
+                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h3 class="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-chart-area text-sky-500"></i>
+                            Dashboard Dana Penyaluran Per Tanggal
+                        </h3>
+                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-xl">
+                            <i class="fa-solid fa-download mr-1 text-sky-600"></i> Klik Menu ☰ di Atas Kanan Grafik untuk Download PNG/SVG/CSV
+                        </span>
                     </div>
-                    <a href="{{ route('admin.distributions') }}" class="text-xs font-black text-primary-600 hover:text-primary-700 transition-all flex items-center gap-1">
-                        Lihat Semua List <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                    </a>
+                    <div id="chartDailyNominal" class="w-full h-[320px]"></div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                                <th class="pb-4">Program</th>
-                                <th class="pb-4">Penerima Manfaat</th>
-                                <th class="pb-4">Jumlah (Rp)</th>
-                                <th class="pb-4">Asnaf</th>
-                                <th class="pb-4">Tanggal</th>
-                                <th class="pb-4 text-center">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm font-semibold text-slate-700">
-                            @forelse($recentDistributions as $item)
-                                <tr class="border-b border-slate-50 hover:bg-slate-50/60 transition-colors">
-                                    <td class="py-4 font-bold text-slate-900 max-w-[220px] truncate">
-                                        {{ $item->campaign ? $item->campaign->title : 'Program Umum' }}
-                                    </td>
-                                    <td class="py-4 text-slate-800">
-                                        {{ $item->recipient_name }}
-                                    </td>
-                                    <td class="py-4 font-black text-emerald-600">
-                                        Rp {{ number_format($item->amount, 0, ',', '.') }}
-                                    </td>
-                                    <td class="py-4">
-                                        <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-bold">
-                                            {{ $item->asnaf ?: '-' }}
-                                        </span>
-                                    </td>
-                                    <td class="py-4 text-xs text-slate-500">
-                                        {{ $item->distribution_date ? $item->distribution_date->format('d M Y') : '-' }}
-                                    </td>
-                                    <td class="py-4 text-center">
-                                        @if($item->status === 'Tersalur')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[11px] font-black">
-                                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Tersalur
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 text-[11px] font-black">
-                                                <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> Proses
-                                            </span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="py-14 text-center text-slate-400 font-bold uppercase tracking-wider">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-300 mb-3"></i>
-                                        Belum ada riwayat penyaluran.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                {{-- Chart 2: Dashboard Jumlah PM Per Tanggal --}}
+                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h3 class="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-users text-sky-500"></i>
+                            Dashboard Jumlah PM Per Tanggal
+                        </h3>
+                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-xl">
+                            <i class="fa-solid fa-download mr-1 text-sky-600"></i> Klik Menu ☰ di Atas Kanan Grafik untuk Download PNG/SVG/CSV
+                        </span>
+                    </div>
+                    <div id="chartDailyPM" class="w-full h-[320px]"></div>
                 </div>
+
+                {{-- Monthly Charts Row --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    {{-- Chart 3: Dashboard Dana Penyaluran Per Bulan --}}
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider">
+                                Dashboard Dana Penyaluran Per Bulan
+                            </h3>
+                        </div>
+                        <div id="chartMonthlyNominal" class="w-full h-[300px]"></div>
+                    </div>
+
+                    {{-- Chart 4: Dashboard Jumlah PM Per Bulan --}}
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider">
+                                Dashboard Jumlah PM Per Bulan
+                            </h3>
+                        </div>
+                        <div id="chartMonthlyPM" class="w-full h-[300px]"></div>
+                    </div>
+
+                </div>
+
+                {{-- Asnaf & Source of Fund Pie Charts Row --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    {{-- Chart 5: Distribusi Asnaf --}}
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider">
+                                Distribusi Asnaf
+                            </h3>
+                        </div>
+                        <div id="chartAsnafPie" class="w-full h-[320px] flex items-center justify-center"></div>
+                    </div>
+
+                    {{-- Chart 6: Distribusi Sumber Dana --}}
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider">
+                                Distribusi Sumber Dana
+                            </h3>
+                        </div>
+                        <div id="chartSourcePie" class="w-full h-[320px] flex items-center justify-center"></div>
+                    </div>
+
+                </div>
+
+                {{-- Program Group & Program Name Pie Charts Row --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    {{-- Chart 7: Distribusi Program Penyaluran --}}
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider">
+                                Distribusi Program Penyaluran
+                            </h3>
+                        </div>
+                        <div id="chartProgramGroupPie" class="w-full h-[320px] flex items-center justify-center"></div>
+                    </div>
+
+                    {{-- Chart 8: Distribusi Nama Program --}}
+                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider">
+                                Distribusi Nama Program
+                            </h3>
+                        </div>
+                        <div id="chartProgramNamePie" class="w-full h-[320px] flex items-center justify-center"></div>
+                    </div>
+
+                </div>
+
             </div>
 
         </div>{{-- end main --}}
@@ -262,4 +304,185 @@
     </div>{{-- end grid --}}
 
 </section>
+
+{{-- ==================== APEXCHARTS INITIALIZATION & CONFIGURATION (LIGHT MODE WHITE CARD THEME) ==================== --}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Common Light Theme Configuration
+    const themeOptions = {
+        theme: { mode: 'light' },
+        chart: {
+            fontFamily: 'Inter, sans-serif',
+            background: 'transparent',
+            toolbar: {
+                show: true,
+                tools: {
+                    download: '<i class="fa-solid fa-bars text-slate-600 text-lg hover:text-slate-900 transition-colors cursor-pointer" title="Download Graphic / CSV"></i>',
+                    selection: false,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: true,
+                    reset: true
+                },
+                export: {
+                    csv: { filename: 'Data_Grafik_Penyaluran' },
+                    svg: { filename: 'Grafik_Penyaluran' },
+                    png: { filename: 'Grafik_Penyaluran' }
+                }
+            }
+        },
+        colors: ['#0284c7', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316'],
+        grid: { borderColor: '#f1f5f9' }
+    };
+
+    // 1. Chart Daily Nominal (Line Chart)
+    const dailyNominalOptions = {
+        ...themeOptions,
+        series: [{
+            name: 'Nominal Penyaluran (Rp)',
+            data: @json($dailyNominalData)
+        }],
+        chart: { ...themeOptions.chart, type: 'line', height: 320 },
+        stroke: { curve: 'smooth', width: 3 },
+        colors: ['#0284c7'],
+        markers: { size: 5, hover: { size: 7 } },
+        xaxis: { categories: @json($dailyDates), labels: { style: { colors: '#64748b', fontWeight: 600 } } },
+        yaxis: {
+            labels: {
+                style: { colors: '#64748b', fontWeight: 600 },
+                formatter: (val) => val >= 1000000 ? (val / 1000000).toFixed(0) + 'M' : val
+            }
+        },
+        tooltip: {
+            y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
+        }
+    };
+    new ApexCharts(document.querySelector("#chartDailyNominal"), dailyNominalOptions).render();
+
+    // 2. Chart Daily PM (Line Chart)
+    const dailyPMOptions = {
+        ...themeOptions,
+        series: [{
+            name: 'Jumlah PM',
+            data: @json($dailyPMData)
+        }],
+        chart: { ...themeOptions.chart, type: 'line', height: 320 },
+        stroke: { curve: 'smooth', width: 3 },
+        colors: ['#0284c7'],
+        markers: { size: 5, hover: { size: 7 } },
+        xaxis: { categories: @json($dailyDates), labels: { style: { colors: '#64748b', fontWeight: 600 } } },
+        yaxis: {
+            labels: {
+                style: { colors: '#64748b', fontWeight: 600 },
+                formatter: (val) => val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val
+            }
+        },
+        tooltip: {
+            y: { formatter: (val) => new Intl.NumberFormat('id-ID').format(val) + ' PM' }
+        }
+    };
+    new ApexCharts(document.querySelector("#chartDailyPM"), dailyPMOptions).render();
+
+    // 3. Chart Monthly Nominal (Line Chart with Data Labels)
+    const monthlyNominalOptions = {
+        ...themeOptions,
+        series: [{
+            name: 'Total Nominal (Rp)',
+            data: @json($monthlyNominalData)
+        }],
+        chart: { ...themeOptions.chart, type: 'line', height: 300 },
+        stroke: { curve: 'smooth', width: 3 },
+        colors: ['#0284c7'],
+        markers: { size: 6 },
+        dataLabels: {
+            enabled: true,
+            formatter: (val) => new Intl.NumberFormat('id-ID').format(val),
+            style: { fontSize: '10px', colors: ['#0f172a'], fontWeight: 'bold' }
+        },
+        xaxis: { categories: @json($monthlyLabels), labels: { style: { colors: '#64748b', fontWeight: 600 } } },
+        yaxis: { labels: { style: { colors: '#64748b', fontWeight: 600 } } }
+    };
+    new ApexCharts(document.querySelector("#chartMonthlyNominal"), monthlyNominalOptions).render();
+
+    // 4. Chart Monthly PM (Line Chart with Data Labels)
+    const monthlyPMOptions = {
+        ...themeOptions,
+        series: [{
+            name: 'Total PM',
+            data: @json($monthlyPMData)
+        }],
+        chart: { ...themeOptions.chart, type: 'line', height: 300 },
+        stroke: { curve: 'smooth', width: 3 },
+        colors: ['#0284c7'],
+        markers: { size: 6 },
+        dataLabels: {
+            enabled: true,
+            formatter: (val) => new Intl.NumberFormat('id-ID').format(val),
+            style: { fontSize: '10px', colors: ['#0f172a'], fontWeight: 'bold' }
+        },
+        xaxis: { categories: @json($monthlyLabels), labels: { style: { colors: '#64748b', fontWeight: 600 } } },
+        yaxis: { labels: { style: { colors: '#64748b', fontWeight: 600 } } }
+    };
+    new ApexCharts(document.querySelector("#chartMonthlyPM"), monthlyPMOptions).render();
+
+    // 5. Chart Asnaf Pie
+    const asnafPieOptions = {
+        ...themeOptions,
+        series: @json($asnafValues),
+        labels: @json($asnafLabels),
+        chart: { ...themeOptions.chart, type: 'pie', height: 320 },
+        colors: ['#38bdf8', '#10b981', '#f59e0b', '#f97316', '#a855f7', '#ec4899', '#c084fc'],
+        legend: { position: 'right', labels: { colors: '#334155' } },
+        tooltip: {
+            y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
+        }
+    };
+    new ApexCharts(document.querySelector("#chartAsnafPie"), asnafPieOptions).render();
+
+    // 6. Chart Source Pie
+    const sourcePieOptions = {
+        ...themeOptions,
+        series: @json($sourceValues),
+        labels: @json($sourceLabels),
+        chart: { ...themeOptions.chart, type: 'pie', height: 320 },
+        colors: ['#0284c7', '#10b981', '#f59e0b', '#f97316'],
+        legend: { position: 'right', labels: { colors: '#334155' } },
+        tooltip: {
+            y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
+        }
+    };
+    new ApexCharts(document.querySelector("#chartSourcePie"), sourcePieOptions).render();
+
+    // 7. Chart Program Group Pie
+    const programGroupPieOptions = {
+        ...themeOptions,
+        series: @json($programGroupValues),
+        labels: @json($programGroupLabels),
+        chart: { ...themeOptions.chart, type: 'pie', height: 320 },
+        colors: ['#f97316', '#0284c7', '#10b981', '#eab308', '#ec4899', '#8b5cf6'],
+        legend: { position: 'right', labels: { colors: '#334155' } },
+        tooltip: {
+            y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
+        }
+    };
+    new ApexCharts(document.querySelector("#chartProgramGroupPie"), programGroupPieOptions).render();
+
+    // 8. Chart Program Name Pie
+    const programNamePieOptions = {
+        ...themeOptions,
+        series: @json($programNameValues),
+        labels: @json($programNameLabels),
+        chart: { ...themeOptions.chart, type: 'pie', height: 320 },
+        colors: ['#0284c7', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316', '#a855f7'],
+        legend: { position: 'right', labels: { colors: '#334155' } },
+        tooltip: {
+            y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
+        }
+    };
+    new ApexCharts(document.querySelector("#chartProgramNamePie"), programNamePieOptions).render();
+
+});
+</script>
 @endsection
