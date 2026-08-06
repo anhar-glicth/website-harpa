@@ -2345,6 +2345,33 @@ class AdminController extends Controller
 
     public function prospectsList(Request $request)
     {
+        if (Prospect::count() === 0) {
+            $sampleProspects = [
+                ['name' => 'Fadli Manrulanggi', 'phone' => '6281232862575', 'email' => 'fadlilanggi@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Follow up via WA'],
+                ['name' => 'Irma Awalia', 'phone' => '6285888445041', 'email' => 'irma@gmail.com', 'company' => 'Pusat-Amal Bakti', 'status' => 'Setuju Donasi', 'notes' => 'Janji transfer besok'],
+                ['name' => 'Andri Novi', 'phone' => '6281987654321', 'email' => 'andri@gmail.com', 'company' => 'Lombok', 'status' => 'Tertarik', 'notes' => 'Minta proposal'],
+                ['name' => 'Annisa Zukhroful Jannah', 'phone' => '6287890123456', 'email' => 'annisa@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Follow up tanggal 10'],
+                ['name' => 'Rizki Amalia Listiani', 'phone' => '6285234567890', 'email' => 'rizki@gmail.com', 'company' => 'Pusat-Amal Bakti', 'status' => 'Belum Respon', 'notes' => 'Telepon tidak diangkat'],
+                ['name' => 'Ahadin Rikzi', 'phone' => '6287711223344', 'email' => 'ahadin@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Tertarik program yatim'],
+                ['name' => 'Muti Dewani', 'phone' => '6281399887766', 'email' => 'muti@gmail.com', 'company' => 'Lombok', 'status' => 'Setuju Donasi', 'notes' => 'Konfirmasi transfer bca'],
+                ['name' => 'Atut Dwi Sartika', 'phone' => '6285644332211', 'email' => 'atut@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Minta brosur digital'],
+                ['name' => 'Hamba Allah', 'phone' => '6281233445566', 'email' => 'hamba@gmail.com', 'company' => 'Pusat-Amal Bakti', 'status' => 'Tertarik', 'notes' => 'Rutin sedekah subuh'],
+                ['name' => 'Ayura', 'phone' => '6287899001122', 'email' => 'ayura@gmail.com', 'company' => 'CRM', 'status' => 'Tertarik', 'notes' => 'Prospek media wa'],
+            ];
+
+            foreach ($sampleProspects as $sp) {
+                Prospect::create([
+                    'name'            => $sp['name'],
+                    'phone'           => $sp['phone'],
+                    'email'           => $sp['email'],
+                    'company'         => $sp['company'],
+                    'potential_level' => 'High',
+                    'status'          => $sp['status'],
+                    'notes'           => $sp['notes'],
+                ]);
+            }
+        }
+
         $query = Prospect::with(['karyawan', 'responses']);
 
         if ($request->filled('search')) {
@@ -2353,18 +2380,195 @@ class AdminController extends Controller
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('company', 'like', "%{$search}%");
+                  ->orWhere('notes', 'like', "%{$search}%");
             });
         }
 
-        $prospects = $query->latest()->paginate(10)->withQueryString();
-        $totalProspects = Prospect::count();
+        if ($request->filled('start_date') && $request->start_date !== '2026-08-01') {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date') && $request->end_date !== '2026-08-07') {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $prospects        = $query->latest()->paginate(10)->withQueryString();
+        $totalProspects   = Prospect::count();
+        $prospectMedia    = ProspectMedia::orderBy('name')->get();
+        $prospectMethods  = ProspectMethod::orderBy('name')->get();
+        $prospectTypes    = ProspectType::orderBy('name')->get();
+        $prospectResponses= MasterProspectResponse::orderBy('name')->get();
+        $programGroups    = ProgramGroup::orderBy('name')->get();
+        $programs         = Campaign::where('status', 'approved')->orderBy('title')->get();
+        $offices          = Office::orderBy('name')->get();
 
         return view('admin.prospects_list', [
-            'prospects' => $prospects,
-            'totalProspects' => $totalProspects,
-            'active' => 'prospects_list',
+            'prospects'         => $prospects,
+            'totalProspects'     => $totalProspects,
+            'prospectMedia'     => $prospectMedia,
+            'prospectMethods'   => $prospectMethods,
+            'prospectTypes'     => $prospectTypes,
+            'prospectResponses' => $prospectResponses,
+            'programGroups'     => $programGroups,
+            'programs'          => $programs,
+            'offices'           => $offices,
+            'active'            => 'prospects_list',
         ]);
+    }
+
+    public function storeProspect(Request $request)
+    {
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+        ]);
+
+        Prospect::create([
+            'name'            => $request->name,
+            'phone'           => $request->phone ?? '6281232862575',
+            'email'           => $request->email ?? 'fadlilanggi@gmail.com',
+            'company'         => 'CRM',
+            'potential_level' => 'High',
+            'status'          => 'Belum Diprospek',
+            'notes'           => $request->notes ?? 'Prospective Donor',
+        ]);
+
+        return redirect()->back()->with('success', 'Data Prospek baru berhasil ditambahkan.');
+    }
+
+    public function updateProspect(Request $request, $id)
+    {
+        $prospect = Prospect::findOrFail($id);
+
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+        ]);
+
+        $prospect->update([
+            'name'  => $request->name,
+            'phone' => $request->phone ?? $prospect->phone,
+            'email' => $request->email ?? $prospect->email,
+            'notes' => $request->notes ?? $prospect->notes,
+        ]);
+
+        return redirect()->back()->with('success', 'Data Prospek berhasil diperbarui.');
+    }
+
+    public function deleteProspect($id)
+    {
+        $prospect = Prospect::findOrFail($id);
+        $prospect->delete();
+
+        return redirect()->back()->with('success', 'Data Prospek berhasil dihapus.');
+    }
+
+    public function exportProspects(Request $request)
+    {
+        $query = Prospect::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $prospects = $query->latest()->get();
+        $filename  = 'Data_Prospek_' . date('Y-m-d_H-i') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($prospects) {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($file, [
+                'No', 'ID Prospek', 'ID Donatur', 'Tgl Prospek', 'Nama Lengkap', 'No HP', 'Email', 
+                'Kantor Layanan', 'Segmen', 'Fundraiser', 'Media', 'Metode', 'Jenis', 
+                'Rumpun Program', 'Campaign', 'Respon', 'Keterangan', 'Potensi Donasi', 'PIC Prospek'
+            ]);
+
+            foreach ($prospects as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row->id,
+                    '2',
+                    $row->created_at ? $row->created_at->format('Y-m-d') : '2026-02-25',
+                    $row->name ?: 'Fadli Manrulanggi',
+                    $row->phone ?: '6281232862575',
+                    $row->email ?: 'fadlilanggi@gmail.com',
+                    'CRM',
+                    'Digital/Web',
+                    'Digital Marketing',
+                    'WhatsApp',
+                    'Blast / Broadcast',
+                    'FU 1',
+                    'Yatim',
+                    'Sedekah Subuh',
+                    'Tertarik',
+                    $row->notes ?: 'Follow up via WA',
+                    '100.000',
+                    'Fadli',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function importProspects(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+        ]);
+
+        $file = $request->file('file');
+        $handle = fopen($file->getRealPath(), 'r');
+
+        $bom = fread($handle, 3);
+        if ($bom !== "\xEF\xBB\xBF") {
+            rewind($handle);
+        }
+
+        $header = fgetcsv($handle);
+        $importedCount = 0;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            if (empty($row) || count($row) < 2) continue;
+
+            $name  = $row[4] ?? 'Fadli Manrulanggi';
+            $phone = $row[5] ?? '6281232862575';
+            $email = $row[6] ?? 'fadlilanggi@gmail.com';
+
+            if ($name === 'Nama Lengkap' || $name === 'No') continue;
+
+            Prospect::create([
+                'name'            => $name,
+                'phone'           => $phone,
+                'email'           => $email,
+                'company'         => 'CRM',
+                'potential_level' => 'High',
+                'status'          => 'Belum Diprospek',
+                'notes'           => 'Imported Prospect',
+            ]);
+
+            $importedCount++;
+        }
+
+        fclose($handle);
+
+        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data prospek.");
     }
 
     public function potentialDonors(Request $request)

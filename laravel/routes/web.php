@@ -162,6 +162,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/transactions/export', [AdminController::class, 'exportTransactions'])->name('admin.transactions.export');
     Route::post('/admin/transactions/import', [AdminController::class, 'importTransactions'])->name('admin.transactions.import');
     Route::get('/admin/prospects-list', [AdminController::class, 'prospectsList'])->name('admin.prospects_list');
+    Route::post('/admin/prospects/store', [AdminController::class, 'storeProspect'])->name('admin.prospects.store');
+    Route::put('/admin/prospects/{id}/update', [AdminController::class, 'updateProspect'])->name('admin.prospects.update');
+    Route::delete('/admin/prospects/{id}/delete', [AdminController::class, 'deleteProspect'])->name('admin.prospects.delete');
+    Route::get('/admin/prospects/export', [AdminController::class, 'exportProspects'])->name('admin.prospects.export');
+    Route::post('/admin/prospects/import', [AdminController::class, 'importProspects'])->name('admin.prospects.import');
     Route::get('/admin/potential-donors', [AdminController::class, 'potentialDonors'])->name('admin.potential_donors');
     Route::get('/admin/transactions-dashboard', [AdminController::class, 'transactionsDashboard'])->name('admin.transactions_dashboard');
     Route::get('/admin/donors-dashboard', [AdminController::class, 'donorsDashboard'])->name('admin.donors_dashboard');
