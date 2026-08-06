@@ -33,11 +33,13 @@
         {{-- Header Logo & Title --}}
         <div class="flex items-start justify-between border-b border-slate-100 pb-6">
             <div class="space-y-1">
-                <div class="flex items-center gap-2">
-                    <span class="text-3xl font-black text-rose-600">S</span>
-                    <span class="text-2xl font-black text-slate-900 tracking-tight">abadi</span>
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('images/logo.jpeg') }}" 
+                         onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" 
+                         class="h-14 w-auto object-contain" 
+                         alt="Logo Amal Abadi">
                 </div>
-                <p class="text-[10px] text-slate-500 font-semibold">www.amalabadi.org</p>
+                <p class="text-[10px] text-slate-500 font-semibold pt-1">www.amalabadi.org</p>
                 <p class="text-[10px] text-slate-500 font-semibold">Whatsapp : +62 878-6455-6406</p>
             </div>
             <div class="text-right space-y-1">

@@ -156,6 +156,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/donors/{id}/receipt', [AdminController::class, 'donorReceipt'])->name('admin.donors.receipt');
 
     Route::get('/admin/transactions-list', [AdminController::class, 'transactionsList'])->name('admin.transactions_list');
+    Route::post('/admin/transactions/store', [AdminController::class, 'storeTransaction'])->name('admin.transactions.store');
+    Route::put('/admin/transactions/{id}/update', [AdminController::class, 'updateTransaction'])->name('admin.transactions.update');
+    Route::delete('/admin/transactions/{id}/delete', [AdminController::class, 'deleteTransaction'])->name('admin.transactions.delete');
+    Route::get('/admin/transactions/export', [AdminController::class, 'exportTransactions'])->name('admin.transactions.export');
+    Route::post('/admin/transactions/import', [AdminController::class, 'importTransactions'])->name('admin.transactions.import');
     Route::get('/admin/prospects-list', [AdminController::class, 'prospectsList'])->name('admin.prospects_list');
     Route::get('/admin/potential-donors', [AdminController::class, 'potentialDonors'])->name('admin.potential_donors');
     Route::get('/admin/transactions-dashboard', [AdminController::class, 'transactionsDashboard'])->name('admin.transactions_dashboard');
