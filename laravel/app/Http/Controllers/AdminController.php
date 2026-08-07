@@ -3078,5 +3078,127 @@ class AdminController extends Controller
             'active'                   => 'rfm_dashboard',
         ]);
     }
+
+    public function officesList(Request $request)
+    {
+        $query = Office::with('parent');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('office_code', 'like', "%{$search}%")
+                  ->orWhere('id', $search);
+            });
+        }
+
+        if ($request->filled('city')) {
+            $query->where('city', 'like', "%{$request->city}%");
+        }
+
+        if ($request->filled('parent_id')) {
+            $query->where('parent_id', $request->parent_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $offices = $query->orderBy('id', 'asc')->paginate(10)->withQueryString();
+        $allOffices = Office::orderBy('name')->get();
+
+        // Seed default Pusat office if empty
+        if ($offices->total() == 0 && !$request->filled('search')) {
+            Office::create([
+                'office_code' => '1',
+                'name'        => 'Pusat-Amal Bakti Dunia Islam',
+                'city'        => 'Mataram',
+                'province'    => 'Nusa Tenggara Barat',
+                'status'      => 'Aktif',
+            ]);
+            $offices = Office::with('parent')->orderBy('id', 'asc')->paginate(10)->withQueryString();
+        }
+
+        return view('admin.offices', [
+            'offices'    => $offices,
+            'allOffices' => $allOffices,
+            'active'     => 'offices',
+        ]);
+    }
+
+    public function storeOffice(Request $request)
+    {
+        $request->validate([
+            'office_code' => 'nullable|string|max:50',
+            'name'        => 'required|string|max:255',
+            'city'        => 'nullable|string|max:100',
+            'province'    => 'nullable|string|max:100',
+            'parent_id'   => 'nullable|exists:offices,id',
+            'status'      => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        Office::create($request->only(['office_code', 'name', 'city', 'province', 'parent_id', 'address', 'phone', 'status']));
+
+        return redirect()->route('admin.offices')->with('success', 'Data Master Kantor berhasil ditambahkan.');
+    }
+
+    public function updateOffice(Request $request, $id)
+    {
+        $office = Office::findOrFail($id);
+
+        $request->validate([
+            'office_code' => 'nullable|string|max:50',
+            'name'        => 'required|string|max:255',
+            'city'        => 'nullable|string|max:100',
+            'province'    => 'nullable|string|max:100',
+            'parent_id'   => 'nullable|exists:offices,id',
+            'status'      => 'required|in:Aktif,Non-Aktif',
+        ]);
+
+        $office->update($request->only(['office_code', 'name', 'city', 'province', 'parent_id', 'address', 'phone', 'status']));
+
+        return redirect()->route('admin.offices')->with('success', 'Data Master Kantor berhasil diperbarui.');
+    }
+
+    public function deleteOffice($id)
+    {
+        $office = Office::findOrFail($id);
+        $office->delete();
+
+        return redirect()->route('admin.offices')->with('success', 'Data Master Kantor berhasil dihapus.');
+    }
+
+    public function exportOffices()
+    {
+        $offices = Office::with('parent')->get();
+        $filename = "master_kantor_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use($offices) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID Kantor', 'Nama Kantor', 'Kota', 'Provinsi', 'Kantor Parent', 'Status']);
+
+            foreach ($offices as $ofc) {
+                fputcsv($file, [
+                    $ofc->office_code ?? $ofc->id,
+                    $ofc->name,
+                    $ofc->city ?? '-',
+                    $ofc->province ?? '-',
+                    $ofc->parent ? $ofc->parent->name : '-',
+                    $ofc->status == 'Aktif' ? 'y' : 'n',
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
 

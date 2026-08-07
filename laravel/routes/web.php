@@ -72,6 +72,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
     Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');
     
+    // Master Kantor Routes
+    Route::get('/admin/offices', [AdminController::class, 'officesList'])->name('admin.offices');
+    Route::post('/admin/offices/store', [AdminController::class, 'storeOffice'])->name('admin.offices.store');
+    Route::put('/admin/offices/{id}/update', [AdminController::class, 'updateOffice'])->name('admin.offices.update');
+    Route::delete('/admin/offices/{id}/delete', [AdminController::class, 'deleteOffice'])->name('admin.offices.delete');
+    Route::get('/admin/offices/export', [AdminController::class, 'exportOffices'])->name('admin.offices.export');
+
     // Master Karyawan Routes
     Route::get('/admin/karyawan', [AdminController::class, 'karyawanList'])->name('admin.karyawan');
     Route::post('/admin/karyawan/store', [AdminController::class, 'storeKaryawan'])->name('admin.karyawan.store');
