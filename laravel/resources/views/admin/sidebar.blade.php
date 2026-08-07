@@ -20,11 +20,11 @@
     </div>
 </div>
 
-<!-- Menu Navigasi Admin Accordion Card -->
+<!-- Menu Navigasi Admin Accordion Card (Pengaturan Awal Tertutup / Smart Active Open) -->
 <nav class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden space-y-0.5">
     
     <!-- 1. MENU UTAMA GROUP -->
-    <div x-data="{ isOpen: true }">
+    <div x-data="{ isOpen: {{ in_array($active ?? '', ['dashboard', 'analytics', 'campaigns', 'donations']) ? 'true' : 'false' }} }">
         <div @click="isOpen = !isOpen" class="bg-slate-900 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-slate-950 transition-colors">
             <span class="text-[11px] font-bold uppercase tracking-wider">Menu Utama</span>
             <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
@@ -70,7 +70,7 @@
     </div>
 
     <!-- 2. MONITORING STAFF GROUP -->
-    <div x-data="{ isOpen: true }" class="border-t border-slate-100">
+    <div x-data="{ isOpen: {{ in_array($active ?? '', ['attendance', 'tasks', 'performance']) ? 'true' : 'false' }} }" class="border-t border-slate-100">
         <div @click="isOpen = !isOpen" class="bg-secondary-600 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-secondary-700 transition-colors">
             <span class="text-[11px] font-bold uppercase tracking-wider">Monitoring Staff</span>
             <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
@@ -106,7 +106,7 @@
     </div>
 
     <!-- 3. ADMIN MANAGEMENT GROUP -->
-    <div x-data="{ isOpen: true }" class="border-t border-slate-100">
+    <div x-data="{ isOpen: {{ in_array($active ?? '', ['users', 'offices', 'karyawan', 'donor_channels', 'program_groups', 'programs', 'payment_via', 'prospect_media', 'prospect_methods', 'prospect_types', 'fundraisers', 'prospect_responses', 'targets', 'settings']) ? 'true' : 'false' }} }" class="border-t border-slate-100">
         <div @click="isOpen = !isOpen" class="bg-primary-600 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-primary-750 transition-colors">
             <span class="text-[11px] font-bold uppercase tracking-wider">Admin Management</span>
             <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
@@ -229,14 +229,6 @@
                 <span class="whitespace-nowrap">Master Target</span>
             </a>
 
-
-
-
-
-
-
-
-
             <!-- Tab: Pengaturan Web -->
             <a href="{{ route('admin.settings') }}" 
                class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'settings' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
@@ -246,8 +238,10 @@
                 <span class="whitespace-nowrap">Pengaturan Web</span>
             </a>
         </div>
+    </div>
+
     <!-- 4. DISTRIBUSI MANAGEMENT GROUP -->
-    <div x-data="{ isOpen: true }" class="border-t border-slate-100">
+    <div x-data="{ isOpen: {{ in_array($active ?? '', ['distribution_dashboard', 'distributions']) ? 'true' : 'false' }} }" class="border-t border-slate-100">
         <div @click="isOpen = !isOpen" class="bg-emerald-700 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-emerald-800 transition-colors">
             <span class="text-[11px] font-bold uppercase tracking-wider">Distribusi Management</span>
             <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
@@ -273,8 +267,8 @@
         </div>
     </div>
 
-    <!-- 5. TRANSACTION MANAGEMENT GROUP (Sesuai Screenshot User) -->
-    <div x-data="{ isOpen: true }" class="border-t border-slate-100">
+    <!-- 5. TRANSACTION MANAGEMENT GROUP -->
+    <div x-data="{ isOpen: {{ in_array($active ?? '', ['donors_list', 'transactions_list', 'prospects_list', 'potential_donors', 'transactions_dashboard', 'donors_dashboard', 'prospects_dashboard', 'target_vs_achievement', 'rfm_dashboard']) ? 'true' : 'false' }} }" class="border-t border-slate-100">
         <div @click="isOpen = !isOpen" class="bg-rose-600 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-rose-700 transition-colors">
             <span class="text-[11px] font-bold uppercase tracking-wider">Transaction Management</span>
             <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>

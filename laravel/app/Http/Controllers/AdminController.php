@@ -858,17 +858,192 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Tugas berhasil diberikan kepada petugas.');
     }
 
-    public function attendanceList()
+    public function attendanceList(Request $request)
     {
-        $attendances = \App\Models\Attendance::with('user')->latest()->paginate(15);
-        return view('admin.attendance', compact('attendances'));
+        $query = \App\Models\Attendance::with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $attendances = $query->latest()->paginate(15)->withQueryString();
+        $workers = User::where('role', 'field_worker')->orderBy('name')->get();
+
+        return view('admin.attendance', compact('attendances', 'workers'));
     }
 
-    public function taskList()
+    public function exportAttendance(Request $request)
     {
-        $todos = \App\Models\TodoList::with(['user', 'assigner'])->latest()->paginate(15);
-        $workers = User::where('role', 'field_worker')->get();
+        $query = \App\Models\Attendance::with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $attendances = $query->latest()->get();
+        $filename = "log_absensi_pegawai_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use($attendances) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID Absen', 'Nama Pegawai', 'Email Pegawai', 'Tipe Absen', 'Tanggal & Waktu', 'Lokasi / Keterangan', 'Koordinat GPS', 'URL Selfie Bukti']);
+
+            foreach ($attendances as $att) {
+                $coords = ($att->latitude && $att->longitude) ? "{$att->latitude}, {$att->longitude}" : "-";
+                fputcsv($file, [
+                    $att->id,
+                    $att->user->name ?? 'Unknown User',
+                    $att->user->email ?? '-',
+                    strtoupper(str_replace('_', ' ', $att->type)),
+                    $att->created_at->format('Y-m-d H:i:s'),
+                    $att->location ?? '-',
+                    $coords,
+                    $att->attachment ? url($att->attachment) : '-',
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function taskList(Request $request)
+    {
+        $query = \App\Models\TodoList::with(['user', 'assigner']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('task', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $todos = $query->latest()->paginate(15)->withQueryString();
+        $workers = User::where('role', 'field_worker')->orderBy('name')->get();
+
         return view('admin.tasks', compact('todos', 'workers'));
+    }
+
+    public function exportTasks(Request $request)
+    {
+        $query = \App\Models\TodoList::with(['user', 'assigner']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('task', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $todos = $query->latest()->get();
+        $filename = "laporan_tugas_lapangan_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use($todos) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID Tugas', 'Nama Pegawai', 'Email Pegawai', 'Diberikan Oleh', 'Judul Tugas', 'Deskripsi Detail', 'Deadline', 'Tanggal Diberikan', 'Status', 'Catatan Bukti Laporan', 'URL Foto Bukti']);
+
+            foreach ($todos as $t) {
+                fputcsv($file, [
+                    $t->id,
+                    $t->user->name ?? 'Unknown User',
+                    $t->user->email ?? '-',
+                    $t->assigner->name ?? 'Admin',
+                    $t->task,
+                    $t->description ?? '-',
+                    $t->deadline ? $t->deadline->format('Y-m-d H:i:s') : '-',
+                    $t->created_at->format('Y-m-d H:i:s'),
+                    strtoupper($t->status),
+                    $t->result_note ?? '-',
+                    $t->result_attachment ? url($t->result_attachment) : '-',
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function storeTask(Request $request)

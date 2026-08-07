@@ -1,13 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="max-w-7xl mx-auto px-6 py-20">
+<section class="max-w-7xl mx-auto px-6 py-12">
     
     <!-- Alerts -->
     @if(session('success'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-250 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center gap-3">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
-            <span>{{ session('success') }}</span>
+        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-250 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+            <button @click="$el.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
     @endif
 
@@ -19,12 +24,21 @@
         </div>
 
         <!-- Dashboard Content -->
-        <div class="lg:col-span-3 space-y-8">
-            <div class="space-y-2">
-                <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                    Manajemen <span class="text-primary-600">Tugas Lapangan</span>
-                </h1>
-                <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+        <div class="lg:col-span-3 space-y-6">
+            
+            {{-- Header Page Title & Export Excel Button --}}
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                        Manajemen <span class="text-primary-600">Tugas Lapangan</span>
+                    </h1>
+                    <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+                </div>
+
+                {{-- Export Button (Excel/CSV) --}}
+                <a href="{{ route('admin.tasks.export', request()->all()) }}" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all">
+                    <i class="fa-solid fa-file-excel text-sm"></i> Export Excel
+                </a>
             </div>
 
             <!-- Two-column content layout -->
@@ -73,7 +87,47 @@
                 </div>
 
                 <!-- Tasks List Log (Right/Bottom) -->
-                <div class="xl:col-span-2">
+                <div class="xl:col-span-2 space-y-4">
+                    
+                    {{-- Filter Form Tugas Lapangan --}}
+                    <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm space-y-3">
+                        <form action="{{ route('admin.tasks') }}" method="GET" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700">
+                            
+                            <div class="flex items-center gap-2">
+                                <span>Cari:</span>
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Tugas / Deskripsi..." class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none w-40">
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span>Pegawai:</span>
+                                <select name="user_id" class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none w-36">
+                                    <option value="">Semua Staff</option>
+                                    @foreach($workers as $w)
+                                        <option value="{{ $w->id }}" {{ request('user_id') == $w->id ? 'selected' : '' }}>{{ $w->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span>Status:</span>
+                                <select name="status" class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none w-28">
+                                    <option value="">Semua</option>
+                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Selesai</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all">
+                                🔍 Filter
+                            </button>
+                            
+                            @if(request()->anyFilled(['search', 'user_id', 'status', 'start_date', 'end_date']))
+                                <a href="{{ route('admin.tasks') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-xl text-xs">Reset</a>
+                            @endif
+
+                        </form>
+                    </div>
+
                     <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                         <div>
                             <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Histori <span class="text-primary-600">Semua Tugas</span></h3>

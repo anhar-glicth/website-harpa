@@ -149,8 +149,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     
     // Global Staff Monitoring Routes
     Route::get('/admin/attendance', [AdminController::class, 'attendanceList'])->name('admin.attendance');
+    Route::get('/admin/attendance/export', [AdminController::class, 'exportAttendance'])->name('admin.attendance.export');
     Route::get('/admin/tasks', [AdminController::class, 'taskList'])->name('admin.tasks');
     Route::post('/admin/tasks/store', [AdminController::class, 'storeTask'])->name('admin.tasks.store');
+    Route::get('/admin/tasks/export', [AdminController::class, 'exportTasks'])->name('admin.tasks.export');
     Route::get('/admin/performance', [AdminController::class, 'performanceList'])->name('admin.performance');
     
     // Transaction Management Routes
