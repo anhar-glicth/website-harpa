@@ -289,4 +289,30 @@ class FieldController extends Controller
 
         return redirect()->back()->with('success', 'Laporan penyaluran berhasil dikirim.');
     }
+
+    public function storeManualDonation(Request $request)
+    {
+        $request->validate([
+            'campaign_id'    => 'required|exists:campaigns,id',
+            'donor_name'     => 'required|string|max:255',
+            'amount'         => 'required|numeric|min:1000',
+            'payment_method' => 'required|string',
+        ]);
+
+        \App\Models\Donation::create([
+            'campaign_id'    => $request->campaign_id,
+            'user_id'        => Auth::id(),
+            'worker_id'      => Auth::id(),
+            'donor_name'     => $request->donor_name,
+            'amount'         => $request->amount,
+            'payment_method' => $request->payment_method ?? 'Cash (Jemput Donasi)',
+            'payment_status' => 'Success',
+            'donation_date'  => now(),
+            'admin_note'     => 'Di-input oleh Petugas Lapangan: ' . Auth::user()->name,
+        ]);
+
+        Campaign::find($request->campaign_id)->increment('current_amount', $request->amount);
+
+        return redirect()->back()->with('success', 'Donasi manual berhasil di-input oleh petugas.');
+    }
 }

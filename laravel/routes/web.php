@@ -199,6 +199,7 @@ Route::middleware(['auth', 'field'])->group(function () {
     Route::post('/field/campaigns/{id}/update', [FieldController::class, 'campaignUpdateStore'])->name('field.campaigns.update');
     Route::post('/field/news/store', [FieldController::class, 'newsStore'])->name('field.news.store');
     Route::post('/field/distributions/store', [FieldController::class, 'distributionStore'])->name('field.distributions.store');
+    Route::post('/field/donations/store', [FieldController::class, 'storeManualDonation'])->name('field.donations.store');
 });
 
 require __DIR__.'/auth.php';

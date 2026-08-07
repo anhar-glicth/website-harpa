@@ -9,6 +9,7 @@ class Donation extends Model
     protected $fillable = [
         'campaign_id',
         'user_id',
+        'worker_id',
         'payment_via_id',
         'donor_name',
         'amount',
@@ -33,6 +34,11 @@ class Donation extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function collector()
+    {
+        return $this->belongsTo(User::class, 'worker_id');
     }
 
     public function paymentVia()
