@@ -69,6 +69,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/distributions/export', [AdminController::class, 'exportDistributions'])->name('admin.distributions.export');
     Route::post('/admin/distributions/import', [AdminController::class, 'importDistributions'])->name('admin.distributions.import');
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::post('/admin/users/store', [AdminController::class, 'storeUser'])->name('admin.users.store');
+    Route::put('/admin/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::delete('/admin/users/{id}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+    Route::get('/admin/users/export', [AdminController::class, 'exportUsers'])->name('admin.users.export');
     Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
     Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');
     

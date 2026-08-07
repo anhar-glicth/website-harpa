@@ -750,10 +750,151 @@ class AdminController extends Controller
         return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data penyaluran.");
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::latest()->paginate(10);
-        return view('admin.users', compact('users'));
+        $query = User::with('office');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        if ($request->filled('office_id')) {
+            $query->where('office_id', $request->office_id);
+        }
+
+        $users = $query->latest()->paginate(10)->withQueryString();
+        $offices = Office::orderBy('name')->get();
+
+        return view('admin.users', compact('users', 'offices'));
+    }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|max:255|unique:users,email',
+            'password'  => 'required|string|min:6',
+            'role'      => 'required|in:admin,field_worker,user',
+            'phone'     => 'nullable|string|max:20',
+            'office_id' => 'nullable|exists:offices,id',
+        ]);
+
+        User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role'      => $request->role,
+            'phone'     => $request->phone,
+            'office_id' => $request->office_id,
+        ]);
+
+        return redirect()->route('admin.users')->with('success', 'Pengguna baru berhasil ditambahkan.');
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|max:255|unique:users,email,' . $id,
+            'role'      => 'required|in:admin,field_worker,user',
+            'phone'     => 'nullable|string|max:20',
+            'office_id' => 'nullable|exists:offices,id',
+            'password'  => 'nullable|string|min:6',
+        ]);
+
+        $data = [
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'role'      => $request->role,
+            'phone'     => $request->phone,
+            'office_id' => $request->office_id,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.users')->with('success', 'Data pengguna berhasil diperbarui.');
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
+
+        if (auth()->id() == $user->id) {
+            return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', 'Pengguna berhasil dihapus.');
+    }
+
+    public function exportUsers(Request $request)
+    {
+        $query = User::with('office');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        if ($request->filled('office_id')) {
+            $query->where('office_id', $request->office_id);
+        }
+
+        $users = $query->latest()->get();
+        $filename = "kelola_pengguna_" . date('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use($users) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['ID User', 'Nama Lengkap', 'Email', 'Hak Akses', 'No. HP', 'Kantor / Cabang', 'Tanggal Terdaftar']);
+
+            foreach ($users as $u) {
+                $roleLabel = $u->role === 'admin' ? 'Super Admin' : ($u->role === 'field_worker' ? 'Petugas Lapangan' : 'Donatur');
+                fputcsv($file, [
+                    $u->id,
+                    $u->name,
+                    $u->email,
+                    $roleLabel,
+                    $u->phone ?? '-',
+                    $u->office ? $u->office->name : '-',
+                    $u->created_at->format('Y-m-d H:i:s'),
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function settings()
