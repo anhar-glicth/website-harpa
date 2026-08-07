@@ -3081,22 +3081,32 @@ class AdminController extends Controller
 
     public function officesList(Request $request)
     {
-        $query = Office::with('parent');
+        $query = Office::query();
+
+        if (method_exists(Office::class, 'parent')) {
+            try {
+                $query->with('parent');
+            } catch (\Exception $e) {
+                // Fallback if parent relationship or column is missing on server
+            }
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('office_code', 'like', "%{$search}%")
                   ->orWhere('id', $search);
+                if (\Illuminate\Support\Facades\Schema::hasColumn('offices', 'office_code')) {
+                    $q->orWhere('office_code', 'like', "%{$search}%");
+                }
             });
         }
 
-        if ($request->filled('city')) {
+        if ($request->filled('city') && \Illuminate\Support\Facades\Schema::hasColumn('offices', 'city')) {
             $query->where('city', 'like', "%{$request->city}%");
         }
 
-        if ($request->filled('parent_id')) {
+        if ($request->filled('parent_id') && \Illuminate\Support\Facades\Schema::hasColumn('offices', 'parent_id')) {
             $query->where('parent_id', $request->parent_id);
         }
 
@@ -3110,13 +3120,10 @@ class AdminController extends Controller
         // Seed default Pusat office if empty
         if ($offices->total() == 0 && !$request->filled('search')) {
             Office::create([
-                'office_code' => '1',
-                'name'        => 'Pusat-Amal Bakti Dunia Islam',
-                'city'        => 'Mataram',
-                'province'    => 'Nusa Tenggara Barat',
-                'status'      => 'Aktif',
+                'name'   => 'Pusat-Amal Bakti Dunia Islam',
+                'status' => 'Aktif',
             ]);
-            $offices = Office::with('parent')->orderBy('id', 'asc')->paginate(10)->withQueryString();
+            $offices = Office::orderBy('id', 'asc')->paginate(10)->withQueryString();
         }
 
         return view('admin.offices', [

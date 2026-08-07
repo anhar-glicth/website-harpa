@@ -116,7 +116,7 @@
                                     <td class="py-2.5 px-4 font-bold text-slate-900">{{ $ofc->name }}</td>
                                     <td class="py-2.5 px-4 text-slate-700">{{ $ofc->city ?? '-' }}</td>
                                     <td class="py-2.5 px-4 text-slate-700">{{ $ofc->province ?? '-' }}</td>
-                                    <td class="py-2.5 px-4 text-slate-600">{{ $ofc->parent ? $ofc->parent->name : '' }}</td>
+                                    <td class="py-2.5 px-4 text-slate-600">{{ optional($ofc->parent)->name }}</td>
                                     <td class="py-2.5 px-4 text-center font-mono font-bold {{ $ofc->status == 'Aktif' ? 'text-emerald-600' : 'text-rose-600' }}">
                                         {{ $ofc->status == 'Aktif' ? 'y' : 'n' }}
                                     </td>
