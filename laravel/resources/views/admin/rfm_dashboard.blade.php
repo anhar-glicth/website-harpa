@@ -21,7 +21,7 @@
                 <span class="text-xs text-white/80 font-normal">Dashboard → RFM Segmentation</span>
             </div>
 
-            {{-- Filter Form Controls (2 Rows - Presisi Screenshot User 1) --}}
+            {{-- Filter Form Controls --}}
             <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3 text-xs font-semibold text-slate-700">
                 <form action="{{ route('admin.rfm_dashboard') }}" method="GET" class="space-y-3">
                     
@@ -100,7 +100,7 @@
                 </form>
             </div>
 
-            {{-- 4 Summary Card Headers (Presisi Screenshot User 1) --}}
+            {{-- 4 Summary Card Headers --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
                     
@@ -139,7 +139,7 @@
                 </div>
             </div>
 
-            {{-- Panduan Singkat RFM (Collapsible Guide Card) --}}
+            {{-- Panduan Singkat RFM --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <div class="bg-slate-900 text-white px-6 py-3.5 flex items-center justify-between cursor-pointer" @click="showGuide = !showGuide">
                     <div class="flex items-center gap-3">
@@ -186,7 +186,7 @@
                 </div>
             </div>
 
-            {{-- Highcharts Analytics Container (Dark Theme #0f172a Presisi Screenshot User 2, 3, 4) --}}
+            {{-- Highcharts Analytics Container --}}
             <div class="space-y-6">
 
                 {{-- Hint Notification --}}
@@ -197,12 +197,12 @@
                     </span>
                 </div>
 
-                {{-- Chart 1: Perbandingan RFM 90 Days vs All Time (Double Column Chart - Screenshot 2) --}}
+                {{-- Chart 1: Perbandingan RFM 90 Days vs All Time --}}
                 <div class="bg-[#0f172a] rounded-2xl p-5 border border-slate-800 shadow-xl">
                     <div id="chartRfmComparison" class="w-full h-80"></div>
                 </div>
 
-                {{-- Chart 2 & 3: Two Pie Charts (Screenshot 3) --}}
+                {{-- Chart 2 & 3: Two Pie Charts --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-[#0f172a] rounded-2xl p-5 border border-slate-800 shadow-xl">
                         <div id="chartDistribusiRfm90" class="w-full h-80"></div>
@@ -212,60 +212,260 @@
                     </div>
                 </div>
 
-                {{-- Chart 4: Heatmap Matrix RFM (90 Days vs All Time) (Screenshot 4) --}}
+                {{-- Chart 4: Heatmap Matrix RFM --}}
                 <div class="bg-[#0f172a] rounded-2xl p-5 border border-slate-800 shadow-xl">
                     <div id="chartHeatmapRfm" class="w-full h-96"></div>
                 </div>
 
             </div>
 
-            {{-- Resume Table Section: Resume RFM 90 Days By PIC Prospek (Presisi Screenshot User 5) --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm pt-2">
-                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
-                    <span class="font-black text-xs uppercase tracking-wider">Resume RFM 90 Days By PIC Prospek</span>
-                    <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
-                            <tr>
-                                <th class="py-3 px-4 text-center">No</th>
-                                <th class="py-3 px-4">PIC Prospek</th>
-                                <th class="py-3 px-4 text-center">Champion</th>
-                                <th class="py-3 px-4 text-center">Loyal</th>
-                                <th class="py-3 px-4 text-center">Potential</th>
-                                <th class="py-3 px-4 text-center">Need Attention</th>
-                                <th class="py-3 px-4 text-center">Low Engagement</th>
-                                <th class="py-3 px-4 text-center">Dormant</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            @foreach($resumeRfmByPic as $idx => $rPic)
-                                <tr class="hover:bg-slate-50">
-                                    <td class="py-2.5 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
-                                    <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rPic['name'] }}</td>
-                                    <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['champion']) }}</td>
-                                    <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['loyal']) }}</td>
-                                    <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['potential']) }}</td>
-                                    <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['need_attention']) }}</td>
-                                    <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['low_engagement']) }}</td>
-                                    <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['dormant']) }}</td>
+            {{-- Resume Tables Section (Presisi Screenshot User Terbaru) --}}
+            <div class="space-y-6 pt-2">
+
+                {{-- Table 1: Resume RFM 90 Days By PIC Prospek --}}
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                        <span class="font-black text-xs uppercase tracking-wider">Resume RFM 90 Days By PIC Prospek</span>
+                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
+                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                                <tr>
+                                    <th class="py-3 px-4 text-center">No</th>
+                                    <th class="py-3 px-4">PIC Prospek</th>
+                                    <th class="py-3 px-4 text-center">Champion</th>
+                                    <th class="py-3 px-4 text-center">Loyal</th>
+                                    <th class="py-3 px-4 text-center">Potential</th>
+                                    <th class="py-3 px-4 text-center">Need Attention</th>
+                                    <th class="py-3 px-4 text-center">Low Engagement</th>
+                                    <th class="py-3 px-4 text-center">Dormant</th>
                                 </tr>
-                            @endforeach
-                            {{-- TOTAL Row Highlighted Amber/Orange --}}
-                            <tr class="bg-amber-400 text-slate-900 font-black">
-                                <td class="py-3 px-4 text-center font-mono">8</td>
-                                <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
-                                <td class="py-3 px-4 text-center font-mono font-black text-slate-900">10</td>
-                                <td class="py-3 px-4 text-center font-mono font-black text-slate-900">454</td>
-                                <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4528</td>
-                                <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                <td class="py-3 px-4 text-center font-mono font-black text-slate-900">32407</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach($resumeRfmByPic as $idx => $rPic)
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="py-2.5 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rPic['name'] }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['champion']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['loyal']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['potential']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['need_attention']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['low_engagement']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['dormant']) }}</td>
+                                    </tr>
+                                @endforeach
+                                {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                <tr class="bg-amber-400 text-slate-900 font-black">
+                                    <td class="py-3 px-4 text-center font-mono">8</td>
+                                    <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">10</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">454</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4528</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">32506</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+                {{-- Table 2: Resume RFM All Time By PIC Prospek --}}
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                        <span class="font-black text-xs uppercase tracking-wider">Resume RFM All Time By PIC Prospek</span>
+                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
+                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                                <tr>
+                                    <th class="py-3 px-4 text-center">No</th>
+                                    <th class="py-3 px-4">PIC Prospek</th>
+                                    <th class="py-3 px-4 text-center">Champion</th>
+                                    <th class="py-3 px-4 text-center">Loyal</th>
+                                    <th class="py-3 px-4 text-center">Potential</th>
+                                    <th class="py-3 px-4 text-center">Need Attention</th>
+                                    <th class="py-3 px-4 text-center">Low Engagement</th>
+                                    <th class="py-3 px-4 text-center">Dormant</th>
+                                    <th class="py-3 px-4 text-center">New</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach($resumeRfmAllTimeByPic as $idx => $rPicAt)
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="py-2.5 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rPicAt['name'] }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['champion']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['loyal']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['potential']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['need_attention']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['low_engagement']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['dormant']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['new']) }}</td>
+                                    </tr>
+                                @endforeach
+                                {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                <tr class="bg-amber-400 text-slate-900 font-black">
+                                    <td class="py-3 px-4 text-center font-mono">8</td>
+                                    <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">44</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">1037</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">9287</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">27126</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Table 3: Resume RFM 90 Days By Office --}}
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                        <span class="font-black text-xs uppercase tracking-wider">Resume RFM 90 Days By Office</span>
+                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
+                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                                <tr>
+                                    <th class="py-3 px-4 text-center">No</th>
+                                    <th class="py-3 px-4">Kantor</th>
+                                    <th class="py-3 px-4 text-center">Champion</th>
+                                    <th class="py-3 px-4 text-center">Loyal</th>
+                                    <th class="py-3 px-4 text-center">Potential</th>
+                                    <th class="py-3 px-4 text-center">Need Attention</th>
+                                    <th class="py-3 px-4 text-center">Low Engagement</th>
+                                    <th class="py-3 px-4 text-center">Dormant</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach($resumeRfm90ByOffice as $idx => $rOfc90)
+                                    <tr class="bg-amber-400 text-slate-900 font-bold">
+                                        <td class="py-2.5 px-4 text-center font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rOfc90['name'] }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($rOfc90['champion']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($rOfc90['loyal']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($rOfc90['potential']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($rOfc90['need_attention']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($rOfc90['low_engagement']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($rOfc90['dormant']) }}</td>
+                                    </tr>
+                                @endforeach
+                                {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                <tr class="bg-amber-400 text-slate-900 font-black border-t border-amber-500">
+                                    <td class="py-3 px-4 text-center font-mono">2</td>
+                                    <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">10</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">454</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4528</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">32506</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Table 4: Resume RFM All Time By Office --}}
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                        <span class="font-black text-xs uppercase tracking-wider">Resume RFM All Time By Office</span>
+                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
+                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                                <tr>
+                                    <th class="py-3 px-4 text-center">No</th>
+                                    <th class="py-3 px-4">Kantor</th>
+                                    <th class="py-3 px-4 text-center">Champion</th>
+                                    <th class="py-3 px-4 text-center">Loyal</th>
+                                    <th class="py-3 px-4 text-center">Potential</th>
+                                    <th class="py-3 px-4 text-center">Need Attention</th>
+                                    <th class="py-3 px-4 text-center">Low Engagement</th>
+                                    <th class="py-3 px-4 text-center">Dormant</th>
+                                    <th class="py-3 px-4 text-center">New</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach($resumeRfmAllTimeByOffice as $idx => $rOfcAt)
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="py-2.5 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rOfcAt['name'] }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['champion']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['loyal']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['potential']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['need_attention']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['low_engagement']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['dormant']) }}</td>
+                                        <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['new']) }}</td>
+                                    </tr>
+                                @endforeach
+                                {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                <tr class="bg-amber-400 text-slate-900 font-black">
+                                    <td class="py-3 px-4 text-center font-mono">2</td>
+                                    <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">44</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">1037</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">9287</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">27126</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{-- Table 5: Top 20 Donatur Base On Kontribusi Donasi (All Time Donation) --}}
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                        <span class="font-black text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi (All Time Donation)</span>
+                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
+                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                                <tr>
+                                    <th class="py-3 px-4 text-center">No</th>
+                                    <th class="py-3 px-4">Nama Donatur</th>
+                                    <th class="py-3 px-4">ID Donatur</th>
+                                    <th class="py-3 px-4">Kantor</th>
+                                    <th class="py-3 px-4 text-center">RFM 90 Days</th>
+                                    <th class="py-3 px-4 text-center">RFM Alltime</th>
+                                    <th class="py-3 px-4">PIC Prospek</th>
+                                    <th class="py-3 px-4 text-center">Total Trx</th>
+                                    <th class="py-3 px-4 text-right">Total Donasi</th>
+                                    <th class="py-3 px-4 text-right">% Kontribusi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach($topDonorsByContribution as $idx => $tDnc)
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-3 px-4 font-bold text-slate-900">{{ $tDnc['name'] }}</td>
+                                        <td class="py-3 px-4 font-mono text-emerald-700 font-bold">{{ $tDnc['id_donatur'] }}</td>
+                                        <td class="py-3 px-4 text-slate-700">{{ $tDnc['office'] }}</td>
+                                        <td class="py-3 px-4 text-center font-bold text-rose-600">{{ $tDnc['rfm_90'] }}</td>
+                                        <td class="py-3 px-4 text-center font-bold text-rose-600">{{ $tDnc['rfm_alltime'] }}</td>
+                                        <td class="py-3 px-4 font-bold text-slate-800">{{ $tDnc['pic'] }}</td>
+                                        <td class="py-3 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($tDnc['trx']) }}</td>
+                                        <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ number_format($tDnc['donation'], 0, ',', '.') }}</td>
+                                        <td class="py-3 px-4 text-right font-mono font-black text-sky-600">{{ $tDnc['percent'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -298,7 +498,7 @@
 
         const profiles = ['CHAMPION', 'LOYAL', 'POTENTIAL', 'NEED_ATTENTION', 'LOW_ENGAGEMENT', 'DORMANT'];
 
-        // 1. Chart Perbandingan RFM 90 Days vs All Time (Double Column)
+        // 1. Chart Perbandingan RFM 90 Days vs All Time
         Highcharts.chart('chartRfmComparison', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Perbandingan RFM 90 Days vs All Time' },
@@ -310,7 +510,7 @@
             ]
         }));
 
-        // 2. Chart Distribusi RFM 90 Days (Pie)
+        // 2. Chart Distribusi RFM 90 Days
         Highcharts.chart('chartDistribusiRfm90', Highcharts.merge(darkTheme, {
             chart: { type: 'pie' },
             title: { text: 'Distribusi RFM 90 Days' },
@@ -325,7 +525,7 @@
             }]
         }));
 
-        // 3. Chart Distribusi RFM All Time (Pie)
+        // 3. Chart Distribusi RFM All Time
         Highcharts.chart('chartDistribusiRfmAllTime', Highcharts.merge(darkTheme, {
             chart: { type: 'pie' },
             title: { text: 'Distribusi RFM All Time' },

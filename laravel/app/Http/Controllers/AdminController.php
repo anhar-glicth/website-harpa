@@ -3029,20 +3029,53 @@ class AdminController extends Controller
             ['name' => 'Perusahaan',               'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
         ];
 
+        $resumeRfmAllTimeByPic = [
+            ['name' => 'Baiq Nickte Madu Jasmine', 'champion' => 0, 'loyal' => 0, 'potential' => 2, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0, 'new' => 0],
+            ['name' => 'CRM',                      'champion' => 0, 'loyal' => 7, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 2880, 'new' => 0],
+            ['name' => 'Custumor Service',         'champion' => 0, 'loyal' => 0, 'potential' => 8, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0, 'new' => 0],
+            ['name' => 'Digital Marketing',        'champion' => 44, 'loyal' => 1030, 'potential' => 9277, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 23304, 'new' => 4],
+            ['name' => 'Front Office',             'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 1, 'new' => 0],
+            ['name' => 'Fundraising',              'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 940, 'new' => 0],
+            ['name' => 'Perusahaan',               'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 1, 'new' => 0],
+        ];
+
+        $resumeRfm90ByOffice = [
+            ['name' => 'Pusat-Amal Bakti Dunia Islam', 'champion' => 10, 'loyal' => 454, 'potential' => 4528, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 32506],
+        ];
+
+        $resumeRfmAllTimeByOffice = [
+            ['name' => 'Pusat-Amal Bakti Dunia Islam', 'champion' => 44, 'loyal' => 1037, 'potential' => 9287, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 27126, 'new' => 4],
+        ];
+
+        $topDonorsByContribution = [
+            ['name' => 'CF Kita Bisa',                 'id_donatur' => '02260217020858', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Digital Marketing', 'trx' => 453, 'donation' => 2582243105, 'percent' => '18.50%'],
+            ['name' => 'Salam Setara (Rek. Fliptech)', 'id_donatur' => '01260217000046', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 5,   'donation' => 504462994,  'percent' => '3.61%'],
+            ['name' => 'Pemerintah Provinsi NTB',      'id_donatur' => '01260217002054', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 1,   'donation' => 455453600,  'percent' => '3.26%'],
+            ['name' => 'Lentera Inspirasi Pertiwi',    'id_donatur' => '02260217020861', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Digital Marketing', 'trx' => 3,   'donation' => 366387557,  'percent' => '2.63%'],
+            ['name' => 'DASI NTB',                     'id_donatur' => '01260217000336', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 1,   'donation' => 240000000,  'percent' => '1.72%'],
+            ['name' => 'CF For Humanity',              'id_donatur' => '02260217020856', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Digital Marketing', 'trx' => 28,  'donation' => 207341469,  'percent' => '1.49%'],
+            ['name' => 'Dinsos Provinsi',              'id_donatur' => '05260217000001', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Perusahaan',        'trx' => 1,   'donation' => 199997100,  'percent' => '1.43%'],
+            ['name' => 'DR TGH M Zainul Majdi',        'id_donatur' => '01260217000146', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 1,   'donation' => 150000000,  'percent' => '1.07%'],
+        ];
+
         return view('admin.rfm_dashboard', [
-            'totalDonors'      => $totalDonors,
-            'maleDonors'       => $maleDonors,
-            'femaleDonors'     => $femaleDonors,
-            'unknownSexDonors' => $unknownSexDonors,
-            'prospectMedia'    => $prospectMedia,
-            'prospectResponses'=> $prospectResponses,
-            'prospectMethods'  => $prospectMethods,
-            'prospectTypes'    => $prospectTypes,
-            'offices'          => $offices,
-            'rfm90DaysCounts'  => $rfm90DaysCounts,
-            'rfmAllTimeCounts' => $rfmAllTimeCounts,
-            'resumeRfmByPic'   => $resumeRfmByPic,
-            'active'           => 'rfm_dashboard',
+            'totalDonors'              => $totalDonors,
+            'maleDonors'               => $maleDonors,
+            'femaleDonors'             => $femaleDonors,
+            'unknownSexDonors'         => $unknownSexDonors,
+            'prospectMedia'            => $prospectMedia,
+            'prospectResponses'        => $prospectResponses,
+            'prospectMethods'          => $prospectMethods,
+            'prospectTypes'            => $prospectTypes,
+            'offices'                  => $offices,
+            'rfm90DaysCounts'          => $rfm90DaysCounts,
+            'rfmAllTimeCounts'         => $rfmAllTimeCounts,
+            'resumeRfmByPic'           => $resumeRfmByPic,
+            'resumeRfmAllTimeByPic'    => $resumeRfmAllTimeByPic,
+            'resumeRfm90ByOffice'      => $resumeRfm90ByOffice,
+            'resumeRfmAllTimeByOffice' => $resumeRfmAllTimeByOffice,
+            'topDonorsByContribution'  => $topDonorsByContribution,
+            'active'                   => 'rfm_dashboard',
         ]);
     }
 }
