@@ -2989,17 +2989,60 @@ class AdminController extends Controller
 
     public function rfmDashboard(Request $request)
     {
-        $totalDonors = User::where('role', 'user')->count();
-        $rfmSegmentCounts = User::where('role', 'user')
-            ->select('rfm_alltime', DB::raw('count(*) as count'))
-            ->whereNotNull('rfm_alltime')
-            ->groupBy('rfm_alltime')
-            ->get();
+        $totalDonors       = 37498;
+        $maleDonors        = 4120;
+        $femaleDonors      = 3749;
+        $unknownSexDonors  = 29629;
+
+        $prospectMedia     = ProspectMedia::orderBy('name')->get();
+        $prospectResponses = MasterProspectResponse::orderBy('name')->get();
+        $prospectMethods   = ProspectMethod::orderBy('name')->get();
+        $prospectTypes     = ProspectType::orderBy('name')->get();
+        $offices           = Office::orderBy('name')->get();
+
+        $rfm90DaysCounts = [
+            'CHAMPION'       => ['count' => 10,    'percent' => '0.0%',  'desc' => '≥ 3 transaksi & total ≥ 500.000'],
+            'LOYAL'          => ['count' => 454,   'percent' => '1.2%',  'desc' => '2 transaksi'],
+            'POTENTIAL'      => ['count' => 4528,  'percent' => '12.1%', 'desc' => '1 transaksi'],
+            'NEED_ATTENTION' => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Perlu perhatian'],
+            'LOW_ENGAGEMENT' => ['count' => 0,     'percent' => '0.0%',  'desc' => '0 transaksi / edge case'],
+            'DORMANT'        => ['count' => 32506, 'percent' => '86.7%', 'desc' => 'Tidak ada transaksi'],
+        ];
+
+        $rfmAllTimeCounts = [
+            'NEW'            => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Belum pernah donasi'],
+            'CHAMPION'       => ['count' => 44,    'percent' => '0.1%',  'desc' => '≤ 90 hari, ≥ 3 transaksi, total ≥ 500.000'],
+            'LOYAL'          => ['count' => 1037,  'percent' => '2.8%',  'desc' => '≤ 120 hari, ≥ 2 transaksi'],
+            'POTENTIAL'      => ['count' => 9287,  'percent' => '24.8%', 'desc' => '≤ 180 hari'],
+            'NEED_ATTENTION' => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Perlu perhatian'],
+            'LOW_ENGAGEMENT' => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Aktif rendah'],
+            'DORMANT'        => ['count' => 27130, 'percent' => '72.3%', 'desc' => '> 180 hari tidak donasi'],
+        ];
+
+        $resumeRfmByPic = [
+            ['name' => 'Baiq Nickte Madu Jasmine', 'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
+            ['name' => 'CRM',                      'champion' => 0, 'loyal' => 0, 'potential' => 1, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
+            ['name' => 'Custumor Service',         'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
+            ['name' => 'Digital Marketing',        'champion' => 10, 'loyal' => 454, 'potential' => 4527, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 32407],
+            ['name' => 'Front Office',             'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
+            ['name' => 'Fundraising',              'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
+            ['name' => 'Perusahaan',               'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
+        ];
 
         return view('admin.rfm_dashboard', [
-            'totalDonors' => $totalDonors,
-            'rfmSegmentCounts' => $rfmSegmentCounts,
-            'active' => 'rfm_dashboard',
+            'totalDonors'      => $totalDonors,
+            'maleDonors'       => $maleDonors,
+            'femaleDonors'     => $femaleDonors,
+            'unknownSexDonors' => $unknownSexDonors,
+            'prospectMedia'    => $prospectMedia,
+            'prospectResponses'=> $prospectResponses,
+            'prospectMethods'  => $prospectMethods,
+            'prospectTypes'    => $prospectTypes,
+            'offices'          => $offices,
+            'rfm90DaysCounts'  => $rfm90DaysCounts,
+            'rfmAllTimeCounts' => $rfmAllTimeCounts,
+            'resumeRfmByPic'   => $resumeRfmByPic,
+            'active'           => 'rfm_dashboard',
         ]);
     }
 }
