@@ -783,7 +783,7 @@ class AdminController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|max:255|unique:users,email',
             'password'  => 'required|string|min:6',
-            'role'      => 'required|in:admin,field_worker,user',
+            'role'      => 'required|in:admin,operator,finance,program_manager,crm_staff,field_worker,user',
             'phone'     => 'nullable|string|max:20',
             'office_id' => 'nullable|exists:offices,id',
         ]);
@@ -807,7 +807,7 @@ class AdminController extends Controller
         $request->validate([
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|max:255|unique:users,email,' . $id,
-            'role'      => 'required|in:admin,field_worker,user',
+            'role'      => 'required|in:admin,operator,finance,program_manager,crm_staff,field_worker,user',
             'phone'     => 'nullable|string|max:20',
             'office_id' => 'nullable|exists:offices,id',
             'password'  => 'nullable|string|min:6',
@@ -880,7 +880,7 @@ class AdminController extends Controller
             fputcsv($file, ['ID User', 'Nama Lengkap', 'Email', 'Hak Akses', 'No. HP', 'Kantor / Cabang', 'Tanggal Terdaftar']);
 
             foreach ($users as $u) {
-                $roleLabel = $u->role === 'admin' ? 'Super Admin' : ($u->role === 'field_worker' ? 'Petugas Lapangan' : 'Donatur');
+                $roleLabel = $u->role_label;
                 fputcsv($file, [
                     $u->id,
                     $u->name,
@@ -949,7 +949,7 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         
-        if ($user->role !== 'field_worker') {
+        if (!$user->isFieldWorker()) {
             return redirect()->route('admin.users')->with('error', 'Hanya petugas lapangan yang dapat dipantau.');
         }
 

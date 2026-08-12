@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
-        if ($user->isAdmin()) {
+        if ($user->hasAdminAccess()) {
             return redirect()->intended(route('admin.dashboard', absolute: false));
         } elseif ($user->isFieldWorker()) {
             return redirect()->intended(route('field.dashboard', absolute: false));

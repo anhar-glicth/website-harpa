@@ -133,13 +133,13 @@
                             @endif
                             <div class="text-left">
                                 <span class="font-bold text-xs text-slate-800 block leading-tight">{{ Auth::user()->name }}</span>
-                                <span class="text-[9px] font-bold text-primary-600 uppercase block leading-none tracking-wider">{{ Auth::user()->role }}</span>
+                                <span class="text-[9px] font-bold text-primary-600 uppercase block leading-none tracking-wider">{{ Auth::user()->role_label }}</span>
                             </div>
                             <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                         </button>
                         <div x-show="userMenu" @click.away="userMenu = false" class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50">
                             <!-- Role based dashboard -->
-                            @if(Auth::user()->isAdmin())
+                            @if(Auth::user()->hasAdminAccess())
                                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-primary-600 transition-colors uppercase tracking-wider">
                                     <i class="fa-solid fa-chart-line text-sm text-slate-400"></i>
                                     <span>Dashboard Admin</span>
@@ -198,7 +198,7 @@
             <hr class="border-slate-100">
             @auth
                 <div class="space-y-2 text-xs font-bold uppercase tracking-wider">
-                    @if(Auth::user()->isAdmin())
+                    @if(Auth::user()->hasAdminAccess())
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 py-2 px-4 text-slate-600 hover:text-primary-600">
                             <i class="fa-solid fa-chart-line text-slate-400"></i>
                             <span>Dashboard Admin</span>

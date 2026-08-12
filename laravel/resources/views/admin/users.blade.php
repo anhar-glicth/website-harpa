@@ -73,11 +73,15 @@
 
                     <div class="flex items-center gap-2">
                         <span>Hak Akses:</span>
-                        <select name="role" class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none w-36">
+                        <select name="role" class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none w-44">
                             <option value="">Semua Peran</option>
-                            <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Super Admin</option>
+                            <option value="operator" {{ request('role') == 'operator' ? 'selected' : '' }}>Admin Data Entry</option>
+                            <option value="finance" {{ request('role') == 'finance' ? 'selected' : '' }}>Staff Keuangan</option>
+                            <option value="program_manager" {{ request('role') == 'program_manager' ? 'selected' : '' }}>Manager Program</option>
+                            <option value="crm_staff" {{ request('role') == 'crm_staff' ? 'selected' : '' }}>Staff CRM & Telemarketing</option>
                             <option value="field_worker" {{ request('role') == 'field_worker' ? 'selected' : '' }}>Petugas Lapangan</option>
-                            <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>Donatur / General</option>
+                            <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>Donatur</option>
                         </select>
                     </div>
 
@@ -127,6 +131,14 @@
                                     <td class="py-4">
                                         @if($user->role === 'admin')
                                             <span class="bg-red-50 text-red-700 border border-red-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SUPER ADMIN</span>
+                                        @elseif($user->role === 'operator')
+                                            <span class="bg-amber-50 text-amber-700 border border-amber-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">ADMIN DATA ENTRY</span>
+                                        @elseif($user->role === 'finance')
+                                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF KEUANGAN</span>
+                                        @elseif($user->role === 'program_manager')
+                                            <span class="bg-purple-50 text-purple-700 border border-purple-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">MANAGER PROGRAM</span>
+                                        @elseif($user->role === 'crm_staff')
+                                            <span class="bg-rose-50 text-rose-700 border border-rose-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF CRM</span>
                                         @elseif($user->role === 'field_worker')
                                             <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PETUGAS LAPANGAN</span>
                                         @else
@@ -199,6 +211,10 @@
                         <select name="role" required class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:border-primary-600">
                             <option value="user">Donatur</option>
                             <option value="field_worker">Petugas Lapangan</option>
+                            <option value="operator">Admin Data Entry</option>
+                            <option value="finance">Staff Keuangan</option>
+                            <option value="program_manager">Manager Program</option>
+                            <option value="crm_staff">Staff CRM & Telemarketing</option>
                             <option value="admin">Super Admin</option>
                         </select>
                     </div>
@@ -254,6 +270,10 @@
                         <select name="role" required class="w-full border border-slate-300 rounded-xl px-3 py-2 text-xs focus:border-primary-600">
                             <option value="user" :selected="selectedUser.role == 'user'">Donatur</option>
                             <option value="field_worker" :selected="selectedUser.role == 'field_worker'">Petugas Lapangan</option>
+                            <option value="operator" :selected="selectedUser.role == 'operator'">Admin Data Entry</option>
+                            <option value="finance" :selected="selectedUser.role == 'finance'">Staff Keuangan</option>
+                            <option value="program_manager" :selected="selectedUser.role == 'program_manager'">Manager Program</option>
+                            <option value="crm_staff" :selected="selectedUser.role == 'crm_staff'">Staff CRM & Telemarketing</option>
                             <option value="admin" :selected="selectedUser.role == 'admin'">Super Admin</option>
                         </select>
                     </div>

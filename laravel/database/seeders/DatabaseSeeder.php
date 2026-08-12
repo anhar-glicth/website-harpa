@@ -258,7 +258,7 @@ class DatabaseSeeder extends Seeder
             \App\Models\Distribution::updateOrCreate(['distribution_code' => $sd['distribution_code']], $sd);
         }
 
-        // 6. Users (Admin, Field Worker, User)
+        // 6. Users (Admin, Operator, Finance, Program Manager, CRM Staff, Field Worker, User)
         $commonPassword = bcrypt('password123');
 
         $admin = \App\Models\User::updateOrCreate(
@@ -272,13 +272,57 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        \App\Models\User::updateOrCreate(
+            ['email' => 'operator@humanity.org'],
+            [
+                'name' => 'Siti Admin Data Entry',
+                'username' => 'operator',
+                'password' => $commonPassword,
+                'role' => 'operator',
+                'office_id' => 1
+            ]
+        );
+
+        \App\Models\User::updateOrCreate(
+            ['email' => 'finance@humanity.org'],
+            [
+                'name' => 'Rina Staff Keuangan',
+                'username' => 'finance',
+                'password' => $commonPassword,
+                'role' => 'finance',
+                'office_id' => 1
+            ]
+        );
+
+        \App\Models\User::updateOrCreate(
+            ['email' => 'program@humanity.org'],
+            [
+                'name' => 'Fajri Manager Program',
+                'username' => 'program',
+                'password' => $commonPassword,
+                'role' => 'program_manager',
+                'office_id' => 1
+            ]
+        );
+
+        \App\Models\User::updateOrCreate(
+            ['email' => 'crm@humanity.org'],
+            [
+                'name' => 'Dwi Staff CRM Telemarketing',
+                'username' => 'crm',
+                'password' => $commonPassword,
+                'role' => 'crm_staff',
+                'office_id' => 1
+            ]
+        );
+
         $staff = \App\Models\User::updateOrCreate(
             ['email' => 'petugas@humanity.org'],
             [
                 'name' => 'Budi Petugas Lapangan',
                 'username' => 'petugas',
                 'password' => $commonPassword,
-                'role' => 'field',
+                'role' => 'field_worker',
                 'office_id' => 1
             ]
         );

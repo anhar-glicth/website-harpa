@@ -61,20 +61,104 @@ class User extends Authenticatable
         ];
     }
 
+    // Role Constants
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_OPERATOR = 'operator';
+    public const ROLE_FINANCE = 'finance';
+    public const ROLE_PROGRAM_MANAGER = 'program_manager';
+    public const ROLE_CRM_STAFF = 'crm_staff';
+    public const ROLE_FIELD_WORKER = 'field_worker';
+    public const ROLE_USER = 'user';
+
     // Role helper methods
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isOperator(): bool
+    {
+        return $this->role === self::ROLE_OPERATOR;
+    }
+
+    public function isFinance(): bool
+    {
+        return $this->role === self::ROLE_FINANCE;
+    }
+
+    public function isProgramManager(): bool
+    {
+        return $this->role === self::ROLE_PROGRAM_MANAGER;
+    }
+
+    public function isCrmStaff(): bool
+    {
+        return $this->role === self::ROLE_CRM_STAFF;
     }
 
     public function isFieldWorker(): bool
     {
-        return $this->role === 'field_worker';
+        return $this->role === self::ROLE_FIELD_WORKER;
     }
 
     public function isUser(): bool
     {
-        return $this->role === 'user';
+        return $this->role === self::ROLE_USER;
+    }
+
+    public function hasAdminAccess(): bool
+    {
+        return in_array($this->role, [
+            self::ROLE_ADMIN,
+            self::ROLE_OPERATOR,
+            self::ROLE_FINANCE,
+            self::ROLE_PROGRAM_MANAGER,
+            self::ROLE_CRM_STAFF,
+        ]);
+    }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return match ($this->role) {
+            self::ROLE_ADMIN => 'Super Admin',
+            self::ROLE_OPERATOR => 'Admin Data Entry',
+            self::ROLE_FINANCE => 'Staff Keuangan',
+            self::ROLE_PROGRAM_MANAGER => 'Manager Program',
+            self::ROLE_CRM_STAFF => 'Staff CRM & Telemarketing',
+            self::ROLE_FIELD_WORKER => 'Petugas Lapangan',
+            default => 'Donatur',
+        };
+    }
+
+    public function canAccessMenu(string $menuKey): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return match ($this->role) {
+            self::ROLE_OPERATOR => in_array($menuKey, [
+                'dashboard', 'offices', 'donor_channels', 'payment_via',
+                'prospect_media', 'prospect_methods', 'prospect_types', 'fundraisers',
+                'prospect_responses', 'donors_list', 'transactions_list', 'prospects_list',
+                'potential_donors'
+            ]),
+            self::ROLE_FINANCE => in_array($menuKey, [
+                'dashboard', 'analytics', 'donations', 'payment_via', 'donors_list',
+                'transactions_list', 'transactions_dashboard', 'donors_dashboard'
+            ]),
+            self::ROLE_PROGRAM_MANAGER => in_array($menuKey, [
+                'dashboard', 'campaigns', 'program_groups', 'programs',
+                'distribution_dashboard', 'distributions'
+            ]),
+            self::ROLE_CRM_STAFF => in_array($menuKey, [
+                'dashboard', 'analytics', 'prospect_media', 'prospect_methods',
+                'prospect_types', 'prospect_responses', 'targets', 'prospects_list',
+                'potential_donors', 'prospects_dashboard', 'target_vs_achievement',
+                'rfm_dashboard'
+            ]),
+            default => false,
+        };
     }
 
     // Relations

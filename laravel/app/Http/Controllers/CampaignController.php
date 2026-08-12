@@ -55,7 +55,7 @@ class CampaignController extends Controller
 
         $data = $request->only(['title', 'description', 'category', 'target_amount']);
         $data['author_id'] = Auth::id();
-        $data['status'] = Auth::user()->isAdmin() ? 'approved' : 'pending';
+        $data['status'] = Auth::user()->hasAdminAccess() ? 'approved' : 'pending';
 
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('campaigns', 'public');
