@@ -49,16 +49,16 @@
                                             <span class="text-slate-400 text-[9px] font-black">Belum Upload</span>
                                         @endif
                                     </td>
-                                    <td class="py-4 text-center">
-                                        @if($d->payment_status === 'Pending' && $d->proof_image)
+                                     <td class="py-4 text-center">
+                                        @if($d->payment_status === 'Pending')
                                             <form action="{{ route('admin.donations.verify', $d->id) }}" method="POST" class="flex items-center justify-center gap-2">
                                                 @csrf
                                                 <input type="text" name="admin_note" placeholder="Catatan..." class="bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-lg px-3 py-1.5 text-[9px] font-bold text-slate-800 outline-none w-24">
-                                                <button type="submit" name="status" value="Success" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg">
-                                                    Terima
+                                                <button type="submit" name="status" value="Success" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg" title="Verifikasi & Terima Donasi">
+                                                    <i class="fa-solid fa-check mr-1"></i> Terima
                                                 </button>
-                                                <button type="submit" name="status" value="Failed" class="bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg">
-                                                    Tolak
+                                                <button type="submit" name="status" value="Failed" class="bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg" title="Tolak Donasi">
+                                                    <i class="fa-solid fa-xmark mr-1"></i> Tolak
                                                 </button>
                                             </form>
                                         @else

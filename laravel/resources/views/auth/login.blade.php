@@ -35,7 +35,7 @@
         </div>
 
         <!-- Password -->
-        <div class="space-y-1.5">
+        <div class="space-y-1.5" x-data="{ showPassword: false }">
             <div class="flex justify-between items-center">
                 <label for="password" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Kata Sandi</label>
                 @if (Route::has('password.request'))
@@ -50,12 +50,20 @@
                 </span>
                 <input 
                     id="password" 
-                    type="password" 
+                    :type="showPassword ? 'text' : 'password'" 
                     name="password" 
                     required 
                     placeholder="••••••••"
-                    class="w-full bg-slate-950/50 border border-slate-800 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-500 outline-none transition-all"
+                    class="w-full bg-slate-950/50 border border-slate-800 focus:border-primary-500 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-white placeholder-slate-500 outline-none transition-all"
                 >
+                <button 
+                    type="button" 
+                    @click="showPassword = !showPassword" 
+                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white transition-colors"
+                    title="Tampilkan / Sembunyikan Password"
+                >
+                    <i class="fa-solid" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-1" />
         </div>

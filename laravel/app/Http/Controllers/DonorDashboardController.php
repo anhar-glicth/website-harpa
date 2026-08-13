@@ -94,13 +94,26 @@ class DonorDashboardController extends Controller
         
         $request->validate([
             'name' => 'required|string|max:255',
+            'username' => 'nullable|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'gender' => 'nullable|in:L,P,Other',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'profile_photo' => 'nullable|image|max:2048',
+            'profile_photo' => 'nullable|image|max:5120',
+            'current_password' => 'nullable|required_with:new_password',
+            'new_password' => 'nullable|min:6|confirmed',
         ]);
 
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.'])->withInput();
+            }
+            $user->password = Hash::make($request->new_password);
+        }
+
         $user->name = $request->name;
+        $user->username = $request->username;
+        $user->email = $request->email;
         $user->gender = $request->gender;
         $user->phone = $request->phone;
         $user->address = $request->address;

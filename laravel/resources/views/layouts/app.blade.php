@@ -125,7 +125,7 @@
                     <div x-data="{ userMenu: false }" class="relative">
                         <button @click="userMenu = !userMenu" class="flex items-center space-x-3 bg-slate-50 border border-slate-100 hover:border-slate-200 px-4 py-2 rounded-2xl transition duration-200">
                             @if(Auth::user()->profile_photo)
-                                <img src="{{ Auth::user()->profile_photo }}" class="w-7 h-7 rounded-xl object-cover" alt="Profile">
+                                <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-7 h-7 rounded-xl object-cover" alt="Profile">
                             @else
                                 <div class="w-7 h-7 bg-primary-100 text-primary-700 rounded-xl flex items-center justify-center font-bold text-xs uppercase">
                                     {{ substr(Auth::user()->name, 0, 2) }}

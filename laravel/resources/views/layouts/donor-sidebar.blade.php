@@ -3,7 +3,7 @@
     <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-650/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
     <div class="relative z-10 space-y-4 text-center">
         @if(Auth::user()->profile_photo)
-            <img src="{{ Auth::user()->profile_photo }}" class="w-16 h-16 rounded-2xl object-cover mx-auto shadow-sm border-2 border-slate-100" alt="">
+            <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-16 h-16 rounded-2xl object-cover mx-auto shadow-sm border-2 border-slate-100" alt="Foto Profil">
         @else
             <div class="w-16 h-16 bg-primary-50 text-primary-650 rounded-2xl flex items-center justify-center text-xl font-black uppercase mx-auto shadow-sm border-2 border-slate-100">
                 {{ substr(Auth::user()->name, 0, 2) }}
