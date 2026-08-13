@@ -16,7 +16,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('profile.edit-custom', [
             'user' => $request->user(),
         ]);
     }
@@ -26,15 +26,30 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        if ($request->hasFile('profile_photo')) {
+            $request->validate([
+                'profile_photo' => 'nullable|image|max:5120',
+            ]);
+            if ($user->profile_photo) {
+                $oldPath = str_replace('/storage/', '', $user->profile_photo);
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                }
+            }
+            $path = $request->file('profile_photo')->store('profiles', 'public');
+            $user->profile_photo = '/storage/' . $path;
+        }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('success', 'Profil Anda berhasil diperbarui.');
     }
 
     /**

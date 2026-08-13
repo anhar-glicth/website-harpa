@@ -88,7 +88,12 @@
                             </div>
                             <div>
                                 <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Foto Profil Baru</label>
-                                <input type="file" name="profile_photo" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-3 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                <div class="flex items-center gap-3">
+                                    @if(Auth::user()->profile_photo)
+                                        <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0" alt="Foto Saat Ini">
+                                    @endif
+                                    <input type="file" name="profile_photo" accept="image/*" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-2.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                </div>
                             </div>
                         </div>
 

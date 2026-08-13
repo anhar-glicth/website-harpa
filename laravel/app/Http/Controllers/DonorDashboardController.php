@@ -11,6 +11,7 @@ use App\Models\TodoList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class DonorDashboardController extends Controller
 {
@@ -126,6 +127,12 @@ class DonorDashboardController extends Controller
         $user->address = $request->address;
 
         if ($request->hasFile('profile_photo')) {
+            if ($user->profile_photo) {
+                $oldPath = str_replace('/storage/', '', $user->profile_photo);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
             $path = $request->file('profile_photo')->store('profiles', 'public');
             $user->profile_photo = '/storage/' . $path;
         }

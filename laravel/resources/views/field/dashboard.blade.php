@@ -23,7 +23,7 @@
             <div class="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm space-y-6">
                 <div class="flex items-center space-x-3">
                     @if(Auth::user()->profile_photo)
-                        <img src="{{ Auth::user()->profile_photo }}" class="w-12 h-12 rounded-2xl object-cover" alt="">
+                        <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-12 h-12 rounded-2xl object-cover" alt="">
                     @else
                         <div class="w-12 h-12 bg-primary-100 text-primary-700 rounded-2xl flex items-center justify-center font-bold text-base uppercase shrink-0">
                             {{ substr(Auth::user()->name, 0, 2) }}
