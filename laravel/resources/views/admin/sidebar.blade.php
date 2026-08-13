@@ -2,23 +2,30 @@
 <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden group">
     <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-650/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
     <div class="relative z-10 space-y-4 text-center">
-        <div class="w-16 h-16 bg-primary-50 text-primary-650 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
-            <i class="fa-solid fa-user-shield"></i>
-        </div>
+        @if(Auth::user()->profile_photo)
+            <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-16 h-16 rounded-2xl object-cover mx-auto shadow-sm border-2 border-slate-100" alt="Foto Profil">
+        @else
+            <div class="w-16 h-16 bg-primary-50 text-primary-650 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+        @endif
         <div class="space-y-1">
             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">{{ Auth::user()->role_label }}</p>
             <p class="text-base font-black text-slate-900 tracking-tighter truncate">{{ Auth::user()->name }}</p>
         </div>
-        @if(Auth::user()->isAdmin())
         <div class="flex gap-2 justify-center pt-2">
-            <a href="{{ route('admin.settings') }}" class="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:text-primary-600 hover:bg-primary-50 transition-all shadow-sm" title="Pengaturan">
+            <a href="{{ route('profile.custom') }}" class="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:text-primary-600 hover:bg-primary-50 transition-all shadow-sm" title="Edit Profil Saya">
+                <i class="fa-solid fa-user-pen"></i>
+            </a>
+            @if(Auth::user()->isAdmin())
+            <a href="{{ route('admin.settings') }}" class="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:text-primary-600 hover:bg-primary-50 transition-all shadow-sm" title="Pengaturan Web">
                 <i class="fa-solid fa-cog"></i>
             </a>
             <a href="{{ route('admin.users') }}" class="px-4 py-2.5 bg-primary-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary-100 hover:bg-primary-700 transition-all">
                 + Staff
             </a>
+            @endif
         </div>
-        @endif
     </div>
 </div>
 

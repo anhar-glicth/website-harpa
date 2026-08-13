@@ -6,6 +6,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\DonorDashboardController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -36,8 +37,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/prayers/{id}/aamiin', [DonorDashboardController::class, 'upvotePrayer'])->name('prayers.upvote');
     
     // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/profile/custom', [DonorDashboardController::class, 'profile'])->name('profile.custom');
-    Route::post('/profile/custom', [DonorDashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profile/custom', [DonorDashboardController::class, 'updateProfile'])->name('profile.custom.update');
     
     // Campaign Creation by users
     Route::get('/campaigns/create/new', [CampaignController::class, 'create'])->name('campaigns.create');
@@ -48,6 +52,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/donate/{campaign_id}/submit', [DonationController::class, 'submitCheckout'])->name('donations.submit');
     Route::get('/receipt/{donation_id}', [DonationController::class, 'receipt'])->name('donations.receipt');
     Route::post('/receipt/{donation_id}/upload', [DonationController::class, 'uploadProof'])->name('donations.upload');
+
+    // Universal Personal Attendance & Todo List Routes (All Roles)
+    Route::post('/attendance', [FieldController::class, 'attendanceStore'])->name('attendance.store');
+    Route::post('/todo/store', [FieldController::class, 'todoStore'])->name('todo.store');
+    Route::post('/todo/{id}/update', [FieldController::class, 'todoUpdate'])->name('todo.update');
 });
 
 // Admin Protected Routes

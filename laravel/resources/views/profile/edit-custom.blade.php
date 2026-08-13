@@ -30,7 +30,11 @@
         
         <!-- Sidebar Links -->
         <div class="lg:col-span-1 space-y-6">
-            @include('layouts.donor-sidebar', ['active' => 'profile'])
+            @if(Auth::user()->hasAdminAccess())
+                @include('admin.sidebar', ['active' => 'profile'])
+            @else
+                @include('layouts.donor-sidebar', ['active' => 'profile'])
+            @endif
         </div>
 
         <!-- Edit Profile Form -->
@@ -43,7 +47,7 @@
             </div>
 
             <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
-                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ route('profile.custom.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     
                     <div>

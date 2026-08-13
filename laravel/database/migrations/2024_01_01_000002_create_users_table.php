@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('username', 100)->unique()->nullable();
             $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role', 50)->default('user');
             $table->enum('gender', ['L', 'P', 'Other'])->nullable();

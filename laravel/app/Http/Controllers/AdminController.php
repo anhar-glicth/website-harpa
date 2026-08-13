@@ -57,7 +57,7 @@ class AdminController extends Controller
         $recentTransactions = Donation::with('campaign')->latest()->take(5)->get();
 
         // 1. Analisa Pegawai & Kegiatan
-        $totalStaff = User::where('role', 'field_worker')->count();
+        $totalStaff = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker'])->count();
         $totalTasks = \App\Models\TodoList::count();
         $completedTasks = \App\Models\TodoList::where('status', 'completed')->count();
         $presentToday = \App\Models\Attendance::where('type', 'check_in')
@@ -73,7 +73,7 @@ class AdminController extends Controller
         $totalFundsDistributed = Distribution::sum('amount');
 
         // 4. Analisa Pegawai Chart Data (Kinerja/Efektivitas Tugas)
-        $workers = User::where('role', 'field_worker')->get();
+        $workers = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker'])->get();
         $staffChartData = [];
         foreach ($workers as $worker) {
             $totalWTasks = \App\Models\TodoList::where('user_id', $worker->id)->count();
@@ -84,6 +84,13 @@ class AdminController extends Controller
                 'effectiveness' => $eff
             ];
         }
+
+        // 5. Personal Attendance & Todos for logged in user
+        $userId = auth()->id();
+        $todayAttendance = \App\Models\Attendance::where('user_id', $userId)
+            ->whereDate('created_at', now()->toDateString())
+            ->get();
+        $todos = \App\Models\TodoList::where('user_id', $userId)->latest()->get();
 
         return view('admin.dashboard', compact(
             'totalDonationAmount',
@@ -102,7 +109,9 @@ class AdminController extends Controller
             'totalNews',
             'totalDistributionsCount',
             'totalFundsDistributed',
-            'staffChartData'
+            'staffChartData',
+            'todayAttendance',
+            'todos'
         ));
     }
 
@@ -1024,9 +1033,12 @@ class AdminController extends Controller
         }
 
         $attendances = $query->latest()->paginate(15)->withQueryString();
-        $workers = User::where('role', 'field_worker')->orderBy('name')->get();
+        $workers = User::orderBy('name')->get();
+        $todayAttendance = \App\Models\Attendance::where('user_id', auth()->id())
+            ->whereDate('created_at', now()->toDateString())
+            ->get();
 
-        return view('admin.attendance', compact('attendances', 'workers'));
+        return view('admin.attendance', compact('attendances', 'workers', 'todayAttendance'));
     }
 
     public function exportAttendance(Request $request)
@@ -1117,9 +1129,10 @@ class AdminController extends Controller
         }
 
         $todos = $query->latest()->paginate(15)->withQueryString();
-        $workers = User::where('role', 'field_worker')->orderBy('name')->get();
+        $workers = User::orderBy('name')->get();
+        $myTodos = \App\Models\TodoList::where('user_id', auth()->id())->latest()->get();
 
-        return view('admin.tasks', compact('todos', 'workers'));
+        return view('admin.tasks', compact('todos', 'workers', 'myTodos'));
     }
 
     public function exportTasks(Request $request)

@@ -11,6 +11,89 @@
 
         <!-- Dashboard Content -->
         <div class="lg:col-span-3 space-y-6">
+
+            {{-- Personal Absensi GPS Card --}}
+            <div x-data="{ showAbsenForm: false }" class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">
+                            Absensi <span class="text-primary-600">GPS Saya Hari Ini</span>
+                        </h3>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{{ now()->translatedFormat('l, d F Y') }}</p>
+                    </div>
+                    <button @click="showAbsenForm = !showAbsenForm"
+                        class="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all">
+                        <i class="fa-solid fa-stamp"></i> Catat Absensi
+                    </button>
+                </div>
+
+                {{-- Status hari ini --}}
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    @php
+                        $hasCheckIn  = $todayAttendance->where('type', 'check_in')->isNotEmpty();
+                        $hasCheckOut = $todayAttendance->where('type', 'check_out')->isNotEmpty();
+                        $hasSakit    = $todayAttendance->where('type', 'sakit')->isNotEmpty();
+                        $hasIzin     = $todayAttendance->where('type', 'izin')->isNotEmpty();
+                    @endphp
+                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasCheckIn ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-100' }}">
+                        <i class="fa-solid fa-right-to-bracket text-sm {{ $hasCheckIn ? 'text-emerald-600' : 'text-slate-300' }}"></i>
+                        <div>
+                            <p class="text-[8px] font-black uppercase tracking-wider {{ $hasCheckIn ? 'text-emerald-700' : 'text-slate-400' }}">Check In</p>
+                            <p class="text-[9px] font-bold text-slate-500">{{ $hasCheckIn ? $todayAttendance->where('type','check_in')->first()->created_at->format('H:i') : '—' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasCheckOut ? 'bg-blue-50 border-blue-200' : 'bg-slate-50 border-slate-100' }}">
+                        <i class="fa-solid fa-right-from-bracket text-sm {{ $hasCheckOut ? 'text-blue-600' : 'text-slate-300' }}"></i>
+                        <div>
+                            <p class="text-[8px] font-black uppercase tracking-wider {{ $hasCheckOut ? 'text-blue-700' : 'text-slate-400' }}">Check Out</p>
+                            <p class="text-[9px] font-bold text-slate-500">{{ $hasCheckOut ? $todayAttendance->where('type','check_out')->first()->created_at->format('H:i') : '—' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasSakit ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-100' }}">
+                        <i class="fa-solid fa-kit-medical text-sm {{ $hasSakit ? 'text-amber-600' : 'text-slate-300' }}"></i>
+                        <div>
+                            <p class="text-[8px] font-black uppercase tracking-wider {{ $hasSakit ? 'text-amber-700' : 'text-slate-400' }}">Sakit</p>
+                            <p class="text-[9px] font-bold text-slate-500">{{ $hasSakit ? '✓ Tercatat' : '—' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasIzin ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-100' }}">
+                        <i class="fa-solid fa-file-circle-exclamation text-sm {{ $hasIzin ? 'text-red-500' : 'text-slate-300' }}"></i>
+                        <div>
+                            <p class="text-[8px] font-black uppercase tracking-wider {{ $hasIzin ? 'text-red-600' : 'text-slate-400' }}">Izin</p>
+                            <p class="text-[9px] font-bold text-slate-500">{{ $hasIzin ? '✓ Tercatat' : '—' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Form Catat Absen --}}
+                <div x-show="showAbsenForm" x-transition style="display:none;" class="border-t border-slate-100 pt-5">
+                    <form action="{{ route('attendance.store') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        @csrf
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Tipe Absen</label>
+                            <select name="type" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                                <option value="check_in">Check In (Masuk)</option>
+                                <option value="check_out">Check Out (Pulang)</option>
+                                <option value="sakit">Sakit</option>
+                                <option value="izin">Izin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Keterangan Lokasi</label>
+                            <input type="text" name="location" placeholder="Nama kantor / lokasi..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Selfie Bukti (opsional)</label>
+                            <input type="file" name="attachment" accept="image/*" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-stamp"></i> Kirim Absensi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             
             {{-- Header Page Title & Export Button --}}
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

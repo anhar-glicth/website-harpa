@@ -6,6 +6,8 @@ use App\Models\Donation;
 use App\Models\Zakat;
 use App\Models\Prayer;
 use App\Models\User;
+use App\Models\Attendance;
+use App\Models\TodoList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -26,7 +28,12 @@ class DonorDashboardController extends Controller
             ->where('payment_status', 'Success')
             ->sum('amount');
 
-        return view('dashboard', compact('donations', 'totalDonated', 'totalZakat'));
+        $todayAttendance = Attendance::where('user_id', $userId)
+            ->whereDate('created_at', now()->toDateString())
+            ->get();
+        $todos = TodoList::where('user_id', $userId)->latest()->get();
+
+        return view('dashboard', compact('donations', 'totalDonated', 'totalZakat', 'todayAttendance', 'todos'));
     }
 
     public function zakatIndex()
