@@ -2476,13 +2476,13 @@ class AdminController extends Controller
 
     public function donorReceipt(Request $request, $id)
     {
-        $donor = User::where('role', 'user')->with(['donations.campaign', 'donations.paymentVia'])->findOrFail($id);
+        $donor = User::where('role', 'user')->with(['donations.campaign', 'donations.paymentVia', 'donations.collector'])->findOrFail($id);
         $lastDonation = null;
         if ($request->filled('donation_id')) {
-            $lastDonation = $donor->donations()->with(['campaign', 'paymentVia'])->where('id', $request->donation_id)->first();
+            $lastDonation = $donor->donations()->with(['campaign', 'paymentVia', 'collector'])->where('id', $request->donation_id)->first();
         }
         if (!$lastDonation) {
-            $lastDonation = $donor->donations()->with(['campaign', 'paymentVia'])->latest()->first();
+            $lastDonation = $donor->donations()->with(['campaign', 'paymentVia', 'collector'])->latest()->first();
         }
 
         return view('admin.donor_receipt', [
@@ -2493,7 +2493,7 @@ class AdminController extends Controller
 
     public function transactionReceipt($id)
     {
-        $donation = Donation::with(['user', 'campaign', 'paymentVia'])->findOrFail($id);
+        $donation = Donation::with(['user', 'campaign', 'paymentVia', 'collector'])->findOrFail($id);
         $donor = $donation->user ?? new User([
             'name'  => $donation->donor_name ?: 'Donatur Hamba Allah',
             'phone' => $donation->donor_phone ?: '-',

@@ -340,7 +340,7 @@
                         </div>
                         <div class="w-full border-t border-slate-400 pt-1 mt-1">
                             <span class="font-bold text-xs text-slate-900 block truncate underline">
-                                {{ Auth::user()->name ?? 'Wywien Fajryati' }}
+                                {{ $lastDonation->collector->name ?? (Auth::user()->name ?? 'Wywien Fajryati') }}
                             </span>
                             <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider">
                                 Received By
