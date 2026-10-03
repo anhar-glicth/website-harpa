@@ -32,7 +32,7 @@
         }
     }
 
-    $donorName = $lastDonation->donor_name ?: ($donor->name ?? 'Didi Prawiro');
+    $donorName = $lastDonation->donor_name ?: ($donor->name ?? 'Donatur');
     $amount = $lastDonation ? (float)$lastDonation->amount : 50000;
     $amountInWords = ucwords(strtolower(terbilangRupiah($amount))) . ' Rupiah';
     
@@ -71,10 +71,12 @@
     }
 
     // Peruntukan / Program
-    $purpose = 'Sedekah Subuh';
+    $purpose = 'Sedekah';
     if ($lastDonation && $lastDonation->campaign) {
         $purpose = $lastDonation->campaign->title;
     }
+
+    $defaultReceiver = $lastDonation->collector->name ?? (Auth::check() ? Auth::user()->name : 'Staff Amal Abadi');
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -88,7 +90,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #f1f5f9;
@@ -133,14 +141,122 @@
         }
     </style>
 </head>
-<body class="p-4 sm:p-8 flex flex-col items-center justify-center min-h-screen">
+<body x-data="{
+    showCustomModal: false,
+    receiptLogo: localStorage.getItem('receipt_logo') || '{{ asset('images/logo.jpeg') }}',
+    receiverName: localStorage.getItem('receipt_receiver_name') || '{{ addslashes($defaultReceiver) }}',
+    receiverTitle: localStorage.getItem('receipt_receiver_title') || 'RECEIVED BY',
+    receiverSigType: localStorage.getItem('receipt_receiver_sig_type') || 'digital',
+    receiverSigImage: localStorage.getItem('receipt_receiver_sig_image') || '',
+    authorizedName: localStorage.getItem('receipt_authorized_name') || 'Djihan Ramadhan',
+    authorizedTitle: localStorage.getItem('receipt_authorized_title') || 'AUTHORIZED SIGNATURE',
+    authorizedSigType: localStorage.getItem('receipt_authorized_sig_type') || 'digital',
+    authorizedSigImage: localStorage.getItem('receipt_authorized_sig_image') || '',
+    showStamp: localStorage.getItem('receipt_show_stamp') !== 'false',
+    customStampImage: localStorage.getItem('receipt_custom_stamp') || '',
+    receiptDonorName: '{{ addslashes($donorName) }}',
+    receiptPurpose: '{{ addslashes($purpose) }}',
+    receiptBank: '{{ addslashes($bankName) }}',
+
+    handleLogoUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                this.receiptLogo = event.target.result;
+                localStorage.setItem('receipt_logo', this.receiptLogo);
+            };
+            reader.readAsDataURL(file);
+        }
+    },
+    handleReceiverSigUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                this.receiverSigImage = event.target.result;
+                this.receiverSigType = 'image';
+                localStorage.setItem('receipt_receiver_sig_image', this.receiverSigImage);
+                localStorage.setItem('receipt_receiver_sig_type', 'image');
+            };
+            reader.readAsDataURL(file);
+        }
+    },
+    handleAuthorizedSigUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                this.authorizedSigImage = event.target.result;
+                this.authorizedSigType = 'image';
+                localStorage.setItem('receipt_authorized_sig_image', this.authorizedSigImage);
+                localStorage.setItem('receipt_authorized_sig_type', 'image');
+            };
+            reader.readAsDataURL(file);
+        }
+    },
+    handleStampUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                this.customStampImage = event.target.result;
+                this.showStamp = true;
+                localStorage.setItem('receipt_custom_stamp', this.customStampImage);
+                localStorage.setItem('receipt_show_stamp', 'true');
+            };
+            reader.readAsDataURL(file);
+        }
+    },
+    savePreferences() {
+        localStorage.setItem('receipt_logo', this.receiptLogo);
+        localStorage.setItem('receipt_receiver_name', this.receiverName);
+        localStorage.setItem('receipt_receiver_title', this.receiverTitle);
+        localStorage.setItem('receipt_receiver_sig_type', this.receiverSigType);
+        localStorage.setItem('receipt_authorized_name', this.authorizedName);
+        localStorage.setItem('receipt_authorized_title', this.authorizedTitle);
+        localStorage.setItem('receipt_authorized_sig_type', this.authorizedSigType);
+        localStorage.setItem('receipt_show_stamp', this.showStamp);
+        this.showCustomModal = false;
+    },
+    resetToDefault() {
+        this.receiptLogo = '{{ asset('images/logo.jpeg') }}';
+        this.receiverName = '{{ addslashes($defaultReceiver) }}';
+        this.receiverTitle = 'RECEIVED BY';
+        this.receiverSigType = 'digital';
+        this.receiverSigImage = '';
+        this.authorizedName = 'Djihan Ramadhan';
+        this.authorizedTitle = 'AUTHORIZED SIGNATURE';
+        this.authorizedSigType = 'digital';
+        this.authorizedSigImage = '';
+        this.showStamp = true;
+        this.customStampImage = '';
+        this.receiptDonorName = '{{ addslashes($donorName) }}';
+        this.receiptPurpose = '{{ addslashes($purpose) }}';
+        this.receiptBank = '{{ addslashes($bankName) }}';
+        localStorage.removeItem('receipt_logo');
+        localStorage.removeItem('receipt_receiver_name');
+        localStorage.removeItem('receipt_receiver_title');
+        localStorage.removeItem('receipt_receiver_sig_type');
+        localStorage.removeItem('receipt_receiver_sig_image');
+        localStorage.removeItem('receipt_authorized_name');
+        localStorage.removeItem('receipt_authorized_title');
+        localStorage.removeItem('receipt_authorized_sig_type');
+        localStorage.removeItem('receipt_authorized_sig_image');
+        localStorage.removeItem('receipt_show_stamp');
+        localStorage.removeItem('receipt_custom_stamp');
+    }
+}" class="p-4 sm:p-8 flex flex-col items-center justify-center min-h-screen">
 
     {{-- Top Action Buttons (Hide on print) --}}
     <div class="no-print mb-6 flex flex-wrap gap-3 items-center justify-center">
-        <button onclick="window.print()" class="bg-[#0284c7] hover:bg-[#0369a1] text-white font-extrabold px-6 py-2.5 rounded-xl shadow-lg shadow-sky-200 text-xs flex items-center gap-2 transition-all">
+        <button onclick="window.print()" class="bg-[#0284c7] hover:bg-[#0369a1] text-white font-extrabold px-6 py-2.5 rounded-xl shadow-lg shadow-sky-200 text-xs flex items-center gap-2 transition-all active:scale-95">
             <i class="fa-solid fa-print"></i> Cetak Kwitansi
         </button>
-        <button onclick="window.close()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl shadow text-xs transition-all">
+        <button @click="showCustomModal = true" class="bg-amber-500 hover:bg-amber-600 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-amber-200 text-xs flex items-center gap-2 transition-all active:scale-95">
+            <i class="fa-solid fa-pen-ruler"></i> Kustomisasi Logo, TTD & Penerima
+        </button>
+        <button onclick="window.close()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl shadow text-xs transition-all active:scale-95">
             <i class="fa-solid fa-xmark"></i> Tutup
         </button>
     </div>
@@ -149,14 +265,10 @@
     <div class="receipt-wrapper relative bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden w-full max-w-[1020px] transition-all">
 
         {{-- Background Logo Watermark --}}
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.045] select-none z-0">
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] select-none z-0">
             <div class="flex flex-col items-center text-center">
-                <svg viewBox="0 0 200 120" class="w-[360px] h-[220px]" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="70" cy="35" r="16" fill="#ea580c"/>
-                    <circle cx="120" cy="35" r="16" fill="#0284c7"/>
-                    <path d="M40 90C40 65 60 55 75 55C90 55 95 65 105 75C115 65 120 55 135 55C150 55 170 65 170 90" stroke="#0284c7" stroke-width="14" stroke-linecap="round"/>
-                </svg>
-                <span class="font-montserrat font-black text-6xl tracking-tight text-slate-800 mt-2">amalabadi.org</span>
+                <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="w-[280px] h-auto object-contain grayscale" alt="">
+                <span class="font-montserrat font-black text-4xl tracking-tight text-slate-800 mt-2">Amal Abadi</span>
             </div>
         </div>
 
@@ -172,19 +284,7 @@
                 {{-- Logo Top Left --}}
                 <div class="col-span-4 flex items-center gap-3">
                     <div class="flex items-center gap-2">
-                        <!-- Custom Stylized Vector Logo matching user image -->
-                        <div class="w-12 h-12 flex-shrink-0 relative">
-                            <svg viewBox="0 0 100 80" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="35" cy="22" r="12" fill="#ea580c"/>
-                                <circle cx="68" cy="22" r="12" fill="#00a8cc"/>
-                                <path d="M18 65 C 22 45, 45 40, 52 48 C 58 40, 80 45, 85 65" stroke="#00a8cc" stroke-width="10" stroke-linecap="round"/>
-                                <path d="M15 62 C 20 45, 38 42, 48 52" stroke="#ea580c" stroke-width="10" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <div class="leading-none">
-                            <span class="block font-montserrat font-black text-xl text-[#ea580c] tracking-tight">amal</span>
-                            <span class="block font-montserrat font-black text-xl text-[#00a8cc] tracking-tight">abadi<span class="text-slate-400 font-semibold text-sm">.org</span></span>
-                        </div>
+                        <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-12 sm:h-14 w-auto object-contain max-w-[200px]" alt="Amal Abadi">
                     </div>
                 </div>
 
@@ -223,7 +323,7 @@
                         Received with thanks from
                     </span>
                     <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2">
-                        <span class="font-bold text-slate-900 text-sm tracking-wide">
+                        <span class="font-bold text-slate-900 text-sm tracking-wide" x-text="receiptDonorName">
                             {{ $donorName }}
                         </span>
                     </div>
@@ -271,7 +371,7 @@
                     <div class="sm:col-span-4 flex items-baseline gap-2">
                         <span class="font-semibold text-xs text-[#312e81] whitespace-nowrap">Bank</span>
                         <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2">
-                            <span class="font-extrabold text-slate-900 text-xs tracking-wider uppercase">
+                            <span class="font-extrabold text-slate-900 text-xs tracking-wider uppercase" x-text="receiptBank">
                                 {{ $bankName }}
                             </span>
                         </div>
@@ -295,7 +395,7 @@
                         For the purpose
                     </span>
                     <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2">
-                        <span class="font-extrabold text-slate-900 text-sm tracking-wide">
+                        <span class="font-extrabold text-slate-900 text-sm tracking-wide" x-text="receiptPurpose">
                             {{ $purpose }}
                         </span>
                     </div>
@@ -331,19 +431,26 @@
                     
                     {{-- Signature 1: Received By --}}
                     <div class="flex flex-col items-center justify-end">
-                        <div class="h-14 flex items-center justify-center relative">
-                            <!-- Handwritten Signature Graphic -->
-                            <svg class="w-24 h-12 text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M10 38 C 20 20, 25 10, 30 25 C 35 40, 40 5, 45 35 C 50 35, 60 25, 75 28 C 85 30, 90 20, 95 35" stroke-linecap="round"/>
-                                <path d="M22 28 L 65 30" stroke-width="1.5"/>
-                            </svg>
+                        <div class="h-14 flex items-center justify-center relative w-full">
+                            <template x-if="receiverSigType === 'digital'">
+                                <svg class="w-24 h-12 text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10 38 C 20 20, 25 10, 30 25 C 35 40, 40 5, 45 35 C 50 35, 60 25, 75 28 C 85 30, 90 20, 95 35" stroke-linecap="round"/>
+                                    <path d="M22 28 L 65 30" stroke-width="1.5"/>
+                                </svg>
+                            </template>
+                            <template x-if="receiverSigType === 'image' && receiverSigImage">
+                                <img :src="receiverSigImage" class="max-h-14 max-w-full object-contain" alt="TTD Penerima">
+                            </template>
+                            <template x-if="receiverSigType === 'blank'">
+                                <div class="h-14 w-full"></div>
+                            </template>
                         </div>
                         <div class="w-full border-t border-slate-400 pt-1 mt-1">
-                            <span class="font-bold text-xs text-slate-900 block truncate underline">
-                                {{ $lastDonation->collector->name ?? (Auth::user()->name ?? 'Wywien Fajryati') }}
+                            <span class="font-bold text-xs text-slate-900 block truncate underline" x-text="receiverName">
+                                {{ $defaultReceiver }}
                             </span>
-                            <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider">
-                                Received By
+                            <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider" x-text="receiverTitle">
+                                RECEIVED BY
                             </span>
                         </div>
                     </div>
@@ -351,29 +458,43 @@
                     {{-- Signature 2: Authorized Signature + Stamp --}}
                     <div class="flex flex-col items-center justify-end relative">
                         <!-- Official Stamp Watermark behind signature -->
-                        <div class="absolute -top-3 right-0 w-16 h-16 pointer-events-none opacity-80 transform -rotate-12">
-                            <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
-                                <circle cx="50" cy="50" r="46" stroke="#ea580c" stroke-width="3" stroke-dasharray="4 2"/>
-                                <circle cx="50" cy="50" r="38" stroke="#00a8cc" stroke-width="2"/>
-                                <text x="50" y="32" font-size="8" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="Montserrat">AMAL ABADI</text>
-                                <text x="50" y="52" font-size="7" font-weight="bold" fill="#00a8cc" text-anchor="middle" font-family="Montserrat">VERIFIED</text>
-                                <text x="50" y="70" font-size="8" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="Montserrat">YAYASAN</text>
-                            </svg>
-                        </div>
+                        <template x-if="showStamp">
+                            <div class="absolute -top-3 right-0 w-16 h-16 pointer-events-none opacity-85 transform -rotate-12 z-20">
+                                <template x-if="customStampImage">
+                                    <img :src="customStampImage" class="w-full h-full object-contain" alt="Stempel">
+                                </template>
+                                <template x-if="!customStampImage">
+                                    <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
+                                        <circle cx="50" cy="50" r="46" stroke="#ea580c" stroke-width="3" stroke-dasharray="4 2"/>
+                                        <circle cx="50" cy="50" r="38" stroke="#00a8cc" stroke-width="2"/>
+                                        <text x="50" y="32" font-size="8" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="Montserrat">AMAL ABADI</text>
+                                        <text x="50" y="52" font-size="7" font-weight="bold" fill="#00a8cc" text-anchor="middle" font-family="Montserrat">VERIFIED</text>
+                                        <text x="50" y="70" font-size="8" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="Montserrat">YAYASAN</text>
+                                    </svg>
+                                </template>
+                            </div>
+                        </template>
 
-                        <div class="h-14 flex items-center justify-center relative z-10">
-                            <!-- Handwritten Signature Graphic -->
-                            <svg class="w-24 h-12 text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M15 40 C 25 15, 30 8, 38 20 C 45 32, 50 12, 60 28 C 70 35, 80 18, 90 25" stroke-linecap="round"/>
-                                <path d="M10 32 L 85 24" stroke-width="1.5"/>
-                            </svg>
+                        <div class="h-14 flex items-center justify-center relative z-10 w-full">
+                            <template x-if="authorizedSigType === 'digital'">
+                                <svg class="w-24 h-12 text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M15 40 C 25 15, 30 8, 38 20 C 45 32, 50 12, 60 28 C 70 35, 80 18, 90 25" stroke-linecap="round"/>
+                                    <path d="M10 32 L 85 24" stroke-width="1.5"/>
+                                </svg>
+                            </template>
+                            <template x-if="authorizedSigType === 'image' && authorizedSigImage">
+                                <img :src="authorizedSigImage" class="max-h-14 max-w-full object-contain" alt="TTD Pimpinan">
+                            </template>
+                            <template x-if="authorizedSigType === 'blank'">
+                                <div class="h-14 w-full"></div>
+                            </template>
                         </div>
                         <div class="w-full border-t border-slate-400 pt-1 mt-1 relative z-10">
-                            <span class="font-bold text-xs text-slate-900 block truncate underline">
+                            <span class="font-bold text-xs text-slate-900 block truncate underline" x-text="authorizedName">
                                 Djihan Ramadhan
                             </span>
-                            <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider">
-                                Authorized Signature
+                            <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider" x-text="authorizedTitle">
+                                AUTHORIZED SIGNATURE
                             </span>
                         </div>
                     </div>
@@ -394,6 +515,187 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- ================= MODAL KUSTOMISASI KWITANSI (No Print) ================= -->
+    <div x-show="showCustomModal" 
+         x-cloak 
+         class="no-print fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto">
+        
+        <div @click.away="showCustomModal = false" class="bg-white border border-slate-100 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 my-auto max-h-[92vh] overflow-y-auto">
+            
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm">
+                        <i class="fa-solid fa-pen-ruler"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-black text-slate-900">Kustomisasi Kwitansi (Money Receipt)</h3>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sesuaikan Logo, TTD, Nama Penerima & Pimpinan</p>
+                    </div>
+                </div>
+                <button type="button" @click="showCustomModal = false" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div class="space-y-5">
+
+                <!-- 1. PENGATURAN LOGO -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-image text-primary-600"></i> Logo Kwitansi
+                        </span>
+                        <button type="button" @click="receiptLogo = '{{ asset('images/logo.jpeg') }}'; localStorage.removeItem('receipt_logo');" class="text-[10px] font-bold text-primary-600 hover:underline">
+                            Reset ke Logo Amal Abadi
+                        </button>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <div class="h-16 w-36 bg-white p-2 rounded-xl border border-slate-200 flex items-center justify-center shadow-xs shrink-0">
+                            <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="max-h-full max-w-full object-contain" alt="Logo">
+                        </div>
+                        <div class="flex-1 space-y-1.5 w-full">
+                            <label class="block text-[10px] font-bold uppercase text-slate-500">Upload Logo Baru (Opsional)</label>
+                            <input type="file" @change="handleLogoUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer">
+                            <span class="text-[9px] text-slate-400 block">Format: PNG, JPG, JPEG. Rekomendasi PNG transparan.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. PENGATURAN PENERIMA (RECEIVED BY) -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-user-check text-sky-600"></i> Penerima (Received By)
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Nama Penerima</label>
+                            <input type="text" x-model="receiverName" placeholder="Nama Staff Penerima" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Label Jabatan</label>
+                            <input type="text" x-model="receiverTitle" placeholder="RECEIVED BY" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Model Tanda Tangan Penerima</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" @click="receiverSigType = 'digital'" :class="receiverSigType === 'digital' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                                <i class="fa-solid fa-signature mr-1"></i> TTD Digital
+                            </button>
+                            <button type="button" @click="receiverSigType = 'image'" :class="receiverSigType === 'image' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                                <i class="fa-solid fa-upload mr-1"></i> Upload TTD
+                            </button>
+                            <button type="button" @click="receiverSigType = 'blank'" :class="receiverSigType === 'blank' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                                <i class="fa-solid fa-pen-nib mr-1"></i> TTD Basah
+                            </button>
+                        </div>
+                        <template x-if="receiverSigType === 'image'">
+                            <div class="pt-2 space-y-1.5">
+                                <input type="file" @change="handleReceiverSigUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer">
+                                <span class="text-[9px] text-slate-400 block">Upload foto tanda tangan penerima (PNG transparan disarankan).</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- 3. PENGATURAN AUTHORIZED SIGNATURE (PIMPINAN / PEJABAT) -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-stamp text-indigo-600"></i> Pimpinan (Authorized Signature) & Stempel
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Nama Pimpinan / Pejabat</label>
+                            <input type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Label Jabatan</label>
+                            <input type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Model Tanda Tangan Pimpinan</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" @click="authorizedSigType = 'digital'" :class="authorizedSigType === 'digital' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                                <i class="fa-solid fa-signature mr-1"></i> TTD Digital
+                            </button>
+                            <button type="button" @click="authorizedSigType = 'image'" :class="authorizedSigType === 'image' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                                <i class="fa-solid fa-upload mr-1"></i> Upload TTD
+                            </button>
+                            <button type="button" @click="authorizedSigType = 'blank'" :class="authorizedSigType === 'blank' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                                <i class="fa-solid fa-pen-nib mr-1"></i> TTD Basah
+                            </button>
+                        </div>
+                        <template x-if="authorizedSigType === 'image'">
+                            <div class="pt-2 space-y-1.5">
+                                <input type="file" @change="handleAuthorizedSigUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer">
+                                <span class="text-[9px] text-slate-400 block">Upload foto tanda tangan pimpinan (PNG transparan disarankan).</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Stempel Settings -->
+                    <div class="pt-2 border-t border-slate-200/80 space-y-2">
+                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" x-model="showStamp" class="rounded border-slate-300 text-primary-600 focus:ring-primary-500">
+                            <span class="text-xs font-bold text-slate-700">Tampilkan Stempel Resmi Yayasan</span>
+                        </label>
+                        <template x-if="showStamp">
+                            <div class="pt-1 space-y-1.5">
+                                <label class="block text-[10px] font-bold uppercase text-slate-500">Upload Stempel Sendiri (Opsional, kosongkan untuk stempel digital bawaan)</label>
+                                <input type="file" @change="handleStampUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                                <template x-if="customStampImage">
+                                    <button type="button" @click="customStampImage = ''; localStorage.removeItem('receipt_custom_stamp');" class="text-[10px] font-bold text-rose-600 hover:underline">
+                                        Hapus stempel custom (Gunakan stempel digital standar)
+                                    </button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- 4. EDIT KETERANGAN CEPAT -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-file-pen text-emerald-600"></i> Koreksi Teks Kwitansi (Opsional)
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Nama Donatur</label>
+                            <input type="text" x-model="receiptDonorName" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Bank</label>
+                            <input type="text" x-model="receiptBank" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Peruntukan Donasi (For the purpose)</label>
+                            <input type="text" x-model="receiptPurpose" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100">
+                <button type="button" @click="resetToDefault()" class="text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> Reset ke Standar Bawaan
+                </button>
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <button type="button" @click="showCustomModal = false" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                        Tutup
+                    </button>
+                    <button type="button" @click="savePreferences()" class="px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-all">
+                        <i class="fa-solid fa-check mr-1.5"></i> Terapkan ke Kwitansi
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
 </body>
