@@ -2474,14 +2474,35 @@ class AdminController extends Controller
         return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data donatur.");
     }
 
-    public function donorReceipt($id)
+    public function donorReceipt(Request $request, $id)
     {
-        $donor = User::where('role', 'user')->with(['donations.campaign'])->findOrFail($id);
-        $lastDonation = $donor->donations()->latest()->first();
+        $donor = User::where('role', 'user')->with(['donations.campaign', 'donations.paymentVia'])->findOrFail($id);
+        $lastDonation = null;
+        if ($request->filled('donation_id')) {
+            $lastDonation = $donor->donations()->with(['campaign', 'paymentVia'])->where('id', $request->donation_id)->first();
+        }
+        if (!$lastDonation) {
+            $lastDonation = $donor->donations()->with(['campaign', 'paymentVia'])->latest()->first();
+        }
 
         return view('admin.donor_receipt', [
             'donor'        => $donor,
             'lastDonation' => $lastDonation,
+        ]);
+    }
+
+    public function transactionReceipt($id)
+    {
+        $donation = Donation::with(['user', 'campaign', 'paymentVia'])->findOrFail($id);
+        $donor = $donation->user ?? new User([
+            'name'  => $donation->donor_name ?: 'Donatur Hamba Allah',
+            'phone' => $donation->donor_phone ?: '-',
+            'email' => $donation->donor_email ?: '-',
+        ]);
+
+        return view('admin.donor_receipt', [
+            'donor'        => $donor,
+            'lastDonation' => $donation,
         ]);
     }
 

@@ -167,6 +167,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/transactions/{id}/delete', [AdminController::class, 'deleteTransaction'])->name('admin.transactions.delete');
     Route::get('/admin/transactions/export', [AdminController::class, 'exportTransactions'])->name('admin.transactions.export');
     Route::post('/admin/transactions/import', [AdminController::class, 'importTransactions'])->name('admin.transactions.import');
+    Route::get('/admin/transactions/{id}/receipt', [AdminController::class, 'transactionReceipt'])->name('admin.transactions.receipt');
     Route::get('/admin/prospects-list', [AdminController::class, 'prospectsList'])->name('admin.prospects_list');
     Route::post('/admin/prospects/store', [AdminController::class, 'storeProspect'])->name('admin.prospects.store');
     Route::put('/admin/prospects/{id}/update', [AdminController::class, 'updateProspect'])->name('admin.prospects.update');

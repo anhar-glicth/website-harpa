@@ -262,7 +262,7 @@
                 </button>
 
                 <button type="button" 
-                        @click="if(selectedItem) { window.open('/admin/donors/' + selectedItem.user_id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
+                        @click="if(selectedItem) { window.open('/admin/transactions/' + selectedItem.id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
                         class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
                     <i class="fa-solid fa-print"></i> Print
                 </button>
@@ -282,7 +282,7 @@
                 </button>
 
                 <button type="button" 
-                        @click="if(selectedItem) { window.open('/admin/donors/' + selectedItem.user_id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
+                        @click="if(selectedItem) { window.open('/admin/transactions/' + selectedItem.id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
                         class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
                     <i class="fa-solid fa-link"></i> Link Bukti Donasi
                 </button>
