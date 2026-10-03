@@ -18,7 +18,9 @@
                 <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
             </div>
 
-            {{-- ✅ Personal Absensi & Todo Widget --}}
+
+            {{-- ✅ Personal Absensi & Todo Widget — Hanya untuk Staff Internal (bukan donatur) --}}
+            @if(!Auth::user()->isUser())
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                 {{-- Absensi GPS Card --}}
@@ -180,6 +182,7 @@
                     </div>
                 </div>
             </div>{{-- end personal widget row --}}
+            @endif {{-- end @if(!Auth::user()->isUser()) --}}
 
             <!-- Stats -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">

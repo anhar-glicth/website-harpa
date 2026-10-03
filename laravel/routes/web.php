@@ -52,11 +52,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/donate/{campaign_id}/submit', [DonationController::class, 'submitCheckout'])->name('donations.submit');
     Route::get('/receipt/{donation_id}', [DonationController::class, 'receipt'])->name('donations.receipt');
     Route::post('/receipt/{donation_id}/upload', [DonationController::class, 'uploadProof'])->name('donations.upload');
-
-    // Universal Personal Attendance & Todo List Routes (All Roles)
-    Route::post('/attendance', [FieldController::class, 'attendanceStore'])->name('attendance.store');
-    Route::post('/todo/store', [FieldController::class, 'todoStore'])->name('todo.store');
-    Route::post('/todo/{id}/update', [FieldController::class, 'todoUpdate'])->name('todo.update');
 });
 
 // Admin Protected Routes
@@ -151,6 +146,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/tasks', [AdminController::class, 'taskList'])->name('admin.tasks');
     Route::post('/admin/tasks/store', [AdminController::class, 'storeTask'])->name('admin.tasks.store');
     Route::get('/admin/tasks/export', [AdminController::class, 'exportTasks'])->name('admin.tasks.export');
+
+    // Staff Personal Attendance & Todo Routes (Staff Only — donatur tidak boleh akses)
+    Route::post('/attendance', [FieldController::class, 'attendanceStore'])->name('attendance.store');
+    Route::post('/todo/store', [FieldController::class, 'todoStore'])->name('todo.store');
+    Route::post('/todo/{id}/update', [FieldController::class, 'todoUpdate'])->name('todo.update');
     
     // Transaction Management Routes
     Route::get('/admin/donors-list', [AdminController::class, 'donorsList'])->name('admin.donors_list');
