@@ -162,11 +162,11 @@
                         <form action="{{ route('admin.tasks.store') }}" method="POST" class="space-y-4">
                             @csrf
                             <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Pilih Pegawai Lapangan</label>
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Pilih Pegawai / Staff</label>
                                 <select name="user_id" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
                                     <option value="" disabled selected>Pilih salah satu...</option>
                                     @foreach($workers as $w)
-                                        <option value="{{ $w->id }}">{{ $w->name }} ({{ $w->email }})</option>
+                                        <option value="{{ $w->id }}">{{ $w->name }} ({{ $w->role_label }} - {{ $w->email }})</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -1066,7 +1066,9 @@ class AdminController extends Controller
         }
 
         $attendances = $query->latest()->paginate(15)->withQueryString();
-        $workers = User::orderBy('name')->get();
+        $workers = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker'])
+            ->orderBy('name')
+            ->get();
         $todayAttendance = \App\Models\Attendance::where('user_id', auth()->id())
             ->whereDate('created_at', now()->toDateString())
             ->get();
@@ -1162,7 +1164,9 @@ class AdminController extends Controller
         }
 
         $todos = $query->latest()->paginate(15)->withQueryString();
-        $workers = User::orderBy('name')->get();
+        $workers = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker'])
+            ->orderBy('name')
+            ->get();
         $myTodos = \App\Models\TodoList::where('user_id', auth()->id())->latest()->get();
 
         return view('admin.tasks', compact('todos', 'workers', 'myTodos'));
@@ -1241,6 +1245,11 @@ class AdminController extends Controller
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
         ]);
+
+        $targetUser = User::find($request->user_id);
+        if (!$targetUser || $targetUser->isUser()) {
+            return redirect()->back()->with('error', 'Tugas hanya dapat diberikan kepada staf atau pegawai.');
+        }
 
         \App\Models\TodoList::create([
             'user_id' => $request->user_id,
