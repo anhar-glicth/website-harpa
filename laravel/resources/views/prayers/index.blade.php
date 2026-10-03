@@ -14,7 +14,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
         <!-- Sidebar Links -->
-        <div class="lg:col-span-1 space-y-6">
+        <div class="hidden lg:block lg:col-span-1 space-y-6">
             @include('layouts.donor-sidebar', ['active' => 'prayers'])
         </div>
 

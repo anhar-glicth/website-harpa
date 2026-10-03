@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="max-w-7xl mx-auto px-6 py-20" x-data="{
+<section class="max-w-7xl mx-auto px-3.5 sm:px-6 py-4 sm:py-8 lg:py-16 pb-28" x-data="{
     showAddModal: false,
     showEditModal: false,
     showDeleteModal: false,
@@ -38,13 +38,13 @@
         <div class="space-y-6">
 
             {{-- Page Header --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm flex items-center justify-between gap-4">
+            <div class="bg-white border border-slate-100 rounded-3xl p-5 sm:p-8 shadow-sm flex items-center justify-between gap-4">
                 <div class="space-y-1">
-                    <h1 class="text-2xl font-black text-slate-900 tracking-tight">Master Media Prospek</h1>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Admin Management → Data Media Prospek</p>
+                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Master Media Prospek</h1>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-widest">Admin Management → Data Media Prospek</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-sm">
-                    <i class="fa-solid fa-bullhorn text-lg"></i>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-sm shrink-0">
+                    <i class="fa-solid fa-bullhorn text-base sm:text-lg"></i>
                 </div>
             </div>
 
@@ -67,13 +67,13 @@
             @endif
 
             {{-- Filter & Toolbar Card --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div class="bg-white border border-slate-100 rounded-3xl p-4 sm:p-8 shadow-sm space-y-5">
 
                 {{-- Filter Form --}}
-                <form method="GET" action="{{ route('admin.prospect_media') }}" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700 pb-5 border-b border-slate-100">
+                <form method="GET" action="{{ route('admin.prospect_media') }}" class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 text-xs font-bold text-slate-700 pb-5 border-b border-slate-100">
 
                     {{-- Keyword --}}
-                    <div class="flex items-center gap-1.5 min-w-[220px] flex-1 sm:flex-none">
+                    <div class="flex items-center gap-1.5 min-w-[200px] flex-1 sm:flex-none">
                         <span class="text-slate-500 font-bold whitespace-nowrap">Keyword :</span>
                         <input type="text"
                                name="keyword"
@@ -83,7 +83,7 @@
                     </div>
 
                     {{-- Status --}}
-                    <div class="flex items-center gap-1.5 min-w-[140px]">
+                    <div class="flex items-center gap-1.5 min-w-[130px]">
                         <span class="text-slate-500 font-bold whitespace-nowrap">Status :</span>
                         <select name="status" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
                             <option value="">Semua</option>
@@ -93,8 +93,8 @@
                     </div>
 
                     {{-- Actions --}}
-                    <div class="flex items-center gap-2 ml-auto">
-                        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                    <div class="flex items-center gap-2 sm:ml-auto justify-end pt-1 sm:pt-0">
+                        <button type="submit" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex-1 sm:flex-none">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i> Search
                         </button>
                         <a href="{{ route('admin.prospect_media') }}" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all" title="Reset Filter">
@@ -105,19 +105,19 @@
                 </form>
 
                 {{-- Toolbar --}}
-                <div class="flex items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                     <button @click="showAddModal = true"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-all duration-300">
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-all duration-300">
                         <i class="fa-solid fa-plus text-xs"></i> New Media Prospek
                     </button>
-                    <div class="text-xs font-semibold text-slate-500">
+                    <div class="text-xs font-semibold text-slate-500 text-right sm:text-left">
                         Total: <span class="font-bold text-slate-900">{{ $prospectMedia->total() }}</span> Media Prospek
                     </div>
                 </div>
 
                 {{-- Table --}}
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                    <table class="w-full min-w-[340px] text-left border-collapse">
                         <thead>
                             <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
                                 <th class="pb-4 w-8">#</th>
@@ -126,6 +126,7 @@
                                 <th class="pb-4 text-right">Aksi</th>
                             </tr>
                         </thead>
+
                         <tbody class="text-sm">
                             @forelse($prospectMedia as $index => $item)
                                 <tr class="border-b border-slate-50 hover:bg-slate-50/60 transition-colors group">

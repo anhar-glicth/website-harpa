@@ -89,9 +89,18 @@
         button, a, input, select, textarea {
             touch-action: manipulation;
         }
+        @media (max-width: 1024px) {
+            main > section.py-20,
+            main > section.py-12 {
+                padding-top: 1rem !important;
+                padding-bottom: 6rem !important;
+                padding-left: 0.875rem !important;
+                padding-right: 0.875rem !important;
+            }
+        }
     </style>
 </head>
-<body x-data="{ loginOpen: false, registerOpen: false }" x-init="if ({{ $errors->has('name') || $errors->has('password_confirmation') ? 'true' : 'false' }}) { registerOpen = true } else if ({{ $errors->any() ? 'true' : 'false' }}) { loginOpen = true }" class="font-sans bg-[#F8FAFC] text-slate-800 antialiased flex flex-col min-h-screen">
+<body x-data="{ loginOpen: false, registerOpen: false, mobileSidebarOpen: false }" x-init="if ({{ $errors->has('name') || $errors->has('password_confirmation') ? 'true' : 'false' }}) { registerOpen = true } else if ({{ $errors->any() ? 'true' : 'false' }}) { loginOpen = true }" class="font-sans bg-[#F8FAFC] text-slate-800 antialiased flex flex-col min-h-screen">
 
     @php
         $isDashboardOrAdmin = Auth::check() && (
@@ -286,6 +295,144 @@
             @endauth
         </div>
     </header>
+    @else
+    <!-- Mobile Sticky Topbar for Dashboard & Admin Pages -->
+    <header class="lg:hidden sticky top-0 z-[1030] bg-white/95 backdrop-blur-xl border-b border-slate-200/80 px-4 py-3 shadow-xs">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button type="button" 
+                        @click="mobileSidebarOpen = true" 
+                        class="w-10 h-10 rounded-2xl bg-primary-50 text-primary-700 hover:bg-primary-100 flex items-center justify-center transition-all shadow-sm active:scale-95 border border-primary-200/60"
+                        title="Buka Menu Navigasi">
+                    <i class="fa-solid fa-bars text-base"></i>
+                </button>
+                <a href="{{ route('home') }}" class="flex items-center gap-2">
+                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-8 w-auto object-contain" alt="Amal Abadi">
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-800 hidden sm:inline">Amal Abadi</span>
+                </a>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 bg-primary-50 border border-primary-100 text-primary-700 text-[10px] font-black uppercase tracking-wider rounded-xl">
+                    {{ Auth::user()->role_label }}
+                </span>
+                <a href="{{ route('profile.custom') }}" class="w-8 h-8 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center shadow-xs">
+                    @if(Auth::user()->hasCustomPhoto())
+                        <img src="{{ Auth::user()->profile_photo_url }}" class="w-full h-full object-cover" alt="Profile">
+                    @else
+                        <div class="w-full h-full bg-primary-100 text-primary-700 flex items-center justify-center text-[10px] font-black">
+                            {{ substr(Auth::user()->name, 0, 2) }}
+                        </div>
+                    @endif
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Slide-Over Drawer for Admin / Dashboard Sidebar -->
+    <div x-show="mobileSidebarOpen" 
+         x-cloak
+         class="fixed inset-0 z-[1100] lg:hidden" 
+         role="dialog" 
+         aria-modal="true">
+        
+        <!-- Backdrop -->
+        <div x-show="mobileSidebarOpen" 
+             x-transition:enter="ease-out duration-300" 
+             x-transition:enter-start="opacity-0" 
+             x-transition:enter-end="opacity-100" 
+             x-transition:leave="ease-in duration-200" 
+             x-transition:leave-start="opacity-100" 
+             x-transition:leave-end="opacity-0" 
+             @click="mobileSidebarOpen = false"
+             class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity"></div>
+
+        <div class="fixed inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10">
+                    <div x-show="mobileSidebarOpen" 
+                         x-transition:enter="transform transition ease-out duration-300" 
+                         x-transition:enter-start="-translate-x-full" 
+                         x-transition:enter-end="translate-x-0" 
+                         x-transition:leave="transform transition ease-in duration-200" 
+                         x-transition:leave-start="translate-x-0" 
+                         x-transition:leave-end="-translate-x-full" 
+                         class="pointer-events-auto w-screen max-w-xs sm:max-w-sm">
+                        <div class="flex h-full flex-col overflow-y-auto bg-slate-100 border-r border-slate-200 shadow-2xl p-4 space-y-4">
+                            <!-- Drawer Header with Close Button -->
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                                <div class="flex items-center gap-2.5">
+                                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-8 w-auto object-contain" alt="Amal Abadi">
+                                    <div>
+                                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800">Menu Navigasi</h3>
+                                        <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">{{ Auth::user()->role_label }}</p>
+                                    </div>
+                                </div>
+                                <button type="button" 
+                                        @click="mobileSidebarOpen = false" 
+                                        class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors shadow-xs active:scale-95"
+                                        title="Tutup Menu">
+                                    <i class="fa-solid fa-xmark text-sm"></i>
+                                </button>
+                            </div>
+
+                            <!-- Drawer Sidebar Content -->
+                            <div class="space-y-4 pb-12">
+                                @if(Auth::user()->hasAdminAccess())
+                                    @include('admin.sidebar')
+                                @elseif(Auth::user()->isFieldWorker())
+                                    <div class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm text-center space-y-3">
+                                        @if(Auth::user()->hasCustomPhoto())
+                                            <img src="{{ Auth::user()->profile_photo_url }}" class="w-14 h-14 rounded-2xl object-cover mx-auto shadow-sm border-2 border-slate-100" alt="Foto">
+                                        @else
+                                            <div class="w-14 h-14 bg-primary-50 text-primary-650 rounded-2xl flex items-center justify-center text-xl font-black uppercase mx-auto">
+                                                {{ substr(Auth::user()->name, 0, 2) }}
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ Auth::user()->role_label }}</p>
+                                            <p class="text-sm font-black text-slate-900 truncate">{{ Auth::user()->name }}</p>
+                                        </div>
+                                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                                            <a href="{{ route('home') }}" class="flex-1 py-2 px-2.5 rounded-xl text-[10px] font-black uppercase text-slate-600 bg-slate-50 hover:bg-slate-100 text-center">
+                                                <i class="fa-solid fa-globe"></i> Web
+                                            </a>
+                                            <form method="POST" action="{{ route('logout') }}" class="flex-1">
+                                                @csrf
+                                                <button type="submit" class="w-full py-2 px-2.5 rounded-xl text-[10px] font-black uppercase text-rose-600 bg-rose-50 hover:bg-rose-100 text-center">
+                                                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <nav class="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-3 space-y-1.5 font-bold text-xs uppercase tracking-wider text-slate-500">
+                                        <a href="{{ route('field.dashboard') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-primary-50 hover:text-primary-700 transition-colors {{ request()->routeIs('field.*') ? 'bg-primary-50 text-primary-700' : '' }}">
+                                            <i class="fa-solid fa-list-check w-4"></i>
+                                            <span>Dashboard Petugas</span>
+                                        </a>
+                                        <a href="{{ route('profile.custom') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-primary-50 hover:text-primary-700 transition-colors {{ request()->routeIs('profile.*') ? 'bg-primary-50 text-primary-700' : '' }}">
+                                            <i class="fa-solid fa-user-pen w-4"></i>
+                                            <span>Edit Profil</span>
+                                        </a>
+                                        <a href="{{ route('campaigns.index') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-primary-50 hover:text-primary-700 transition-colors">
+                                            <i class="fa-solid fa-hand-holding-heart w-4"></i>
+                                            <span>Kampanye Kebaikan</span>
+                                        </a>
+                                        <a href="{{ route('news') }}" class="flex items-center space-x-3 py-3 px-4 rounded-xl hover:bg-primary-50 hover:text-primary-700 transition-colors">
+                                            <i class="fa-solid fa-newspaper w-4"></i>
+                                            <span>Kabar Penyaluran</span>
+                                        </a>
+                                    </nav>
+                                @else
+                                    @include('layouts.donor-sidebar')
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @endif
 
     <!-- Main Content Area -->
@@ -390,33 +537,73 @@
 
     <!-- ================= MOBILE BOTTOM NAVIGATION (App-like Experience) ================= -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-[1040] bg-white/95 backdrop-blur-xl border-t border-slate-200/80 px-2 py-2 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] flex items-center justify-around pb-safe">
-        <a href="{{ route('home') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('home') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
-            <i class="fa-solid fa-house text-lg mb-1 {{ request()->routeIs('home') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
-            <span class="text-[9px] font-bold tracking-tight">Home</span>
-        </a>
-        <a href="{{ route('campaigns.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('campaigns.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
-            <i class="fa-solid fa-hand-holding-heart text-lg mb-1 {{ request()->routeIs('campaigns.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
-            <span class="text-[9px] font-bold tracking-tight">Kampanye</span>
-        </a>
-        <a href="{{ route('zakat.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('zakat.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
-            <i class="fa-solid fa-calculator text-lg mb-1 {{ request()->routeIs('zakat.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
-            <span class="text-[9px] font-bold tracking-tight">Zakat</span>
-        </a>
-        <a href="{{ route('prayers.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('prayers.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
-            <i class="fa-solid fa-hands-praying text-lg mb-1 {{ request()->routeIs('prayers.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
-            <span class="text-[9px] font-bold tracking-tight">Doa</span>
-        </a>
-        @auth
-            <a href="{{ Auth::user()->hasAdminAccess() ? route('admin.dashboard') : (Auth::user()->isFieldWorker() ? route('field.dashboard') : route('dashboard')) }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
-                <i class="fa-solid fa-user-circle text-lg mb-1 {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
-                <span class="text-[9px] font-bold tracking-tight">Akun</span>
+        @if($isDashboardOrAdmin)
+            <!-- Admin / Staff / Dashboard Bottom Navigation -->
+            <button type="button" @click="mobileSidebarOpen = !mobileSidebarOpen" class="flex flex-col items-center py-1 px-2.5 rounded-xl text-primary-600 transition-all font-black">
+                <i class="fa-solid fa-bars-staggered text-lg mb-1 text-primary-600"></i>
+                <span class="text-[9px] font-bold tracking-tight">Menu</span>
+            </button>
+
+            @if(Auth::user()->hasAdminAccess())
+                <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-chart-pie text-lg mb-1 {{ request()->routeIs('admin.dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Dashboard</span>
+                </a>
+                <a href="{{ route('admin.donations') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.donations') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-file-invoice-dollar text-lg mb-1 {{ request()->routeIs('admin.donations') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Donasi</span>
+                </a>
+            @elseif(Auth::user()->isFieldWorker())
+                <a href="{{ route('field.dashboard') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('field.dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-list-check text-lg mb-1 {{ request()->routeIs('field.dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Tugas</span>
+                </a>
+            @else
+                <a href="{{ route('dashboard') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-gauge text-lg mb-1 {{ request()->routeIs('dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Ringkasan</span>
+                </a>
+            @endif
+
+            <a href="{{ route('home') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('home') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-globe text-lg mb-1 {{ request()->routeIs('home') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Website</span>
+            </a>
+
+            <a href="{{ route('profile.custom') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('profile.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-user-circle text-lg mb-1 {{ request()->routeIs('profile.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Profil</span>
             </a>
         @else
-            <button type="button" @click="loginOpen = true; registerOpen = false;" class="flex flex-col items-center py-1 px-2.5 rounded-xl text-slate-500 hover:text-primary-600 transition-all">
-                <i class="fa-solid fa-right-to-bracket text-lg mb-1 text-slate-400"></i>
-                <span class="text-[9px] font-bold tracking-tight">Masuk</span>
-            </button>
-        @endauth
+            <!-- Public Visitor Bottom Navigation -->
+            <a href="{{ route('home') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('home') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-house text-lg mb-1 {{ request()->routeIs('home') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Home</span>
+            </a>
+            <a href="{{ route('campaigns.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('campaigns.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-hand-holding-heart text-lg mb-1 {{ request()->routeIs('campaigns.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Kampanye</span>
+            </a>
+            <a href="{{ route('zakat.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('zakat.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-calculator text-lg mb-1 {{ request()->routeIs('zakat.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Zakat</span>
+            </a>
+            <a href="{{ route('prayers.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('prayers.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-hands-praying text-lg mb-1 {{ request()->routeIs('prayers.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Doa</span>
+            </a>
+            @auth
+                <a href="{{ Auth::user()->hasAdminAccess() ? route('admin.dashboard') : (Auth::user()->isFieldWorker() ? route('field.dashboard') : route('dashboard')) }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-user-circle text-lg mb-1 {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Akun</span>
+                </a>
+            @else
+                <button type="button" @click="loginOpen = true; registerOpen = false;" class="flex flex-col items-center py-1 px-2.5 rounded-xl text-slate-500 hover:text-primary-600 transition-all">
+                    <i class="fa-solid fa-right-to-bracket text-lg mb-1 text-slate-400"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Masuk</span>
+                </button>
+            @endauth
+        @endif
     </nav>
 
     <!-- ================= LOGIN MODAL ================= -->

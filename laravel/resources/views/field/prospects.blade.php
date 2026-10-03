@@ -14,7 +14,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
         <!-- Sidebar Menu -->
-        <div class="lg:col-span-1 space-y-6">
+        <div class="hidden lg:block lg:col-span-1 space-y-6">
             <div class="bg-white border border-slate-100 p-8 rounded-3xl space-y-6 shadow-sm">
                 <div class="flex items-center space-x-3">
                     @if(Auth::user()->hasCustomPhoto())

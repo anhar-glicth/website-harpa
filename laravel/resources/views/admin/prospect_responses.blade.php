@@ -116,8 +116,8 @@
                 </div>
 
                 {{-- Table --}}
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                    <table class="w-full min-w-[340px] text-left border-collapse">
                         <thead>
                             <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
                                 <th class="pb-4 w-8">#</th>

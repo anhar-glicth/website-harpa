@@ -1,3 +1,4 @@
+@php $active = $active ?? ''; @endphp
 <!-- Info Admin Card -->
 <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden group">
     <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary-650/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
