@@ -138,9 +138,9 @@
                 <!-- Bukti Transfer -->
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">Bukti Transfer (Harus Diisi)</label>
-                  <div 
-                    class="relative w-full h-40 bg-white/5 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-white/10 transition-all"
-                    @click="$refs.fileInput.click()"
+                  <label 
+                    for="proof_file_input"
+                    class="relative w-full h-40 bg-white/5 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center overflow-hidden group cursor-pointer hover:bg-white/10 transition-all block"
                   >
                     <img v-if="donationForm.proof_image" :src="donationForm.proof_image" class="w-full h-full object-cover" />
                     <div v-else class="text-center p-4">
@@ -149,8 +149,8 @@
                       </svg>
                       <p class="text-[10px] font-bold text-white/30 uppercase tracking-wider">Klik untuk unggah Bukti</p>
                     </div>
-                  </div>
-                  <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="handleFileChange" />
+                  </label>
+                  <input id="proof_file_input" ref="fileInput" type="file" class="hidden" accept="image/*" @change="handleFileChange" />
                 </div>
 
                 <div class="pt-4 text-center">

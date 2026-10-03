@@ -323,8 +323,8 @@
                         <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-100">
                             @forelse($donations as $index => $trx)
                                 @php
-                                    $trxCode = $trx->transaction_id ?: ('350207202600' . str_pad($trx->id, 4, '0', STR_PAD_LEFT));
-                                    $donorCode = '02260217000126';
+                                    $trxCode = $trx->transaction_id ?: ('TRX-' . str_pad($trx->id, 6, '0', STR_PAD_LEFT));
+                                    $donorCode = $trx->user ? ($trx->user->donor_id ?: ('DNR-' . str_pad($trx->user->id, 5, '0', STR_PAD_LEFT))) : '-';
                                 @endphp
                                 <tr @click="selectedItem = {{ json_encode($trx) }}; selectedId = {{ $trx->id }}; selectedTrxId = '{{ $trxCode }}'" 
                                     :class="selectedId === {{ $trx->id }} ? 'bg-emerald-50 border-l-4 border-emerald-600' : 'hover:bg-slate-50/80'"
@@ -332,25 +332,25 @@
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-400">{{ $donations->firstItem() + $index }}</td>
                                     <td class="py-3.5 px-4 font-mono font-bold text-emerald-700">{{ $trxCode }}</td>
                                     <td class="py-3.5 px-4 font-mono text-slate-600">{{ $donorCode }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $trx->donation_date ? $trx->donation_date->format('Y-m-d H:i:s') : '2026-06-30 23:04:00' }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $trx->created_at ? $trx->created_at->format('Y-m-d H:i:s') : '2026-07-02 09:09:20' }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $trx->created_at ? $trx->created_at->format('Y-m-d') : '2026-07-02' }}</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-900">{{ $trx->donor_name ?: 'Umat Islam' }}</td>
-                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $trx->donor_phone ?: '620' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-600">{{ $trx->donor_email ?: 'umat@islam.com' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-800">Pusat-Amal Bakti Dunia Islam</td>
-                                    <td class="py-3.5 px-4 text-slate-600">Digital/Web</td>
-                                    <td class="py-3.5 px-4 text-slate-500">Baru</td>
-                                    <td class="py-3.5 px-4 text-slate-600 font-medium">WEB</td>
-                                    <td class="py-3.5 px-4 text-slate-800">Yatim</td>
-                                    <td class="py-3.5 px-4 text-slate-900 font-medium">{{ $trx->campaign ? $trx->campaign->title : 'Berbagi Bahagia di bulan Mulia Untuk Yatim Pelosok Negeri' }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $trx->donation_date ? $trx->donation_date->format('Y-m-d H:i:s') : ($trx->created_at ? $trx->created_at->format('Y-m-d H:i:s') : '-') }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $trx->created_at ? $trx->created_at->format('Y-m-d H:i:s') : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $trx->updated_at ? $trx->updated_at->format('Y-m-d') : ($trx->created_at ? $trx->created_at->format('Y-m-d') : '-') }}</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-900">{{ $trx->donor_name ?: ($trx->user ? $trx->user->name : 'Hamba Allah') }}</td>
+                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $trx->donor_phone ?: ($trx->user ? $trx->user->phone : '-') }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $trx->donor_email ?: ($trx->user ? $trx->user->email : '-') }}</td>
+                                    <td class="py-3.5 px-4 text-slate-800">{{ $trx->user && $trx->user->office ? $trx->user->office->name : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $trx->user ? ($trx->user->donor_segment ?: 'Umum') : 'Umum' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-500">{{ $trx->user ? ($trx->user->donor_profile ?: 'Individu') : 'Individu' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600 font-medium">{{ $trx->source ?: 'Web' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-800">{{ $trx->campaign && $trx->campaign->group ? $trx->campaign->group->name : ($trx->campaign ? $trx->campaign->category : '-') }}</td>
+                                    <td class="py-3.5 px-4 text-slate-900 font-medium">{{ $trx->campaign ? $trx->campaign->title : '-' }}</td>
                                     <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-900">1</td>
-                                    <td class="py-3.5 px-4 text-right font-black text-emerald-600">Rp {{ number_format($trx->amount ?: 50686, 0, ',', '.') }}</td>
-                                    <td class="py-3.5 px-4 text-slate-700">{{ $trx->paymentVia ? $trx->paymentVia->name : 'BCA an. Amal Bakti Dunia Islam' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-400">Digital Marketing</td>
-                                    <td class="py-3.5 px-4 text-slate-600">WEB</td>
-                                    <td class="py-3.5 px-4 font-mono text-slate-600">0207260001</td>
-                                    <td class="py-3.5 px-4 text-slate-500 italic max-w-xs truncate">{{ $trx->notes ?: 'mudah rezeki hamba dan berikan keturunan sehat' }}</td>
+                                    <td class="py-3.5 px-4 text-right font-black text-emerald-600">Rp {{ number_format($trx->amount ?: 0, 0, ',', '.') }}</td>
+                                    <td class="py-3.5 px-4 text-slate-700">{{ $trx->payment_method ?: ($trx->paymentVia ? $trx->paymentVia->name : '-') }}</td>
+                                    <td class="py-3.5 px-4 text-slate-400">-</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $trx->source ?: 'Web' }}</td>
+                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $trx->receipt_no ?: ($trx->transaction_id ?: $trx->id) }}</td>
+                                    <td class="py-3.5 px-4 text-slate-500 italic max-w-xs truncate">{{ $trx->notes ?: ($trx->prayer ?: '-') }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -384,12 +384,22 @@
                 @csrf
                 <div class="space-y-1">
                     <label>Nama Donatur <span class="text-rose-500">*</span></label>
-                    <input type="text" name="donor_name" required placeholder="Umat Islam" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    <input type="text" name="donor_name" required placeholder="Contoh: Ahmad Abdullah" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label>No HP / WA Donatur</label>
+                        <input type="text" name="donor_phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <div class="space-y-1">
+                        <label>Email Donatur</label>
+                        <input type="email" name="donor_email" placeholder="Contoh: donatur@email.com" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label>Nominal Donasi (Rp) <span class="text-rose-500">*</span></label>
-                        <input type="number" name="amount" required placeholder="50686" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <input type="number" name="amount" required placeholder="Contoh: 50000" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                     </div>
                     <div class="space-y-1">
                         <label>Tgl Donasi <span class="text-rose-500">*</span></label>
@@ -418,7 +428,7 @@
                 </div>
                 <div class="space-y-1">
                     <label>Keterangan / Doa</label>
-                    <textarea name="notes" rows="2" placeholder="mudah rezeki hamba..." class="w-full border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-emerald-600"></textarea>
+                    <textarea name="notes" rows="2" placeholder="Catatan transaksi atau titipan doa donatur..." class="w-full border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-emerald-600"></textarea>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
                     <button type="button" @click="showAddModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>

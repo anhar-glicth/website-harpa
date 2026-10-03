@@ -33,9 +33,24 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
         }
 
+        // Handle remove photo
+        if ($request->boolean('remove_photo')) {
+            if ($user->profile_photo) {
+                $oldPath = str_replace('/storage/', '', $user->profile_photo);
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+                }
+            }
+            $user->profile_photo = null;
+        }
+
         if ($request->hasFile('profile_photo')) {
             $request->validate([
-                'profile_photo' => 'nullable|image|max:5120',
+                'profile_photo' => 'nullable|file|mimes:jpeg,jpg,png,webp,gif,svg|max:5120',
+            ], [
+                'profile_photo.file' => 'Berkas foto profil harus berupa file yang valid.',
+                'profile_photo.mimes' => 'Format foto profil harus berupa JPG, JPEG, PNG, WEBP, GIF, atau SVG.',
+                'profile_photo.max' => 'Ukuran foto profil tidak boleh melebihi 5MB.',
             ]);
             if ($user->profile_photo) {
                 $oldPath = str_replace('/storage/', '', $user->profile_photo);

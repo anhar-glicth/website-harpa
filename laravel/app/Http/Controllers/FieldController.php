@@ -78,12 +78,33 @@ class FieldController extends Controller
         $data = $request->only(['type', 'location', 'latitude', 'longitude']);
         $data['user_id'] = Auth::id();
 
+        // Koordinat dinamis dari browser GPS
+        if (!empty($data['latitude']) && !empty($data['longitude'])) {
+            if (empty($data['location'])) {
+                $data['location'] = 'Lokasi Terdeteksi (' . round($data['latitude'], 4) . ', ' . round($data['longitude'], 4) . ')';
+            }
+        } else {
+            $data['latitude'] = null;
+            $data['longitude'] = null;
+            if (empty($data['location'])) {
+                $data['location'] = 'Lokasi GPS Tidak Terdeteksi';
+            }
+        }
+
         if ($request->hasFile('attachment')) {
             $path = $request->file('attachment')->store('attendance', 'public');
             $data['attachment'] = '/storage/' . $path;
         }
 
-        Attendance::create($data);
+        $att = Attendance::create($data);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Absensi berhasil dicatat.',
+                'data' => $att
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Absensi berhasil dicatat.');
     }

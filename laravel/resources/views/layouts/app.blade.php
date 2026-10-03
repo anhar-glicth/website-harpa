@@ -64,10 +64,20 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Alpine.js -->
+    <!-- Alpine.js Collapse Plugin -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Alpine.js Core -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -75,13 +85,17 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        /* Mobile touch responsiveness optimization */
+        button, a, input, select, textarea {
+            touch-action: manipulation;
+        }
     </style>
 </head>
 <body x-data="{ loginOpen: false, registerOpen: false }" x-init="if ({{ $errors->has('name') || $errors->has('password_confirmation') ? 'true' : 'false' }}) { registerOpen = true } else if ({{ $errors->any() ? 'true' : 'false' }}) { loginOpen = true }" class="font-sans bg-[#F8FAFC] text-slate-800 antialiased flex flex-col min-h-screen">
 
     <!-- Premium Floating Navbar -->
-    <header class="sticky top-0 z-50 w-full px-4 sm:px-6 lg:px-8 pt-4">
-        <nav x-data="{ open: false }" class="max-w-7xl mx-auto bg-white/80 backdrop-blur-xl border border-slate-200/50 rounded-2xl sm:rounded-3xl shadow-sm px-6 py-4 flex items-center justify-between transition-all duration-300">
+    <header x-data="{ open: false }" class="sticky top-0 z-[1050] w-full px-3 sm:px-6 lg:px-8 pt-2.5 sm:pt-4">
+        <nav class="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl sm:rounded-3xl shadow-sm px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between transition-all duration-300">
             <!-- Logo & Brand -->
             <a href="{{ route('home') }}" class="flex items-center space-x-2 group">
                 <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300" alt="Amal Abadi">
@@ -124,8 +138,8 @@
                     <!-- Authenticated Dropdown -->
                     <div x-data="{ userMenu: false }" class="relative">
                         <button @click="userMenu = !userMenu" class="flex items-center space-x-3 bg-slate-50 border border-slate-100 hover:border-slate-200 px-4 py-2 rounded-2xl transition duration-200">
-                            @if(Auth::user()->profile_photo)
-                                <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-7 h-7 rounded-xl object-cover" alt="Profile">
+                            @if(Auth::user()->hasCustomPhoto())
+                                <img src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-7 h-7 rounded-xl object-cover" alt="Profile">
                             @else
                                 <div class="w-7 h-7 bg-primary-100 text-primary-700 rounded-xl flex items-center justify-center font-bold text-xs uppercase">
                                     {{ substr(Auth::user()->name, 0, 2) }}
@@ -178,64 +192,91 @@
 
             <!-- Hamburger Button -->
             <div class="md:hidden flex items-center">
-                <button @click="open = !open" class="text-slate-600 p-2 focus:outline-none">
-                    <i class="fa-solid" :class="open ? 'fa-xmark text-lg' : 'fa-bars text-lg'"></i>
+                <button @click="open = !open" type="button" aria-label="Menu" class="text-slate-700 p-2.5 rounded-xl hover:bg-slate-100 active:scale-95 transition-all focus:outline-none">
+                    <i class="fa-solid text-xl" :class="open ? 'fa-xmark text-primary-600' : 'fa-bars text-slate-700'"></i>
                 </button>
             </div>
         </nav>
-        <!-- Mobile Menu -->
-        <div x-show="open" @click.away="open = false" style="display: none;" class="md:hidden mt-2 max-w-7xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-xl space-y-4 max-h-[85vh] overflow-y-auto">
-            <div class="flex flex-col space-y-2 font-bold text-xs uppercase tracking-wider text-slate-500">
-                <a href="{{ route('home') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700' : '' }}">Home</a>
-                <a href="{{ route('campaigns.index') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700' : '' }}">Kampanye</a>
-                <a href="{{ route('zakat.index') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700' : '' }}">Zakat</a>
-                <a href="{{ route('prayers.index') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700' : '' }}">Doa</a>
-                <a href="{{ route('news') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700' : '' }}">Berita</a>
-                <a href="{{ route('volunteer') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('volunteer') ? 'bg-primary-50 text-primary-700' : '' }}">Relawan</a>
-                <a href="{{ route('about') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('about') ? 'bg-primary-50 text-primary-700' : '' }}">Tentang Kami</a>
-                <a href="{{ route('contact') }}" class="py-2.5 px-4 rounded-xl {{ request()->routeIs('contact') ? 'bg-primary-50 text-primary-700' : '' }}">Kontak</a>
+
+        <!-- Mobile Menu Dropdown -->
+        <div x-show="open" 
+             x-cloak
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-3"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-3"
+             @click.away="open = false" 
+             style="display: none;" 
+             class="md:hidden mt-2 max-w-7xl mx-auto bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex flex-col space-y-1.5 font-bold text-xs uppercase tracking-wider text-slate-600">
+                <a href="{{ route('home') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-house mr-2 text-slate-400"></i> Home
+                </a>
+                <a href="{{ route('campaigns.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-hand-holding-heart mr-2 text-slate-400"></i> Kampanye
+                </a>
+                <a href="{{ route('zakat.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-calculator mr-2 text-slate-400"></i> Zakat
+                </a>
+                <a href="{{ route('prayers.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-hands-praying mr-2 text-slate-400"></i> Doa
+                </a>
+                <a href="{{ route('news') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-newspaper mr-2 text-slate-400"></i> Berita
+                </a>
+                <a href="{{ route('volunteer') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('volunteer') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-users mr-2 text-slate-400"></i> Relawan
+                </a>
+                <a href="{{ route('about') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('about') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-circle-info mr-2 text-slate-400"></i> Tentang Kami
+                </a>
+                <a href="{{ route('contact') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('contact') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-envelope mr-2 text-slate-400"></i> Kontak
+                </a>
             </div>
             <hr class="border-slate-100">
             @auth
                 <div class="space-y-2 text-xs font-bold uppercase tracking-wider">
                     @if(Auth::user()->hasAdminAccess())
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 py-2 px-4 text-slate-600 hover:text-primary-600">
+                        <a href="{{ route('admin.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
                             <i class="fa-solid fa-chart-line text-slate-400"></i>
                             <span>Dashboard Admin</span>
                         </a>
                     @elseif(Auth::user()->isFieldWorker())
-                        <a href="{{ route('field.dashboard') }}" class="flex items-center space-x-3 py-2 px-4 text-slate-600 hover:text-primary-600">
+                        <a href="{{ route('field.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
                             <i class="fa-solid fa-users-gear text-slate-400"></i>
                             <span>Dashboard Petugas</span>
                         </a>
                     @endif
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 py-2 px-4 text-slate-600 hover:text-primary-600">
+                    <a href="{{ route('dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
                         <i class="fa-solid fa-house-user text-slate-400"></i>
                         <span>Dashboard Donatur</span>
                     </a>
-                    <a href="{{ route('profile.custom') }}" class="flex items-center space-x-3 py-2 px-4 text-slate-600 hover:text-primary-600">
+                    <a href="{{ route('profile.custom') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
                         <i class="fa-solid fa-user-pen text-slate-400"></i>
                         <span>Edit Profil</span>
                     </a>
-                    <form method="POST" action="{{ route('logout') }}" class="pt-2">
+                    <form method="POST" action="{{ route('logout') }}" class="pt-1">
                         @csrf
-                        <button type="submit" class="w-full flex items-center space-x-3 py-2 px-4 text-red-600 hover:bg-red-50 rounded-xl text-left">
+                        <button type="submit" class="w-full flex items-center space-x-3 py-2.5 px-4 text-red-600 hover:bg-red-50 rounded-xl text-left transition-colors">
                             <i class="fa-solid fa-right-from-bracket text-red-400"></i>
                             <span>Keluar Akun</span>
                         </button>
                     </form>
                 </div>
             @else
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <button @click="loginOpen = true; registerOpen = false; open = false;" class="border border-slate-200 text-center text-xs font-black uppercase tracking-widest py-3.5 rounded-2xl text-slate-700 hover:bg-slate-50 transition-all duration-200">Login</button>
-                    <button @click="registerOpen = true; loginOpen = false; open = false;" class="bg-primary-600 text-white text-center text-xs font-black uppercase tracking-widest py-3.5 rounded-2xl hover:bg-primary-700 shadow-lg shadow-primary-600/10 transition-all duration-200">Daftar</button>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button type="button" @click="loginOpen = true; registerOpen = false; open = false;" class="border border-slate-200 text-center text-xs font-black uppercase tracking-widest py-3.5 rounded-2xl text-slate-700 hover:bg-slate-50 active:scale-95 transition-all">Login</button>
+                    <button type="button" @click="registerOpen = true; loginOpen = false; open = false;" class="bg-primary-600 text-white text-center text-xs font-black uppercase tracking-widest py-3.5 rounded-2xl hover:bg-primary-700 shadow-lg shadow-primary-600/10 active:scale-95 transition-all">Daftar</button>
                 </div>
             @endauth
         </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-grow">
+    <main class="flex-grow pb-24 md:pb-0">
         <!-- Toast Alerts -->
         @if(session('success'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="max-w-7xl mx-auto px-4 mt-6">
@@ -334,11 +375,47 @@
         </div>
     </footer>
 
+    <!-- ================= MOBILE BOTTOM NAVIGATION (App-like Experience) ================= -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-[1040] bg-white/95 backdrop-blur-xl border-t border-slate-200/80 px-2 py-2 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] flex items-center justify-around pb-safe">
+        <a href="{{ route('home') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('home') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+            <i class="fa-solid fa-house text-lg mb-1 {{ request()->routeIs('home') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+            <span class="text-[9px] font-bold tracking-tight">Home</span>
+        </a>
+        <a href="{{ route('campaigns.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('campaigns.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+            <i class="fa-solid fa-hand-holding-heart text-lg mb-1 {{ request()->routeIs('campaigns.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+            <span class="text-[9px] font-bold tracking-tight">Kampanye</span>
+        </a>
+        <a href="{{ route('zakat.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('zakat.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+            <i class="fa-solid fa-calculator text-lg mb-1 {{ request()->routeIs('zakat.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+            <span class="text-[9px] font-bold tracking-tight">Zakat</span>
+        </a>
+        <a href="{{ route('prayers.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('prayers.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+            <i class="fa-solid fa-hands-praying text-lg mb-1 {{ request()->routeIs('prayers.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+            <span class="text-[9px] font-bold tracking-tight">Doa</span>
+        </a>
+        @auth
+            <a href="{{ Auth::user()->hasAdminAccess() ? route('admin.dashboard') : (Auth::user()->isFieldWorker() ? route('field.dashboard') : route('dashboard')) }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-user-circle text-lg mb-1 {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Akun</span>
+            </a>
+        @else
+            <button type="button" @click="loginOpen = true; registerOpen = false;" class="flex flex-col items-center py-1 px-2.5 rounded-xl text-slate-500 hover:text-primary-600 transition-all">
+                <i class="fa-solid fa-right-to-bracket text-lg mb-1 text-slate-400"></i>
+                <span class="text-[9px] font-bold tracking-tight">Masuk</span>
+            </button>
+        @endauth
+    </nav>
+
     <!-- ================= LOGIN MODAL ================= -->
-    <div x-show="loginOpen" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition duration-300">
-        <div @click.away="loginOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-8 sm:p-10 shadow-2xl relative space-y-6">
-            <button @click="loginOpen = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-800"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="space-y-1">
+    <div x-show="loginOpen" 
+         x-cloak 
+         style="display: none;" 
+         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
+        <div @click.away="loginOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-6 sm:p-10 shadow-2xl relative space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+            <button type="button" @click="loginOpen = false" class="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-800 active:scale-95 transition-all focus:outline-none">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="space-y-1 pr-6">
                 <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight italic">Selamat <span class="text-primary-500">Datang Kembali</span></h2>
                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Masuk untuk melanjutkan kebaikan Anda</p>
             </div>
@@ -375,20 +452,25 @@
                     <input id="modal_login_remember" type="checkbox" name="remember" class="rounded border-slate-300 bg-slate-50 text-primary-650 focus:ring-primary-500/20">
                     <label for="modal_login_remember" class="text-[9px] font-black uppercase tracking-wider text-slate-450 select-none cursor-pointer">Ingat Saya</label>
                 </div>
-                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Masuk Akun <i class="fa-solid fa-right-to-bracket ml-2"></i></button>
+                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 active:scale-[0.99] text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Masuk Akun <i class="fa-solid fa-right-to-bracket ml-2"></i></button>
             </form>
             <div class="text-center pt-2">
                 <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Belum punya akun?</span>
-                <button @click="loginOpen = false; registerOpen = true" class="text-[10px] font-black uppercase text-primary-500 hover:text-primary-600 transition-colors ml-1">Daftar Sekarang</button>
+                <button type="button" @click="loginOpen = false; registerOpen = true" class="text-[10px] font-black uppercase text-primary-500 hover:text-primary-600 transition-colors ml-1">Daftar Sekarang</button>
             </div>
         </div>
     </div>
 
     <!-- ================= REGISTER MODAL ================= -->
-    <div x-show="registerOpen" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition duration-300">
-        <div @click.away="registerOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-8 sm:p-10 shadow-2xl relative space-y-6">
-            <button @click="registerOpen = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-800"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="space-y-1">
+    <div x-show="registerOpen" 
+         x-cloak 
+         style="display: none;" 
+         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
+        <div @click.away="registerOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-6 sm:p-10 shadow-2xl relative space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+            <button type="button" @click="registerOpen = false" class="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-800 active:scale-95 transition-all focus:outline-none">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="space-y-1 pr-6">
                 <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight italic">Buat <span class="text-primary-500">Akun Baru</span></h2>
                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Daftar untuk mulai berbagi kebaikan bersama kami</p>
             </div>
@@ -439,11 +521,11 @@
                         <input id="modal_reg_confirm" type="password" name="password_confirmation" required placeholder="Ulangi kata sandi" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Daftar Akun <i class="fa-solid fa-user-plus ml-2"></i></button>
+                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 active:scale-[0.99] text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Daftar Akun <i class="fa-solid fa-user-plus ml-2"></i></button>
             </form>
             <div class="text-center pt-2">
                 <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Sudah punya akun?</span>
-                <button @click="registerOpen = false; loginOpen = true" class="text-[10px] font-black uppercase text-primary-500 hover:text-primary-600 transition-colors ml-1">Masuk Sekarang</button>
+                <button type="button" @click="registerOpen = false; loginOpen = true" class="text-[10px] font-black uppercase text-primary-500 hover:text-primary-600 transition-colors ml-1">Masuk Sekarang</button>
             </div>
         </div>
     </div>

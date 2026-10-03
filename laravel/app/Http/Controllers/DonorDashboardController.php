@@ -107,25 +107,35 @@ class DonorDashboardController extends Controller
             'gender' => 'nullable|in:L,P,Other',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'profile_photo' => 'nullable|image|max:5120',
+            'profile_photo' => 'nullable|file|mimes:jpeg,jpg,png,webp,gif,svg|max:5120',
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:6|confirmed',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah digunakan oleh akun lain.',
+            'username.unique' => 'Username ini sudah digunakan oleh akun lain.',
+            'profile_photo.file' => 'Berkas foto profil harus berupa file yang valid.',
+            'profile_photo.mimes' => 'Format foto profil harus berupa JPG, JPEG, PNG, WEBP, GIF, atau SVG.',
+            'profile_photo.max' => 'Ukuran foto profil tidak boleh melebihi 5MB.',
+            'current_password.required_with' => 'Password lama wajib diisi jika ingin mengganti password baru.',
+            'new_password.min' => 'Password baru minimal 6 karakter.',
+            'new_password.confirmed' => 'Konfirmasi password baru tidak cocok.',
         ]);
 
-        if ($request->filled('new_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
-                return redirect()->back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.'])->withInput();
+        // 1. Handle Penghapusan Foto Profil (kembali ke inisial default)
+        if ($request->boolean('remove_photo')) {
+            if ($user->profile_photo) {
+                $oldPath = str_replace('/storage/', '', $user->profile_photo);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
             }
-            $user->password = Hash::make($request->new_password);
+            $user->profile_photo = null;
         }
 
-        $user->name = $request->name;
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->gender = $request->gender;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-
+        // 2. Handle Upload Foto Profil Baru
         if ($request->hasFile('profile_photo')) {
             if ($user->profile_photo) {
                 $oldPath = str_replace('/storage/', '', $user->profile_photo);
@@ -137,8 +147,24 @@ class DonorDashboardController extends Controller
             $user->profile_photo = '/storage/' . $path;
         }
 
+        // 3. Handle Ubah Password
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.'])->withInput();
+            }
+            $user->password = Hash::make($request->new_password);
+        }
+
+        // 4. Update Field Identitas (Sanitasi string kosong menjadi NULL untuk hindari pelanggaran unique constraint)
+        $user->name = trim($request->name);
+        $user->username = $request->filled('username') ? trim($request->username) : null;
+        $user->email = trim($request->email);
+        $user->gender = $request->filled('gender') ? $request->gender : null;
+        $user->phone = $request->filled('phone') ? trim($request->phone) : null;
+        $user->address = $request->filled('address') ? trim($request->address) : null;
+
         $user->save();
 
-        return redirect()->back()->with('success', 'Profil Anda berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Profil dan foto Anda berhasil diperbarui!');
     }
 }

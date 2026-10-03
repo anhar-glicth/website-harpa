@@ -22,8 +22,8 @@
             <!-- Profile Info Box -->
             <div class="bg-white border border-slate-100 p-6 rounded-[2rem] shadow-sm space-y-6">
                 <div class="flex items-center space-x-3">
-                    @if(Auth::user()->profile_photo)
-                        <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-12 h-12 rounded-2xl object-cover" alt="">
+                    @if(Auth::user()->hasCustomPhoto())
+                        <img src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-12 h-12 rounded-2xl object-cover" alt="">
                     @else
                         <div class="w-12 h-12 bg-primary-100 text-primary-700 rounded-2xl flex items-center justify-center font-bold text-base uppercase shrink-0">
                             {{ substr(Auth::user()->name, 0, 2) }}
@@ -318,10 +318,13 @@
             <div x-show="activeTab === 'attendance'" style="display: none;" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
                 <!-- GPS widget -->
-                <div class="lg:col-span-2 bg-white border border-slate-100 p-8 rounded-[2rem] shadow-xl space-y-6">
-                    <h3 class="font-montserrat font-black uppercase text-sm text-slate-800 tracking-wider">Absensi GPS Harian</h3>
-                    
-                    <form action="{{ route('field.attendance.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div class="lg:col-span-2 space-y-6">
+                    <x-live-clock variant="card" />
+
+                    <div class="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-xl space-y-6">
+                        <h3 class="font-montserrat font-black uppercase text-sm text-slate-800 tracking-wider">Absensi GPS Harian</h3>
+                        
+                        <form action="{{ route('field.attendance.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         <input type="hidden" name="latitude" id="lat">
                         <input type="hidden" name="longitude" id="lng">
@@ -344,12 +347,10 @@
 
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Lokasi / Keterangan Tambahan</label>
-                            <input type="text" name="location" placeholder="Contoh: Kantor Cabang / Alamat Penyaluran" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                            <input type="text" name="location" id="field-loc" placeholder="Contoh: Kantor Cabang / Alamat Penyaluran" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
                         </div>
 
-                        <div id="gps-status" class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                            <i class="fa-solid fa-location-crosshairs animate-pulse mr-1"></i> Mendapatkan koordinat GPS Anda...
-                        </div>
+                        <x-gps-detector latId="lat" lngId="lng" statusId="field-gps-status" locationId="field-loc" />
 
                         <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4.5 rounded-2xl shadow-lg transition duration-300">
                             Kirim Absensi <i class="fa-solid fa-stamp ml-2"></i>
@@ -365,7 +366,7 @@
                                     <span class="uppercase tracking-wider">
                                         @if($att->type === 'check_in') Check In @elseif($att->type === 'check_out') Check Out @else {{ $att->type }} @endif
                                     </span>
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ $att->created_at->format('H:i') }} WIB</span>
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ $att->created_at->format('H:i') }} WITA</span>
                                 </div>
                             @empty
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-center py-2">Anda belum melakukan absen hari ini.</p>
@@ -628,40 +629,4 @@
     </div>
 
 </section>
-
-<!-- GPS Geolocation Script -->
-<script>
-    function requestGPSLocation() {
-        const gpsStatus = document.getElementById('gps-status');
-        gpsStatus.innerHTML = '<i class="fa-solid fa-location-crosshairs animate-pulse mr-1"></i> Mendapatkan koordinat GPS Anda...';
-        
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    
-                    document.getElementById('lat').value = lat;
-                    document.getElementById('lng').value = lng;
-                    
-                    if(document.getElementById('dist_lat')) {
-                        document.getElementById('dist_lat').value = lat;
-                    }
-                    if(document.getElementById('dist_lng')) {
-                        document.getElementById('dist_lng').value = lng;
-                    }
-                    
-                    gpsStatus.innerHTML = '<i class="fa-solid fa-location-dot text-emerald-500 mr-1"></i> KOORDINAT GPS BERHASIL DIDAPATKAN (' + lat.toFixed(6) + ', ' + lng.toFixed(6) + ')';
-                },
-                function(error) {
-                    gpsStatus.innerHTML = '<span class="text-rose-500"><i class="fa-solid fa-location-dot mr-1"></i> GAGAL MENDAPATKAN LOKASI GPS (IZINKAN AKSES LOKASI)</span> <button type="button" onclick="requestGPSLocation()" class="ml-2 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[8px] font-black uppercase tracking-wider transition-all inline-flex items-center gap-1"><i class="fa-solid fa-arrows-rotate animate-spin"></i> Coba Lagi</button>';
-                }
-            );
-        } else {
-            gpsStatus.innerHTML = '<i class="fa-solid fa-location-dot text-rose-500 mr-1"></i> BROWSER TIDAK MENDUKUNG GPS';
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", requestGPSLocation);
-</script>
 @endsection

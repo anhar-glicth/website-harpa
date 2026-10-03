@@ -87,13 +87,30 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Foto Profil Baru</label>
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Foto Profil</label>
                                 <div class="flex items-center gap-3">
-                                    @if(Auth::user()->profile_photo)
-                                        <img src="{{ asset(Auth::user()->profile_photo) }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0" alt="Foto Saat Ini">
-                                    @endif
-                                    <input type="file" name="profile_photo" accept="image/*" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-2.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                    <div class="relative shrink-0">
+                                        <img id="photo-preview" src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-12 h-12 rounded-2xl object-cover border-2 border-slate-150 shadow-sm" alt="Preview Foto">
+                                        <span id="new-photo-badge" class="hidden absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-[8px]" title="Foto baru dipilih">
+                                            <i class="fa-solid fa-check"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-1 space-y-1">
+                                        <input type="file" id="profile_photo_input" name="profile_photo" accept="image/jpeg,image/png,image/webp,image/jpg,image/gif" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-3 py-1.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10 file:mr-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-primary-50 file:text-primary-600 hover:file:bg-primary-100 cursor-pointer">
+                                        <div class="flex items-center justify-between text-[10px] text-slate-400 font-medium px-1">
+                                            <span>Format: JPG, PNG, WEBP. Maks 5MB.</span>
+                                            @if(Auth::user()->hasCustomPhoto())
+                                                <label class="flex items-center gap-1.5 text-rose-500 hover:text-rose-600 cursor-pointer font-bold ml-2" title="Centang untuk menghapus foto">
+                                                    <input type="checkbox" name="remove_photo" value="1" id="remove_photo_check" class="rounded text-rose-600 focus:ring-rose-500 w-3 h-3">
+                                                    <span>Hapus Foto</span>
+                                                </label>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
+                                @error('profile_photo')
+                                    <p class="text-rose-500 text-[10px] font-bold mt-1.5 ml-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
@@ -137,4 +154,41 @@
 
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const photoInput = document.getElementById('profile_photo_input');
+        const previewImg = document.getElementById('photo-preview');
+        const newBadge = document.getElementById('new-photo-badge');
+        const removeCheck = document.getElementById('remove_photo_check');
+        const defaultAvatar = "{{ Auth::user()->profile_photo_url }}";
+
+        if (photoInput && previewImg) {
+            photoInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (removeCheck) removeCheck.checked = false;
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        previewImg.src = event.target.result;
+                        if (newBadge) newBadge.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        if (removeCheck) {
+            removeCheck.addEventListener('change', function () {
+                if (this.checked) {
+                    if (photoInput) photoInput.value = '';
+                    if (newBadge) newBadge.classList.add('hidden');
+                    previewImg.src = "https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff";
+                } else {
+                    previewImg.src = defaultAvatar;
+                }
+            });
+        }
+    });
+</script>
 @endsection

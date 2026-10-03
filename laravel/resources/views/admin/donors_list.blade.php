@@ -412,12 +412,12 @@
                         <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-100">
                             @forelse($donors as $index => $donor)
                                 @php
-                                    $phoneClean = preg_replace('/[^0-9]/', '', $donor->phone ?: '6285888445041');
-                                    if (str_starts_with($phoneClean, '0')) {
+                                    $phoneClean = preg_replace('/[^0-9]/', '', $donor->phone ?: '');
+                                    if (!empty($phoneClean) && str_starts_with($phoneClean, '0')) {
                                         $phoneClean = '62' . substr($phoneClean, 1);
                                     }
                                     $waMsg = urlencode("Assalamu'alaikum warahmatullahi wabarakatuh, Kak " . $donor->name);
-                                    $waUrl = "https://api.whatsapp.com/send?phone={$phoneClean}&text={$waMsg}";
+                                    $waUrl = !empty($phoneClean) ? "https://api.whatsapp.com/send?phone={$phoneClean}&text={$waMsg}" : null;
                                     $donorCode = '022607' . str_pad($donor->id, 8, '0', STR_PAD_LEFT);
                                 @endphp
                                 <tr @click="selectedItem = {{ json_encode($donor) }}; selectedId = {{ $donor->id }}; selectedName = '{{ addslashes($donor->name) }}'" 
@@ -435,11 +435,11 @@
                                             <span class="text-slate-400">-</span>
                                         @endif
                                     </td>
-                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $phoneClean }}</td>
+                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $donor->phone ?: '-' }}</td>
                                     <td class="py-3.5 px-4 text-slate-600">{{ $donor->email ?: '-' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-800">{{ $donor->office ? $donor->office->name : 'Pusat-Amal Bakti Dunia Islam' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-600">{{ $donor->segment ?: 'Digital/Web' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-500">Baru</td>
+                                    <td class="py-3.5 px-4 text-slate-800">{{ $donor->office ? $donor->office->name : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $donor->segment ?: '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-500">{{ $donor->donations_count > 0 ? 'Aktif' : 'Baru' }}</td>
                                     <td class="py-3.5 px-4">
                                         <span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-[10px] font-bold">
                                             {{ $donor->rfm_alltime ?: 'POTENTIAL' }}
@@ -450,22 +450,36 @@
                                             {{ $donor->rfm_alltime ?: 'POTENTIAL' }}
                                         </span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-slate-600">PASIF</td>
-                                    <td class="py-3.5 px-4 font-bold text-amber-600">SILVER</td>
-                                    <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($donor->donations_count ?? 1) }}</td>
-                                    <td class="py-3.5 px-4 text-right font-black text-emerald-600">Rp {{ number_format($donor->donations_sum_amount ?: 100381, 0, ',', '.') }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $donor->created_at ? $donor->created_at->format('Y-m-d') : '2026-06-04' }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $donor->created_at ? $donor->created_at->format('Y-m-d H:i:s') : '2026-07-01 13:17:12' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $donor->donations_count > 0 ? 'AKTIF' : 'PASIF' }}</td>
+                                    <td class="py-3.5 px-4 font-bold text-amber-600">
+                                        @if(($donor->donations_sum_amount ?? 0) >= 10000000)
+                                            PLATINUM
+                                        @elseif(($donor->donations_sum_amount ?? 0) >= 2000000)
+                                            GOLD
+                                        @else
+                                            SILVER
+                                        @endif
+                                    </td>
+                                    <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($donor->donations_count ?? 0) }}</td>
+                                    <td class="py-3.5 px-4 text-right font-black text-emerald-600">Rp {{ number_format($donor->donations_sum_amount ?: 0, 0, ',', '.') }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $donor->created_at ? $donor->created_at->format('Y-m-d') : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $donor->created_at ? $donor->created_at->format('Y-m-d H:i') : '-' }}</td>
                                     
                                     {{-- ACTION COLUMN WITH BOTH WHATSAPP & PRINT RECEIPT ICONS --}}
                                     <td class="py-3.5 px-4 text-center bg-slate-50/80">
                                         <div class="flex items-center justify-center gap-2" @click.stop>
                                             {{-- 1. WhatsApp Direct Chat Icon --}}
-                                            <a href="{{ $waUrl }}" target="_blank" 
-                                               class="inline-flex items-center justify-center w-7 h-7 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-sm hover:scale-110 transition-transform" 
-                                               title="Kirim Pesan WhatsApp">
-                                                <i class="fa-brands fa-whatsapp text-sm"></i>
-                                            </a>
+                                            @if($waUrl)
+                                                <a href="{{ $waUrl }}" target="_blank" 
+                                                   class="inline-flex items-center justify-center w-7 h-7 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-sm hover:scale-110 transition-transform" 
+                                                   title="Kirim Pesan WhatsApp">
+                                                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                                                </a>
+                                            @else
+                                                <span class="inline-flex items-center justify-center w-7 h-7 bg-slate-200 text-slate-400 rounded-full cursor-not-allowed" title="No WA Tidak Tersedia">
+                                                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                                                </span>
+                                            @endif
 
                                             {{-- 2. Print Receipt Icon (Presisi Sesuai Gambar User) --}}
                                             <a href="{{ route('admin.donors.receipt', $donor->id) }}" target="_blank" 
@@ -476,14 +490,26 @@
                                         </div>
                                     </td>
 
-                                    <td class="py-3.5 px-4 text-slate-400">Digital Marketing</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $donor->picProspect ? $donor->picProspect->name : '-' }}</td>
                                     <td class="py-3.5 px-4 text-slate-600">{{ $donor->source_info ?: 'WEB' }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">2026-06-07 04:18:00</td>
-                                    <td class="py-3.5 px-4 text-slate-800 font-medium">SEDEKAH SUBUH | Ikhtiar Meraih Keberkahan Sepanjang Hari</td>
-                                    <td class="py-3.5 px-4 text-right font-black text-slate-900">Rp 100.381</td>
-                                    <td class="py-3.5 px-4 text-slate-600">BSI an. AMAL BAKTI DUNIA ISLAM</td>
-                                    <td class="py-3.5 px-4 text-center text-slate-400">-</td>
-                                    <td class="py-3.5 px-4 text-slate-600">WEB</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">
+                                        {{ $donor->latestDonation ? ($donor->latestDonation->donation_date ? \Carbon\Carbon::parse($donor->latestDonation->donation_date)->format('Y-m-d H:i') : $donor->latestDonation->created_at->format('Y-m-d H:i')) : '-' }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-800 font-medium">
+                                        {{ $donor->latestDonation && $donor->latestDonation->campaign ? $donor->latestDonation->campaign->title : '-' }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-right font-black text-slate-900">
+                                        {{ $donor->latestDonation ? 'Rp ' . number_format($donor->latestDonation->amount, 0, ',', '.') : '-' }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-600">
+                                        {{ $donor->latestDonation ? ($donor->latestDonation->paymentVia ? $donor->latestDonation->paymentVia->name : ($donor->latestDonation->payment_method ?: '-')) : '-' }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-center text-slate-400">
+                                        {{ $donor->prospect_date ? \Carbon\Carbon::parse($donor->prospect_date)->format('Y-m-d') : '-' }}
+                                    </td>
+                                    <td class="py-3.5 px-4 text-slate-600">
+                                        {{ $donor->lastProspectMedia ? $donor->lastProspectMedia->name : '-' }}
+                                    </td>
                                     <td class="py-3.5 px-4 text-slate-400">-</td>
                                 </tr>
                             @empty
@@ -523,11 +549,12 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label>No HP / WA</label>
-                        <input type="text" name="phone" placeholder="6285888445041" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <input type="text" name="phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                     </div>
                     <div class="space-y-1">
                         <label>Jenis Kelamin</label>
                         <select name="gender" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                            <option value="">Pilih Jenis Kelamin</option>
                             <option value="L">Laki-Laki</option>
                             <option value="P">Perempuan</option>
                         </select>
@@ -679,11 +706,11 @@
             <div class="space-y-2 text-xs font-semibold text-slate-700 divide-y divide-slate-100">
                 <div class="py-2 flex justify-between"><span class="text-slate-400">ID Donatur:</span><span class="font-bold font-mono text-emerald-700" x-text="'022607' + String(selectedItem.id).padStart(8, '0')"></span></div>
                 <div class="py-2 flex justify-between"><span class="text-slate-400">Nama Lengkap:</span><span class="font-bold text-slate-900" x-text="selectedItem.name"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">Jenis Kelamin:</span><span x-text="selectedItem.gender === 'L' ? 'Laki-Laki' : 'Perempuan'"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">No HP / WA:</span><span class="font-mono" x-text="selectedItem.phone || '6285888445041'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-400">Jenis Kelamin:</span><span x-text="selectedItem.gender === 'L' ? 'Laki-Laki' : (selectedItem.gender === 'P' ? 'Perempuan' : '-')"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-400">No HP / WA:</span><span class="font-mono" x-text="selectedItem.phone || '-'"></span></div>
                 <div class="py-2 flex justify-between"><span class="text-slate-400">Email:</span><span x-text="selectedItem.email || '-'"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">Segmen:</span><span x-text="selectedItem.segment || 'Digital/Web'"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">RFM All Time:</span><span class="font-bold text-emerald-600" x-text="selectedItem.rfm_alltime || 'POTENTIAL'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-400">Segmen:</span><span x-text="selectedItem.segment || '-'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-400">RFM All Time:</span><span class="font-bold text-emerald-600" x-text="selectedItem.rfm_alltime || '-'"></span></div>
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <a :href="'/admin/donors/' + selectedItem.id + '/receipt'" target="_blank" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold flex items-center gap-2 text-xs">

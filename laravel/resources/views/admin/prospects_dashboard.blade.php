@@ -135,10 +135,10 @@
                         <div class="flex items-center gap-2">
                             <span>PIC Prospek :</span>
                             <select name="pic_prospect" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[180px]">
-                                <option value="">Pilih PIC</option>
-                                <option value="CRM">CRM</option>
-                                <option value="Digital Marketing">Digital Marketing</option>
-                                <option value="Baiq Nickte Madu Jasmine">Baiq Nickte Madu Jasmine</option>
+                                <option value="">Semua PIC</option>
+                                @foreach($picUsers as $pic)
+                                    <option value="{{ $pic->name }}" {{ request('pic_prospect') == $pic->name ? 'selected' : '' }}>{{ $pic->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
@@ -447,18 +447,18 @@
         Highcharts.chart('chartProspekPotensiPerTanggal', Highcharts.merge(darkTheme, {
             chart: { type: 'line' },
             title: { text: 'Dashboard Prospek Per Tanggal (Potensi Dana)' },
-            xAxis: { categories: ['2026-02-25'] },
+            xAxis: { categories: @json($chartProspekDates) },
             yAxis: { title: { text: 'Nominal Potensi Dana' } },
-            series: [{ name: 'Total Nominal', data: [50000], color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartProspekPotensiValues), color: '#38bdf8' }]
         }));
 
         // 2. Chart Prospek Per Tanggal (Total)
         Highcharts.chart('chartProspekTotalPerTanggal', Highcharts.merge(darkTheme, {
             chart: { type: 'line' },
             title: { text: 'Dashboard Prospek Per Tanggal (Total)' },
-            xAxis: { categories: ['2026-02-25'] },
+            xAxis: { categories: @json($chartProspekDates) },
             yAxis: { title: { text: 'Total Prospek' } },
-            series: [{ name: 'Total Prospek', data: [1], color: '#38bdf8' }]
+            series: [{ name: 'Total Prospek', data: @json($chartProspekCounts), color: '#38bdf8' }]
         }));
 
         // 3. Chart Distribusi Target (Pie)
@@ -466,7 +466,7 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Target' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'Calon Donatur', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartDistribusiTargetData) }]
         }));
 
         // 4. Chart Distribusi Respon (Pie)
@@ -474,7 +474,7 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Respon' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'Belum Diprospek', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartRespData) }]
         }));
 
         // 5. Chart Distribusi Media (Pie)
@@ -482,7 +482,7 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Media' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'WhatsApp', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartDistribusiMediaData) }]
         }));
 
         // 6. Chart Distribusi Metode (Pie)
@@ -490,7 +490,7 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Metode' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'Blast / Broadcast', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartDistribusiMetodeData) }]
         }));
 
         // 7. Chart Distribusi Jenis (Pie)
@@ -498,7 +498,7 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Jenis' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'FU 1', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartDistribusiJenisData) }]
         }));
 
         // 8. Chart Distribusi Fundraiser (Pie)
@@ -506,7 +506,7 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Fundraiser' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'CRM', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartDistribusiFundraiserData) }]
         }));
 
         // 9. Chart Distribusi Rumpun Program (Pie)
@@ -514,7 +514,7 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Rumpun Program' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'Dunia Islam', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartDistribusiRumpunData) }]
         }));
 
         // 10. Chart Distribusi Campaign (Pie)
@@ -522,25 +522,25 @@
             chart: { type: 'pie' },
             title: { text: 'Distribusi Campaign' },
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
-            series: [{ name: 'Persentase', data: [{ name: 'tehsgd', y: 100.0, color: '#38bdf8' }] }]
+            series: [{ name: 'Persentase', data: @json($chartDistribusiCampaignData) }]
         }));
 
         // 11. Chart Total Prospek Berdasarkan PIC Prospek (Column)
         Highcharts.chart('chartTotalByPicProspek', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Prospek Berdasarkan PIC Prospek' },
-            xAxis: { categories: ['Baiq Nickte Madu Jasmine'] },
+            xAxis: { categories: @json($chartPicCategories) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Prospek', data: [1], color: '#38bdf8' }]
+            series: [{ name: 'Total Prospek', data: @json($chartPicValues), color: '#38bdf8' }]
         }));
 
         // 12. Chart Total Data Berdasarkan Kantor (Column)
         Highcharts.chart('chartTotalByKantorProspek', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Data Berdasarkan Kantor' },
-            xAxis: { categories: ['Pusat-Amal Bakti Dunia Islam'] },
+            xAxis: { categories: @json($chartOfficeCategories) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Data', data: [1], color: '#38bdf8' }]
+            series: [{ name: 'Total Data', data: @json($chartOfficeValues), color: '#38bdf8' }]
         }));
 
     });

@@ -22,7 +22,7 @@
               <span :class="loading ? 'bg-amber-500 animate-pulse' : 'bg-green-500'" class="w-2 h-2 rounded-full"></span>
               <p class="text-[8px] md:text-[9px] font-black text-gray-300 uppercase tracking-widest">{{ loading ? 'Menghubungkan...' : 'Terhubung ke Server' }}</p>
             </div>
-            <p class="text-xl md:text-2xl font-black text-gray-900 italic tracking-tighter leading-none">{{ currentTime }}</p>
+            <p class="text-xl md:text-2xl font-black text-gray-900 italic tracking-tighter leading-none">{{ currentTime }} <span class="text-xs font-bold text-green-600">WITA</span></p>
           </div>
           
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -354,7 +354,7 @@
                  </div>
                  <h3 class="text-4xl font-black text-gray-900 uppercase tracking-tighter italic leading-none">Presensi <span class="text-green-600">Kehadiran</span></h3>
                  <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ user?.name }}</p>
-                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ todayDate }} — <span class="text-green-600">{{ currentTime }}</span></p>
+                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em]">{{ todayDate }} — <span class="text-green-600">{{ currentTime }} WITA</span></p>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
@@ -391,11 +391,16 @@
                        Akurasi ±{{ Math.round(coords.accuracy) }}m {{ coords.accuracy <= 20 ? '· Sangat Baik' : coords.accuracy <= 100 ? '· Cukup' : '· Kurang Akurat' }}
                     </span>
                  </div>
-                 <!-- Refresh Button -->
-                 <button @click="getMyLocation" :disabled="locationLoading" class="mx-auto flex items-center gap-2 px-4 py-1.5 bg-gray-50 text-gray-400 rounded-full text-[8px] font-black uppercase tracking-widest hover:bg-green-50 hover:text-green-600 transition-all border border-gray-100 disabled:opacity-50">
-                    <i class="fas fa-redo-alt text-[8px]" :class="locationLoading ? 'animate-spin' : ''"></i>
-                    {{ locationLoading ? 'Memperbarui...' : 'Perbarui Lokasi' }}
-                 </button>
+                 <!-- Action Buttons -->
+                 <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <button @click="getMyLocation" :disabled="locationLoading" class="flex items-center gap-2 px-4 py-1.5 bg-gray-50 text-gray-500 rounded-full text-[8px] font-black uppercase tracking-widest hover:bg-green-50 hover:text-green-600 transition-all border border-gray-100 disabled:opacity-50 cursor-pointer">
+                       <i class="fas fa-redo-alt text-[8px]" :class="locationLoading ? 'animate-spin' : ''"></i>
+                       {{ locationLoading ? 'Memperbarui...' : 'Perbarui Lokasi' }}
+                    </button>
+                    <button @click="setOfficeLocation" class="flex items-center gap-2 px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-[8px] font-black uppercase tracking-widest hover:bg-green-100 transition-all border border-green-200 cursor-pointer">
+                       <i class="fas fa-building text-[8px]"></i> Titik Kantor
+                    </button>
+                 </div>
               </div>
            </div>
 
@@ -995,7 +1000,14 @@ const formatTime = (log) => {
   return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 };
 
-const currentTime = ref(new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':'));
+const getWitaTime = () => {
+  try {
+    return new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()).replace(/\./g, ':');
+  } catch (e) {
+    return new Date().toLocaleTimeString('id-ID');
+  }
+};
+const currentTime = ref(getWitaTime());
 let clockInterval = null;
 
 // --- Attendance Logic ---
@@ -1173,33 +1185,77 @@ const fetchData = async () => {
 };
 
 // --- Geolocation ---
+const setOfficeLocation = () => {
+  coords.value = { latitude: -6.175392, longitude: 106.827153, accuracy: 25 };
+  currentLocationName.value = 'Kantor Pusat (Jakarta)';
+};
+
+const fallbackToIpLocation = async () => {
+  try {
+    currentLocationName.value = 'Mencari lokasi via IP...';
+    const res = await fetch('https://ipapi.co/json/');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.latitude && data.longitude) {
+        coords.value = { latitude: data.latitude, longitude: data.longitude, accuracy: 500 };
+        currentLocationName.value = `${data.city || 'Jaringan'}, ${data.region || ''} (IP)`;
+        return true;
+      }
+    }
+  } catch (e) {
+    try {
+      const res2 = await fetch('https://freeipapi.com/api/json');
+      if (res2.ok) {
+        const data2 = await res2.json();
+        if (data2.latitude && data2.longitude) {
+          coords.value = { latitude: data2.latitude, longitude: data2.longitude, accuracy: 500 };
+          currentLocationName.value = `${data2.cityName || 'Jaringan'} (IP)`;
+          return true;
+        }
+      }
+    } catch (e2) {}
+  }
+  // Ultimate default fallback so attendance can always be submitted
+  setOfficeLocation();
+  return false;
+};
+
 const getMyLocation = () => {
+  locationLoading.value = true;
+
   if (!navigator.geolocation) {
-    currentLocationName.value = 'Browser tidak mendukung GPS';
+    fallbackToIpLocation().finally(() => {
+      locationLoading.value = false;
+    });
     return;
   }
 
-  locationLoading.value = true;
-  const options = { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 };
+  const options = { enableHighAccuracy: true, maximumAge: 30000, timeout: 6000 };
   let bestAccuracy = Infinity;
 
-  watchId = navigator.geolocation.watchPosition(
+  navigator.geolocation.getCurrentPosition(
     async (position) => {
       const { latitude, longitude, accuracy } = position.coords;
       coords.value = { latitude, longitude, accuracy };
       locationLoading.value = false;
-      if (accuracy < bestAccuracy) {
-        bestAccuracy = accuracy;
-        await reverseGeocode(latitude, longitude);
-      }
-      if (accuracy <= 15) {
-        navigator.geolocation.clearWatch(watchId);
-      }
+      await reverseGeocode(latitude, longitude);
     },
     (error) => {
-      locationLoading.value = false;
-      const messages = { 1: 'Izin lokasi ditolak', 2: 'Sinyal GPS lemah', 3: 'Timeout GPS' };
-      currentLocationName.value = messages[error.code] || 'Gagal mendapatkan lokasi';
+      // Retry low accuracy Wi-Fi/cell tower
+      navigator.geolocation.getCurrentPosition(
+        async (positionLow) => {
+          const { latitude, longitude, accuracy } = positionLow.coords;
+          coords.value = { latitude, longitude, accuracy };
+          locationLoading.value = false;
+          await reverseGeocode(latitude, longitude);
+        },
+        async (errorLow) => {
+          // Both failed (e.g. HTTP on mobile or laptop GPS off), fallback to IP
+          await fallbackToIpLocation();
+          locationLoading.value = false;
+        },
+        { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
+      );
     },
     options
   );
@@ -1690,7 +1746,7 @@ onMounted(() => {
   fetchData();
   getMyLocation();
   clockInterval = setInterval(() => {
-    currentTime.value = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':');
+    currentTime.value = getWitaTime();
   }, 1000);
 });
 

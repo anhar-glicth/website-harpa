@@ -77,10 +77,10 @@
                         <div class="flex items-center gap-2">
                             <span>PIC Prospek :</span>
                             <select name="pic_prospect" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[180px]">
-                                <option value="">Pilih PIC</option>
-                                <option value="CRM">CRM</option>
-                                <option value="Digital Marketing">Digital Marketing</option>
-                                <option value="Baiq Nickte Madu Jasmine">Baiq Nickte Madu Jasmine</option>
+                                <option value="">Semua PIC</option>
+                                @foreach($picUsers as $pic)
+                                    <option value="{{ $pic->name }}" {{ request('pic_prospect') == $pic->name ? 'selected' : '' }}>{{ $pic->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
@@ -256,15 +256,16 @@
                                     </tr>
                                 @endforeach
                                 {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                @php $totPic90 = collect($resumeRfmByPic); @endphp
                                 <tr class="bg-amber-400 text-slate-900 font-black">
-                                    <td class="py-3 px-4 text-center font-mono">8</td>
+                                    <td class="py-3 px-4 text-center font-mono">{{ $totPic90->count() ?: '-' }}</td>
                                     <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">10</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">454</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4528</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">32506</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPic90->sum('champion')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPic90->sum('loyal')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPic90->sum('potential')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPic90->sum('need_attention')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPic90->sum('low_engagement')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPic90->sum('dormant')) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -307,16 +308,17 @@
                                     </tr>
                                 @endforeach
                                 {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                @php $totPicAt = collect($resumeRfmAllTimeByPic); @endphp
                                 <tr class="bg-amber-400 text-slate-900 font-black">
-                                    <td class="py-3 px-4 text-center font-mono">8</td>
+                                    <td class="py-3 px-4 text-center font-mono">{{ $totPicAt->count() ?: '-' }}</td>
                                     <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">44</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">1037</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">9287</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">27126</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPicAt->sum('champion')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPicAt->sum('loyal')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPicAt->sum('potential')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPicAt->sum('need_attention')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPicAt->sum('low_engagement')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPicAt->sum('dormant')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totPicAt->sum('new')) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -357,15 +359,16 @@
                                     </tr>
                                 @endforeach
                                 {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                @php $totOfc90 = collect($resumeRfm90ByOffice); @endphp
                                 <tr class="bg-amber-400 text-slate-900 font-black border-t border-amber-500">
-                                    <td class="py-3 px-4 text-center font-mono">2</td>
+                                    <td class="py-3 px-4 text-center font-mono">{{ $totOfc90->count() ?: '-' }}</td>
                                     <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">10</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">454</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4528</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">32506</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfc90->sum('champion')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfc90->sum('loyal')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfc90->sum('potential')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfc90->sum('need_attention')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfc90->sum('low_engagement')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfc90->sum('dormant')) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -408,16 +411,17 @@
                                     </tr>
                                 @endforeach
                                 {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                @php $totOfcAt = collect($resumeRfmAllTimeByOffice); @endphp
                                 <tr class="bg-amber-400 text-slate-900 font-black">
-                                    <td class="py-3 px-4 text-center font-mono">2</td>
+                                    <td class="py-3 px-4 text-center font-mono">{{ $totOfcAt->count() ?: '-' }}</td>
                                     <td class="py-3 px-4 font-black tracking-wider uppercase">TOTAL</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">44</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">1037</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">9287</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">0</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">27126</td>
-                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">4</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfcAt->sum('champion')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfcAt->sum('loyal')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfcAt->sum('potential')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfcAt->sum('need_attention')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfcAt->sum('low_engagement')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfcAt->sum('dormant')) }}</td>
+                                    <td class="py-3 px-4 text-center font-mono font-black text-slate-900">{{ number_format($totOfcAt->sum('new')) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -505,8 +509,8 @@
             xAxis: { categories: profiles },
             yAxis: { title: { text: 'Jumlah Donatur' } },
             series: [
-                { name: 'RFM 90 Days',  data: [10, 454, 4528, 0, 0, 32506], color: '#38bdf8' },
-                { name: 'RFM All Time', data: [44, 1037, 9287, 0, 0, 27130], color: '#10b981' }
+                { name: 'RFM 90 Days',  data: @json($chartRfmComparison90), color: '#38bdf8' },
+                { name: 'RFM All Time', data: @json($chartRfmComparisonAll), color: '#10b981' }
             ]
         }));
 
@@ -517,11 +521,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '10px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'DORMANT', y: 86.7, color: '#10b981' },
-                    { name: 'POTENTIAL', y: 12.1, color: '#f97316' },
-                    { name: 'LOYAL', y: 1.2, color: '#eab308' }
-                ]
+                data: @json($chartDistribusiRfm90Data)
             }]
         }));
 
@@ -532,12 +532,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '10px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'DORMANT', y: 72.3, color: '#10b981' },
-                    { name: 'POTENTIAL', y: 24.8, color: '#6366f1' },
-                    { name: 'LOYAL', y: 2.8, color: '#eab308' },
-                    { name: 'NEW', y: 0.0, color: '#f97316' }
-                ]
+                data: @json($chartDistribusiRfmAllData)
             }]
         }));
 
@@ -553,11 +548,7 @@
                 name: 'Total Donatur',
                 borderWidth: 1,
                 borderColor: '#1e293b',
-                data: [
-                    [0, 5, 10], [1, 5, 19], [2, 5, 15],
-                    [1, 4, 435], [2, 3, 4171], [5, 4, 260],
-                    [5, 3, 5116], [5, 0, 27126]
-                ],
+                data: @json($chartHeatmapData),
                 dataLabels: { enabled: true, color: '#ffffff', style: { textOutline: 'none', fontWeight: 'bold' } }
             }]
         }));

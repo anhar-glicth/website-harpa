@@ -16,7 +16,7 @@
     </main>
 
     <!-- Navigasi Bawah Mobile (Tampilan App) -->
-    <MobileBottomNav v-if="!isHome" />
+    <MobileBottomNav />
 
     <!-- Pop-up Login & Register -->
     <AuthModal />

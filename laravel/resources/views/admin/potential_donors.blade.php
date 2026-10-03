@@ -256,36 +256,43 @@
                         <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-100">
                             @forelse($potentialDonors as $index => $pd)
                                 @php
-                                    $phoneClean = preg_replace('/[^0-9]/', '', $pd->phone ?: '6281232862575');
-                                    if (str_starts_with($phoneClean, '0')) {
+                                    $phoneClean = preg_replace('/[^0-9]/', '', $pd->phone ?: '');
+                                    if ($phoneClean && str_starts_with($phoneClean, '0')) {
                                         $phoneClean = '62' . substr($phoneClean, 1);
                                     }
                                     $waMsg = urlencode("Assalamu'alaikum Kak " . $pd->name);
-                                    $waUrl = "https://api.whatsapp.com/send?phone={$phoneClean}&text={$waMsg}";
+                                    $waUrl = $phoneClean ? "https://api.whatsapp.com/send?phone={$phoneClean}&text={$waMsg}" : '#';
+                                    $lastResp = $pd->responses ? $pd->responses->last() : null;
                                 @endphp
                                 <tr @click="selectedItem = {{ json_encode($pd) }}; selectedId = {{ $pd->id }}; selectedName = '{{ addslashes($pd->name) }}'" 
                                     :class="selectedId === {{ $pd->id }} ? 'bg-emerald-50 border-l-4 border-emerald-600' : 'hover:bg-slate-50/80'"
                                     class="cursor-pointer transition-colors">
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-400">{{ $potentialDonors->firstItem() + $index }}</td>
-                                    <td class="py-3.5 px-4 font-mono font-bold text-emerald-700">{{ $pd->id ?: 9 }}</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-900">{{ $pd->name ?: 'Fadli Manrulanggi' }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $pd->created_at ? $pd->created_at->format('Y-m-d H:i:s') : '2026-02-27 09:31:59' }}</td>
-                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $phoneClean }}</td>
-                                    <td class="py-3.5 px-4 text-slate-600">{{ $pd->email ?: 'fadlilanggi@gmail.com' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-800">Baiq Nickte Madu Jasmine</td>
+                                    <td class="py-3.5 px-4 font-mono font-bold text-emerald-700">{{ $pd->id }}</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-900">{{ $pd->name ?: '-' }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $pd->created_at ? $pd->created_at->format('Y-m-d H:i:s') : '-' }}</td>
+                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $pd->phone ?: '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $pd->email ?: '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-800">{{ Auth::user()->name }}</td>
                                     <td class="py-3.5 px-4 text-slate-400">-</td>
                                     <td class="py-3.5 px-4 text-slate-400">-</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">2026-02-25</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $pd->created_at ? $pd->created_at->format('Y-m-d') : '-' }}</td>
                                     
                                     {{-- ACTION COLUMN WITH WHATSAPP & EDIT ICONS --}}
                                     <td class="py-3.5 px-4 text-center bg-slate-50/80">
                                         <div class="flex items-center justify-center gap-2" @click.stop>
                                             {{-- WhatsApp Direct Chat Icon --}}
+                                            @if($phoneClean)
                                             <a href="{{ $waUrl }}" target="_blank" 
                                                class="inline-flex items-center justify-center w-7 h-7 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-sm hover:scale-110 transition-transform" 
                                                title="Kirim Pesan WhatsApp">
                                                 <i class="fa-brands fa-whatsapp text-sm"></i>
                                             </a>
+                                            @else
+                                            <span class="inline-flex items-center justify-center w-7 h-7 bg-slate-200 text-slate-400 rounded-full cursor-not-allowed" title="Nomor WhatsApp tidak tersedia">
+                                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                                            </span>
+                                            @endif
 
                                             {{-- Edit Icon --}}
                                             <button type="button" @click="openEdit({{ json_encode($pd) }})" 
@@ -296,21 +303,21 @@
                                         </div>
                                     </td>
 
-                                    <td class="py-3.5 px-4 font-bold text-slate-800">Baiq Nickte Madu Jasmine</td>
-                                    <td class="py-3.5 px-4 text-center font-bold text-rose-500">n</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">2026-02-27 09:31:59</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">2026-02-27 09:31:59</td>
-                                    <td class="py-3.5 px-4 font-bold text-emerald-600">WhatsApp</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-800">{{ Auth::user()->name }}</td>
+                                    <td class="py-3.5 px-4 text-center font-bold text-slate-400">-</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">-</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $lastResp ? $lastResp->created_at->format('Y-m-d H:i:s') : '-' }}</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-600">{{ $lastResp ? 'WhatsApp' : '-' }}</td>
                                     <td class="py-3.5 px-4">
-                                        <span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-[10px] font-bold">
-                                            Belum Diprospek
+                                        <span class="px-2.5 py-1 {{ $lastResp ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }} rounded-full text-[10px] font-bold">
+                                            {{ $lastResp ? $lastResp->status : 'Belum Diprospek' }}
                                         </span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-right font-black text-emerald-600">Rp 50.000</td>
-                                    <td class="py-3.5 px-4 text-slate-700">Blast / Broadcast</td>
-                                    <td class="py-3.5 px-4 text-slate-800">Dunia Islam</td>
-                                    <td class="py-3.5 px-4 text-slate-900 font-medium">tehsgd</td>
-                                    <td class="py-3.5 px-4 text-slate-400">-</td>
+                                    <td class="py-3.5 px-4 text-right font-black text-slate-400">-</td>
+                                    <td class="py-3.5 px-4 text-slate-700">-</td>
+                                    <td class="py-3.5 px-4 text-slate-800">-</td>
+                                    <td class="py-3.5 px-4 text-slate-900 font-medium">-</td>
+                                    <td class="py-3.5 px-4 text-slate-500 italic max-w-xs truncate">{{ $lastResp ? $lastResp->response : '-' }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -344,16 +351,16 @@
                 @csrf
                 <div class="space-y-1">
                     <label>Nama Lengkap / Mitra <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" required placeholder="Fadli Manrulanggi" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    <input type="text" name="name" required placeholder="Contoh: Nama Calon Donatur" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label>No HP / WA</label>
-                        <input type="text" name="phone" placeholder="6281232862575" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <input type="text" name="phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                     </div>
                     <div class="space-y-1">
                         <label>Email</label>
-                        <input type="email" name="email" placeholder="fadlilanggi@gmail.com" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <input type="email" name="email" placeholder="Contoh: calon@email.com" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                     </div>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">

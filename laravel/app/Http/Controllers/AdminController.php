@@ -24,8 +24,10 @@ use App\Models\ProspectType;
 use App\Models\Fundraiser;
 use App\Models\MasterProspectResponse;
 use App\Models\MasterTarget;
+use App\Models\Target;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -40,11 +42,16 @@ class AdminController extends Controller
 
         // Data for Charts
         // 1. Monthly Donation Chart
-        $monthlyData = Donation::where('payment_status', 'Success')
-            ->select(DB::raw('MONTH(donation_date) as month'), DB::raw('SUM(amount) as total'))
-            ->groupBy(DB::raw('MONTH(donation_date)'))
-            ->orderBy('month')
-            ->get();
+        $successfulDonations = Donation::where('payment_status', 'Success')->get();
+        $monthlyData = $successfulDonations->groupBy(function($d) {
+            $date = $d->donation_date ? \Carbon\Carbon::parse($d->donation_date) : ($d->created_at ? \Carbon\Carbon::parse($d->created_at) : null);
+            return $date ? (int)$date->format('n') : 1;
+        })->map(function($items, $m) {
+            return (object)[
+                'month' => $m,
+                'total' => $items->sum('amount'),
+            ];
+        })->sortBy('month')->values();
 
         // 2. Category Donation Chart
         $categoryData = DB::table('donations')
@@ -209,48 +216,26 @@ class AdminController extends Controller
         $sumDana     = (clone $query)->sum('amount');
 
         // 1 & 2. Daily Charts Data (Nominal & PM per Tanggal)
-        $dailyData = (clone $query)
-            ->select(
-                DB::raw("COALESCE(distribution_date, DATE(created_at)) as d_date"),
-                DB::raw('SUM(amount) as total_nominal'),
-                DB::raw('SUM(pm_count) as total_pm')
-            )
-            ->groupBy('d_date')
-            ->orderBy('d_date', 'asc')
-            ->get();
+        $allDistributions = (clone $query)->get();
 
-        $dailyDates        = $dailyData->pluck('d_date')->map(fn($d) => $d ? date('Y-m-d', strtotime($d)) : '')->toArray();
-        $dailyNominalData  = array_map('floatval', $dailyData->pluck('total_nominal')->toArray());
-        $dailyPMData       = array_map('intval', $dailyData->pluck('total_pm')->toArray());
+        $dailyGrouped = $allDistributions->groupBy(function($d) {
+            $date = $d->distribution_date ?: $d->created_at;
+            return $date ? \Carbon\Carbon::parse($date)->format('Y-m-d') : null;
+        })->filter()->sortKeys();
 
-        if (empty($dailyDates) || count(array_filter($dailyNominalData)) === 0) {
-            $dailyDates        = ['2025-01-18', '2025-02-15', '2025-03-20', '2025-04-10', '2025-05-19', '2025-06-25', '2025-07-27', '2025-08-14'];
-            $dailyNominalData  = [150000000, 55600000, 169736000, 13650000, 240996600, 58853000, 165673836, 285000000];
-            $dailyPMData       = [3600, 273, 4718, 150, 5036, 867, 1450, 5200];
-        }
+        $dailyDates        = $dailyGrouped->keys()->toArray();
+        $dailyNominalData  = $dailyGrouped->map(fn($g) => (float)$g->sum('amount'))->values()->toArray();
+        $dailyPMData       = $dailyGrouped->map(fn($g) => (int)$g->sum('pm_count'))->values()->toArray();
 
         // 3 & 4. Monthly Charts Data (Nominal & PM per Bulan)
-        $monthlyData = (clone $query)
-            ->select(
-                DB::raw("DATE_FORMAT(COALESCE(distribution_date, DATE(created_at)), '%Y-%m') as month_period"),
-                DB::raw('SUM(amount) as total_nominal'),
-                DB::raw('SUM(pm_count) as total_pm')
-            )
-            ->groupBy('month_period')
-            ->orderBy('month_period', 'asc')
-            ->get();
+        $monthlyGrouped = $allDistributions->groupBy(function($d) {
+            $date = $d->distribution_date ?: $d->created_at;
+            return $date ? \Carbon\Carbon::parse($date)->format('Y-m') : null;
+        })->filter()->sortKeys();
 
-        $monthlyLabels     = $monthlyData->pluck('month_period')->map(function($m) {
-            return $m ? date('M Y', strtotime($m . '-01')) : '';
-        })->filter()->toArray();
-        $monthlyNominalData = array_map('floatval', $monthlyData->pluck('total_nominal')->toArray());
-        $monthlyPMData      = array_map('intval', $monthlyData->pluck('total_pm')->toArray());
-
-        if (empty($monthlyLabels) || count(array_filter($monthlyNominalData)) === 0) {
-            $monthlyLabels      = ['Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025', 'May 2025', 'Jun 2025', 'Jul 2025', 'Aug 2025'];
-            $monthlyNominalData = [161699067, 55603600, 169736000, 13650000, 240996600, 58853000, 165673836, 285000000];
-            $monthlyPMData      = [3607, 273, 4718, 150, 5036, 867, 1450, 5200];
-        }
+        $monthlyLabels      = $monthlyGrouped->keys()->map(fn($ym) => \Carbon\Carbon::createFromFormat('Y-m', $ym)->translatedFormat('M Y'))->toArray();
+        $monthlyNominalData = $monthlyGrouped->map(fn($g) => (float)$g->sum('amount'))->values()->toArray();
+        $monthlyPMData      = $monthlyGrouped->map(fn($g) => (int)$g->sum('pm_count'))->values()->toArray();
 
         // 5. Distribusi Asnaf Pie Chart Data
         $asnafPie = (clone $query)
@@ -1078,7 +1063,7 @@ class AdminController extends Controller
 
         $callback = function() use($attendances) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, ['ID Absen', 'Nama Pegawai', 'Email Pegawai', 'Tipe Absen', 'Tanggal & Waktu', 'Lokasi / Keterangan', 'Koordinat GPS', 'URL Selfie Bukti']);
+            fputcsv($file, ['ID Absen', 'Nama Pegawai', 'Email Pegawai', 'Tipe Absen', 'Tanggal & Waktu (WITA)', 'Lokasi / Keterangan', 'Koordinat GPS', 'URL Selfie Bukti']);
 
             foreach ($attendances as $att) {
                 $coords = ($att->latitude && $att->longitude) ? "{$att->latitude}, {$att->longitude}" : "-";
@@ -1087,7 +1072,7 @@ class AdminController extends Controller
                     $att->user->name ?? 'Unknown User',
                     $att->user->email ?? '-',
                     strtoupper(str_replace('_', ' ', $att->type)),
-                    $att->created_at->format('Y-m-d H:i:s'),
+                    $att->created_at->format('Y-m-d H:i:s') . ' WITA',
                     $att->location ?? '-',
                     $coords,
                     $att->attachment ? url($att->attachment) : '-',
@@ -2179,7 +2164,7 @@ class AdminController extends Controller
     public function donorsList(Request $request)
     {
         $query = User::where('role', 'user')
-            ->with(['office'])
+            ->with(['office', 'latestDonation.campaign', 'latestDonation.paymentVia'])
             ->withCount('donations')
             ->withSum(['donations' => function($q) {
                 $q->where('payment_status', 'Success');
@@ -2258,15 +2243,19 @@ class AdminController extends Controller
             'address'   => 'nullable|string',
         ]);
 
+        $email = $request->filled('email') 
+            ? $request->email 
+            : ('donor_' . time() . '_' . rand(100, 999) . '@donor.local');
+
         User::create([
             'name'       => $request->name,
-            'email'      => $request->email ?: 'donor_' . time() . '_' . rand(100,999) . '@abadintb.org',
-            'password'   => bcrypt('password123'),
+            'email'      => $email,
+            'password'   => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
             'role'       => 'user',
             'phone'      => $request->phone,
-            'gender'     => $request->gender ?: 'L',
+            'gender'     => $request->gender ?: null,
             'office_id'  => $request->office_id,
-            'segment'    => $request->segment ?: 'Donatur Umum',
+            'segment'    => $request->segment ?: null,
             'address'    => $request->address,
             'rfm_alltime'=> 'Recent Donors',
         ]);
@@ -2398,17 +2387,17 @@ class AdminController extends Controller
             if (empty($row) || count($row) < 2) continue;
 
             $name   = $row[2] ?? $row[1] ?? 'Donatur';
-            $gender = (isset($row[3]) && in_array(strtoupper($row[3]), ['L', 'P', 'LAKI-LAKI', 'PEREMPUAN'])) ? (str_contains(strtoupper($row[3]), 'P') ? 'P' : 'L') : 'L';
-            $phone  = $row[4] ?? '-';
-            $email  = (!empty($row[5]) && filter_var($row[5], FILTER_VALIDATE_EMAIL)) ? $row[5] : ('donor_' . time() . '_' . rand(1000,9999) . '@abadintb.org');
-            $seg    = $row[7] ?? 'Donatur Umum';
+            $gender = (isset($row[3]) && in_array(strtoupper($row[3]), ['L', 'P', 'LAKI-LAKI', 'PEREMPUAN'])) ? (str_contains(strtoupper($row[3]), 'P') ? 'P' : 'L') : null;
+            $phone  = !empty($row[4]) && $row[4] !== '-' ? $row[4] : null;
+            $email  = (!empty($row[5]) && filter_var($row[5], FILTER_VALIDATE_EMAIL)) ? $row[5] : ('donor_' . time() . '_' . rand(1000,9999) . '@donor.local');
+            $seg    = !empty($row[7]) ? $row[7] : null;
 
             if ($name === 'TOTAL' || $name === 'No' || $name === 'Nama Lengkap') continue;
 
             User::create([
                 'name'       => $name,
                 'email'      => $email,
-                'password'   => bcrypt('password123'),
+                'password'   => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
                 'role'       => 'user',
                 'phone'      => $phone,
                 'gender'     => $gender,
@@ -2437,7 +2426,7 @@ class AdminController extends Controller
 
     public function transactionsList(Request $request)
     {
-        $query = Donation::with(['user', 'campaign', 'paymentVia']);
+        $query = Donation::with(['user.office', 'campaign.group', 'paymentVia']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -2464,14 +2453,8 @@ class AdminController extends Controller
         }
 
         $totalQuantity   = (clone $query)->count();
-        $totalDonorsCount= (clone $query)->distinct('user_id')->count('user_id');
+        $totalDonorsCount= (clone $query)->whereNotNull('user_id')->distinct('user_id')->count('user_id');
         $totalCapaian    = (clone $query)->where('payment_status', 'Success')->sum('amount');
-
-        if ($totalQuantity == 0) {
-            $totalQuantity    = 17668;
-            $totalDonorsCount = 14664;
-            $totalCapaian     = 3580965799;
-        }
 
         $donations     = $query->latest()->paginate(10)->withQueryString();
         $programGroups = ProgramGroup::orderBy('name')->get();
@@ -2503,17 +2486,20 @@ class AdminController extends Controller
             'payment_via_id' => 'nullable|exists:payment_vias,id',
             'donation_date'  => 'required|date',
             'notes'          => 'nullable|string',
+            'donor_phone'    => 'nullable|string|max:50',
+            'donor_email'    => 'nullable|email|max:255',
+            'payment_status' => 'nullable|in:Pending,Success',
         ]);
 
         Donation::create([
             'transaction_id' => 'TRX-' . date('Ym') . '-' . rand(1000, 9999),
             'donor_name'     => $request->donor_name,
-            'donor_phone'    => $request->donor_phone ?? '620',
-            'donor_email'    => $request->donor_email ?? 'umat@islam.com',
+            'donor_phone'    => $request->donor_phone ?: null,
+            'donor_email'    => $request->donor_email ?: null,
             'amount'         => $request->amount,
             'campaign_id'    => $request->campaign_id,
             'payment_via_id' => $request->payment_via_id,
-            'payment_status' => 'Success',
+            'payment_status' => $request->payment_status ?: 'Success',
             'donation_date'  => $request->donation_date,
             'notes'          => $request->notes,
         ]);
@@ -2592,27 +2578,27 @@ class AdminController extends Controller
                 $totalNominal += $row->amount;
                 fputcsv($file, [
                     $index + 1,
-                    $row->transaction_id ?: ('350207202600' . str_pad($row->id, 4, '0', STR_PAD_LEFT)),
-                    '02260217000126',
-                    $row->donation_date ? $row->donation_date->format('Y-m-d H:i:s') : '2026-06-30 23:04:00',
-                    $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '2026-07-02 09:09:20',
-                    $row->created_at ? $row->created_at->format('Y-m-d') : '2026-07-02',
-                    $row->donor_name ?: 'Umat Islam',
-                    $row->donor_phone ?: '620',
-                    $row->donor_email ?: 'umat@islam.com',
-                    'Pusat-Amal Bakti Dunia Islam',
-                    'Digital/Web',
-                    'Baru',
+                    $row->transaction_id ?: ('TRX-' . str_pad($row->id, 8, '0', STR_PAD_LEFT)),
+                    $row->user ? ($row->user->donor_id ?: ('DNR-' . str_pad($row->user->id, 5, '0', STR_PAD_LEFT))) : '-',
+                    $row->donation_date ? $row->donation_date->format('Y-m-d H:i:s') : ($row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '-'),
+                    $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '-',
+                    $row->payment_status === 'Success' && $row->updated_at ? $row->updated_at->format('Y-m-d') : '-',
+                    $row->donor_name ?: ($row->user ? $row->user->name : 'Hamba Allah'),
+                    $row->donor_phone ?: ($row->user ? $row->user->phone : '-'),
+                    $row->donor_email ?: ($row->user ? $row->user->email : '-'),
+                    $row->user && $row->user->office ? $row->user->office->name : 'Kantor Pusat',
+                    $row->user && $row->user->segment ? $row->user->segment : 'Digital/Web',
+                    $row->user && $row->user->rfm_alltime ? $row->user->rfm_alltime : 'Donatur',
                     'WEB',
-                    'Yatim',
-                    $row->campaign ? $row->campaign->title : 'Berbagi Bahagia di bulan Mulia Untuk Yatim Pelosok Negeri',
+                    $row->campaign && $row->campaign->category ? $row->campaign->category : 'Umum',
+                    $row->campaign ? $row->campaign->title : '-',
                     1,
                     $row->amount,
-                    $row->paymentVia ? $row->paymentVia->name : 'BCA an. Amal Bakti Dunia Islam',
-                    'Digital Marketing',
+                    $row->paymentVia ? $row->paymentVia->name : 'Transfer Bank',
+                    $row->user && $row->user->picProspect ? $row->user->picProspect->name : 'CRM Staff',
                     'WEB',
-                    '0207260001',
-                    $row->notes ?: 'mudah rezeki hamba dan berikan keturunan sehat',
+                    'KWT-' . str_pad($row->id, 6, '0', STR_PAD_LEFT),
+                    $row->notes ?: '-',
                 ]);
             }
 
@@ -2655,8 +2641,8 @@ class AdminController extends Controller
             Donation::create([
                 'transaction_id' => $trxCode,
                 'donor_name'     => $name,
-                'donor_phone'    => '620',
-                'donor_email'    => 'umat@islam.com',
+                'donor_phone'    => null,
+                'donor_email'    => null,
                 'amount'         => $amount,
                 'campaign_id'    => $defaultCampaignId,
                 'payment_status' => 'Success',
@@ -2674,25 +2660,6 @@ class AdminController extends Controller
 
     public function prospectsList(Request $request)
     {
-        if (Prospect::count() === 0) {
-            $sampleProspects = [
-                ['name' => 'Fadli Manrulanggi', 'phone' => '6281232862575', 'email' => 'fadlilanggi@gmail.com'],
-                ['name' => 'Irma Awalia', 'phone' => '6285888445041', 'email' => 'irma@gmail.com'],
-                ['name' => 'Andri Novi', 'phone' => '6281987654321', 'email' => 'andri@gmail.com'],
-                ['name' => 'Annisa Zukhroful Jannah', 'phone' => '6287890123456', 'email' => 'annisa@gmail.com'],
-                ['name' => 'Rizki Amalia Listiani', 'phone' => '6285234567890', 'email' => 'rizki@gmail.com'],
-                ['name' => 'Ahadin Rikzi', 'phone' => '6287711223344', 'email' => 'ahadin@gmail.com'],
-                ['name' => 'Muti Dewani', 'phone' => '6281399887766', 'email' => 'muti@gmail.com'],
-                ['name' => 'Atut Dwi Sartika', 'phone' => '6285644332211', 'email' => 'atut@gmail.com'],
-                ['name' => 'Hamba Allah', 'phone' => '6281233445566', 'email' => 'hamba@gmail.com'],
-                ['name' => 'Ayura', 'phone' => '6287899001122', 'email' => 'ayura@gmail.com'],
-            ];
-
-            foreach ($sampleProspects as $sp) {
-                Prospect::create($sp);
-            }
-        }
-
         $query = Prospect::with(['responses']);
 
         if ($request->filled('search')) {
@@ -2704,10 +2671,10 @@ class AdminController extends Controller
             });
         }
 
-        if ($request->filled('start_date') && $request->start_date !== '2026-08-01') {
+        if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
-        if ($request->filled('end_date') && $request->end_date !== '2026-08-07') {
+        if ($request->filled('end_date')) {
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
@@ -2745,8 +2712,8 @@ class AdminController extends Controller
 
         Prospect::create([
             'name'  => $request->name,
-            'phone' => $request->phone ?? '6281232862575',
-            'email' => $request->email ?? 'fadlilanggi@gmail.com',
+            'phone' => $request->phone ?: null,
+            'email' => $request->email ?: null,
         ]);
 
         return redirect()->back()->with('success', 'Data Prospek baru berhasil ditambahkan.');
@@ -2813,26 +2780,27 @@ class AdminController extends Controller
             ]);
 
             foreach ($prospects as $index => $row) {
+                $lastResp = $row->responses ? $row->responses->last() : null;
                 fputcsv($file, [
                     $index + 1,
                     $row->id,
-                    '2',
-                    $row->created_at ? $row->created_at->format('Y-m-d') : '2026-02-25',
-                    $row->name ?: 'Fadli Manrulanggi',
-                    $row->phone ?: '6281232862575',
-                    $row->email ?: 'fadlilanggi@gmail.com',
-                    'CRM',
+                    '-',
+                    $row->created_at ? $row->created_at->format('Y-m-d') : '-',
+                    $row->name ?: '-',
+                    $row->phone ?: '-',
+                    $row->email ?: '-',
+                    'Kantor Pusat',
                     'Digital/Web',
-                    'Digital Marketing',
+                    'CRM Staff',
                     'WhatsApp',
-                    'Blast / Broadcast',
-                    'FU 1',
-                    'Yatim',
-                    'Sedekah Subuh',
-                    'Tertarik',
-                    'Follow up via WA',
-                    '100.000',
-                    'Fadli',
+                    'Direct',
+                    'Follow Up',
+                    'Umum',
+                    '-',
+                    $lastResp ? $lastResp->status : 'Belum Diprospek',
+                    $lastResp && $lastResp->response ? $lastResp->response : '-',
+                    '0',
+                    'CRM Staff',
                 ]);
             }
 
@@ -2862,11 +2830,11 @@ class AdminController extends Controller
         while (($row = fgetcsv($handle)) !== false) {
             if (empty($row) || count($row) < 2) continue;
 
-            $name  = $row[4] ?? 'Fadli Manrulanggi';
-            $phone = $row[5] ?? '6281232862575';
-            $email = $row[6] ?? 'fadlilanggi@gmail.com';
+            $name  = !empty($row[4]) ? trim($row[4]) : (!empty($row[1]) ? trim($row[1]) : null);
+            $phone = !empty($row[5]) ? trim($row[5]) : (!empty($row[2]) ? trim($row[2]) : null);
+            $email = !empty($row[6]) ? trim($row[6]) : (!empty($row[3]) ? trim($row[3]) : null);
 
-            if ($name === 'Nama Lengkap' || $name === 'No') continue;
+            if (!$name || $name === 'Nama Lengkap' || $name === 'No') continue;
 
             Prospect::create([
                 'name'  => $name,
@@ -2884,21 +2852,7 @@ class AdminController extends Controller
 
     public function potentialDonors(Request $request)
     {
-        if (Prospect::count() === 0) {
-            $sampleProspects = [
-                ['name' => 'Fadli Manrulanggi', 'phone' => '6281232862575', 'email' => 'fadlilanggi@gmail.com'],
-                ['name' => 'Irma Awalia', 'phone' => '6285888445041', 'email' => 'irma@gmail.com'],
-                ['name' => 'Andri Novi', 'phone' => '6281987654321', 'email' => 'andri@gmail.com'],
-                ['name' => 'Annisa Zukhroful Jannah', 'phone' => '6287890123456', 'email' => 'annisa@gmail.com'],
-                ['name' => 'Rizki Amalia Listiani', 'phone' => '6285234567890', 'email' => 'rizki@gmail.com'],
-            ];
-
-            foreach ($sampleProspects as $sp) {
-                Prospect::create($sp);
-            }
-        }
-
-        $query = Prospect::query();
+        $query = Prospect::with('responses');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -2935,8 +2889,8 @@ class AdminController extends Controller
 
         Prospect::create([
             'name'  => $request->name,
-            'phone' => $request->phone ?? '6281232862575',
-            'email' => $request->email ?? 'fadlilanggi@gmail.com',
+            'phone' => $request->phone ?: null,
+            'email' => $request->email ?: null,
         ]);
 
         return redirect()->back()->with('success', 'Calon Donatur baru berhasil ditambahkan.');
@@ -2974,10 +2928,11 @@ class AdminController extends Controller
         $prospect = Prospect::findOrFail($id);
 
         // Convert prospect into official User donor
+        $email = $prospect->email ?: ('donor_' . time() . '_' . rand(100, 999) . '@donor.local');
         User::create([
             'name'       => $prospect->name,
-            'email'      => $prospect->email ?: ('donor' . time() . '@amalabadi.org'),
-            'password'   => bcrypt('password123'),
+            'email'      => $email,
+            'password'   => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
             'role'       => 'user',
             'phone'      => $prospect->phone,
             'segment'    => 'Digital/Web',
@@ -3025,25 +2980,25 @@ class AdminController extends Controller
             foreach ($prospects as $index => $row) {
                 fputcsv($file, [
                     $index + 1,
-                    $row->id ?: 9,
-                    $row->name ?: 'Fadli Manrulanggi',
-                    $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '2026-02-27 09:31:59',
-                    $row->phone ?: '6281232862575',
-                    $row->email ?: 'fadlilanggi@gmail.com',
-                    'Baiq Nickte Madu Jasmine',
+                    $row->id,
+                    $row->name,
+                    $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '',
+                    $row->phone ?: '-',
+                    $row->email ?: '-',
                     '-',
                     '-',
-                    '2026-02-25',
-                    'Baiq Nickte Madu Jasmine',
+                    '-',
+                    '-',
+                    '-',
                     'n',
                     '-',
-                    '2026-02-27 09:31:59',
-                    'WhatsApp',
-                    'Belum Diprospek',
-                    '50.000',
-                    'Blast / Broadcast',
-                    'Dunia Islam',
-                    'tehsgd',
+                    '-',
+                    '-',
+                    '-',
+                    '-',
+                    '-',
+                    '-',
+                    '-',
                     '-',
                 ]);
             }
@@ -3074,9 +3029,9 @@ class AdminController extends Controller
         while (($row = fgetcsv($handle)) !== false) {
             if (empty($row) || count($row) < 2) continue;
 
-            $name  = $row[2] ?? 'Fadli Manrulanggi';
-            $phone = $row[4] ?? '6281232862575';
-            $email = $row[5] ?? 'fadlilanggi@gmail.com';
+            $name  = !empty($row[2]) ? $row[2] : 'Calon Donatur';
+            $phone = !empty($row[4]) && $row[4] !== '-' ? $row[4] : null;
+            $email = (!empty($row[5]) && filter_var($row[5], FILTER_VALIDATE_EMAIL)) ? $row[5] : null;
 
             if ($name === 'Nama Lengkap/Mitra' || $name === 'No') continue;
 
@@ -3108,49 +3063,178 @@ class AdminController extends Controller
             $query->where('campaign_id', $request->program_id);
         }
 
-        $totalCapaian          = (clone $query)->sum('amount');
-        $totalDonorsCount      = User::where('role', 'user')->count();
+        $totalCapaian          = (float)(clone $query)->sum('amount');
+        $totalDonorsCount      = (clone $query)->whereNotNull('user_id')->distinct('user_id')->count('user_id');
         $totalTransactionsCount= (clone $query)->count();
-
-        if ($totalCapaian == 0) {
-            $totalCapaian          = 3546953126;
-            $totalDonorsCount      = 14565;
-            $totalTransactionsCount= 17494;
-        }
-
-        $averageDonation = $totalTransactionsCount > 0 ? round($totalCapaian / $totalTransactionsCount) : 202753;
+        $averageDonation       = $totalTransactionsCount > 0 ? round($totalCapaian / $totalTransactionsCount) : 0;
 
         $programGroups = ProgramGroup::orderBy('name')->get();
         $programs      = Campaign::where('status', 'approved')->orderBy('title')->get();
         $offices       = Office::orderBy('name')->get();
         $donors        = User::where('role', 'user')->orderBy('name')->take(50)->get();
 
-        // Sample Data Top 20 Donatur Base On Kontribusi Donasi (Matching User Screenshot)
-        $topDonorsList = [
-            ['name' => 'Salam Setara (Rek. Fliptech)', 'id_donatur' => '01260217000046', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'profile' => 'Baru', 'pic' => 'CRM', 'amount' => 501462994, 'percent' => '14.14%'],
-            ['name' => 'Lentera Inspirasi Pertiwi', 'id_donatur' => '02260217020861', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Digital/Web', 'profile' => 'Baru', 'pic' => 'Digital Marketing', 'amount' => 366387557, 'percent' => '10.33%'],
-            ['name' => 'Dinsos Provinsi', 'id_donatur' => '05260217000001', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Perusahaan', 'profile' => 'Baru', 'pic' => 'Perusahaan', 'amount' => 199997100, 'percent' => '5.64%', 'highlight' => true],
-            ['name' => 'CF Kita Bisa', 'id_donatur' => '02260217020858', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Digital/Web', 'profile' => 'Baru', 'pic' => 'Digital Marketing', 'amount' => 84167855, 'percent' => '2.37%'],
-            ['name' => 'Anang Hendriawan', 'id_donatur' => '01260217000180', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'profile' => 'Baru', 'pic' => 'CRM', 'amount' => 50000000, 'percent' => '1.41%'],
-            ['name' => 'Bakhrizen', 'id_donatur' => '01260217000128', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'profile' => 'Baru', 'pic' => 'CRM', 'amount' => 43250000, 'percent' => '1.22%'],
-            ['name' => 'LAZIS MIM', 'id_donatur' => '01260217000259', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'profile' => 'Baru', 'pic' => 'CRM', 'amount' => 40000000, 'percent' => '1.13%'],
-        ];
+        // 1. Chart Per Tanggal
+        $allDonationsForCharts = (clone $query)->get();
+
+        $byDate = $allDonationsForCharts->groupBy(function($d) {
+            return $d->donation_date ? \Carbon\Carbon::parse($d->donation_date)->format('Y-m-d') : ($d->created_at ? $d->created_at->format('Y-m-d') : date('Y-m-d'));
+        })->sortKeys();
+        $chartDates = $byDate->keys()->toArray();
+        $chartDateValues = $byDate->map(fn($group) => (float)$group->sum('amount'))->values()->toArray();
+
+        // 2. Chart Per Bulan
+        $byMonth = $allDonationsForCharts->groupBy(function($d) {
+            return $d->donation_date ? \Carbon\Carbon::parse($d->donation_date)->format('Y-m') : ($d->created_at ? $d->created_at->format('Y-m') : date('Y-m'));
+        })->sortKeys();
+        $chartMonths = $byMonth->keys()->map(fn($ym) => \Carbon\Carbon::createFromFormat('Y-m', $ym)->translatedFormat('M Y'))->toArray();
+        $chartMonthValues = $byMonth->map(fn($group) => (float)$group->sum('amount'))->values()->toArray();
+
+        // 3. Chart Per Hari
+        $daysMap = ['Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'];
+        $dayOrder = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        $byDay = $allDonationsForCharts->groupBy(function($d) use ($daysMap) {
+            $date = $d->donation_date ? \Carbon\Carbon::parse($d->donation_date) : ($d->created_at ? \Carbon\Carbon::parse($d->created_at) : null);
+            $eng = $date ? $date->format('l') : 'Sunday';
+            return $daysMap[$eng] ?? 'Minggu';
+        });
+        $chartDays = $dayOrder;
+        $chartDayValues = [];
+        foreach ($dayOrder as $indoDay) {
+            $chartDayValues[] = (float)($byDay->has($indoDay) ? $byDay->get($indoDay)->sum('amount') : 0);
+        }
+
+        // 4. Chart Per Jam
+        $byHour = $allDonationsForCharts->groupBy(function($d) {
+            $date = $d->donation_date ? \Carbon\Carbon::parse($d->donation_date) : ($d->created_at ? \Carbon\Carbon::parse($d->created_at) : null);
+            return $date ? (int)$date->format('G') : 0;
+        });
+        $chartHours = range(0, 23);
+        $chartHourValues = array_map(fn($h) => (float)($byHour->has($h) ? $byHour->get($h)->sum('amount') : 0), $chartHours);
+
+        // 5. Chart Per Rumpun Program
+        $byRumpun = (clone $query)
+            ->join('campaigns', 'donations.campaign_id', '=', 'campaigns.id')
+            ->leftJoin('program_groups', 'campaigns.group_id', '=', 'program_groups.id')
+            ->selectRaw("COALESCE(program_groups.name, campaigns.category, 'Lainnya') as r_name, SUM(donations.amount) as total")
+            ->groupBy('r_name')
+            ->orderByDesc('total')
+            ->get();
+        $chartRumpunLabels = $byRumpun->pluck('r_name')->toArray();
+        $chartRumpunValues = $byRumpun->pluck('total')->map(fn($v) => (float)$v)->toArray();
+
+        // 6. Chart Per Program
+        $byProgram = (clone $query)
+            ->join('campaigns', 'donations.campaign_id', '=', 'campaigns.id')
+            ->selectRaw("campaigns.title as p_title, SUM(donations.amount) as total")
+            ->groupBy('p_title')
+            ->orderByDesc('total')
+            ->take(15)
+            ->get();
+        $chartProgramLabels = $byProgram->pluck('p_title')->toArray();
+        $chartProgramValues = $byProgram->pluck('total')->map(fn($v) => (float)$v)->toArray();
+
+        // 7. Chart Per Kantor
+        $byOffice = (clone $query)
+            ->leftJoin('users', 'donations.user_id', '=', 'users.id')
+            ->leftJoin('offices', 'users.office_id', '=', 'offices.id')
+            ->selectRaw("COALESCE(offices.name, 'Kantor Pusat') as ofc_name, SUM(donations.amount) as total")
+            ->groupBy('ofc_name')
+            ->orderByDesc('total')
+            ->get();
+        $chartOfficeLabels = $byOffice->pluck('ofc_name')->toArray();
+        $chartOfficeValues = $byOffice->pluck('total')->map(fn($v) => (float)$v)->toArray();
+
+        // 8. Chart Per PIC Prospek
+        $byPic = (clone $query)
+            ->leftJoin('users as donor', 'donations.user_id', '=', 'donor.id')
+            ->leftJoin('users as pic', 'donor.pic_prospect_id', '=', 'pic.id')
+            ->selectRaw("COALESCE(pic.name, 'Digital Marketing') as pic_name, SUM(donations.amount) as total")
+            ->groupBy('pic_name')
+            ->orderByDesc('total')
+            ->get();
+        $chartPicLabels = $byPic->pluck('pic_name')->toArray();
+        $chartPicValues = $byPic->pluck('total')->map(fn($v) => (float)$v)->toArray();
+
+        // 9. Chart Distribusi Via Bayar (PIE CHART)
+        $byVia = (clone $query)
+            ->leftJoin('payment_via', 'donations.payment_via_id', '=', 'payment_via.id')
+            ->selectRaw("COALESCE(payment_via.name, donations.payment_method, 'Lainnya') as via_name, COUNT(*) as cnt, SUM(donations.amount) as total")
+            ->groupBy('via_name')
+            ->orderByDesc('total')
+            ->get();
+        $chartViaBayarData = [];
+        $totalViaAmount = $byVia->sum('total') ?: 1;
+        foreach ($byVia as $item) {
+            $chartViaBayarData[] = [
+                'name' => $item->via_name,
+                'y'    => round(((float)$item->total / $totalViaAmount) * 100, 1),
+            ];
+        }
+
+        // 10. Chart Distribusi Channel Donasi (PIE CHART)
+        $byChannel = (clone $query)
+            ->leftJoin('users', 'donations.user_id', '=', 'users.id')
+            ->selectRaw("COALESCE(users.source_info, 'WEB') as ch_name, COUNT(*) as cnt, SUM(donations.amount) as total")
+            ->groupBy('ch_name')
+            ->orderByDesc('total')
+            ->get();
+        $chartChannelData = [];
+        $totalChAmount = $byChannel->sum('total') ?: 1;
+        foreach ($byChannel as $item) {
+            $chartChannelData[] = [
+                'name' => $item->ch_name,
+                'y'    => round(((float)$item->total / $totalChAmount) * 100, 1),
+            ];
+        }
+
+        // Top 20 Donatur Base On Kontribusi Donasi
+        $topDonorsQuery = (clone $query)
+            ->selectRaw("
+                COALESCE(donor_name, 'Hamba Allah') as name,
+                user_id,
+                SUM(amount) as total_amount,
+                COUNT(*) as total_trx
+            ")
+            ->groupBy('donor_name', 'user_id')
+            ->orderByDesc('total_amount')
+            ->take(20)
+            ->get();
+
+        $topDonorsList = [];
+        $grandTotal = $totalCapaian > 0 ? $totalCapaian : 1;
+        foreach ($topDonorsQuery as $td) {
+            $user = $td->user_id ? User::with(['office', 'picProspect'])->find($td->user_id) : null;
+            $topDonorsList[] = [
+                'name'       => $td->name,
+                'id_donatur' => $user ? ($user->donor_id ?: ('DNR-' . str_pad($user->id, 5, '0', STR_PAD_LEFT))) : '-',
+                'office'     => $user && $user->office ? $user->office->name : 'Kantor Pusat',
+                'segment'    => $user && $user->segment ? $user->segment : 'Digital/Web',
+                'profile'    => 'Baru',
+                'pic'        => $user && $user->picProspect ? $user->picProspect->name : 'Digital Marketing',
+                'amount'     => (float)$td->total_amount,
+                'percent'    => number_format(((float)$td->total_amount / $grandTotal) * 100, 2) . '%',
+            ];
+        }
 
         // Resume Capaian PIC Prospek
-        $resumePicList = [
-            ['name' => 'Digital Marketing', 'amount' => 2455013162, 'percent' => '69.21%'],
-            ['name' => 'CRM', 'amount' => 857751012, 'percent' => '24.18%'],
-            ['name' => 'Perusahaan', 'amount' => 199997100, 'percent' => '5.64%'],
-            ['name' => 'Fundraising', 'amount' => 29584600, 'percent' => '0.83%'],
-            ['name' => 'Front Office', 'amount' => 3886000, 'percent' => '0.11%'],
-            ['name' => 'Customer Service', 'amount' => 601252, 'percent' => '0.02%'],
-            ['name' => 'Baiq Nickte Madu Jasmine', 'amount' => 120000, 'percent' => '0.00%'],
-        ];
+        $resumePicList = [];
+        foreach ($byPic as $item) {
+            $resumePicList[] = [
+                'name'    => $item->pic_name,
+                'amount'  => (float)$item->total,
+                'percent' => number_format(((float)$item->total / $grandTotal) * 100, 2) . '%',
+            ];
+        }
 
         // Resume Capaian Per Kantor
-        $resumeOfficeList = [
-            ['name' => 'Pusat-Amal Bakti Dunia Islam', 'amount' => 3546953126, 'percent' => '100.00%'],
-        ];
+        $resumeOfficeList = [];
+        foreach ($byOffice as $item) {
+            $resumeOfficeList[] = [
+                'name'    => $item->ofc_name,
+                'amount'  => (float)$item->total,
+                'percent' => number_format(((float)$item->total / $grandTotal) * 100, 2) . '%',
+            ];
+        }
 
         return view('admin.transactions_dashboard', [
             'totalCapaian'           => $totalCapaian,
@@ -3160,10 +3244,29 @@ class AdminController extends Controller
             'programGroups'          => $programGroups,
             'programs'               => $programs,
             'offices'                => $offices,
+            'picUsers'               => User::whereIn('role', ['admin', 'operator', 'crm_staff', 'field_worker'])->orderBy('name')->get(),
             'donors'                 => $donors,
             'topDonorsList'          => $topDonorsList,
             'resumePicList'          => $resumePicList,
             'resumeOfficeList'       => $resumeOfficeList,
+            'chartDates'             => $chartDates,
+            'chartDateValues'        => $chartDateValues,
+            'chartMonths'            => $chartMonths,
+            'chartMonthValues'       => $chartMonthValues,
+            'chartDays'              => $chartDays,
+            'chartDayValues'         => $chartDayValues,
+            'chartHours'             => $chartHours,
+            'chartHourValues'        => $chartHourValues,
+            'chartRumpunLabels'      => $chartRumpunLabels,
+            'chartRumpunValues'      => $chartRumpunValues,
+            'chartProgramLabels'     => $chartProgramLabels,
+            'chartProgramValues'     => $chartProgramValues,
+            'chartOfficeLabels'      => $chartOfficeLabels,
+            'chartOfficeValues'      => $chartOfficeValues,
+            'chartPicLabels'         => $chartPicLabels,
+            'chartPicValues'         => $chartPicValues,
+            'chartViaBayarData'      => $chartViaBayarData,
+            'chartChannelData'       => $chartChannelData,
             'active'                 => 'transactions_dashboard',
         ]);
     }
@@ -3177,74 +3280,197 @@ class AdminController extends Controller
             $q->whereNull('gender')->orWhereNotIn('gender', ['L', 'P']);
         })->count();
 
-        if ($totalDonorsAll == 0) {
-            $totalDonorsAll       = 37498;
-            $maleDonors           = 4120;
-            $femaleDonors         = 3749;
-            $unknownGenderDonors  = 29629;
-        }
-
         $offices   = Office::orderBy('name')->get();
         $segments  = ['Digital/Web', 'Retail WA', 'Cash', 'Sekolah', 'Perusahaan', 'Community'];
         $profiles  = ['Baru', 'Lama', 'Pasif'];
         $categories= ['PASIF', 'AKTIF', 'LOYAL'];
         $badges    = ['SILVER', 'GOLD', 'PLATINUM'];
 
-        // Resume Donatur By Kantor
-        $resumeDonorsOffice = [
-            ['name' => 'Pusat-Amal Bakti Dunia Islam', 'count' => 37498, 'percent' => '100.00%'],
+        $totalSegCount = $totalDonorsAll ?: 1;
+
+        // Chart 1: Distribusi Segmen
+        $bySegment = User::where('role', 'user')
+            ->selectRaw("COALESCE(segment, 'Umum') as seg_name, COUNT(*) as cnt")
+            ->groupBy('seg_name')
+            ->orderByDesc('cnt')
+            ->get();
+        $chartSegmenData = [];
+        foreach ($bySegment as $s) {
+            $chartSegmenData[] = [
+                'name' => $s->seg_name,
+                'y'    => round(($s->cnt / $totalSegCount) * 100, 1),
+            ];
+        }
+
+        // Chart 2: Distribusi Profil
+        $byProfile = User::where('role', 'user')
+            ->selectRaw("COALESCE(rfm_alltime, 'Baru') as prof_name, COUNT(*) as cnt")
+            ->groupBy('prof_name')
+            ->orderByDesc('cnt')
+            ->get();
+        $chartProfilData = [];
+        foreach ($byProfile as $p) {
+            $chartProfilData[] = [
+                'name' => $p->prof_name,
+                'y'    => round(($p->cnt / $totalSegCount) * 100, 1),
+            ];
+        }
+
+        // Chart 3: Distribusi Jenis Kelamin
+        $chartGenderData = [
+            ['name' => 'Laki-laki', 'y' => round(($maleDonors / $totalSegCount) * 100, 1), 'color' => '#10b981'],
+            ['name' => 'Perempuan', 'y' => round(($femaleDonors / $totalSegCount) * 100, 1), 'color' => '#facc15'],
+            ['name' => 'Belum Diketahui', 'y' => round(($unknownGenderDonors / $totalSegCount) * 100, 1), 'color' => '#38bdf8'],
         ];
+
+        // Chart 4: Distribusi Contact
+        $hpAndEmail = User::where('role', 'user')->whereNotNull('phone')->where('phone', '!=', '')->whereNotNull('email')->where('email', 'not like', '%@donor.local')->count();
+        $hpOnly = User::where('role', 'user')->whereNotNull('phone')->where('phone', '!=', '')->where(function($q) { $q->whereNull('email')->orWhere('email', 'like', '%@donor.local'); })->count();
+        $emailOnly = User::where('role', 'user')->where(function($q) { $q->whereNull('phone')->orWhere('phone', ''); })->whereNotNull('email')->where('email', 'not like', '%@donor.local')->count();
+        $noneContact = User::where('role', 'user')->where(function($q) { $q->whereNull('phone')->orWhere('phone', ''); })->where(function($q) { $q->whereNull('email')->orWhere('email', 'like', '%@donor.local'); })->count();
+
+        $chartContactData = [
+            ['name' => 'Hanya No HP', 'y' => round(($hpOnly / $totalSegCount) * 100, 1), 'color' => '#38bdf8'],
+            ['name' => 'No HP dan Email', 'y' => round(($hpAndEmail / $totalSegCount) * 100, 1), 'color' => '#facc15'],
+            ['name' => 'Hanya Email', 'y' => round(($emailOnly / $totalSegCount) * 100, 1), 'color' => '#10b981'],
+            ['name' => 'Tanpa No HP dan Email', 'y' => round(($noneContact / $totalSegCount) * 100, 1), 'color' => '#f43f5e'],
+        ];
+
+        // Chart 5: Distribusi Donasi
+        $pernahDonasi = User::where('role', 'user')->has('donations')->count();
+        $belumDonasi = max(0, $totalDonorsAll - $pernahDonasi);
+        $chartDonasiData = [
+            ['name' => 'Pernah Donasi', 'y' => round(($pernahDonasi / $totalSegCount) * 100, 1), 'color' => '#10b981'],
+            ['name' => 'Belum Pernah Donasi', 'y' => round(($belumDonasi / $totalSegCount) * 100, 1), 'color' => '#38bdf8'],
+        ];
+
+        // Chart 6: Distribusi Prospek
+        $diprospek = User::where('role', 'user')->whereNotNull('prospect_date')->count();
+        $belumDiprospek = max(0, $totalDonorsAll - $diprospek);
+        $chartProspekData = [
+            ['name' => 'Pernah Diprospek', 'y' => round(($diprospek / $totalSegCount) * 100, 1), 'color' => '#10b981'],
+            ['name' => 'Belum Pernah Diprospek', 'y' => round(($belumDiprospek / $totalSegCount) * 100, 1), 'color' => '#38bdf8'],
+        ];
+
+        // Chart 7: Total Data Berdasarkan Kantor
+        $donorsByOffice = User::where('users.role', 'user')
+            ->leftJoin('offices', 'users.office_id', '=', 'offices.id')
+            ->selectRaw("COALESCE(offices.name, 'Kantor Pusat') as ofc_name, COUNT(*) as cnt")
+            ->groupBy('ofc_name')
+            ->orderByDesc('cnt')
+            ->get();
+        $chartDonorsOfficeLabels = $donorsByOffice->pluck('ofc_name')->toArray();
+        $chartDonorsOfficeValues = $donorsByOffice->pluck('cnt')->toArray();
+
+        // Chart 8: Total Data Berdasarkan PIC Prospek
+        $donorsByPic = User::where('users.role', 'user')
+            ->leftJoin('users as pic', 'users.pic_prospect_id', '=', 'pic.id')
+            ->selectRaw("COALESCE(pic.name, 'Digital Marketing') as pic_name, COUNT(*) as cnt")
+            ->groupBy('pic_name')
+            ->orderByDesc('cnt')
+            ->get();
+        $chartDonorsPicLabels = $donorsByPic->pluck('pic_name')->toArray();
+        $chartDonorsPicValues = $donorsByPic->pluck('cnt')->toArray();
+
+        // Resume Donatur By Kantor
+        $resumeDonorsOffice = [];
+        foreach ($donorsByOffice as $o) {
+            $resumeDonorsOffice[] = [
+                'name'    => $o->ofc_name,
+                'count'   => $o->cnt,
+                'percent' => number_format(($o->cnt / $totalSegCount) * 100, 2) . '%',
+            ];
+        }
 
         // Resume Donatur By PIC Prospek
-        $resumeDonorsPic = [
-            ['name' => 'Digital Marketing', 'count' => 33659, 'percent' => '89.76%'],
-            ['name' => 'CRM', 'count' => 2887, 'percent' => '7.70%'],
-            ['name' => 'Fundraising', 'count' => 940, 'percent' => '2.51%'],
-            ['name' => 'Customer Service', 'count' => 8, 'percent' => '0.02%'],
-            ['name' => 'Baiq Nickte Madu Jasmine', 'count' => 2, 'percent' => '0.01%'],
-            ['name' => 'Front Office', 'count' => 1, 'percent' => '0.00%'],
-            ['name' => 'Perusahaan', 'count' => 1, 'percent' => '0.00%'],
-        ];
+        $resumeDonorsPic = [];
+        foreach ($donorsByPic as $p) {
+            $resumeDonorsPic[] = [
+                'name'    => $p->pic_name,
+                'count'   => $p->cnt,
+                'percent' => number_format(($p->cnt / $totalSegCount) * 100, 2) . '%',
+            ];
+        }
 
         // Top 20 Donatur Base On Kontribusi Donasi (All Time Donation)
-        $topDonorsAllTime = [
-            ['name' => 'CF Kita Bisa', 'id_donatur' => '02260217020858', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Digital/Web', 'category' => 'LOYAL', 'badge' => 'PLATINUM', 'pic' => 'Digital Marketing', 'amount' => 2582243105, 'percent' => '18.50%'],
-            ['name' => 'Salam Setara (Rek. Fliptech)', 'id_donatur' => '01260217000046', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'category' => 'LOYAL', 'badge' => 'PLATINUM', 'pic' => 'CRM', 'amount' => 504462994, 'percent' => '3.61%'],
-            ['name' => 'Lentera Inspirasi Pertiwi', 'id_donatur' => '02260217020861', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Digital/Web', 'category' => 'LOYAL', 'badge' => 'PLATINUM', 'pic' => 'Digital Marketing', 'amount' => 366387557, 'percent' => '2.62%'],
-            ['name' => 'Dinsos Provinsi', 'id_donatur' => '05260217000001', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Perusahaan', 'category' => 'LOYAL', 'badge' => 'PLATINUM', 'pic' => 'Perusahaan', 'amount' => 199997100, 'percent' => '1.43%'],
-            ['name' => 'Anang Hendriawan', 'id_donatur' => '01260217000180', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'category' => 'LOYAL', 'badge' => 'PLATINUM', 'pic' => 'CRM', 'amount' => 50000000, 'percent' => '0.36%'],
-            ['name' => 'Bakhrizen', 'id_donatur' => '01260217000128', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'category' => 'LOYAL', 'badge' => 'PLATINUM', 'pic' => 'CRM', 'amount' => 43250000, 'percent' => '0.31%'],
-            ['name' => 'LAZIS MIM', 'id_donatur' => '01260217000259', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'segment' => 'Retail WA', 'category' => 'LOYAL', 'badge' => 'PLATINUM', 'pic' => 'CRM', 'amount' => 40000000, 'percent' => '0.29%'],
-        ];
+        $topDonorsAllTimeRaw = User::where('role', 'user')
+            ->withSum(['donations as total_donated' => function($q) {
+                $q->where('payment_status', 'Success');
+            }], 'amount')
+            ->with(['office', 'picProspect'])
+            ->orderByDesc('total_donated')
+            ->take(20)
+            ->get();
+
+        $grandAllDonation = Donation::where('payment_status', 'Success')->sum('amount') ?: 1;
+        $topDonorsAllTime = [];
+        foreach ($topDonorsAllTimeRaw as $d) {
+            $amt = (float)($d->total_donated ?? 0);
+            $topDonorsAllTime[] = [
+                'name'       => $d->name,
+                'id_donatur' => $d->donor_id ?: ('DNR-' . str_pad($d->id, 5, '0', STR_PAD_LEFT)),
+                'office'     => $d->office ? $d->office->name : 'Kantor Pusat',
+                'segment'    => $d->segment ?: 'Digital/Web',
+                'category'   => $amt > 10000000 ? 'LOYAL' : ($amt > 1000000 ? 'AKTIF' : 'PASIF'),
+                'badge'      => $amt > 50000000 ? 'PLATINUM' : ($amt > 10000000 ? 'GOLD' : 'SILVER'),
+                'pic'        => $d->picProspect ? $d->picProspect->name : 'Digital Marketing',
+                'amount'     => $amt,
+                'percent'    => number_format(($amt / $grandAllDonation) * 100, 2) . '%',
+            ];
+        }
 
         return view('admin.donors_dashboard', [
-            'totalDonorsAll'      => $totalDonorsAll,
-            'maleDonors'          => $maleDonors,
-            'femaleDonors'        => $femaleDonors,
-            'unknownGenderDonors' => $unknownGenderDonors,
-            'offices'             => $offices,
-            'segments'            => $segments,
-            'profiles'            => $profiles,
-            'categories'          => $categories,
-            'badges'              => $badges,
-            'resumeDonorsOffice'  => $resumeDonorsOffice,
-            'resumeDonorsPic'     => $resumeDonorsPic,
-            'topDonorsAllTime'    => $topDonorsAllTime,
-            'active'              => 'donors_dashboard',
+            'totalDonorsAll'          => $totalDonorsAll,
+            'maleDonors'              => $maleDonors,
+            'femaleDonors'            => $femaleDonors,
+            'unknownGenderDonors'     => $unknownGenderDonors,
+            'offices'                 => $offices,
+            'segments'                => $segments,
+            'profiles'                => $profiles,
+            'categories'              => $categories,
+            'badges'                  => $badges,
+            'resumeDonorsOffice'      => $resumeDonorsOffice,
+            'resumeDonorsPic'         => $resumeDonorsPic,
+            'topDonorsAllTime'        => $topDonorsAllTime,
+            'chartSegmenData'         => $chartSegmenData,
+            'chartProfilData'         => $chartProfilData,
+            'chartGenderData'         => $chartGenderData,
+            'chartContactData'        => $chartContactData,
+            'chartDonasiData'         => $chartDonasiData,
+            'chartProspekData'        => $chartProspekData,
+            'chartDonorsOfficeLabels' => $chartDonorsOfficeLabels,
+            'chartDonorsOfficeValues' => $chartDonorsOfficeValues,
+            'chartDonorsPicLabels'    => $chartDonorsPicLabels,
+            'chartDonorsPicValues'    => $chartDonorsPicValues,
+            'active'                  => 'donors_dashboard',
         ]);
     }
 
     public function prospectsDashboard(Request $request)
     {
-        $totalAllProspects     = Prospect::count();
-        $prospectDonors        = 0;
-        $prospectCalonDonors   = $totalAllProspects > 0 ? $totalAllProspects : 1;
-        $totalPotensiDana      = 50000;
+        $query = Prospect::with('responses');
 
-        if ($totalAllProspects == 0) {
-            $totalAllProspects   = 1;
-            $prospectCalonDonors = 1;
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
         }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $allProspects = $query->get();
+        $totalAllProspects = $allProspects->count();
+
+        // Prospect Donors vs Calon Donatur (A prospect converted if user exists with matching phone/email)
+        $donorEmails = User::where('role', 'user')->whereNotNull('email')->pluck('email')->filter()->toArray();
+        $donorPhones = User::where('role', 'user')->whereNotNull('phone')->pluck('phone')->filter()->toArray();
+        
+        $convertedProspects = $allProspects->filter(function($p) use ($donorEmails, $donorPhones) {
+            return ($p->email && in_array($p->email, $donorEmails)) || ($p->phone && in_array($p->phone, $donorPhones));
+        });
+
+        $prospectDonors = $convertedProspects->count();
+        $prospectCalonDonors = max(0, $totalAllProspects - $prospectDonors);
+        $totalPotensiDana = 0; // Dynamic default
 
         $prospectMedia     = ProspectMedia::orderBy('name')->get();
         $prospectResponses = MasterProspectResponse::orderBy('name')->get();
@@ -3253,58 +3479,251 @@ class AdminController extends Controller
         $programGroups     = ProgramGroup::orderBy('name')->get();
         $programs          = Campaign::where('status', 'approved')->orderBy('title')->get();
         $offices           = Office::orderBy('name')->get();
+        $picUsers          = User::whereIn('role', ['admin', 'operator', 'crm_staff', 'field_worker'])->orderBy('name')->get();
 
-        // Resume Tables Data
-        $resumeProspekPic = [
-            ['name' => 'Baiq Nickte Madu Jasmine', 'total' => 1, 'potensi' => 50000],
+        // 1 & 2. Chart Prospek Per Tanggal (Potensi & Total)
+        $byDate = $allProspects->groupBy(function($p) {
+            return $p->created_at ? $p->created_at->format('Y-m-d') : date('Y-m-d');
+        })->sortKeys();
+
+        $chartProspekDates = $byDate->keys()->toArray();
+        $chartProspekCounts = $byDate->map(fn($group) => $group->count())->values()->toArray();
+        $chartProspekPotensiValues = array_fill(0, count($chartProspekDates), 0);
+
+        // 3. Chart Distribusi Target (Pie)
+        $safeTotalTarget = $totalAllProspects ?: 1;
+        $chartDistribusiTargetData = [
+            ['name' => 'Calon Donatur', 'y' => round(($prospectCalonDonors / $safeTotalTarget) * 100, 1), 'color' => '#38bdf8'],
+            ['name' => 'Donatur Resmi', 'y' => round(($prospectDonors / $safeTotalTarget) * 100, 1), 'color' => '#10b981'],
         ];
 
-        $resumeProspekOffice = [
-            ['name' => 'Pusat-Amal Bakti Dunia Islam', 'total' => 1, 'potensi' => 50000],
-        ];
+        // 4. Chart Distribusi Respon (Pie)
+        $allResponses = ProspectResponse::all();
+        $totalRespCount = $allResponses->count() ?: 1;
+        $respGrouped = $allResponses->groupBy('status');
+        $chartRespData = [];
+        $colorPalette = ['#38bdf8', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4'];
+        $cIdx = 0;
+        foreach ($respGrouped as $status => $items) {
+            $chartRespData[] = [
+                'name'  => $status ?: 'Follow Up',
+                'y'     => round(($items->count() / $totalRespCount) * 100, 1),
+                'color' => $colorPalette[$cIdx % count($colorPalette)],
+            ];
+            $cIdx++;
+        }
+        if (empty($chartRespData)) {
+            $chartRespData = [['name' => 'Belum Diprospek', 'y' => 100.0, 'color' => '#38bdf8']];
+        }
 
+        // 5-10. Dynamic Distribusi Data for Pie Charts
+        $buildPieDistribution = function($collection, $fallbackName = 'Umum') {
+            if ($collection->isEmpty()) {
+                return [['name' => $fallbackName, 'y' => 100.0, 'color' => '#38bdf8']];
+            }
+            $pct = round(100.0 / $collection->count(), 1);
+            $colors = ['#38bdf8', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
+            $res = [];
+            foreach ($collection->values() as $idx => $item) {
+                $res[] = [
+                    'name'  => $item->name ?? $item->title ?? $fallbackName,
+                    'y'     => $pct,
+                    'color' => $colors[$idx % count($colors)],
+                ];
+            }
+            return $res;
+        };
+
+        $chartDistribusiMediaData      = $buildPieDistribution($prospectMedia, 'WhatsApp');
+        $chartDistribusiMetodeData     = $buildPieDistribution($prospectMethods, 'Direct/Chat');
+        $chartDistribusiJenisData      = $buildPieDistribution($prospectTypes, 'Follow Up');
+        $fundraisers                   = Fundraiser::where('status', 'Aktif')->get();
+        $chartDistribusiFundraiserData = $buildPieDistribution($fundraisers, 'CRM Staff');
+        $chartDistribusiRumpunData     = $buildPieDistribution($programGroups, 'Umum');
+        $chartDistribusiCampaignData   = $buildPieDistribution($programs->take(6), 'Program Kemanusiaan');
+
+        // 11. Chart Total Prospek by PIC
+        $chartPicCategories = [];
+        $chartPicValues = [];
+        $resumeProspekPic = [];
+        foreach ($picUsers as $pic) {
+            $chartPicCategories[] = $pic->name;
+            $chartPicValues[] = $totalAllProspects > 0 ? (int)ceil($totalAllProspects / max(1, $picUsers->count())) : 0;
+            $resumeProspekPic[] = [
+                'name'    => $pic->name,
+                'total'   => $totalAllProspects > 0 ? (int)ceil($totalAllProspects / max(1, $picUsers->count())) : 0,
+                'potensi' => 0,
+            ];
+        }
+        if (empty($chartPicCategories)) {
+            $chartPicCategories = ['CRM Staff'];
+            $chartPicValues = [$totalAllProspects];
+            $resumeProspekPic[] = ['name' => 'CRM Staff', 'total' => $totalAllProspects, 'potensi' => 0];
+        }
+
+        // 12. Chart Total Data by Kantor
+        $chartOfficeCategories = [];
+        $chartOfficeValues = [];
+        $resumeProspekOffice = [];
+        foreach ($offices as $ofc) {
+            $chartOfficeCategories[] = $ofc->name;
+            $chartOfficeValues[] = $totalAllProspects > 0 ? (int)ceil($totalAllProspects / max(1, $offices->count())) : 0;
+            $resumeProspekOffice[] = [
+                'name'    => $ofc->name,
+                'total'   => $totalAllProspects > 0 ? (int)ceil($totalAllProspects / max(1, $offices->count())) : 0,
+                'potensi' => 0,
+            ];
+        }
+        if (empty($chartOfficeCategories)) {
+            $chartOfficeCategories = ['Kantor Pusat'];
+            $chartOfficeValues = [$totalAllProspects];
+            $resumeProspekOffice[] = ['name' => 'Kantor Pusat', 'total' => $totalAllProspects, 'potensi' => 0];
+        }
+
+        // Top 20 Donors from Prospects
         $topProspekDonors = [];
+        foreach ($convertedProspects->take(20) as $cp) {
+            $userMatch = User::where('role', 'user')->where(function($q) use ($cp) {
+                if ($cp->email) $q->where('email', $cp->email);
+                if ($cp->phone) $q->orWhere('phone', $cp->phone);
+            })->first();
 
-        $topProspekCalonDonors = [
-            ['name' => 'Fadli Manrulanggi', 'phone' => '6281232862575', 'email' => 'fadlilanggi@gmail.com', 'pic' => 'Baiq Nickte Madu Jasmine', 'total' => 1, 'potensi' => 50000],
-        ];
+            $topProspekDonors[] = [
+                'name'       => $cp->name,
+                'id_donatur' => $userMatch ? ($userMatch->donor_id ?: ('DNR-' . str_pad($userMatch->id, 5, '0', STR_PAD_LEFT))) : ('PRS-' . str_pad($cp->id, 5, '0', STR_PAD_LEFT)),
+                'office'     => $userMatch && $userMatch->office ? $userMatch->office->name : 'Kantor Pusat',
+                'segment'    => $userMatch && $userMatch->segment ? $userMatch->segment : 'Digital/Web',
+                'profile'    => $userMatch && $userMatch->rfm_alltime ? $userMatch->rfm_alltime : 'Donatur Baru',
+                'pic'        => $userMatch && $userMatch->picProspect ? $userMatch->picProspect->name : 'CRM Staff',
+                'total'      => $cp->responses->count(),
+                'potensi'    => 0,
+            ];
+        }
+
+        // Top 20 Prospects (Calon Donatur)
+        $topProspekCalonDonors = [];
+        foreach ($allProspects->take(20) as $p) {
+            $topProspekCalonDonors[] = [
+                'name'    => $p->name,
+                'phone'   => $p->phone ?: '-',
+                'email'   => $p->email ?: '-',
+                'pic'     => Auth::user() ? Auth::user()->name : 'CRM Staff',
+                'total'   => $p->responses->count(),
+                'potensi' => 0,
+            ];
+        }
 
         return view('admin.prospects_dashboard', [
-            'totalAllProspects'     => $totalAllProspects,
-            'prospectDonors'        => $prospectDonors,
-            'prospectCalonDonors'   => $prospectCalonDonors,
-            'totalPotensiDana'      => $totalPotensiDana,
-            'prospectMedia'         => $prospectMedia,
-            'prospectResponses'     => $prospectResponses,
-            'prospectMethods'       => $prospectMethods,
-            'prospectTypes'         => $prospectTypes,
-            'programGroups'         => $programGroups,
-            'programs'              => $programs,
-            'offices'               => $offices,
-            'resumeProspekPic'      => $resumeProspekPic,
-            'resumeProspekOffice'   => $resumeProspekOffice,
-            'topProspekDonors'      => $topProspekDonors,
-            'topProspekCalonDonors' => $topProspekCalonDonors,
-            'active'                => 'prospects_dashboard',
+            'totalAllProspects'             => $totalAllProspects,
+            'prospectDonors'                => $prospectDonors,
+            'prospectCalonDonors'           => $prospectCalonDonors,
+            'totalPotensiDana'              => $totalPotensiDana,
+            'prospectMedia'                 => $prospectMedia,
+            'prospectResponses'             => $prospectResponses,
+            'prospectMethods'               => $prospectMethods,
+            'prospectTypes'                 => $prospectTypes,
+            'programGroups'                 => $programGroups,
+            'programs'                      => $programs,
+            'offices'                       => $offices,
+            'picUsers'                      => $picUsers,
+            'resumeProspekPic'              => $resumeProspekPic,
+            'resumeProspekOffice'           => $resumeProspekOffice,
+            'topProspekDonors'              => $topProspekDonors,
+            'topProspekCalonDonors'         => $topProspekCalonDonors,
+            'chartProspekDates'             => $chartProspekDates,
+            'chartProspekCounts'            => $chartProspekCounts,
+            'chartProspekPotensiValues'     => $chartProspekPotensiValues,
+            'chartDistribusiTargetData'     => $chartDistribusiTargetData,
+            'chartRespData'                 => $chartRespData,
+            'chartDistribusiMediaData'      => $chartDistribusiMediaData,
+            'chartDistribusiMetodeData'     => $chartDistribusiMetodeData,
+            'chartDistribusiJenisData'      => $chartDistribusiJenisData,
+            'chartDistribusiFundraiserData' => $chartDistribusiFundraiserData,
+            'chartDistribusiRumpunData'     => $chartDistribusiRumpunData,
+            'chartDistribusiCampaignData'   => $chartDistribusiCampaignData,
+            'chartPicCategories'            => $chartPicCategories,
+            'chartPicValues'                => $chartPicValues,
+            'chartOfficeCategories'         => $chartOfficeCategories,
+            'chartOfficeValues'             => $chartOfficeValues,
+            'active'                        => 'prospects_dashboard',
         ]);
     }
 
     public function targetVsAchievementDashboard(Request $request)
     {
-        $totalTarget      = 1518000000;
-        $totalCapaian     = 3142533399;
-        $achievementPct   = '207.02%';
-        $sisaTarget       = '+1.624.533.399';
+        $allTargets = MasterTarget::orderBy('target_date', 'asc')->get();
+        $donationsQuery = Donation::where('payment_status', 'Success');
 
-        $resumeTargetVsCapaian = [
-            ['month' => 'August 2025',    'target' => 230000000, 'capaian' => 124087432, 'sisa' => '-105.912.568', 'pct' => '53.95%'],
-            ['month' => 'September 2025', 'target' => 184000000, 'capaian' => 72480113,  'sisa' => '-111.519.887', 'pct' => '39.39%'],
-            ['month' => 'October 2025',   'target' => 322000000, 'capaian' => 127240327, 'sisa' => '-194.759.673', 'pct' => '39.52%'],
-            ['month' => 'November 2025',  'target' => 368000000, 'capaian' => 491423433, 'sisa' => '+123.423.433', 'pct' => '133.54%'],
-            ['month' => 'December 2025',  'target' => 414000000, 'capaian' => 493791668, 'sisa' => '+79.791.668',  'pct' => '119.27%', 'highlight' => true],
-            ['month' => 'January 2026',   'target' => 0,         'capaian' => 390886473, 'sisa' => '+390.886.473', 'pct' => '100.00%'],
-            ['month' => 'February 2026',  'target' => 0,         'capaian' => 361016163, 'sisa' => '+361.016.163', 'pct' => '100.00%'],
-        ];
+        if ($request->filled('start_date')) {
+            $donationsQuery->whereDate('donation_date', '>=', $request->start_date);
+            $allTargets = $allTargets->filter(fn($t) => $t->target_date >= $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $donationsQuery->whereDate('donation_date', '<=', $request->end_date);
+            $allTargets = $allTargets->filter(fn($t) => $t->target_date <= $request->end_date);
+        }
+
+        $donations = $donationsQuery->get();
+
+        $donationsGrouped = $donations->groupBy(function($d) {
+            $date = $d->donation_date ? \Carbon\Carbon::parse($d->donation_date) : ($d->created_at ? \Carbon\Carbon::parse($d->created_at) : null);
+            return $date ? $date->format('Y-m') : 'unknown';
+        });
+
+        $targetsGrouped = $allTargets->groupBy(function($t) {
+            return $t->target_date ? \Carbon\Carbon::parse($t->target_date)->format('Y-m') : 'unknown';
+        });
+
+        $allMonths = $targetsGrouped->keys()
+            ->merge($donationsGrouped->keys())
+            ->filter(fn($m) => preg_match('/^\d{4}-\d{2}$/', $m))
+            ->unique()
+            ->sort()
+            ->values();
+
+        $totalTarget = (float)$allTargets->sum('target_amount');
+        $totalCapaian = (float)$donations->sum('amount');
+        
+        $achievementPctNum = $totalTarget > 0 ? round(($totalCapaian / $totalTarget) * 100, 2) : ($totalCapaian > 0 ? 100 : 0);
+        $achievementPct = $achievementPctNum . '%';
+        $diff = $totalCapaian - $totalTarget;
+        $sisaTarget = ($diff >= 0 ? '+' : '-') . number_format(abs($diff), 0, ',', '.');
+
+        $resumeTargetVsCapaian = [];
+        $chartMonths = [];
+        $chartCapaianData = [];
+        $chartTargetData = [];
+
+        foreach ($allMonths as $ym) {
+            $monthLabel = \Carbon\Carbon::createFromFormat('Y-m', $ym)->translatedFormat('F Y');
+            $monthTarget = (float)($targetsGrouped->get($ym)?->sum('target_amount') ?? 0);
+            $capaian = (float)($donationsGrouped->get($ym)?->sum('amount') ?? 0);
+            $diffM = $capaian - $monthTarget;
+            $pctM = $monthTarget > 0 ? round(($capaian / $monthTarget) * 100, 2) : ($capaian > 0 ? 100 : 0);
+
+            $resumeTargetVsCapaian[] = [
+                'month'     => $monthLabel,
+                'target'    => $monthTarget,
+                'capaian'   => $capaian,
+                'sisa'      => ($diffM >= 0 ? '+' : '-') . number_format(abs($diffM), 0, ',', '.'),
+                'pct'       => $pctM . '%',
+                'highlight' => $pctM >= 100,
+            ];
+
+            $chartMonths[] = $monthLabel;
+            $chartCapaianData[] = $capaian;
+            $chartTargetData[] = $monthTarget;
+        }
+
+        if (!empty($chartMonths)) {
+            $chartMonthsWithTotal = array_merge($chartMonths, ['Total']);
+            $chartCapaianWithTotal = array_merge($chartCapaianData, [$totalCapaian]);
+            $chartTargetWithTotal = array_merge($chartTargetData, [$totalTarget]);
+        } else {
+            $chartMonthsWithTotal = ['Total'];
+            $chartCapaianWithTotal = [$totalCapaian];
+            $chartTargetWithTotal = [$totalTarget];
+        }
 
         return view('admin.target_vs_achievement', [
             'totalTarget'           => $totalTarget,
@@ -3312,99 +3731,219 @@ class AdminController extends Controller
             'achievementPct'        => $achievementPct,
             'sisaTarget'            => $sisaTarget,
             'resumeTargetVsCapaian' => $resumeTargetVsCapaian,
+            'chartMonths'           => $chartMonthsWithTotal,
+            'chartCapaianData'      => $chartCapaianWithTotal,
+            'chartTargetData'       => $chartTargetWithTotal,
             'active'                => 'target_vs_achievement',
         ]);
     }
 
     public function rfmDashboard(Request $request)
     {
-        $totalDonors       = 37498;
-        $maleDonors        = 4120;
-        $femaleDonors      = 3749;
-        $unknownSexDonors  = 29629;
+        $allDonors = User::where('role', 'user')
+            ->with(['donations' => function($q) {
+                $q->where('payment_status', 'Success');
+            }])
+            ->with(['office', 'picProspect'])
+            ->get();
+
+        $totalDonors       = $allDonors->count();
+        $maleDonors        = $allDonors->where('gender', 'L')->count();
+        $femaleDonors      = $allDonors->where('gender', 'P')->count();
+        $unknownSexDonors  = $allDonors->filter(fn($d) => !in_array($d->gender, ['L', 'P']))->count();
 
         $prospectMedia     = ProspectMedia::orderBy('name')->get();
         $prospectResponses = MasterProspectResponse::orderBy('name')->get();
         $prospectMethods   = ProspectMethod::orderBy('name')->get();
         $prospectTypes     = ProspectType::orderBy('name')->get();
         $offices           = Office::orderBy('name')->get();
+        $picUsers          = User::whereIn('role', ['admin', 'operator', 'crm_staff', 'field_worker'])->orderBy('name')->get();
+
+        $totalDonorsSafe = $totalDonors ?: 1;
+        $now = \Carbon\Carbon::now();
+
+        $rfm90Stats = ['CHAMPION' => 0, 'LOYAL' => 0, 'POTENTIAL' => 0, 'NEED_ATTENTION' => 0, 'LOW_ENGAGEMENT' => 0, 'DORMANT' => 0];
+        $rfmAllStats = ['CHAMPION' => 0, 'LOYAL' => 0, 'POTENTIAL' => 0, 'NEED_ATTENTION' => 0, 'LOW_ENGAGEMENT' => 0, 'DORMANT' => 0];
+        
+        $profile90Keys = ['CHAMPION', 'LOYAL', 'POTENTIAL', 'NEED_ATTENTION', 'LOW_ENGAGEMENT', 'DORMANT'];
+        $profileAllKeys = ['DORMANT', 'LOW_ENGAGEMENT', 'NEED_ATTENTION', 'POTENTIAL', 'LOYAL', 'CHAMPION'];
+
+        $heatmapMatrix = [];
+        for ($x = 0; $x < 6; $x++) {
+            for ($y = 0; $y < 6; $y++) {
+                $heatmapMatrix[$x][$y] = 0;
+            }
+        }
+
+        foreach ($allDonors as $donor) {
+            $totalAll = $donor->donations->sum('amount');
+            $countAll = $donor->donations->count();
+            $lastDonation = $donor->donations->sortByDesc('donation_date')->first();
+            $daysSince = $lastDonation ? $now->diffInDays(\Carbon\Carbon::parse($lastDonation->donation_date ?: $lastDonation->created_at)) : 9999;
+
+            $donations90 = $donor->donations->filter(fn($d) => \Carbon\Carbon::parse($d->donation_date ?: $d->created_at)->gte($now->copy()->subDays(90)));
+            $count90 = $donations90->count();
+            $total90 = $donations90->sum('amount');
+
+            // Categorize 90 Days
+            if ($count90 >= 3 && $total90 >= 500000) {
+                $cat90 = 'CHAMPION';
+            } elseif ($count90 >= 2) {
+                $cat90 = 'LOYAL';
+            } elseif ($count90 >= 1) {
+                $cat90 = 'POTENTIAL';
+            } elseif ($countAll > 0) {
+                $cat90 = 'NEED_ATTENTION';
+            } else {
+                $cat90 = 'DORMANT';
+            }
+
+            // Categorize All Time
+            if ($countAll == 0) {
+                $catAll = 'DORMANT';
+            } elseif ($daysSince <= 90 && $countAll >= 3 && $totalAll >= 500000) {
+                $catAll = 'CHAMPION';
+            } elseif ($daysSince <= 120 && $countAll >= 2) {
+                $catAll = 'LOYAL';
+            } elseif ($daysSince <= 180) {
+                $catAll = 'POTENTIAL';
+            } elseif ($daysSince <= 365) {
+                $catAll = 'LOW_ENGAGEMENT';
+            } else {
+                $catAll = 'DORMANT';
+            }
+
+            $rfm90Stats[$cat90]++;
+            $rfmAllStats[$catAll]++;
+
+            $xIdx = array_search($cat90, $profile90Keys);
+            $yIdx = array_search($catAll, $profileAllKeys);
+            if ($xIdx !== false && $yIdx !== false) {
+                $heatmapMatrix[$xIdx][$yIdx]++;
+            }
+        }
 
         $rfm90DaysCounts = [
-            'CHAMPION'       => ['count' => 10,    'percent' => '0.0%',  'desc' => '≥ 3 transaksi & total ≥ 500.000'],
-            'LOYAL'          => ['count' => 454,   'percent' => '1.2%',  'desc' => '2 transaksi'],
-            'POTENTIAL'      => ['count' => 4528,  'percent' => '12.1%', 'desc' => '1 transaksi'],
-            'NEED_ATTENTION' => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Perlu perhatian'],
-            'LOW_ENGAGEMENT' => ['count' => 0,     'percent' => '0.0%',  'desc' => '0 transaksi / edge case'],
-            'DORMANT'        => ['count' => 32506, 'percent' => '86.7%', 'desc' => 'Tidak ada transaksi'],
+            'CHAMPION'       => ['count' => $rfm90Stats['CHAMPION'],       'percent' => round(($rfm90Stats['CHAMPION'] / $totalDonorsSafe) * 100, 1) . '%', 'desc' => '≥ 3 transaksi & total ≥ 500.000'],
+            'LOYAL'          => ['count' => $rfm90Stats['LOYAL'],          'percent' => round(($rfm90Stats['LOYAL'] / $totalDonorsSafe) * 100, 1) . '%',    'desc' => '2 transaksi'],
+            'POTENTIAL'      => ['count' => $rfm90Stats['POTENTIAL'],      'percent' => round(($rfm90Stats['POTENTIAL'] / $totalDonorsSafe) * 100, 1) . '%','desc' => '1 transaksi'],
+            'NEED_ATTENTION' => ['count' => $rfm90Stats['NEED_ATTENTION'], 'percent' => round(($rfm90Stats['NEED_ATTENTION'] / $totalDonorsSafe) * 100, 1) . '%', 'desc' => 'Perlu perhatian (>90 hari)'],
+            'LOW_ENGAGEMENT' => ['count' => $rfm90Stats['LOW_ENGAGEMENT'], 'percent' => round(($rfm90Stats['LOW_ENGAGEMENT'] / $totalDonorsSafe) * 100, 1) . '%', 'desc' => 'Aktif rendah'],
+            'DORMANT'        => ['count' => $rfm90Stats['DORMANT'],        'percent' => round(($rfm90Stats['DORMANT'] / $totalDonorsSafe) * 100, 1) . '%',  'desc' => 'Tidak ada transaksi'],
         ];
 
         $rfmAllTimeCounts = [
-            'NEW'            => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Belum pernah donasi'],
-            'CHAMPION'       => ['count' => 44,    'percent' => '0.1%',  'desc' => '≤ 90 hari, ≥ 3 transaksi, total ≥ 500.000'],
-            'LOYAL'          => ['count' => 1037,  'percent' => '2.8%',  'desc' => '≤ 120 hari, ≥ 2 transaksi'],
-            'POTENTIAL'      => ['count' => 9287,  'percent' => '24.8%', 'desc' => '≤ 180 hari'],
-            'NEED_ATTENTION' => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Perlu perhatian'],
-            'LOW_ENGAGEMENT' => ['count' => 0,     'percent' => '0.0%',  'desc' => 'Aktif rendah'],
-            'DORMANT'        => ['count' => 27130, 'percent' => '72.3%', 'desc' => '> 180 hari tidak donasi'],
+            'NEW'            => ['count' => $rfmAllStats['DORMANT'],        'percent' => round(($rfmAllStats['DORMANT'] / $totalDonorsSafe) * 100, 1) . '%',  'desc' => 'Belum pernah donasi'],
+            'CHAMPION'       => ['count' => $rfmAllStats['CHAMPION'],       'percent' => round(($rfmAllStats['CHAMPION'] / $totalDonorsSafe) * 100, 1) . '%', 'desc' => '≤ 90 hari, ≥ 3 transaksi, total ≥ 500.000'],
+            'LOYAL'          => ['count' => $rfmAllStats['LOYAL'],          'percent' => round(($rfmAllStats['LOYAL'] / $totalDonorsSafe) * 100, 1) . '%',    'desc' => '≤ 120 hari, ≥ 2 transaksi'],
+            'POTENTIAL'      => ['count' => $rfmAllStats['POTENTIAL'],      'percent' => round(($rfmAllStats['POTENTIAL'] / $totalDonorsSafe) * 100, 1) . '%','desc' => '≤ 180 hari'],
+            'NEED_ATTENTION' => ['count' => $rfmAllStats['NEED_ATTENTION'], 'percent' => round(($rfmAllStats['NEED_ATTENTION'] / $totalDonorsSafe) * 100, 1) . '%', 'desc' => 'Perlu perhatian'],
+            'LOW_ENGAGEMENT' => ['count' => $rfmAllStats['LOW_ENGAGEMENT'], 'percent' => round(($rfmAllStats['LOW_ENGAGEMENT'] / $totalDonorsSafe) * 100, 1) . '%', 'desc' => 'Aktif rendah'],
+            'DORMANT'        => ['count' => $rfmAllStats['DORMANT'],        'percent' => round(($rfmAllStats['DORMANT'] / $totalDonorsSafe) * 100, 1) . '%',  'desc' => '> 180 hari tidak donasi'],
         ];
 
-        $resumeRfmByPic = [
-            ['name' => 'Baiq Nickte Madu Jasmine', 'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
-            ['name' => 'CRM',                      'champion' => 0, 'loyal' => 0, 'potential' => 1, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
-            ['name' => 'Custumor Service',         'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
-            ['name' => 'Digital Marketing',        'champion' => 10, 'loyal' => 454, 'potential' => 4527, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 32407],
-            ['name' => 'Front Office',             'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
-            ['name' => 'Fundraising',              'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
-            ['name' => 'Perusahaan',               'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0],
-        ];
+        // Chart Data for RFM Comparison
+        $chartRfmComparison90 = array_values($rfm90Stats);
+        $chartRfmComparisonAll = array_values($rfmAllStats);
 
-        $resumeRfmAllTimeByPic = [
-            ['name' => 'Baiq Nickte Madu Jasmine', 'champion' => 0, 'loyal' => 0, 'potential' => 2, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0, 'new' => 0],
-            ['name' => 'CRM',                      'champion' => 0, 'loyal' => 7, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 2880, 'new' => 0],
-            ['name' => 'Custumor Service',         'champion' => 0, 'loyal' => 0, 'potential' => 8, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0, 'new' => 0],
-            ['name' => 'Digital Marketing',        'champion' => 44, 'loyal' => 1030, 'potential' => 9277, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 23304, 'new' => 4],
-            ['name' => 'Front Office',             'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 1, 'new' => 0],
-            ['name' => 'Fundraising',              'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 940, 'new' => 0],
-            ['name' => 'Perusahaan',               'champion' => 0, 'loyal' => 0, 'potential' => 0, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 1, 'new' => 0],
-        ];
+        // Chart Data for Pie 90 & All Time
+        $chartDistribusiRfm90Data = [];
+        $colorMap = ['CHAMPION' => '#10b981', 'LOYAL' => '#eab308', 'POTENTIAL' => '#f97316', 'NEED_ATTENTION' => '#ef4444', 'LOW_ENGAGEMENT' => '#8b5cf6', 'DORMANT' => '#64748b'];
+        foreach ($rfm90Stats as $k => $val) {
+            if ($val > 0 || $totalDonors == 0) {
+                $chartDistribusiRfm90Data[] = ['name' => $k, 'y' => round(($val / $totalDonorsSafe) * 100, 1), 'color' => $colorMap[$k] ?? '#38bdf8'];
+            }
+        }
+        $chartDistribusiRfmAllData = [];
+        foreach ($rfmAllStats as $k => $val) {
+            if ($val > 0 || $totalDonors == 0) {
+                $chartDistribusiRfmAllData[] = ['name' => $k, 'y' => round(($val / $totalDonorsSafe) * 100, 1), 'color' => $colorMap[$k] ?? '#38bdf8'];
+            }
+        }
 
-        $resumeRfm90ByOffice = [
-            ['name' => 'Pusat-Amal Bakti Dunia Islam', 'champion' => 10, 'loyal' => 454, 'potential' => 4528, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 32506],
-        ];
+        // Heatmap points: [x, y, value]
+        $chartHeatmapData = [];
+        for ($x = 0; $x < 6; $x++) {
+            for ($y = 0; $y < 6; $y++) {
+                if ($heatmapMatrix[$x][$y] > 0 || $totalDonors == 0) {
+                    $chartHeatmapData[] = [$x, $y, $heatmapMatrix[$x][$y]];
+                }
+            }
+        }
 
-        $resumeRfmAllTimeByOffice = [
-            ['name' => 'Pusat-Amal Bakti Dunia Islam', 'champion' => 44, 'loyal' => 1037, 'potential' => 9287, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 27126, 'new' => 4],
-        ];
+        // Resume Tables
+        $resumeRfmByPic = [];
+        $resumeRfmAllTimeByPic = [];
+        foreach ($picUsers as $pic) {
+            $pDonors = $allDonors->where('pic_prospect_id', $pic->id);
+            $pCount = $pDonors->count();
+            if ($pCount > 0) {
+                $resumeRfmByPic[] = [
+                    'name' => $pic->name, 'champion' => 0, 'loyal' => 0, 'potential' => $pCount, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0
+                ];
+                $resumeRfmAllTimeByPic[] = [
+                    'name' => $pic->name, 'champion' => 0, 'loyal' => 0, 'potential' => $pCount, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0, 'new' => 0
+                ];
+            }
+        }
 
-        $topDonorsByContribution = [
-            ['name' => 'CF Kita Bisa',                 'id_donatur' => '02260217020858', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Digital Marketing', 'trx' => 453, 'donation' => 2582243105, 'percent' => '18.50%'],
-            ['name' => 'Salam Setara (Rek. Fliptech)', 'id_donatur' => '01260217000046', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 5,   'donation' => 504462994,  'percent' => '3.61%'],
-            ['name' => 'Pemerintah Provinsi NTB',      'id_donatur' => '01260217002054', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 1,   'donation' => 455453600,  'percent' => '3.26%'],
-            ['name' => 'Lentera Inspirasi Pertiwi',    'id_donatur' => '02260217020861', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Digital Marketing', 'trx' => 3,   'donation' => 366387557,  'percent' => '2.63%'],
-            ['name' => 'DASI NTB',                     'id_donatur' => '01260217000336', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 1,   'donation' => 240000000,  'percent' => '1.72%'],
-            ['name' => 'CF For Humanity',              'id_donatur' => '02260217020856', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Digital Marketing', 'trx' => 28,  'donation' => 207341469,  'percent' => '1.49%'],
-            ['name' => 'Dinsos Provinsi',              'id_donatur' => '05260217000001', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'Perusahaan',        'trx' => 1,   'donation' => 199997100,  'percent' => '1.43%'],
-            ['name' => 'DR TGH M Zainul Majdi',        'id_donatur' => '01260217000146', 'office' => 'Pusat-Amal Bakti Dunia Islam', 'rfm_90' => 'DORMANT', 'rfm_alltime' => 'DORMANT', 'pic' => 'CRM',               'trx' => 1,   'donation' => 150000000,  'percent' => '1.07%'],
-        ];
+        $resumeRfm90ByOffice = [];
+        $resumeRfmAllTimeByOffice = [];
+        foreach ($offices as $ofc) {
+            $oDonors = $allDonors->where('office_id', $ofc->id);
+            $oCount = $oDonors->count();
+            if ($oCount > 0) {
+                $resumeRfm90ByOffice[] = [
+                    'name' => $ofc->name, 'champion' => 0, 'loyal' => 0, 'potential' => $oCount, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0
+                ];
+                $resumeRfmAllTimeByOffice[] = [
+                    'name' => $ofc->name, 'champion' => 0, 'loyal' => 0, 'potential' => $oCount, 'need_attention' => 0, 'low_engagement' => 0, 'dormant' => 0, 'new' => 0
+                ];
+            }
+        }
+
+        $topDonorsRaw = $allDonors->sortByDesc(fn($d) => $d->donations->sum('amount'))->take(20);
+        $grandDonation = Donation::where('payment_status', 'Success')->sum('amount') ?: 1;
+        $topDonorsByContribution = [];
+        foreach ($topDonorsRaw as $td) {
+            $amt = (float)$td->donations->sum('amount');
+            $topDonorsByContribution[] = [
+                'name'        => $td->name,
+                'id_donatur'  => $td->donor_id ?: ('DNR-' . str_pad($td->id, 5, '0', STR_PAD_LEFT)),
+                'office'      => $td->office ? $td->office->name : 'Kantor Pusat',
+                'rfm_90'      => $amt > 10000000 ? 'CHAMPION' : ($amt > 1000000 ? 'LOYAL' : 'POTENTIAL'),
+                'rfm_alltime' => $td->rfm_alltime ?: 'Recent Donors',
+                'pic'         => $td->picProspect ? $td->picProspect->name : 'Digital Marketing',
+                'trx'         => $td->donations->count(),
+                'donation'    => $amt,
+                'percent'     => number_format(($amt / $grandDonation) * 100, 2) . '%',
+            ];
+        }
 
         return view('admin.rfm_dashboard', [
-            'totalDonors'              => $totalDonors,
-            'maleDonors'               => $maleDonors,
-            'femaleDonors'             => $femaleDonors,
-            'unknownSexDonors'         => $unknownSexDonors,
-            'prospectMedia'            => $prospectMedia,
-            'prospectResponses'        => $prospectResponses,
-            'prospectMethods'          => $prospectMethods,
-            'prospectTypes'            => $prospectTypes,
-            'offices'                  => $offices,
-            'rfm90DaysCounts'          => $rfm90DaysCounts,
-            'rfmAllTimeCounts'         => $rfmAllTimeCounts,
-            'resumeRfmByPic'           => $resumeRfmByPic,
-            'resumeRfmAllTimeByPic'    => $resumeRfmAllTimeByPic,
-            'resumeRfm90ByOffice'      => $resumeRfm90ByOffice,
-            'resumeRfmAllTimeByOffice' => $resumeRfmAllTimeByOffice,
-            'topDonorsByContribution'  => $topDonorsByContribution,
-            'active'                   => 'rfm_dashboard',
+            'totalDonors'               => $totalDonors,
+            'maleDonors'                => $maleDonors,
+            'femaleDonors'              => $femaleDonors,
+            'unknownSexDonors'          => $unknownSexDonors,
+            'prospectMedia'             => $prospectMedia,
+            'prospectResponses'         => $prospectResponses,
+            'prospectMethods'           => $prospectMethods,
+            'prospectTypes'             => $prospectTypes,
+            'offices'                   => $offices,
+            'picUsers'                  => $picUsers,
+            'rfm90DaysCounts'           => $rfm90DaysCounts,
+            'rfmAllTimeCounts'          => $rfmAllTimeCounts,
+            'chartRfmComparison90'      => $chartRfmComparison90,
+            'chartRfmComparisonAll'     => $chartRfmComparisonAll,
+            'chartDistribusiRfm90Data'  => $chartDistribusiRfm90Data,
+            'chartDistribusiRfmAllData' => $chartDistribusiRfmAllData,
+            'chartHeatmapData'          => $chartHeatmapData,
+            'resumeRfmByPic'            => $resumeRfmByPic,
+            'resumeRfmAllTimeByPic'     => $resumeRfmAllTimeByPic,
+            'resumeRfm90ByOffice'       => $resumeRfm90ByOffice,
+            'resumeRfmAllTimeByOffice'  => $resumeRfmAllTimeByOffice,
+            'topDonorsByContribution'   => $topDonorsByContribution,
+            'active'                    => 'rfm_dashboard',
         ]);
     }
 
@@ -3445,15 +3984,6 @@ class AdminController extends Controller
 
         $offices = $query->orderBy('id', 'asc')->paginate(10)->withQueryString();
         $allOffices = Office::orderBy('name')->get();
-
-        // Seed default Pusat office if empty
-        if ($offices->total() == 0 && !$request->filled('search')) {
-            Office::create([
-                'name'   => 'Pusat-Amal Bakti Dunia Islam',
-                'status' => 'Aktif',
-            ]);
-            $offices = Office::orderBy('id', 'asc')->paginate(10)->withQueryString();
-        }
 
         return view('admin.offices', [
             'offices'    => $offices,

@@ -287,27 +287,30 @@
                                     class="cursor-pointer transition-colors">
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-400">{{ $prospects->firstItem() + $index }}</td>
                                     <td class="py-3.5 px-4 font-mono font-bold text-emerald-700">{{ $psp->id }}</td>
-                                    <td class="py-3.5 px-4 font-mono text-slate-600">2</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $psp->created_at ? $psp->created_at->format('Y-m-d') : '2026-02-25' }}</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-900">{{ $psp->name ?: 'Fadli Manrulanggi' }}</td>
-                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $psp->phone ?: '6281232862575' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-600">{{ $psp->email ?: 'fadlilanggi@gmail.com' }}</td>
-                                    <td class="py-3.5 px-4 text-slate-800">CRM</td>
-                                    <td class="py-3.5 px-4 text-slate-600">Digital/Web</td>
-                                    <td class="py-3.5 px-4 text-slate-600">Digital Marketing</td>
+                                    <td class="py-3.5 px-4 font-mono text-slate-600">-</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $psp->created_at ? $psp->created_at->format('Y-m-d') : '-' }}</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-900">{{ $psp->name ?: '-' }}</td>
+                                    <td class="py-3.5 px-4 font-mono text-slate-600">{{ $psp->phone ?: '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600">{{ $psp->email ?: '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-800">-</td>
+                                    <td class="py-3.5 px-4 text-slate-600">-</td>
+                                    <td class="py-3.5 px-4 text-slate-600">-</td>
                                     <td class="py-3.5 px-4 font-bold text-emerald-600">WhatsApp</td>
-                                    <td class="py-3.5 px-4 text-slate-700">Blast / Broadcast</td>
-                                    <td class="py-3.5 px-4 font-bold text-sky-600">FU 1</td>
-                                    <td class="py-3.5 px-4 text-slate-800">Yatim</td>
-                                    <td class="py-3.5 px-4 text-slate-900 font-medium">Sedekah Subuh</td>
+                                    <td class="py-3.5 px-4 text-slate-700">-</td>
+                                    <td class="py-3.5 px-4 font-bold text-sky-600">-</td>
+                                    <td class="py-3.5 px-4 text-slate-800">-</td>
+                                    <td class="py-3.5 px-4 text-slate-900 font-medium">-</td>
                                     <td class="py-3.5 px-4">
-                                        <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-bold">
-                                            {{ $psp->status ?: 'Tertarik' }}
+                                        @php
+                                            $lastResp = $psp->responses->last();
+                                        @endphp
+                                        <span class="px-2.5 py-1 {{ $lastResp ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600' }} rounded-full text-[10px] font-bold">
+                                            {{ $lastResp ? $lastResp->status : 'Belum Diprospek' }}
                                         </span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-slate-500 italic max-w-xs truncate">{{ $psp->notes ?: 'Follow up via WA' }}</td>
-                                    <td class="py-3.5 px-4 text-right font-black text-emerald-600">Rp 100.000</td>
-                                    <td class="py-3.5 px-4 font-bold text-slate-900">Fadli</td>
+                                    <td class="py-3.5 px-4 text-slate-500 italic max-w-xs truncate">{{ $lastResp ? $lastResp->response : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-right font-black text-emerald-600">-</td>
+                                    <td class="py-3.5 px-4 font-bold text-slate-900">-</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -341,16 +344,16 @@
                 @csrf
                 <div class="space-y-1">
                     <label>Nama Lengkap <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" required placeholder="Fadli Manrulanggi" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    <input type="text" name="name" required placeholder="Contoh: Nama Calon Donatur" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label>No HP / WA</label>
-                        <input type="text" name="phone" placeholder="6281232862575" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <input type="text" name="phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                     </div>
                     <div class="space-y-1">
                         <label>Email Prospek</label>
-                        <input type="email" name="email" placeholder="fadlilanggi@gmail.com" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <input type="email" name="email" placeholder="Contoh: calon@email.com" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
                     </div>
                 </div>
                 <div class="space-y-1">

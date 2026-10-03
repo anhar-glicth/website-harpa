@@ -1,9 +1,9 @@
 <template>
-  <div class="bg-white text-slate-900 font-sans overflow-x-hidden">
+  <div class="bg-white text-slate-900 font-sans overflow-x-hidden pb-24 md:pb-0">
 
     <!-- ===== NAVBAR ===== -->
     <nav class="bg-white sticky top-0 z-[100] border-b border-gray-100 shadow-sm">
-      <div class="max-w-7xl mx-auto px-6">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex justify-between h-16 items-center">
           <router-link to="/" class="flex items-center gap-2">
             <svg class="w-7 h-7 text-green-600" viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
@@ -12,10 +12,10 @@
           <div class="hidden md:flex items-center gap-8">
             <router-link v-for="link in menuLinks" :key="link.label" :to="link.to" class="text-sm text-slate-500 hover:text-green-600 font-medium transition-colors">{{ link.label }}</router-link>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 sm:gap-3">
             <template v-if="!isAuthenticated">
-              <button @click="openLogin" class="text-sm font-semibold text-green-600 hover:text-green-700 transition-colors">Masuk</button>
-              <button @click="openRegister" class="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-all shadow-md">Daftar</button>
+              <button @click="openLogin" class="text-xs sm:text-sm font-semibold text-green-600 hover:text-green-700 transition-colors px-2 py-1.5">Masuk</button>
+              <button @click="openRegister" class="bg-green-600 text-white px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-green-700 transition-all shadow-md active:scale-95">Daftar</button>
             </template>
             <template v-else>
               <router-link to="/dashboard" class="w-9 h-9 rounded-full bg-green-100 border-2 border-green-200 flex items-center justify-center text-green-700 font-bold text-xs overflow-hidden hover:border-green-500 transition-all">
@@ -23,8 +23,27 @@
                 <span v-else>{{ getUserName?.charAt(0).toUpperCase() }}</span>
               </router-link>
             </template>
+            <!-- Mobile Hamburger Button -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" aria-label="Toggle menu" class="md:hidden text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition-all focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
+      </div>
+      <!-- Mobile Menu Dropdown -->
+      <div v-show="mobileMenuOpen" class="md:hidden bg-white border-t border-slate-100 px-6 py-4 space-y-3 shadow-xl">
+        <router-link 
+          v-for="link in menuLinks" 
+          :key="link.label" 
+          :to="link.to" 
+          @click="mobileMenuOpen = false"
+          class="block py-2 text-sm font-bold text-slate-700 hover:text-green-600 border-b border-slate-50 last:border-none"
+        >
+          {{ link.label }}
+        </router-link>
       </div>
     </nav>
 
@@ -79,7 +98,7 @@
                 <div class="h-full bg-green-600 rounded-full transition-all duration-1000" :style="{ width: camp.percent + '%' }"></div>
               </div>
             </div>
-            <button class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-600 transition-all mt-auto">Donasi Sekarang</button>
+            <button @click="camp.id ? $router.push('/campaigns/' + camp.id) : $router.push('/campaigns')" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-green-600 active:scale-95 transition-all mt-auto">Donasi Sekarang</button>
           </div>
         </div>
       </div>
@@ -388,6 +407,7 @@ import { useAuth } from '../store/auth';
 
 const { isAuthenticated, getUserName, getUserPhoto, openLogin, openRegister } = useAuth();
 
+const mobileMenuOpen = ref(false);
 const subscriberEmail = ref('');
 const subscribing = ref(false);
 const prayers = ref([]);

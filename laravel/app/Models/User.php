@@ -61,6 +61,32 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the user's avatar URL.
+     */
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        if (!empty($this->profile_photo)) {
+            if (str_starts_with($this->profile_photo, 'http://') || 
+                str_starts_with($this->profile_photo, 'https://') || 
+                str_starts_with($this->profile_photo, 'data:image/')) {
+                return $this->profile_photo;
+            }
+
+            return asset(ltrim($this->profile_photo, '/'));
+        }
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name ?? 'User') . '&background=ea580c&color=fff';
+    }
+
+    /**
+     * Check if user has uploaded a custom profile photo.
+     */
+    public function hasCustomPhoto(): bool
+    {
+        return !empty($this->profile_photo);
+    }
+
     // Role Constants
     public const ROLE_ADMIN = 'admin';
     public const ROLE_OPERATOR = 'operator';
@@ -190,6 +216,11 @@ class User extends Authenticatable
     public function donations()
     {
         return $this->hasMany(Donation::class);
+    }
+
+    public function latestDonation()
+    {
+        return $this->hasOne(Donation::class)->latestOfMany();
     }
 
     public function attendances()

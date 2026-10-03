@@ -368,14 +368,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'Digital/Web', y: 89.8, color: '#10b981' },
-                    { name: 'Retail WA', y: 7.7, color: '#0369a1' },
-                    { name: 'Cash', y: 2.2, color: '#eab308' },
-                    { name: 'Sekolah', y: 0.3, color: '#f97316' },
-                    { name: 'Perusahaan', y: 0.0, color: '#64748b' },
-                    { name: 'Community', y: 0.0, color: '#a855f7' }
-                ]
+                data: @json($chartSegmenData)
             }]
         }));
 
@@ -386,7 +379,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [{ name: 'Baru', y: 100.0, color: '#38bdf8' }]
+                data: @json($chartProfilData)
             }]
         }));
 
@@ -397,11 +390,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'Belum Diketahui', y: 79.0, color: '#38bdf8' },
-                    { name: 'Laki-laki', y: 11.0, color: '#10b981' },
-                    { name: 'Perempuan', y: 10.0, color: '#facc15' }
-                ]
+                data: @json($chartGenderData)
             }]
         }));
 
@@ -412,12 +401,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'Hanya No HP', y: 93.5, color: '#38bdf8' },
-                    { name: 'No HP dan Email', y: 6.5, color: '#facc15' },
-                    { name: 'Hanya Email', y: 0.0, color: '#10b981' },
-                    { name: 'Tanpa No HP dan Email', y: 0.0, color: '#f43f5e' }
-                ]
+                data: @json($chartContactData)
             }]
         }));
 
@@ -428,10 +412,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'Pernah Donasi', y: 99.8, color: '#10b981' },
-                    { name: 'Belum Pernah Donasi', y: 0.2, color: '#38bdf8' }
-                ]
+                data: @json($chartDonasiData)
             }]
         }));
 
@@ -442,7 +423,7 @@
             plotOptions: { pie: { allowPointSelect: true, cursor: 'pointer', dataLabels: { enabled: true, format: '{point.name}: {point.percentage:.1f} %', style: { color: '#cbd5e1', fontSize: '9px' } } } },
             series: [{
                 name: 'Persentase',
-                data: [{ name: 'Belum Pernah Diprospek', y: 100.0, color: '#38bdf8' }]
+                data: @json($chartProspekData)
             }]
         }));
 
@@ -450,18 +431,18 @@
         Highcharts.chart('chartTotalByKantor', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Data Berdasarkan Kantor' },
-            xAxis: { categories: ['Pusat-Amal Bakti Dunia Islam'] },
+            xAxis: { categories: @json($chartDonorsOfficeLabels) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Data', data: [37498], color: '#38bdf8' }]
+            series: [{ name: 'Total Data', data: @json($chartDonorsOfficeValues), color: '#38bdf8' }]
         }));
 
         // 8. Chart Total Data Berdasarkan PIC Prospek
         Highcharts.chart('chartTotalByPIC', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Data Berdasarkan PIC Prospek' },
-            xAxis: { categories: ['Digital Marketing', 'CRM', 'Fundraising', 'Customer Service', 'Baiq Nickte Madu Jasmine', 'Front Office', 'Perusahaan'] },
+            xAxis: { categories: @json($chartDonorsPicLabels) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Data', data: [33659, 2887, 940, 8, 2, 1, 1], color: '#38bdf8' }]
+            series: [{ name: 'Total Data', data: @json($chartDonorsPicValues), color: '#38bdf8' }]
         }));
 
     });

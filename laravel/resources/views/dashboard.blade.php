@@ -28,7 +28,9 @@
                             <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">
                                 Absensi <span class="text-primary-600">Hari Ini</span>
                             </h3>
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{{ now()->format('d M Y') }}</p>
+                            <div class="mt-1">
+                                <x-live-clock variant="inline" />
+                            </div>
                         </div>
                         <button @click="showAbsenForm = !showAbsenForm"
                             class="px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-[9px] font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all">
@@ -46,14 +48,14 @@
                             <i class="fa-solid fa-right-to-bracket text-xs {{ $hasCI ? 'text-emerald-600' : 'text-slate-300' }}"></i>
                             <div>
                                 <p class="text-[8px] font-black uppercase tracking-wider {{ $hasCI ? 'text-emerald-700' : 'text-slate-400' }}">Check In</p>
-                                <p class="text-[9px] font-bold text-slate-500">{{ $hasCI ? $todayAttendance->where('type','check_in')->first()->created_at->format('H:i') : '—' }}</p>
+                                <p class="text-[9px] font-bold text-slate-500">{{ $hasCI ? $todayAttendance->where('type','check_in')->first()->created_at->format('H:i') . ' WITA' : '—' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasCO ? 'bg-blue-50 border-blue-200' : 'bg-slate-50 border-slate-100' }}">
                             <i class="fa-solid fa-right-from-bracket text-xs {{ $hasCO ? 'text-blue-600' : 'text-slate-300' }}"></i>
                             <div>
                                 <p class="text-[8px] font-black uppercase tracking-wider {{ $hasCO ? 'text-blue-700' : 'text-slate-400' }}">Check Out</p>
-                                <p class="text-[9px] font-bold text-slate-500">{{ $hasCO ? $todayAttendance->where('type','check_out')->first()->created_at->format('H:i') : '—' }}</p>
+                                <p class="text-[9px] font-bold text-slate-500">{{ $hasCO ? $todayAttendance->where('type','check_out')->first()->created_at->format('H:i') . ' WITA' : '—' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasSK ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-100' }}">
@@ -74,13 +76,19 @@
                     <div x-show="showAbsenForm" x-transition style="display:none;" class="border-t border-slate-100 pt-4">
                         <form action="{{ route('attendance.store') }}" method="POST" enctype="multipart/form-data" class="space-y-3">
                             @csrf
+                            <input type="hidden" name="latitude" id="donor_lat">
+                            <input type="hidden" name="longitude" id="donor_lng">
+
                             <select name="type" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
                                 <option value="check_in">Check In (Masuk)</option>
                                 <option value="check_out">Check Out (Pulang)</option>
                                 <option value="sakit">Sakit</option>
                                 <option value="izin">Izin</option>
                             </select>
-                            <input type="text" name="location" placeholder="Nama lokasi / kantor..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <input type="text" name="location" id="donor_loc" placeholder="Nama lokasi / kantor..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            
+                            <x-gps-detector latId="donor_lat" lngId="donor_lng" statusId="donor-gps-status" locationId="donor_loc" />
+
                             <input type="file" name="attachment" accept="image/*" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-2.5 text-xs">
                             <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-3 rounded-2xl transition-all flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-stamp"></i> Kirim Absensi

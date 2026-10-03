@@ -12,6 +12,9 @@
         <!-- Dashboard Content -->
         <div class="lg:col-span-3 space-y-6">
 
+            {{-- Real-time WITA Clock Widget --}}
+            <x-live-clock variant="card" />
+
             {{-- Personal Absensi GPS Card --}}
             <div x-data="{ showAbsenForm: false }" class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
                 <div class="flex items-center justify-between">
@@ -39,14 +42,14 @@
                         <i class="fa-solid fa-right-to-bracket text-sm {{ $hasCheckIn ? 'text-emerald-600' : 'text-slate-300' }}"></i>
                         <div>
                             <p class="text-[8px] font-black uppercase tracking-wider {{ $hasCheckIn ? 'text-emerald-700' : 'text-slate-400' }}">Check In</p>
-                            <p class="text-[9px] font-bold text-slate-500">{{ $hasCheckIn ? $todayAttendance->where('type','check_in')->first()->created_at->format('H:i') : '—' }}</p>
+                            <p class="text-[9px] font-bold text-slate-500">{{ $hasCheckIn ? $todayAttendance->where('type','check_in')->first()->created_at->format('H:i') . ' WITA' : '—' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasCheckOut ? 'bg-blue-50 border-blue-200' : 'bg-slate-50 border-slate-100' }}">
                         <i class="fa-solid fa-right-from-bracket text-sm {{ $hasCheckOut ? 'text-blue-600' : 'text-slate-300' }}"></i>
                         <div>
                             <p class="text-[8px] font-black uppercase tracking-wider {{ $hasCheckOut ? 'text-blue-700' : 'text-slate-400' }}">Check Out</p>
-                            <p class="text-[9px] font-bold text-slate-500">{{ $hasCheckOut ? $todayAttendance->where('type','check_out')->first()->created_at->format('H:i') : '—' }}</p>
+                            <p class="text-[9px] font-bold text-slate-500">{{ $hasCheckOut ? $todayAttendance->where('type','check_out')->first()->created_at->format('H:i') . ' WITA' : '—' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasSakit ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-100' }}">
@@ -69,6 +72,9 @@
                 <div x-show="showAbsenForm" x-transition style="display:none;" class="border-t border-slate-100 pt-5">
                     <form action="{{ route('attendance.store') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         @csrf
+                        <input type="hidden" name="latitude" id="admin_lat">
+                        <input type="hidden" name="longitude" id="admin_lng">
+
                         <div>
                             <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Tipe Absen</label>
                             <select name="type" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
@@ -80,8 +86,13 @@
                         </div>
                         <div>
                             <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Keterangan Lokasi</label>
-                            <input type="text" name="location" placeholder="Nama kantor / lokasi..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <input type="text" name="location" id="admin_loc" placeholder="Nama kantor / lokasi..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
                         </div>
+
+                        <div class="sm:col-span-2">
+                            <x-gps-detector latId="admin_lat" lngId="admin_lng" statusId="admin-gps-status" locationId="admin_loc" />
+                        </div>
+
                         <div>
                             <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Selfie Bukti (opsional)</label>
                             <input type="file" name="attachment" accept="image/*" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
@@ -184,7 +195,7 @@
                                                 <span class="bg-red-50 text-red-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">IZIN</span>
                                             @endif
                                         </td>
-                                        <td class="py-4 text-slate-800">{{ $att->created_at->format('d M Y, H:i') }}</td>
+                                        <td class="py-4 text-slate-800 font-mono">{{ $att->created_at->format('d M Y, H:i') }} <span class="text-[9px] font-sans font-bold text-primary-600">WITA</span></td>
                                         <td class="py-4 text-slate-600">{{ $att->location ?? '-' }}</td>
                                         <td class="py-4 text-slate-500 font-mono text-[11px]">
                                             @if($att->latitude && $att->longitude)

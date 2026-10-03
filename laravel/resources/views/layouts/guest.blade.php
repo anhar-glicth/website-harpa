@@ -63,10 +63,12 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        button, a, input, select, textarea { touch-action: manipulation; }
+    </style>
 </head>
-<body class="font-sans antialiased bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
+<body class="font-sans antialiased bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4 sm:p-6 overflow-y-auto relative py-8 sm:py-12">
 
     <!-- Animated background mesh -->
     <div class="absolute inset-0 z-0">

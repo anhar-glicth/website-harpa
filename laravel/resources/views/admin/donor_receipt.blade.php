@@ -86,7 +86,7 @@
                 </div>
                 <div class="grid grid-cols-[140px_10px_1fr] gap-1">
                     <span class="text-slate-500">No HP</span><span>:</span>
-                    <span class="font-mono">{{ $donor->phone ?: '6285888445041' }}</span>
+                    <span class="font-mono">{{ $donor->phone ?: '-' }}</span>
                 </div>
             </div>
 

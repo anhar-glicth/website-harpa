@@ -162,7 +162,7 @@
             credits: { enabled: false }
         };
 
-        const months = ['August 2025', 'September 2025', 'October 2025', 'November 2025', 'December 2025', 'January 2026', 'February 2026', 'March 2026', 'April 2026', 'May 2026', 'June 2026', 'Total'];
+        const months = @json($chartMonths);
 
         // 1. Chart Target vs Capaian Per Bulan (Column Chart)
         Highcharts.chart('chartTargetVsCapaianColumn', Highcharts.merge(darkTheme, {
@@ -171,8 +171,8 @@
             xAxis: { categories: months },
             yAxis: { title: { text: 'Nominal (Rp)' } },
             series: [
-                { name: 'Capaian', data: [124087432, 72480113, 127240327, 491423433, 493791668, 390886473, 361016163, 299139038, 223318069, 181131406, 377959517, 3142533399], color: '#38bdf8' },
-                { name: 'Target',  data: [230000000, 184000000, 322000000, 368000000, 414000000, 0, 0, 0, 0, 0, 0, 1518000000], color: '#10b981' }
+                { name: 'Capaian', data: @json($chartCapaianData), color: '#38bdf8' },
+                { name: 'Target',  data: @json($chartTargetData), color: '#10b981' }
             ]
         }));
 
@@ -183,8 +183,8 @@
             xAxis: { categories: months },
             yAxis: { title: { text: 'Nominal (Rp)' } },
             series: [
-                { name: 'Total Donasi', data: [124087432, 72480113, 127240327, 491423433, 493791668, 390886473, 361016163, 299139038, 223318069, 181131406, 377959517, 3142533399], color: '#0d9488', marker: { symbol: 'circle' } },
-                { name: 'Total Target', data: [230000000, 184000000, 322000000, 368000000, 414000000, 0, 0, 0, 0, 0, 0, 1518000000], color: '#f43f5e', dashStyle: 'Dash', marker: { symbol: 'diamond' } }
+                { name: 'Total Donasi', data: @json($chartCapaianData), color: '#0d9488', marker: { symbol: 'circle' } },
+                { name: 'Total Target', data: @json($chartTargetData), color: '#f43f5e', dashStyle: 'Dash', marker: { symbol: 'diamond' } }
             ]
         }));
 

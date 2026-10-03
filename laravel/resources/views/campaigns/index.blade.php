@@ -43,7 +43,7 @@
             @endphp
             <div class="bg-white rounded-3xl border border-slate-100 hover:border-slate-200/80 hover:shadow-2xl shadow-sm transition-all duration-300 flex flex-col group overflow-hidden">
                 <!-- Cover Image -->
-                <div class="relative h-56 overflow-hidden">
+                <a href="{{ route('campaigns.show', $c->id) }}" class="relative h-56 overflow-hidden block">
                     <img 
                         src="{{ $c->foto ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&fit=crop' }}" 
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
@@ -52,13 +52,15 @@
                     <span class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg border border-white/10">
                         {{ $c->category }}
                     </span>
-                </div>
+                </a>
 
                 <!-- Card Body -->
                 <div class="p-6 sm:p-8 flex-grow flex flex-col justify-between space-y-6">
                     <div class="space-y-3">
                         <h3 class="font-montserrat font-black uppercase text-base text-slate-800 leading-tight group-hover:text-primary-600 transition-colors duration-200">
-                            {{ $c->title }}
+                            <a href="{{ route('campaigns.show', $c->id) }}" class="hover:underline">
+                                {{ $c->title }}
+                            </a>
                         </h3>
                         <p class="text-xs text-slate-500 font-medium line-clamp-3 leading-relaxed">
                             {{ $c->description }}

@@ -86,10 +86,10 @@
                         <div class="flex items-center gap-2">
                             <span>PIC Prospek :</span>
                             <select name="pic_prospect" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[160px]">
-                                <option value="">Pilih PIC</option>
-                                <option value="Digital Marketing">Digital Marketing</option>
-                                <option value="CRM">CRM</option>
-                                <option value="Baiq Nickte Madu Jasmine">Baiq Nickte Madu Jasmine</option>
+                                <option value="">Semua PIC</option>
+                                @foreach($picUsers as $pic)
+                                    <option value="{{ $pic->name }}" {{ request('pic_prospect') == $pic->name ? 'selected' : '' }}>{{ $pic->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
@@ -354,11 +354,11 @@
         Highcharts.chart('chartPerTanggal', Highcharts.merge(darkTheme, {
             chart: { type: 'area' },
             title: { text: 'Dashboard Transaksi Per Tanggal' },
-            xAxis: { categories: ['2025-07-09','2025-07-17','2025-07-25','2025-08-06','2025-08-24','2025-09-17','2025-10-17','2025-11-11','2025-11-18','2025-12-19','2025-12-25','2026-01-18','2026-02-17','2026-03-19','2026-04-17','2026-05-17','2026-06-30'] },
+            xAxis: { categories: @json($chartDates) },
             yAxis: { title: { text: 'Nominal Transaksi' } },
             series: [{
                 name: 'Total Nominal',
-                data: [360000000, 15000000, 60000000, 20000000, 15000000, 45000000, 450000000, 240000000, 90000000, 35000000, 50000000, 25000000, 60000000, 30000000, 20000000, 35000000, 40000000],
+                data: @json($chartDateValues),
                 color: '#38bdf8'
             }]
         }));
@@ -367,11 +367,11 @@
         Highcharts.chart('chartPerBulan', Highcharts.merge(darkTheme, {
             chart: { type: 'line' },
             title: { text: 'Dashboard Transaksi Per Bulan' },
-            xAxis: { categories: ['Jul 2025', 'Aug 2025', 'Sep 2025', 'Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026'] },
+            xAxis: { categories: @json($chartMonths) },
             yAxis: { title: { text: 'Nominal Transaksi' } },
             series: [{
                 name: 'Total Nominal',
-                data: [404419727, 124287432, 72400113, 127248327, 491423433, 493791668, 390886473, 361016163, 299139038, 223318069, 181131406, 377959517],
+                data: @json($chartMonthValues),
                 color: '#38bdf8'
             }]
         }));
@@ -380,54 +380,54 @@
         Highcharts.chart('chartPerHari', Highcharts.merge(darkTheme, {
             chart: { type: 'line' },
             title: { text: 'Dashboard Transaksi Per Hari' },
-            xAxis: { categories: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'] },
+            xAxis: { categories: @json($chartDays) },
             yAxis: { title: { text: 'Nominal Transaksi' } },
-            series: [{ name: 'Total Nominal', data: [300000000, 580000000, 310000000, 1220000000, 540000000, 328737870, 260000000], color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartDayValues), color: '#38bdf8' }]
         }));
 
         // 4. Chart Per Jam
         Highcharts.chart('chartPerJam', Highcharts.merge(darkTheme, {
             chart: { type: 'line' },
             title: { text: 'Dashboard Transaksi Per Jam' },
-            xAxis: { categories: ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23'] },
+            xAxis: { categories: @json(array_map('strval', $chartHours)) },
             yAxis: { title: { text: 'Nominal Transaksi' } },
-            series: [{ name: 'Total Nominal', data: [1750000000, 25000000, 30000000, 80000000, 210000000, 330000000, 180000000, 85000000, 80000000, 75000000, 60000000, 50000000, 45000000, 40000000, 42000000, 38000000, 45000000, 55000000, 48000000, 42000000, 39000000, 35000000, 30000000, 25000000], color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartHourValues), color: '#38bdf8' }]
         }));
 
         // 5. Chart Per Rumpun Program
         Highcharts.chart('chartPerRumpun', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Nominal Berdasarkan Rumpun Program' },
-            xAxis: { categories: ['Air Bersih', 'Dhuafa', 'Difabel', 'Dunia Islam', 'Fidyah', 'Infrastruktur', 'Kebencanaan', 'Lansia', 'Medis', 'Palestina', 'Qurban', 'Ramadhan', 'Wakaf', 'Yatim', 'Zakat Maal'] },
+            xAxis: { categories: @json($chartRumpunLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: [80000000, 5000000, 15000000, 520000000, 20000000, 1350000000, 290000000, 35000000, 180000000, 1020000000, 10000000, 12000000, 5000000, 45000000, 8000000], color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartRumpunValues), color: '#38bdf8' }]
         }));
 
         // 6. Chart Per Program
         Highcharts.chart('chartPerProgram', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Nominal Berdasarkan Program' },
-            xAxis: { categories: ['Adik Aila', 'Bantu Bangun Masjid', 'Berbagi Bahagia', 'Disabilitas', 'Infaq Dhuafa', 'Klinik Sedekah', 'Lansia Dhuafa', 'Makanan Siap Saji', 'Medis Aila', 'Paletina Umum', 'Sedekah Daging', 'Sepinggan Kasih', 'Wakaf Al-Quran', 'Yatim Ziya'] },
+            xAxis: { categories: @json($chartProgramLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: [15000000, 440000000, 500000000, 25000000, 220000000, 40000000, 30000000, 390000000, 50000000, 480000000, 150000000, 320000000, 45000000, 60000000], color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartProgramValues), color: '#38bdf8' }]
         }));
 
         // 7. Chart Per Kantor
         Highcharts.chart('chartPerKantor', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Nominal Berdasarkan Kantor' },
-            xAxis: { categories: ['Pusat-Amal Bakti Dunia Islam'] },
+            xAxis: { categories: @json($chartOfficeLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: [3546953126], color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartOfficeValues), color: '#38bdf8' }]
         }));
 
         // 8. Chart Per PIC Prospek
         Highcharts.chart('chartPerPIC', Highcharts.merge(darkTheme, {
             chart: { type: 'column' },
             title: { text: 'Total Nominal Berdasarkan PIC Prospek' },
-            xAxis: { categories: ['Digital Marketing', 'CRM', 'Perusahaan', 'Fundraising', 'Front Office', 'Customer Service', 'Baiq Nickte Madu Jasmine'] },
+            xAxis: { categories: @json($chartPicLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: [2450000000, 850000000, 220000000, 25000000, 5000000, 2000000, 1000000], color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartPicValues), color: '#38bdf8' }]
         }));
 
         // 9. Chart Distribusi Via Bayar (PIE CHART)
@@ -443,25 +443,7 @@
             },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'BSI an. AMAL BAKTI DUNIA ISLAM', y: 33.2 },
-                    { name: 'BCA an. Amal Bakti Dunia Islam', y: 23.5 },
-                    { name: 'BNI an. Yayasan Amal Bakti Dunia Islam', y: 7.2 },
-                    { name: 'Mandiri an. Amal Bakti Dunia Islam', y: 3.4 },
-                    { name: 'Gopay', y: 1.0 },
-                    { name: 'Dana', y: 0.5 },
-                    { name: 'Cash-BSI', y: 0.9 },
-                    { name: 'Cash', y: 0.6 },
-                    { name: 'Virtual Account BCA', y: 0.4 },
-                    { name: 'QRIS', y: 0.4 },
-                    { name: 'an. Amal Bakti Dunia Islam', y: 3.7 },
-                    { name: 'an. Muhamad Yasin', y: 2.1 },
-                    { name: 'Bank BCA', y: 0.2 },
-                    { name: 'Bank BRI', y: 0.3 },
-                    { name: 'Bank BSI', y: 0.4 },
-                    { name: 'Bank Mandiri', y: 0.6 },
-                    { name: 'BCA', y: 0.3 }
-                ]
+                data: @json($chartViaBayarData)
             }]
         }));
 
@@ -478,15 +460,7 @@
             },
             series: [{
                 name: 'Persentase',
-                data: [
-                    { name: 'WEB', y: 94.7 },
-                    { name: 'WA Marketing', y: 3.9 },
-                    { name: 'Kotak Amal', y: 1.2 },
-                    { name: 'Sekolah', y: 0.1 },
-                    { name: 'Gajda', y: 0.0 },
-                    { name: 'Celengan', y: 0.0 },
-                    { name: 'Cash', y: 0.1 }
-                ]
+                data: @json($chartChannelData)
             }]
         }));
 
