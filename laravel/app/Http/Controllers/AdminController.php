@@ -124,12 +124,20 @@ class AdminController extends Controller
 
     public function campaigns()
     {
+        if (!Auth::user()->canAccessMenu('campaigns')) {
+            return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin untuk mengelola kampanye.');
+        }
+
         $campaigns = Campaign::with('author')->latest()->paginate(10);
         return view('admin.campaigns', compact('campaigns'));
     }
 
     public function approveCampaign($id)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menyetujui kampanye.');
+        }
+
         $campaign = Campaign::findOrFail($id);
         $campaign->update(['status' => 'approved']);
         return redirect()->back()->with('success', 'Kampanye berhasil disetujui.');
@@ -137,6 +145,10 @@ class AdminController extends Controller
 
     public function rejectCampaign($id)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menolak kampanye.');
+        }
+
         $campaign = Campaign::findOrFail($id);
         $campaign->update(['status' => 'rejected']);
         return redirect()->back()->with('success', 'Kampanye ditolak.');
@@ -144,12 +156,20 @@ class AdminController extends Controller
 
     public function donations()
     {
+        if (!Auth::user()->canAccessMenu('donations')) {
+            return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin untuk memverifikasi donasi.');
+        }
+
         $donations = Donation::with(['campaign', 'paymentVia'])->latest()->paginate(15);
         return view('admin.donations', compact('donations'));
     }
 
     public function verifyDonation(Request $request, $id)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isFinance()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Staff Keuangan dan Super Admin yang berhak memverifikasi donasi.');
+        }
+
         $request->validate([
             'status' => 'required|in:Success,Failed',
             'admin_note' => 'nullable|string',
@@ -174,6 +194,10 @@ class AdminController extends Controller
 
     public function distributionDashboard(Request $request)
     {
+        if (!Auth::user()->canAccessMenu('distribution_dashboard')) {
+            return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin mengakses dashboard penyaluran.');
+        }
+
         $query = Distribution::query();
 
         // Filter: Date Range (default start_date: 2022-08-19, end_date: current date e.g. 2026-08-07)
@@ -502,6 +526,10 @@ class AdminController extends Controller
 
     public function distributions(Request $request)
     {
+        if (!Auth::user()->canAccessMenu('distributions')) {
+            return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin mengakses modul penyaluran.');
+        }
+
         $query = Distribution::with('campaign');
 
         // Search: ID Penyaluran / Nama / Kontak PIC / Program / Alamat / City / Province
@@ -560,6 +588,10 @@ class AdminController extends Controller
 
     public function storeDistribution(Request $request)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak mencatat distribusi bantuan.');
+        }
+
         $request->validate([
             'distribution_code' => 'nullable|string|max:50',
             'program_id'        => 'required|exists:campaigns,id',
@@ -590,6 +622,10 @@ class AdminController extends Controller
 
     public function updateDistribution(Request $request, $id)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak memperbarui data penyaluran.');
+        }
+
         $dis = Distribution::findOrFail($id);
 
         $request->validate([
@@ -614,6 +650,10 @@ class AdminController extends Controller
 
     public function deleteDistribution($id)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menghapus data penyaluran.');
+        }
+
         $dis = Distribution::findOrFail($id);
         $dis->delete();
 
@@ -690,6 +730,10 @@ class AdminController extends Controller
 
     public function importDistributions(Request $request)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak mengimpor data penyaluran.');
+        }
+
         $request->validate([
             'file' => 'required|file|mimes:csv,txt|max:5120',
         ]);
@@ -826,6 +870,10 @@ class AdminController extends Controller
 
     public function deleteUser($id)
     {
+        if (!Auth::user()->isAdmin()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Super Admin yang berhak menghapus akun pengguna.');
+        }
+
         $user = User::findOrFail($id);
 
         if (auth()->id() == $user->id) {
@@ -1577,6 +1625,10 @@ class AdminController extends Controller
 
     public function deleteProgramGroup($id)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menghapus Rumpun Program.');
+        }
+
         $group = ProgramGroup::findOrFail($id);
         $group->delete();
 
@@ -1648,6 +1700,10 @@ class AdminController extends Controller
 
     public function deleteProgram($id)
     {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menghapus Program.');
+        }
+
         $program = Program::findOrFail($id);
         $program->delete();
 
@@ -2293,6 +2349,11 @@ class AdminController extends Controller
     public function deleteDonor($id)
     {
         $donor = User::where('role', 'user')->findOrFail($id);
+
+        if ($donor->donations()->exists() && !Auth::user()->isAdmin()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Donatur ini memiliki riwayat transaksi donasi. Hanya Super Admin yang berhak menghapus.');
+        }
+
         $donor->delete();
 
         return redirect()->back()->with('success', 'Data Donatur berhasil dihapus.');
@@ -2533,6 +2594,10 @@ class AdminController extends Controller
 
     public function deleteTransaction($id)
     {
+        if (!Auth::user()->isAdmin()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Super Admin yang berhak menghapus data transaksi donasi.');
+        }
+
         $donation = Donation::findOrFail($id);
         $donation->delete();
 
@@ -4028,6 +4093,10 @@ class AdminController extends Controller
 
     public function deleteOffice($id)
     {
+        if (!Auth::user()->isAdmin()) {
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Super Admin yang berhak menghapus data kantor cabang.');
+        }
+
         $office = Office::findOrFail($id);
         $office->delete();
 

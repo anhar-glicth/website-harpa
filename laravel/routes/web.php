@@ -77,27 +77,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/distributions/{id}/delete', [AdminController::class, 'deleteDistribution'])->name('admin.distributions.delete');
     Route::get('/admin/distributions/export', [AdminController::class, 'exportDistributions'])->name('admin.distributions.export');
     Route::post('/admin/distributions/import', [AdminController::class, 'importDistributions'])->name('admin.distributions.import');
-    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
-    Route::post('/admin/users/store', [AdminController::class, 'storeUser'])->name('admin.users.store');
-    Route::put('/admin/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin.users.update');
-    Route::delete('/admin/users/{id}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
-    Route::get('/admin/users/export', [AdminController::class, 'exportUsers'])->name('admin.users.export');
-    Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
-    Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');
-    
     // Master Kantor Routes
     Route::get('/admin/offices', [AdminController::class, 'officesList'])->name('admin.offices');
     Route::post('/admin/offices/store', [AdminController::class, 'storeOffice'])->name('admin.offices.store');
     Route::put('/admin/offices/{id}/update', [AdminController::class, 'updateOffice'])->name('admin.offices.update');
     Route::delete('/admin/offices/{id}/delete', [AdminController::class, 'deleteOffice'])->name('admin.offices.delete');
     Route::get('/admin/offices/export', [AdminController::class, 'exportOffices'])->name('admin.offices.export');
-
-    // Master Karyawan Routes
-    Route::get('/admin/karyawan', [AdminController::class, 'karyawanList'])->name('admin.karyawan');
-    Route::post('/admin/karyawan/store', [AdminController::class, 'storeKaryawan'])->name('admin.karyawan.store');
-    Route::put('/admin/karyawan/{id}/update', [AdminController::class, 'updateKaryawan'])->name('admin.karyawan.update');
-    Route::delete('/admin/karyawan/{id}/delete', [AdminController::class, 'deleteKaryawan'])->name('admin.karyawan.delete');
-    Route::get('/admin/karyawan/export', [AdminController::class, 'exportKaryawan'])->name('admin.karyawan.export');
     
     // Master Channel Donasi Routes
     Route::get('/admin/donor-channels', [AdminController::class, 'donorChannelsList'])->name('admin.donor_channels');
@@ -166,7 +151,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/tasks', [AdminController::class, 'taskList'])->name('admin.tasks');
     Route::post('/admin/tasks/store', [AdminController::class, 'storeTask'])->name('admin.tasks.store');
     Route::get('/admin/tasks/export', [AdminController::class, 'exportTasks'])->name('admin.tasks.export');
-    Route::get('/admin/performance', [AdminController::class, 'performanceList'])->name('admin.performance');
     
     // Transaction Management Routes
     Route::get('/admin/donors-list', [AdminController::class, 'donorsList'])->name('admin.donors_list');
@@ -202,8 +186,27 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/target-vs-achievement', [AdminController::class, 'targetVsAchievementDashboard'])->name('admin.target_vs_achievement');
     Route::get('/admin/rfm-dashboard', [AdminController::class, 'rfmDashboard'])->name('admin.rfm_dashboard');
 
-    Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
-    Route::post('/admin/settings/update', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
+    // Super Admin Strictly Protected Routes (Kelola Staff, Web Settings, Master Karyawan, Evaluasi Kinerja)
+    Route::middleware(['superadmin'])->group(function () {
+        Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+        Route::post('/admin/users/store', [AdminController::class, 'storeUser'])->name('admin.users.store');
+        Route::put('/admin/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin.users.update');
+        Route::delete('/admin/users/{id}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+        Route::get('/admin/users/export', [AdminController::class, 'exportUsers'])->name('admin.users.export');
+        Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
+        Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');
+
+        Route::get('/admin/karyawan', [AdminController::class, 'karyawanList'])->name('admin.karyawan');
+        Route::post('/admin/karyawan/store', [AdminController::class, 'storeKaryawan'])->name('admin.karyawan.store');
+        Route::put('/admin/karyawan/{id}/update', [AdminController::class, 'updateKaryawan'])->name('admin.karyawan.update');
+        Route::delete('/admin/karyawan/{id}/delete', [AdminController::class, 'deleteKaryawan'])->name('admin.karyawan.delete');
+        Route::get('/admin/karyawan/export', [AdminController::class, 'exportKaryawan'])->name('admin.karyawan.export');
+
+        Route::get('/admin/performance', [AdminController::class, 'performanceList'])->name('admin.performance');
+
+        Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
+        Route::post('/admin/settings/update', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
+    });
 });
 
 // Field Worker Protected Routes

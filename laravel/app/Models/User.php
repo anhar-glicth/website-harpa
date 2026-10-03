@@ -166,21 +166,22 @@ class User extends Authenticatable
             self::ROLE_OPERATOR => in_array($menuKey, [
                 'dashboard', 'offices', 'donor_channels', 'payment_via',
                 'prospect_media', 'prospect_methods', 'prospect_types', 'fundraisers',
-                'prospect_responses', 'donors_list', 'transactions_list', 'prospects_list',
-                'potential_donors', 'attendance', 'tasks'
+                'prospect_responses', 'donors_list', 'transactions_list', 'transactions_dashboard',
+                'prospects_list', 'potential_donors', 'attendance', 'tasks'
             ]),
             self::ROLE_FINANCE => in_array($menuKey, [
                 'dashboard', 'analytics', 'donations', 'payment_via', 'donors_list',
-                'transactions_list', 'transactions_dashboard', 'donors_dashboard', 'attendance', 'tasks'
+                'transactions_list', 'transactions_dashboard', 'donors_dashboard', 'target_vs_achievement',
+                'distribution_dashboard', 'distributions', 'attendance', 'tasks'
             ]),
             self::ROLE_PROGRAM_MANAGER => in_array($menuKey, [
                 'dashboard', 'campaigns', 'program_groups', 'programs',
-                'distribution_dashboard', 'distributions', 'attendance', 'tasks'
+                'distribution_dashboard', 'distributions', 'donors_list', 'attendance', 'tasks'
             ]),
             self::ROLE_CRM_STAFF => in_array($menuKey, [
                 'dashboard', 'analytics', 'prospect_media', 'prospect_methods',
-                'prospect_types', 'prospect_responses', 'targets', 'prospects_list',
-                'potential_donors', 'prospects_dashboard', 'target_vs_achievement',
+                'prospect_types', 'prospect_responses', 'targets', 'donors_list', 'donors_dashboard',
+                'prospects_list', 'potential_donors', 'prospects_dashboard', 'target_vs_achievement',
                 'rfm_dashboard', 'attendance', 'tasks'
             ]),
             default => false,
