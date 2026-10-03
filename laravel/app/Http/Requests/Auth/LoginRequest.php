@@ -63,17 +63,29 @@ class LoginRequest extends FormRequest
         ];
 
         if (array_key_exists($email, $defaultAccounts) && $password === 'password123') {
-            $user = \App\Models\User::where('email', $email)->first();
-            if (!$user) {
-                \App\Models\User::create([
-                    'name' => $defaultAccounts[$email]['name'],
-                    'username' => $defaultAccounts[$email]['username'],
-                    'email' => $email,
-                    'password' => \Illuminate\Support\Facades\Hash::make('password123'),
-                    'role' => $defaultAccounts[$email]['role'],
-                ]);
-            } elseif (!\Illuminate\Support\Facades\Hash::check('password123', $user->password)) {
-                $user->update(['password' => \Illuminate\Support\Facades\Hash::make('password123')]);
+            try {
+                $user = \App\Models\User::where('email', $email)->first();
+                if (!$user) {
+                    $targetUsername = $defaultAccounts[$email]['username'];
+                    if (\App\Models\User::where('username', $targetUsername)->exists()) {
+                        $cleanDomain = str_replace(['@', '.', '-'], '_', explode('@', $email)[1] ?? 'user');
+                        $targetUsername = $defaultAccounts[$email]['username'] . '_' . $cleanDomain;
+                        while (\App\Models\User::where('username', $targetUsername)->exists()) {
+                            $targetUsername = $defaultAccounts[$email]['username'] . '_' . rand(100, 9999);
+                        }
+                    }
+                    \App\Models\User::create([
+                        'name' => $defaultAccounts[$email]['name'],
+                        'username' => $targetUsername,
+                        'email' => $email,
+                        'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                        'role' => $defaultAccounts[$email]['role'],
+                    ]);
+                } elseif (!\Illuminate\Support\Facades\Hash::check('password123', $user->password)) {
+                    $user->update(['password' => \Illuminate\Support\Facades\Hash::make('password123')]);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("Auto-provision default account error: " . $e->getMessage());
             }
         }
 

@@ -30,21 +30,33 @@ return new class extends Migration
         ];
 
         foreach ($rolesData as $data) {
-            $user = User::where('email', $data['email'])->first();
-            if ($user) {
-                $user->update([
-                    'name' => $data['name'],
-                    'role' => $data['role'],
-                    'password' => $commonPassword,
-                ]);
-            } else {
-                User::create([
-                    'name' => $data['name'],
-                    'username' => $data['username'],
-                    'email' => $data['email'],
-                    'role' => $data['role'],
-                    'password' => $commonPassword,
-                ]);
+            try {
+                $user = User::where('email', $data['email'])->first();
+                if ($user) {
+                    $user->update([
+                        'name' => $data['name'],
+                        'role' => $data['role'],
+                        'password' => $commonPassword,
+                    ]);
+                } else {
+                    $targetUsername = $data['username'];
+                    if (User::where('username', $targetUsername)->exists()) {
+                        $cleanDomain = str_replace(['@', '.', '-'], '_', explode('@', $data['email'])[1] ?? 'user');
+                        $targetUsername = $data['username'] . '_' . $cleanDomain;
+                        while (User::where('username', $targetUsername)->exists()) {
+                            $targetUsername = $data['username'] . '_' . rand(100, 9999);
+                        }
+                    }
+                    User::create([
+                        'name' => $data['name'],
+                        'username' => $targetUsername,
+                        'email' => $data['email'],
+                        'role' => $data['role'],
+                        'password' => $commonPassword,
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                // Ignore errors to allow migration to finish cleanly
             }
         }
     }

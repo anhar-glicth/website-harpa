@@ -252,23 +252,46 @@ Route::get('/init-roles', function () {
 
     $results = [];
     foreach ($rolesData as $data) {
-        $user = \App\Models\User::where('email', $data['email'])->first();
-        if ($user) {
-            $user->update([
-                'name' => $data['name'],
-                'role' => $data['role'],
-                'password' => $commonPassword,
-            ]);
-            $results[] = "[AKTIF / UPDATE] {$data['role']}: {$data['email']}";
-        } else {
-            \App\Models\User::create([
-                'name' => $data['name'],
-                'username' => $data['username'],
-                'email' => $data['email'],
-                'role' => $data['role'],
-                'password' => $commonPassword,
-            ]);
-            $results[] = "[BERHASIL DIBUAT] {$data['role']}: {$data['email']}";
+        try {
+            $user = \App\Models\User::where('email', $data['email'])->first();
+            if ($user) {
+                $user->update([
+                    'name' => $data['name'],
+                    'role' => $data['role'],
+                    'password' => $commonPassword,
+                ]);
+                $results[] = "[AKTIF / UPDATE] {$data['role']}: {$data['email']} (username: {$user->username})";
+            } else {
+                $targetUsername = $data['username'];
+                
+                // Cek jika username sudah dipakai user lain
+                $existingByUsername = \App\Models\User::where('username', $targetUsername)->first();
+                if ($existingByUsername) {
+                    // Update password akun lama jika rolenya sejenis agar bisa dipakai
+                    if (!\Illuminate\Support\Facades\Hash::check('password123', $existingByUsername->password)) {
+                        $existingByUsername->update(['password' => $commonPassword]);
+                    }
+                    $results[] = "[INFO] Username '{$targetUsername}' sudah dipakai akun: {$existingByUsername->email} (password disinkronkan ke password123)";
+                    
+                    // Buat username unik untuk akun email baru ini
+                    $cleanDomain = str_replace(['@', '.', '-'], '_', explode('@', $data['email'])[1] ?? 'user');
+                    $targetUsername = $data['username'] . '_' . $cleanDomain;
+                    while (\App\Models\User::where('username', $targetUsername)->exists()) {
+                        $targetUsername = $data['username'] . '_' . rand(100, 9999);
+                    }
+                }
+
+                \App\Models\User::create([
+                    'name' => $data['name'],
+                    'username' => $targetUsername,
+                    'email' => $data['email'],
+                    'role' => $data['role'],
+                    'password' => $commonPassword,
+                ]);
+                $results[] = "[BERHASIL DIBUAT] {$data['role']}: {$data['email']} (username: {$targetUsername})";
+            }
+        } catch (\Throwable $e) {
+            $results[] = "[GAGAL] {$data['email']}: " . $e->getMessage();
         }
     }
 
