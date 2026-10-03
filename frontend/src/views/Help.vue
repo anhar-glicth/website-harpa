@@ -3,7 +3,7 @@
     <div class="max-w-4xl mx-auto px-4 py-24 space-y-16">
       <header class="text-center space-y-6">
         <h1 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Bantuan <span class="text-green-600">Terbuka</span></h1>
-        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Panduan & Informasi Platform HumanityCare</p>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Panduan & Informasi Platform Amal Abadi</p>
       </header>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">

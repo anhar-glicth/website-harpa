@@ -180,7 +180,7 @@
                 </div>
                 <div>
                   <h4 class="text-sm font-black uppercase tracking-tight mb-2 italic text-green-400">Transparansi 100%</h4>
-                  <p class="text-xs text-white/40 leading-relaxed font-medium">Dana Anda akan diverifikasi oleh Admin HumanityCare sebelum diserahkan ke penanggung jawab lapangan.</p>
+                  <p class="text-xs text-white/40 leading-relaxed font-medium">Dana Anda akan diverifikasi oleh Admin Amal Abadi sebelum diserahkan ke penanggung jawab lapangan.</p>
                 </div>
               </div>
             </div>

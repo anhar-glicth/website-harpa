@@ -1,3 +1,3 @@
-<div {{ $attributes->merge(['class' => 'bg-gradient-to-br from-primary-500 to-secondary-500 text-white w-16 h-16 rounded-3xl flex items-center justify-center shadow-lg shadow-primary-500/20']) }}>
-    <i class="fa-solid fa-hands-holding-child text-2xl"></i>
+<div {{ $attributes->merge(['class' => 'flex items-center justify-center']) }}>
+    <img src="{{ asset('images/logo.png') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpeg') }}';" class="h-10 w-auto object-contain" alt="Amal Abadi">
 </div>

@@ -3,7 +3,7 @@
     <!-- Hero Header -->
     <header class="pt-32 pb-24 px-6 md:px-10 text-center relative overflow-hidden">
       <div class="max-w-4xl mx-auto space-y-6 relative z-10">
-        <div class="inline-flex py-1 px-4 bg-green-600/10 rounded-full text-[9px] font-black uppercase tracking-widest border border-green-600/10 text-green-600">Warta HumanityCare</div>
+        <div class="inline-flex py-1 px-4 bg-green-600/10 rounded-full text-[9px] font-black uppercase tracking-widest border border-green-600/10 text-green-600">Warta Amal Abadi</div>
         <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none italic text-slate-900">
           Kabar <span class="text-green-600">Terhangat</span> <br> <span class="text-slate-400">Kebaikan Kita</span>
         </h1>

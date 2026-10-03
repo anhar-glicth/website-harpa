@@ -3,7 +3,7 @@
     <div class="max-w-4xl mx-auto px-4 py-12 md:py-24 space-y-12 md:space-y-16">
       <!-- Header -->
       <header class="text-center space-y-3">
-        <h1 class="text-xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase">Tentang <span class="text-green-600">HumanityCare</span></h1>
+        <h1 class="text-xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase">Tentang <span class="text-green-600">Amal Abadi</span></h1>
         <p class="text-[11px] md:text-base text-gray-400 font-bold max-w-2xl mx-auto tracking-normal leading-relaxed">Membangun jembatan kebaikan antara mereka yang ingin membantu dan mereka yang membutuhkan bantuan.</p>
       </header>
 
@@ -18,7 +18,7 @@
           <p class="text-[10px] md:text-sm text-gray-500 leading-relaxed italic font-medium mb-4">{{ siteSettings.inst_vision || 'Menjadi lembaga filantropi terdepan dalam membangun kemandirian ummat.' }}</p>
           
           <p class="text-[10px] md:text-sm text-gray-400 font-bold uppercase tracking-widest leading-relaxed">Misi</p>
-          <p class="text-[10px] md:text-sm text-gray-500 leading-relaxed italic font-medium">{{ siteSettings.inst_mission || 'HumanityCare adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses.' }}</p>
+          <p class="text-[10px] md:text-sm text-gray-500 leading-relaxed italic font-medium">{{ siteSettings.inst_mission || 'Amal Abadi adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses.' }}</p>
           <div class="space-y-4">
             <div class="flex items-center gap-4 p-4 bg-green-50 rounded-2xl border border-green-100">
               <div class="w-10 h-10 bg-green-600 text-white rounded-xl flex items-center justify-center font-bold">1</div>

@@ -56,7 +56,7 @@
           <span class="text-green-600">perubahan untuk semua.</span>
         </h1>
         <p class="text-slate-500 text-base md:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
-          Bersama HumanityCare, setiap donasi Anda menjangkau mereka yang paling membutuhkan. Mari beraksi hari ini.
+          Bersama Amal Abadi, setiap donasi Anda menjangkau mereka yang paling membutuhkan. Mari beraksi hari ini.
         </p>
         <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-4">
           <router-link to="/campaigns" class="bg-green-600 text-white px-10 py-4 rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-500/20">Donasi Sekarang</router-link>
@@ -226,7 +226,7 @@
       <div class="space-y-6">
         <span class="text-green-600 font-black uppercase text-xs tracking-widest">Tentang Kami</span>
         <h2 class="text-3xl md:text-5xl font-black text-slate-900 leading-tight tracking-tighter">Membangun <span class="text-green-600">Kepercayaan</span> Bersama Anda.</h2>
-        <p class="text-slate-500 leading-relaxed">HumanityCare adalah jembatan antara kebaikan hati Anda dan mereka yang membutuhkan bantuan darurat di seluruh dunia.</p>
+        <p class="text-slate-500 leading-relaxed">Amal Abadi adalah jembatan antara kebaikan hati Anda dan mereka yang membutuhkan bantuan darurat di seluruh pelosok.</p>
         <router-link to="/about" class="inline-block bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg shadow-green-500/20">Selengkapnya</router-link>
       </div>
     </section>
@@ -269,7 +269,7 @@
           <span v-for="n in 5" :key="n" class="text-yellow-400 text-2xl">★</span>
         </div>
         <blockquote class="text-white text-2xl md:text-4xl font-black italic leading-tight tracking-tighter">
-          "Berdonasi di HumanityCare sangat transparan. Saya bisa memantau langsung bantuan saya sampai ke tangan mereka yang berhak."
+          "Berdonasi di Amal Abadi sangat transparan. Saya bisa memantau langsung bantuan saya sampai ke tangan mereka yang berhak."
         </blockquote>
         <div class="flex flex-col items-center gap-4">
           <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center text-white font-black text-xl">A</div>
@@ -377,11 +377,11 @@
     <footer class="bg-slate-900 text-white py-20 border-t border-white/5">
       <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12">
         <div class="space-y-6">
-          <div class="flex items-center gap-2">
-            <svg class="w-7 h-7 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            <span class="font-black text-xl italic uppercase tracking-tighter">HumanityCare</span>
+          <div class="flex items-center gap-2.5">
+            <img src="/logo-icon.png" class="w-8 h-8 object-contain" alt="Amal Abadi" />
+            <span class="font-black text-xl italic uppercase tracking-tighter">Amal Abadi</span>
           </div>
-          <p class="text-slate-500 text-sm leading-relaxed">Platform donasi digital tepercaya untuk kemanusiaan global.</p>
+          <p class="text-slate-500 text-sm leading-relaxed">Platform donasi digital tepercaya untuk kemanusiaan dan kebaikan umat.</p>
         </div>
         <div v-for="col in footerLinks" :key="col.title">
           <p class="font-black text-white text-xs uppercase tracking-widest mb-6">{{ col.title }}</p>
@@ -393,7 +393,7 @@
         </div>
       </div>
       <div class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-slate-800 text-center text-slate-600 text-[10px] font-bold uppercase tracking-[0.3em]">
-        © 2026 HumanityCare. Berdonasi dengan hati, membantu dengan bukti.
+        © 2026 Amal Abadi. Berdonasi dengan hati, membantu dengan bukti.
       </div>
     </footer>
 

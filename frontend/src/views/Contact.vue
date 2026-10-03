@@ -19,7 +19,7 @@
           </div>
           <div class="flex items-center gap-6 group hover:translate-x-2 transition-transform">
             <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white"><i class="fas fa-envelope"></i></div>
-            <p class="text-xs font-bold tracking-widest lowercase">{{ siteSettings.inst_email || 'halo@humanitycare.id' }}</p>
+            <p class="text-xs font-bold tracking-widest lowercase">{{ siteSettings.inst_email || 'halo@amalabadi.org' }}</p>
           </div>
         </div>
 

@@ -18,7 +18,7 @@ async function setup() {
                 ['hero_title', 'Uluran Tangan Anda, Harapan Mereka'],
                 ['hero_subtitle', 'Kami menghubungkan kebaikan hati Anda dengan mereka yang benar-benar membutuhkan bantuan di seluruh pelosok negeri.'],
                 ['hero_image', 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop'],
-                ['about_mission', 'HumanityCare adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses. Kami percaya bahwa setiap bantuan, sekecil apapun, memiliki dampak besar jika disalurkan kepada orang yang tepat dengan cara yang benar.'],
+                ['about_mission', 'Amal Abadi adalah platform donasi digital yang berfokus pada transparansi dan kemudahan akses. Kami percaya bahwa setiap bantuan, sekecil apapun, memiliki dampak besar jika disalurkan kepada orang yang tepat dengan cara yang benar.'],
                 ['about_image', 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop'],
                 ['impact_image', 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1000&auto=format&fit=crop'],
                 ['impact_title', 'Penyaluran Ribuan Wakaf Al-Quran ke Pelosok Indonesia Timur']

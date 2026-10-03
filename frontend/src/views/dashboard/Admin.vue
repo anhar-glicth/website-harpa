@@ -275,7 +275,7 @@
           <header class="hidden lg:flex bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex-col md:flex-row justify-between items-center gap-6">
             <div class="space-y-1 text-center md:text-left">
               <h1 class="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">ADMIN <span class="text-green-600">PANEL</span></h1>
-              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">Pusat Kendali & CMS HumanityCare</p>
+              <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">Pusat Kendali & CMS Amal Abadi</p>
             </div>
             <div class="flex gap-4">
                <div class="text-right">
@@ -625,7 +625,7 @@
                <div class="p-8 border-b border-gray-50 bg-green-50/20 flex justify-between items-center">
                   <div>
                     <h3 class="font-black text-gray-900 uppercase tracking-tighter">Profil Resmi <span class="text-green-600">Lembaga</span></h3>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Identitas resmi HumanityCare</p>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Identitas resmi Amal Abadi</p>
                   </div>
                   <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-green-600 border border-green-50">
                     <i class="fas fa-building text-xl"></i>
@@ -638,11 +638,11 @@
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Nama Lembaga</label>
-                           <input v-model="settingsData.inst_name" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="HumanityCare Indonesia" />
+                           <input v-model="settingsData.inst_name" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="Yayasan Amal Abadi Nusantara" />
                         </div>
                         <div class="space-y-2">
                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Email Resmi</label>
-                           <input v-model="settingsData.inst_email" type="email" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="kontak@humanitycare.org" />
+                           <input v-model="settingsData.inst_email" type="email" class="w-full p-4 bg-gray-50 rounded-2xl border-none outline-none focus:ring-2 focus:ring-green-500 font-bold text-xs" placeholder="kontak@amalabadi.org" />
                         </div>
                         <div class="space-y-2">
                            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Telepon / WhatsApp</label>
@@ -2092,7 +2092,7 @@ const printReceipt = (row) => {
     <body>
       <div class="receipt">
         <div class="header">
-          <div class="logo">HUMANITY<span style="color:#334155">CARE</span></div>
+          <div class="logo">AMAL <span style="color:#ea580c">ABADI</span></div>
           <div class="title">KWITANSI DONASI RESMI</div>
         </div>
         <div class="item"><span class="label">No. Transaksi</span> <span class="value">#TXN-${row.id}-${new Date().getFullYear()}</span></div>
@@ -2105,7 +2105,7 @@ const printReceipt = (row) => {
         
         <div class="footer">
           <p>Terima kasih atas bantuan Anda. Semoga menjadi amal jariyah yang tak terputus.</p>
-          <p style="font-weight: 800; color: #1e293b; margin-top: 10px;">HumanityCare - Digital Donation System</p>
+          <p style="font-weight: 800; color: #1e293b; margin-top: 10px;">Amal Abadi - Platform Donasi & Zakat</p>
         </div>
       </div>
       <div style="text-align:center; margin-top: 20px;" class="no-print">

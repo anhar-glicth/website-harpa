@@ -228,9 +228,9 @@ const downloadCertificate = (d) => {
 <body><div class="cert">
   <div class="seal">🏅</div>
   <h1>SERTIFIKAT DONASI</h1>
-  <p class="sub">HumanityCare — Platform Kemanusiaan Terpercaya</p>
+  <p class="sub">Amal Abadi — Platform Kemanusiaan & Zakat Terpercaya</p>
   <p style="color:#6b7280">Dengan bangga diberikan kepada</p>
-  <div class="name">Donatur HumanityCare</div>
+  <div class="name">Donatur Amal Abadi</div>
   <p style="color:#6b7280">atas kontribusi sebesar</p>
   <div class="amount">Rp ${formatCurrency(d.amount)}</div>
   <div class="campaign">untuk program: <b>${d.campaign_title}</b></div>
