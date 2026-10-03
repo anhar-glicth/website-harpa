@@ -271,9 +271,14 @@
                         {{ $donations->links() }}
                     </div>
                 @else
-                    <div class="py-16 text-center text-slate-400 font-bold uppercase tracking-wider">
-                        <i class="fa-solid fa-heart-crack text-slate-200 text-4xl mb-3 block"></i>
-                        Anda belum pernah melakukan donasi kebaikan.
+                    <div class="py-16 text-center text-slate-400 font-bold uppercase tracking-wider space-y-4">
+                        <i class="fa-solid fa-heart-crack text-slate-200 text-4xl block"></i>
+                        <p>Anda belum pernah melakukan donasi kebaikan.</p>
+                        <div>
+                            <a href="{{ route('campaigns.index') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-primary-600/20 hover:scale-105">
+                                <i class="fa-solid fa-hand-holding-heart"></i> Lihat Kampanye Kebaikan
+                            </a>
+                        </div>
                     </div>
                 @endif
             </div>
