@@ -148,99 +148,110 @@
                         </button>
                     </div>
 
-                    {{-- Advance Search Drawer (4 Rows of Filters) --}}
-                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50/80 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700">
+                    {{-- Advance Search Drawer (4 Rows of Filters - Fixed Responsive Grid) --}}
+                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50/90 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700 shadow-inner">
                         
-                        {{-- Row 1 --}}
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Waktu Donasi</span> :
-                                <input type="time" name="start_time" value="{{ request('start_time') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
-                                <span>s/d</span>
-                                <input type="time" name="end_time" value="{{ request('end_time') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                        {{-- Row 1: Waktu Donasi (Range), Rumpun Program, Program --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+                            <div class="md:col-span-2 lg:col-span-5 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Waktu Donasi</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="time" name="start_time" value="{{ request('start_time') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
+                                <input type="time" name="end_time" value="{{ request('end_time') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Rumpun Program</span> :
-                                <select name="program_group_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="md:col-span-1 lg:col-span-4 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Rumpun Program</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="program_group_id" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih Rumpun Program</option>
                                     @foreach($programGroups as $pg)
-                                        <option value="{{ $pg->id }}">{{ $pg->name }}</option>
+                                        <option value="{{ $pg->id }}" {{ request('program_group_id') == $pg->id ? 'selected' : '' }}>{{ $pg->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Program</span> :
-                                <select name="program_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="md:col-span-1 lg:col-span-3 flex items-center gap-2 min-w-0">
+                                <span class="w-16 shrink-0 text-[11px] font-semibold whitespace-nowrap">Program</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="program_id" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih Program</option>
                                     @foreach($programs as $prg)
-                                        <option value="{{ $prg->id }}">{{ $prg->title }}</option>
+                                        <option value="{{ $prg->id }}" {{ request('program_id') == $prg->id ? 'selected' : '' }}>{{ $prg->title }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
-                        {{-- Row 2 --}}
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Nominal</span> :
-                                <input type="number" name="min_amount" value="{{ request('min_amount') }}" placeholder="Nominal Satu" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
-                                <span>s/d</span>
-                                <input type="number" name="max_amount" value="{{ request('max_amount') }}" placeholder="Nominal Dua" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                        {{-- Row 2: Nominal (Range), Channel Donasi, Via Bayar --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+                            <div class="md:col-span-2 lg:col-span-5 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Nominal</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="number" name="min_amount" value="{{ request('min_amount') }}" placeholder="Min Rp" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
+                                <input type="number" name="max_amount" value="{{ request('max_amount') }}" placeholder="Maks Rp" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Channel Donasi</span> :
-                                <select name="donor_channel_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="md:col-span-1 lg:col-span-4 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Channel Donasi</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="donor_channel_id" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih Channel Donasi</option>
                                     @foreach($donorChannels as $dc)
-                                        <option value="{{ $dc->id }}">{{ $dc->name }}</option>
+                                        <option value="{{ $dc->id }}" {{ request('donor_channel_id') == $dc->id ? 'selected' : '' }}>{{ $dc->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Via Bayar</span> :
-                                <select name="payment_via_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="md:col-span-1 lg:col-span-3 flex items-center gap-2 min-w-0">
+                                <span class="w-16 shrink-0 text-[11px] font-semibold whitespace-nowrap">Via Bayar</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="payment_via_id" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih Via Bayar</option>
                                     @foreach($paymentVias as $pv)
-                                        <option value="{{ $pv->id }}">{{ $pv->name }}</option>
+                                        <option value="{{ $pv->id }}" {{ request('payment_via_id') == $pv->id ? 'selected' : '' }}>{{ $pv->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
-                        {{-- Row 3 --}}
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">PIC Prospek</span> :
-                                <select name="pic_prospect" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                        {{-- Row 3: PIC Prospek, Sumber Informasi, Kantor Layanan --}}
+                        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-12 gap-3 items-center">
+                            <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">PIC Prospek</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="pic_prospect" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih PIC Prospek</option>
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Sumber Informasi</span> :
-                                <input type="text" name="source_info" value="{{ request('source_info') }}" placeholder="Sumber Informasi" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Sumber Info</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="text" name="source_info" value="{{ request('source_info') }}" placeholder="Sumber Informasi" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Kantor Layanan</span> :
-                                <select name="office_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Kantor Layanan</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="office_id" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih Kantor Layanan</option>
                                     @foreach($offices as $ofc)
-                                        <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
+                                        <option value="{{ $ofc->id }}" {{ request('office_id') == $ofc->id ? 'selected' : '' }}>{{ $ofc->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
-                        {{-- Row 4 --}}
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Tgl Insert</span> :
-                                <input type="date" name="start_insert_date" value="{{ request('start_insert_date') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
-                                <span>s/d</span>
-                                <input type="date" name="end_insert_date" value="{{ request('end_insert_date') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                        {{-- Row 4: Tgl Insert (Range) & Segmen (Expanded to prevent any overlap) --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+                            <div class="md:col-span-1 lg:col-span-7 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Tgl Insert</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="date" name="start_insert_date" value="{{ request('start_insert_date') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
+                                <input type="date" name="end_insert_date" value="{{ request('end_insert_date') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Segmen</span> :
-                                <input type="text" name="segment" value="{{ request('segment') }}" placeholder="Segmen" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="md:col-span-1 lg:col-span-5 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Segmen</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="text" name="segment" value="{{ request('segment') }}" placeholder="Segmen" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
                         </div>
 

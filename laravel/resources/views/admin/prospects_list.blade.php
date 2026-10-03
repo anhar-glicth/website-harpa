@@ -192,28 +192,32 @@
                         </div>
 
                         {{-- Row 3 --}}
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Respon</span> :
-                                <select name="response_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                        {{-- Row 3 --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 items-center">
+                            <div class="md:col-span-1 lg:col-span-3 flex items-center gap-2 min-w-0">
+                                <span class="w-20 shrink-0 text-[11px] font-semibold whitespace-nowrap">Respon</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="response_id" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih Respon</option>
                                     @foreach($prospectResponses as $pr)
-                                        <option value="{{ $pr->id }}">{{ $pr->name }}</option>
+                                        <option value="{{ $pr->id }}" {{ request('response_id') == $pr->id ? 'selected' : '' }}>{{ $pr->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Potensi Donasi</span> :
-                                <input type="number" name="min_potential" value="{{ request('min_potential') }}" placeholder="Nominal Satu" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
-                                <span>s/d</span>
-                                <input type="number" name="max_potential" value="{{ request('max_potential') }}" placeholder="Nominal Dua" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="md:col-span-2 lg:col-span-5 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Potensi Donasi</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="number" name="min_potential" value="{{ request('min_potential') }}" placeholder="Min Rp" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
+                                <input type="number" name="max_potential" value="{{ request('max_potential') }}" placeholder="Maks Rp" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Kantor Layanan</span> :
-                                <select name="office_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="md:col-span-1 lg:col-span-4 flex items-center gap-2 min-w-0">
+                                <span class="w-24 shrink-0 text-[11px] font-semibold whitespace-nowrap">Kantor Layanan</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="office_id" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Pilih Kantor Layanan</option>
                                     @foreach($offices as $ofc)
-                                        <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
+                                        <option value="{{ $ofc->id }}" {{ request('office_id') == $ofc->id ? 'selected' : '' }}>{{ $ofc->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -104,37 +104,41 @@
                     </div>
 
                     {{-- Advance Search Drawer (4 Rows of 2 Columns) --}}
-                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50/80 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700">
+                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50/90 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700 shadow-inner">
                         
                         {{-- Row 1 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Tgl Awal Prospek</span> :
-                                <input type="date" name="start_prospect_date" value="{{ request('start_prospect_date') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
-                                <span>s/d</span>
-                                <input type="date" name="end_prospect_date" value="{{ request('end_prospect_date') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Tgl Awal Prospek</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="date" name="start_prospect_date" value="{{ request('start_prospect_date') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
+                                <input type="date" name="end_prospect_date" value="{{ request('end_prospect_date') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Last Prospek</span> :
-                                <input type="date" name="start_last_prospect" value="{{ request('start_last_prospect') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
-                                <span>s/d</span>
-                                <input type="date" name="end_last_prospect" value="{{ request('end_last_prospect') }}" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Last Prospek</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <input type="date" name="start_last_prospect" value="{{ request('start_last_prospect') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
+                                <input type="date" name="end_last_prospect" value="{{ request('end_last_prospect') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                             </div>
                         </div>
 
                         {{-- Row 2 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Pernah Diprospek</span> :
-                                <select name="ever_prospected" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Pernah Diprospek</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="ever_prospected" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Last Respon</span> :
-                                <select name="last_response" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Last Respon</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="last_response" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Last Respon Prospek</option>
                                     @foreach($prospectResponses as $pr)
                                         <option value="{{ $pr->id }}">{{ $pr->name }}</option>
@@ -145,18 +149,20 @@
 
                         {{-- Row 3 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Last Media Prospek</span> :
-                                <select name="last_media" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Last Media Prospek</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="last_media" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="">Last Media Prospek</option>
                                     @foreach($prospectMedia as $pm)
                                         <option value="{{ $pm->id }}">{{ $pm->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Ada No HP</span> :
-                                <select name="has_phone" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Ada No HP</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="has_phone" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
@@ -166,17 +172,19 @@
 
                         {{-- Row 4 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Ada Email</span> :
-                                <select name="has_email" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Ada Email</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="has_email" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-32 text-[11px] font-semibold">Aktif</span> :
-                                <select name="is_active" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Aktif</span>
+                                <span class="shrink-0 text-slate-400 font-bold">:</span>
+                                <select name="is_active" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
