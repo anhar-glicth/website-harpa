@@ -62,7 +62,42 @@
     const defaultLng = {{ $defaultOfficeLng }};
     const defaultName = "{{ $defaultOfficeName }}";
 
-    function updateFields(lat, lng, sourceLabel, badgeClass = 'text-emerald-600') {
+    /**
+     * Reverse Geocoding via Nominatim (OpenStreetMap) — gratis, tanpa API key.
+     * Mengembalikan nama lokasi yang ringkas dan mudah dibaca.
+     */
+    async function reverseGeocode(lat, lng) {
+        try {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1&accept-language=id`;
+            const res = await fetch(url, {
+                headers: { 'Accept': 'application/json' },
+                cache: 'no-store'
+            });
+            if (!res.ok) return null;
+            const data = await res.json();
+            if (!data || !data.address) return null;
+
+            const a = data.address;
+            // Susun nama lokasi yang ringkas: kelurahan/desa, kecamatan, kota/kabupaten
+            const parts = [];
+            const kelurahan = a.suburb || a.village || a.hamlet || a.neighbourhood || a.quarter || null;
+            const kecamatan = a.city_district || a.district || a.subdistrict || null;
+            const kota = a.city || a.town || a.county || a.state_district || a.state || null;
+
+            if (kelurahan) parts.push(kelurahan);
+            if (kecamatan && kecamatan !== kelurahan) parts.push(kecamatan);
+            if (kota && kota !== kecamatan) parts.push(kota);
+
+            return parts.length > 0 ? parts.join(', ') : (data.display_name ? data.display_name.split(',').slice(0, 3).join(',').trim() : null);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Update semua field koordinat dan tampilkan nama lokasi jika berhasil di-reverse geocode.
+     */
+    async function updateFields(lat, lng, sourceLabel, badgeClass = 'text-emerald-600', skipGeocode = false) {
         if (latInput) latInput.value = lat;
         if (lngInput) lngInput.value = lng;
         if (manualLat) manualLat.value = Number(lat).toFixed(6);
@@ -74,11 +109,42 @@
         if (distLat) distLat.value = lat;
         if (distLng) distLng.value = lng;
 
-        if (statusEl) {
+        // Tampilkan loading reverse geocode
+        if (statusEl && !skipGeocode) {
             statusEl.innerHTML = `<span class="${badgeClass} flex items-center gap-1.5">
                 <i class="fa-solid fa-location-dot"></i>
-                <span>${sourceLabel}: <b>${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}</b></span>
+                <span>${sourceLabel}: <b class="font-mono">${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}</b>
+                <span class="text-slate-400 font-normal ml-1 animate-pulse">· mencari nama lokasi...</span></span>
             </span>`;
+        } else if (statusEl && skipGeocode) {
+            statusEl.innerHTML = `<span class="${badgeClass} flex items-center gap-1.5">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>${sourceLabel}</span>
+            </span>`;
+        }
+
+        if (!skipGeocode) {
+            // Jalankan reverse geocoding di background
+            const locationName = await reverseGeocode(lat, lng);
+
+            if (statusEl) {
+                if (locationName) {
+                    statusEl.innerHTML = `<span class="${badgeClass} flex items-center gap-1.5">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>${sourceLabel}: <b>${locationName}</b></span>
+                    </span>`;
+                    // Isi field lokasi jika belum terisi
+                    if (locationInput && !locationInput.value) {
+                        locationInput.value = locationName;
+                    }
+                } else {
+                    // Fallback ke koordinat jika geocoding gagal
+                    statusEl.innerHTML = `<span class="${badgeClass} flex items-center gap-1.5">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>${sourceLabel}: <b class="font-mono">${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}</b></span>
+                    </span>`;
+                }
+            }
         }
     }
 
@@ -86,12 +152,12 @@
         const lat = parseFloat(manualLat.value);
         const lng = parseFloat(manualLng.value);
         if (!isNaN(lat) && !isNaN(lng)) {
-            updateFields(lat, lng, 'Koordinat Manual', 'text-blue-600');
+            updateFields(lat, lng, 'Manual', 'text-blue-600');
         }
     };
 
     window["setOfficeLocation_" + fnSuffix] = function() {
-        updateFields(defaultLat, defaultLng, 'Titik Kantor Pusat', 'text-primary-700');
+        updateFields(defaultLat, defaultLng, defaultName, 'text-primary-700', true);
         if (locationInput && !locationInput.value) {
             locationInput.value = defaultName;
         }
@@ -111,7 +177,7 @@
             const data = await res.json();
             if (data.latitude && data.longitude) {
                 const city = data.city || data.region || 'Jaringan';
-                updateFields(data.latitude, data.longitude, `Lokasi IP (${city})`, 'text-blue-600');
+                await updateFields(data.latitude, data.longitude, `Lokasi Jaringan`, 'text-blue-600');
                 if (locationInput && !locationInput.value) {
                     locationInput.value = `${city}, ${data.country_name || 'Indonesia'}`;
                 }
@@ -124,10 +190,9 @@
                 if (res2.ok) {
                     const data2 = await res2.json();
                     if (data2.latitude && data2.longitude) {
-                        const city2 = data2.cityName || 'Jaringan';
-                        updateFields(data2.latitude, data2.longitude, `Lokasi IP (${city2})`, 'text-blue-600');
+                        await updateFields(data2.latitude, data2.longitude, `Lokasi Jaringan`, 'text-blue-600');
                         if (locationInput && !locationInput.value) {
-                            locationInput.value = `${city2}`;
+                            locationInput.value = `${data2.cityName || ''}`;
                         }
                         return true;
                     }
@@ -143,7 +208,7 @@
         if (statusEl) {
             statusEl.innerHTML = `<span class="text-amber-500 flex items-center gap-1.5">
                 <i class="fa-solid fa-location-crosshairs animate-pulse"></i>
-                <span>Mencari koordinat GPS perangkat...</span>
+                <span>Mendeteksi lokasi GPS perangkat...</span>
             </span>`;
         }
 
@@ -151,19 +216,19 @@
         if (navigator.geolocation) {
             // Try high accuracy with short timeout
             navigator.geolocation.getCurrentPosition(
-                function(pos) {
+                async function(pos) {
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
                     const acc = pos.coords.accuracy ? ` (±${Math.round(pos.coords.accuracy)}m)` : '';
-                    updateFields(lat, lng, `GPS Perangkat${acc}`, 'text-emerald-600');
+                    await updateFields(lat, lng, `GPS${acc}`, 'text-emerald-600');
                 },
                 function(err) {
                     // Try low accuracy fallback
                     navigator.geolocation.getCurrentPosition(
-                        function(posLow) {
+                        async function(posLow) {
                             const lat = posLow.coords.latitude;
                             const lng = posLow.coords.longitude;
-                            updateFields(lat, lng, 'GPS Mode Hemat / Wi-Fi', 'text-emerald-600');
+                            await updateFields(lat, lng, 'GPS Wi-Fi', 'text-emerald-600');
                         },
                         async function(errLow) {
                             // High & Low failed, fallback to IP Geolocation
