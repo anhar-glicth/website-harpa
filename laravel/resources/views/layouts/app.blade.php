@@ -646,13 +646,16 @@
                         <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('email') }}</span>
                     @endif
                 </div>
-                <div class="space-y-1.5">
+                <div class="space-y-1.5" x-data="{ showPass: false }">
                     <div class="flex justify-between items-center">
                         <label for="modal_login_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Kata Sandi</label>
                     </div>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
-                        <input id="modal_login_password" type="password" name="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <input id="modal_login_password" :type="showPass ? 'text' : 'password'" name="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <button type="button" @click="showPass = !showPass" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
@@ -711,21 +714,27 @@
                         <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('email') }}</span>
                     @endif
                 </div>
-                <div class="space-y-1.5">
+                <div class="space-y-1.5" x-data="{ showPass: false }">
                     <label for="modal_reg_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Kata Sandi</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
-                        <input id="modal_reg_password" type="password" name="password" required placeholder="Minimal 8 karakter" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <input id="modal_reg_password" :type="showPass ? 'text' : 'password'" name="password" required placeholder="Minimal 8 karakter" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <button type="button" @click="showPass = !showPass" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
                     </div>
                     @if ($errors->has('password'))
                         <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('password') }}</span>
                     @endif
                 </div>
-                <div class="space-y-1.5">
+                <div class="space-y-1.5" x-data="{ showPass: false }">
                     <label for="modal_reg_confirm" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Konfirmasi Sandi</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-circle-check text-xs"></i></span>
-                        <input id="modal_reg_confirm" type="password" name="password_confirmation" required placeholder="Ulangi kata sandi" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <input id="modal_reg_confirm" :type="showPass ? 'text' : 'password'" name="password_confirmation" required placeholder="Ulangi kata sandi" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <button type="button" @click="showPass = !showPass" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 active:scale-[0.99] text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Daftar Akun <i class="fa-solid fa-user-plus ml-2"></i></button>

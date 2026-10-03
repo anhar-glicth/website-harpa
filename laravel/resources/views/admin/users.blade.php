@@ -201,9 +201,14 @@
                     <label class="block text-slate-700 mb-1">Email *</label>
                     <input type="email" name="email" required placeholder="user@domain.com" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-xs focus:border-primary-600">
                 </div>
-                <div>
+                <div x-data="{ show: false }">
                     <label class="block text-slate-700 mb-1">Password *</label>
-                    <input type="password" name="password" required placeholder="Minimal 6 karakter" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-xs focus:border-primary-600">
+                    <div class="relative">
+                        <input :type="show ? 'text' : 'password'" name="password" required placeholder="Minimal 6 karakter" class="w-full border border-slate-300 rounded-xl pl-3.5 pr-10 py-2 text-xs focus:border-primary-600">
+                        <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="show ? 'Sembunyikan' : 'Lihat'">
+                            <i class="fa-solid text-xs" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -260,9 +265,14 @@
                     <label class="block text-slate-700 mb-1">Email *</label>
                     <input type="email" name="email" required :value="selectedUser.email" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-xs focus:border-primary-600">
                 </div>
-                <div>
+                <div x-data="{ show: false }">
                     <label class="block text-slate-700 mb-1">Password Baru (Kosongkan jika tidak diganti)</label>
-                    <input type="password" name="password" placeholder="Min. 6 karakter jika mau ubah" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-xs focus:border-primary-600">
+                    <div class="relative">
+                        <input :type="show ? 'text' : 'password'" name="password" placeholder="Min. 6 karakter jika mau ubah" class="w-full border border-slate-300 rounded-xl pl-3.5 pr-10 py-2 text-xs focus:border-primary-600">
+                        <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="show ? 'Sembunyikan' : 'Lihat'">
+                            <i class="fa-solid text-xs" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>

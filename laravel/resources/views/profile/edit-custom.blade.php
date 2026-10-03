@@ -127,17 +127,32 @@
                         </h2>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div>
+                            <div x-data="{ show: false }">
                                 <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Password Saat Ini</label>
-                                <input type="password" name="current_password" placeholder="Password lama Anda" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                <div class="relative">
+                                    <input :type="show ? 'text' : 'password'" name="current_password" placeholder="Password lama Anda" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl pl-5 pr-11 py-3.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="show ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                                        <i class="fa-solid text-xs" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div>
+                            <div x-data="{ show: false }">
                                 <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Password Baru</label>
-                                <input type="password" name="new_password" placeholder="Min. 6 karakter" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                <div class="relative">
+                                    <input :type="show ? 'text' : 'password'" name="new_password" placeholder="Min. 6 karakter" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl pl-5 pr-11 py-3.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="show ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                                        <i class="fa-solid text-xs" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div>
+                            <div x-data="{ show: false }">
                                 <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Konfirmasi Password Baru</label>
-                                <input type="password" name="new_password_confirmation" placeholder="Ulangi password baru" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                <div class="relative">
+                                    <input :type="show ? 'text' : 'password'" name="new_password_confirmation" placeholder="Ulangi password baru" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl pl-5 pr-11 py-3.5 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="show ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                                        <i class="fa-solid text-xs" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <p class="text-[10px] text-slate-400 font-medium mt-2 ml-1">* Kosongkan kolom password jika Anda tidak ingin mengubah password.</p>

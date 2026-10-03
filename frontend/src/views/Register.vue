@@ -43,13 +43,23 @@
         <!-- Input Password -->
         <div class="space-y-2">
           <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kata Sandi</label>
-          <input 
-            v-model="form.password" 
-            type="password" 
-            class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-600 transition-all font-bold placeholder:font-medium" 
-            placeholder="••••••••"
-            required
-          >
+          <div class="relative">
+            <input 
+              v-model="form.password" 
+              :type="showPassword ? 'text' : 'password'" 
+              class="w-full pl-6 pr-14 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-600 transition-all font-bold placeholder:font-medium" 
+              placeholder="••••••••"
+              required
+            >
+            <button 
+              type="button" 
+              @click="showPassword = !showPassword" 
+              class="absolute inset-y-0 right-0 flex items-center pr-5 text-gray-400 hover:text-green-600 transition-colors focus:outline-none"
+              :title="showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'"
+            >
+              <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Pesan Sukses -->
@@ -97,6 +107,7 @@ import api from '@/api';
 const router = useRouter();
 const loading = ref(false);
 const success = ref(false);
+const showPassword = ref(false);
 
 /**
  * Data Formulir

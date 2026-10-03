@@ -52,7 +52,7 @@
         </div>
 
         <!-- Password -->
-        <div class="space-y-1.5">
+        <div class="space-y-1.5" x-data="{ showPassword: false }">
             <label for="password" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Kata Sandi</label>
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
@@ -60,18 +60,26 @@
                 </span>
                 <input 
                     id="password" 
-                    type="password" 
+                    :type="showPassword ? 'text' : 'password'" 
                     name="password" 
                     required 
                     placeholder="Minimal 8 karakter"
-                    class="w-full bg-slate-950/50 border border-slate-800 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-500 outline-none transition-all"
+                    class="w-full bg-slate-950/50 border border-slate-800 focus:border-primary-500 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-white placeholder-slate-500 outline-none transition-all"
                 >
+                <button 
+                    type="button" 
+                    @click="showPassword = !showPassword" 
+                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-500 transition-colors focus:outline-none"
+                    :title="showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'"
+                >
+                    <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-1" />
         </div>
 
         <!-- Confirm Password -->
-        <div class="space-y-1.5">
+        <div class="space-y-1.5" x-data="{ showPassword: false }">
             <label for="password_confirmation" class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Konfirmasi Sandi</label>
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
@@ -79,12 +87,20 @@
                 </span>
                 <input 
                     id="password_confirmation" 
-                    type="password" 
+                    :type="showPassword ? 'text' : 'password'" 
                     name="password_confirmation" 
                     required 
                     placeholder="Ulangi kata sandi"
-                    class="w-full bg-slate-950/50 border border-slate-800 focus:border-primary-500 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-white placeholder-slate-500 outline-none transition-all"
+                    class="w-full bg-slate-950/50 border border-slate-800 focus:border-primary-500 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-white placeholder-slate-500 outline-none transition-all"
                 >
+                <button 
+                    type="button" 
+                    @click="showPassword = !showPassword" 
+                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-500 transition-colors focus:outline-none"
+                    :title="showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'"
+                >
+                    <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                </button>
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
         </div>

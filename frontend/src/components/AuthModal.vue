@@ -37,7 +37,12 @@
                   <div v-if="state.authModalMode === 'login'" class="space-y-6">
                     <div class="space-y-4">
                        <input v-model="loginForm.email" type="email" placeholder="Email Anda" class="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
-                       <input v-model="loginForm.password" type="password" placeholder="Kata Sandi" class="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
+                       <div class="relative">
+                         <input v-model="loginForm.password" :type="showLoginPass ? 'text' : 'password'" placeholder="Kata Sandi" class="w-full pl-6 pr-14 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
+                         <button type="button" @click="showLoginPass = !showLoginPass" class="absolute inset-y-0 right-0 flex items-center pr-5 text-gray-400 hover:text-green-600 transition-colors focus:outline-none" :title="showLoginPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                           <i class="fa-solid text-sm" :class="showLoginPass ? 'fa-eye-slash' : 'fa-eye'"></i>
+                         </button>
+                       </div>
                        <div class="flex justify-end px-2">
                          <button @click="handleGoToForgotPassword" class="text-[9px] font-black text-green-600 uppercase tracking-widest hover:underline">Lupa Kata Sandi?</button>
                        </div>
@@ -52,7 +57,12 @@
                     <div class="space-y-4">
                        <input v-model="regForm.name" type="text" placeholder="Nama Lengkap" class="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
                        <input v-model="regForm.email" type="email" placeholder="Email Anda" class="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
-                       <input v-model="regForm.password" type="password" placeholder="Buat Kata Sandi" class="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
+                       <div class="relative">
+                         <input v-model="regForm.password" :type="showRegPass ? 'text' : 'password'" placeholder="Buat Kata Sandi" class="w-full pl-6 pr-14 py-4 bg-slate-50 border border-transparent rounded-2xl focus:border-green-600 focus:bg-white transition-all font-bold text-sm outline-none">
+                         <button type="button" @click="showRegPass = !showRegPass" class="absolute inset-y-0 right-0 flex items-center pr-5 text-gray-400 hover:text-green-600 transition-colors focus:outline-none" :title="showRegPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                           <i class="fa-solid text-sm" :class="showRegPass ? 'fa-eye-slash' : 'fa-eye'"></i>
+                         </button>
+                       </div>
                     </div>
                     <div v-if="error" class="text-[10px] font-bold text-red-500 uppercase tracking-widest animate-pulse">{{ error }}</div>
                     <button @click="handleRegister" :disabled="isLoading" class="w-full py-5 bg-green-600 text-white rounded-[1.5rem] font-black uppercase tracking-[0.2em] shadow-xl shadow-green-100 hover:bg-green-700 transition active:scale-95 disabled:opacity-50">
@@ -88,6 +98,8 @@ const router = useRouter();
 
 const isLoading = ref(false);
 const error = ref('');
+const showLoginPass = ref(false);
+const showRegPass = ref(false);
 
 const loginForm = reactive({ email: '', password: '' });
 const regForm = reactive({ name: '', email: '', password: '' });

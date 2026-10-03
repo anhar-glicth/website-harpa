@@ -30,13 +30,23 @@
             <label class="block text-sm font-semibold text-gray-700">Kata Sandi</label>
             <router-link to="/forgot-password" class="text-xs text-green-600 hover:underline">Lupa sandi?</router-link>
           </div>
-          <input 
-            v-model="form.password" 
-            type="password" 
-            class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none transition-all" 
-            placeholder="••••••••"
-            required
-          >
+          <div class="relative">
+            <input 
+              v-model="form.password" 
+              :type="showPassword ? 'text' : 'password'" 
+              class="w-full pl-4 pr-11 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 outline-none transition-all" 
+              placeholder="••••••••"
+              required
+            >
+            <button 
+              type="button" 
+              @click="showPassword = !showPassword" 
+              class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-green-600 transition-colors focus:outline-none"
+              :title="showPassword ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'"
+            >
+              <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Pesan Error -->
@@ -98,6 +108,7 @@ const form = reactive({
 // UI State
 const isLoading = ref(false);
 const errorMessage = ref('');
+const showPassword = ref(false);
 
 /**
  * Menangani proses login pengguna
