@@ -73,7 +73,8 @@ class User extends Authenticatable
                 return $this->profile_photo;
             }
 
-            return asset(ltrim($this->profile_photo, '/'));
+            $cacheBust = $this->updated_at ? '?v=' . $this->updated_at->timestamp : '';
+            return asset(ltrim($this->profile_photo, '/')) . $cacheBust;
         }
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name ?? 'User') . '&background=ea580c&color=fff';
