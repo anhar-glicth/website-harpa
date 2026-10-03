@@ -93,6 +93,18 @@
 </head>
 <body x-data="{ loginOpen: false, registerOpen: false }" x-init="if ({{ $errors->has('name') || $errors->has('password_confirmation') ? 'true' : 'false' }}) { registerOpen = true } else if ({{ $errors->any() ? 'true' : 'false' }}) { loginOpen = true }" class="font-sans bg-[#F8FAFC] text-slate-800 antialiased flex flex-col min-h-screen">
 
+    @php
+        $isDashboardOrAdmin = Auth::check() && (
+            request()->routeIs('admin.*') ||
+            request()->routeIs('field.*') ||
+            request()->routeIs('dashboard') ||
+            request()->routeIs('profile.*') ||
+            request()->is('admin*') ||
+            request()->is('field*')
+        );
+    @endphp
+
+    @if(!$isDashboardOrAdmin)
     <!-- Premium Floating Navbar -->
     <header x-data="{ open: false }" class="sticky top-0 z-[1050] w-full px-3 sm:px-6 lg:px-8 pt-2.5 sm:pt-4">
         <nav class="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl sm:rounded-3xl shadow-sm px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between transition-all duration-300">
@@ -274,6 +286,7 @@
             @endauth
         </div>
     </header>
+    @endif
 
     <!-- Main Content Area -->
     <main class="flex-grow pb-24 md:pb-0">

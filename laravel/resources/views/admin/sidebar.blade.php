@@ -26,6 +26,19 @@
             </a>
             @endif
         </div>
+
+        <!-- Tombol Cepat: Lihat Website & Keluar Akun -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+            <a href="{{ route('home') }}" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-600 bg-slate-50 hover:bg-slate-100 hover:text-primary-600 transition-all" title="Buka Halaman Depan Web">
+                <i class="fa-solid fa-globe"></i> Website
+            </a>
+            <form method="POST" action="{{ route('logout') }}" class="flex-1">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 transition-all" title="Keluar dari Akun">
+                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
