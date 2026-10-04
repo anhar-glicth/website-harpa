@@ -17,10 +17,12 @@
         pic_name: '',
         pic_phone: '',
         amount: '',
+        pm_count: 1,
         distribution_date: '',
         city: '',
         province: '',
         asnaf: '',
+        source_of_fund: 'Infak/Shodaqoh',
         status: 'Tersalur',
         notes: ''
     },
@@ -33,10 +35,12 @@
             pic_name: item.pic_name ?? item.recipient_name ?? '',
             pic_phone: item.pic_phone ?? '',
             amount: item.amount,
+            pm_count: item.pm_count ?? 1,
             distribution_date: item.distribution_date ? item.distribution_date.substring(0, 10) : '',
             city: item.city ?? '',
             province: item.province ?? '',
             asnaf: item.asnaf ?? '',
+            source_of_fund: item.source_of_fund ?? 'Infak/Shodaqoh',
             status: item.status ?? 'Tersalur',
             notes: item.notes ?? ''
         };
@@ -139,12 +143,12 @@
                             <span class="text-slate-500 font-bold whitespace-nowrap">Tgl Penyaluran :</span>
                             <input type="date"
                                    name="start_date"
-                                   value="{{ request('start_date', '2026-08-01') }}"
+                                   value="{{ request('start_date') }}"
                                    class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
                             <span class="text-slate-400 font-bold">s/d</span>
                             <input type="date"
                                    name="end_date"
-                                   value="{{ request('end_date', '2026-08-07') }}"
+                                   value="{{ request('end_date') }}"
                                    class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
                         </div>
 
@@ -380,6 +384,37 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kategori Asnaf</label>
+                        <select name="asnaf" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                            <option value="Non Asnaf">Non Asnaf</option>
+                            <option value="Fakir">Fakir</option>
+                            <option value="Miskin">Miskin</option>
+                            <option value="Fisabilillah">Fisabilillah</option>
+                            <option value="Mualaf">Mualaf</option>
+                            <option value="Ibnusabil">Ibnusabil</option>
+                            <option value="Amil">Amil</option>
+                            <option value="Riqab">Riqab</option>
+                            <option value="Gharimin">Gharimin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Sumber Dana</label>
+                        <select name="source_of_fund" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                            <option value="Infak/Shodaqoh">Infak/Shodaqoh</option>
+                            <option value="Program">Program</option>
+                            <option value="Zakat">Zakat</option>
+                            <option value="Wakaf">Wakaf</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Jumlah PM (Jiwa)</label>
+                        <input type="number" name="pm_count" value="1" min="1"
+                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
                         <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kota / Kabupaten</label>
                         <input type="text" name="city" placeholder="Contoh: Ende"
                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none placeholder:text-slate-400">
@@ -439,7 +474,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <form method="POST" :action="`/admin/distributions/${editData.id}/update`" class="space-y-4">
+            <form method="POST" :action="'{{ url('admin/distributions') }}/' + editData.id + '/update'" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -481,6 +516,37 @@
                     <div>
                         <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Tgl Penyaluran <span class="text-rose-500">*</span></label>
                         <input type="date" name="distribution_date" x-model="editData.distribution_date" required
+                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kategori Asnaf</label>
+                        <select name="asnaf" x-model="editData.asnaf" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                            <option value="Non Asnaf">Non Asnaf</option>
+                            <option value="Fakir">Fakir</option>
+                            <option value="Miskin">Miskin</option>
+                            <option value="Fisabilillah">Fisabilillah</option>
+                            <option value="Mualaf">Mualaf</option>
+                            <option value="Ibnusabil">Ibnusabil</option>
+                            <option value="Amil">Amil</option>
+                            <option value="Riqab">Riqab</option>
+                            <option value="Gharimin">Gharimin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Sumber Dana</label>
+                        <select name="source_of_fund" x-model="editData.source_of_fund" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                            <option value="Infak/Shodaqoh">Infak/Shodaqoh</option>
+                            <option value="Program">Program</option>
+                            <option value="Zakat">Zakat</option>
+                            <option value="Wakaf">Wakaf</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Jumlah PM (Jiwa)</label>
+                        <input type="number" name="pm_count" x-model="editData.pm_count" min="1"
                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
                     </div>
                 </div>
@@ -546,7 +612,7 @@
                     Laporan Penyaluran "<span class="text-slate-800 font-black" x-text="selectedCode"></span>" akan dihapus secara permanen.
                 </p>
             </div>
-            <form method="POST" :action="`/admin/distributions/${selectedId}/delete`">
+            <form method="POST" :action="'{{ url('admin/distributions') }}/' + selectedId + '/delete'">
                 @csrf
                 @method('DELETE')
                 <div class="flex gap-3">

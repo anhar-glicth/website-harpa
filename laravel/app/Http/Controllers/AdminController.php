@@ -272,8 +272,8 @@ class AdminController extends Controller
         $asnafValues = array_map('floatval', $asnafPie->pluck('total_nominal')->toArray());
 
         if (empty($asnafLabels) || count(array_filter($asnafValues)) === 0) {
-            $asnafLabels = ['Non Asnaf', 'Fakir', 'Miskin', 'Fisabilillah', 'Mualaf', 'Ibnusabil'];
-            $asnafValues = [69.2, 16.4, 9.7, 2.1, 1.5, 1.0];
+            $asnafLabels = [];
+            $asnafValues = [];
         }
 
         // 6. Distribusi Sumber Dana Pie Chart Data
@@ -287,8 +287,8 @@ class AdminController extends Controller
         $sourceValues = array_map('floatval', $sourcePie->pluck('total_nominal')->toArray());
 
         if (empty($sourceLabels) || count(array_filter($sourceValues)) === 0) {
-            $sourceLabels = ['Infak/Shodaqoh', 'Program', 'Zakat', 'Wakaf'];
-            $sourceValues = [84.1, 14.4, 1.0, 0.5];
+            $sourceLabels = [];
+            $sourceValues = [];
         }
 
         // Fetch all matching distributions with relationships for PHP collection processing (100% safe against MySQL strict mode)
@@ -317,8 +317,8 @@ class AdminController extends Controller
         $programGroupValues = array_map('floatval', $programGroupPie->pluck('total_nominal')->toArray());
 
         if (empty($programGroupLabels) || count(array_filter($programGroupValues)) === 0) {
-            $programGroupLabels = ['Insidental Kemanusiaan', 'Kesehatan', 'Pendidikan', 'Ekonomi', 'Insidental Bencana', 'Capacity Building', 'Lingkungan'];
-            $programGroupValues = [61.5, 25.1, 5.1, 3.6, 3.1, 1.0, 0.5];
+            $programGroupLabels = [];
+            $programGroupValues = [];
         }
 
         // 8. Distribusi Nama Program Pie Chart Data
@@ -341,24 +341,12 @@ class AdminController extends Controller
         $programNameValues = array_map('floatval', $programNamePie->pluck('total_nominal')->toArray());
 
         if (empty($programNameLabels) || count(array_filter($programNameValues)) === 0) {
-            $programNameLabels = [
-                'Asesment Kek Mukinah', 'Asesment Medis Adik Aila', 'Asesment Mualaf Dhuafa Bu Sri', 
-                'Qurban Terbaik NTT 2025', 'Penyaluran Sedekah Qurban Terbaik NTB 2025'
-            ];
-            $programNameValues = [20, 20, 20, 20, 20];
-        }
-
-        // Fallback summary metrics if database is empty
-        if ($sumQuantity == 0) {
-            $sumQuantity = 195;
-            $sumKota     = 18;
-            $sumProvinsi = 8;
-            $sumPM       = 34401;
-            $sumDana     = 2119754069;
+            $programNameLabels = [];
+            $programNameValues = [];
         }
 
         // ----------------- RESUME TABLES AGGREGATION -----------------
-        $denomDana = $sumDana > 0 ? $sumDana : 2119754069;
+        $denomDana = $sumDana > 0 ? $sumDana : 1;
 
         // 1. Resume Penyaluran By Asnaf
         $resumeAsnaf = $distributionRecords->groupBy(function($item) {
@@ -371,17 +359,6 @@ class AdminController extends Controller
                 'total_amount' => (float)$items->sum('amount')
             ];
         })->sortByDesc('total_amount')->values();
-
-        if ($resumeAsnaf->isEmpty()) {
-            $resumeAsnaf = collect([
-                (object)['asnaf_name' => 'Non Asnaf', 'total_count' => 120, 'total_pm' => 22100, 'total_amount' => 1466870000],
-                (object)['asnaf_name' => 'Fakir', 'total_count' => 35, 'total_pm' => 5800, 'total_amount' => 347640000],
-                (object)['asnaf_name' => 'Miskin', 'total_count' => 22, 'total_pm' => 3200, 'total_amount' => 205615000],
-                (object)['asnaf_name' => 'Fisabilillah', 'total_count' => 10, 'total_pm' => 1850, 'total_amount' => 44514000],
-                (object)['asnaf_name' => 'Mualaf', 'total_count' => 5, 'total_pm' => 950, 'total_amount' => 31796000],
-                (object)['asnaf_name' => 'Ibnusabil', 'total_count' => 3, 'total_pm' => 501, 'total_amount' => 21197069],
-            ]);
-        }
 
         // 2. Resume Penyaluran By Kota
         $resumeKota = $distributionRecords->groupBy(function($item) {
@@ -398,17 +375,6 @@ class AdminController extends Controller
                 'total_amount'  => (float)$items->sum('amount')
             ];
         })->sortByDesc('total_amount')->values();
-
-        if ($resumeKota->isEmpty()) {
-            $resumeKota = collect([
-                (object)['city_name' => 'Kota Mataram', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 65, 'total_pm' => 12500, 'total_amount' => 850000000],
-                (object)['city_name' => 'Kab. Ende', 'province_name' => 'Nusa Tenggara Timur', 'total_count' => 38, 'total_pm' => 7800, 'total_amount' => 480000000],
-                (object)['city_name' => 'Kab. Sumbawa', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 28, 'total_pm' => 5400, 'total_amount' => 320000000],
-                (object)['city_name' => 'Kab. Bima', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 24, 'total_pm' => 4200, 'total_amount' => 250000000],
-                (object)['city_name' => 'Kota Kupang', 'province_name' => 'Nusa Tenggara Timur', 'total_count' => 22, 'total_pm' => 3000, 'total_amount' => 150000000],
-                (object)['city_name' => 'Kab. Dompu', 'province_name' => 'Nusa Tenggara Barat', 'total_count' => 18, 'total_pm' => 1501, 'total_amount' => 69754069],
-            ]);
-        }
 
         // 3. Resume Penyaluran By Kategori Program
         $resumeKategori = $distributionRecords->groupBy(function($item) {
@@ -431,17 +397,6 @@ class AdminController extends Controller
             ];
         })->sortByDesc('total_amount')->values();
 
-        if ($resumeKategori->isEmpty()) {
-            $resumeKategori = collect([
-                (object)['category_name' => 'Insidental Kemanusiaan', 'total_count' => 95, 'total_pm' => 18500, 'total_amount' => 1303648752],
-                (object)['category_name' => 'Kesehatan', 'total_count' => 45, 'total_pm' => 8200, 'total_amount' => 532058271],
-                (object)['category_name' => 'Pendidikan', 'total_count' => 25, 'total_pm' => 3800, 'total_amount' => 108107457],
-                (object)['category_name' => 'Ekonomi', 'total_count' => 15, 'total_pm' => 2100, 'total_amount' => 76311146],
-                (object)['category_name' => 'Insidental Bencana', 'total_count' => 10, 'total_pm' => 1200, 'total_amount' => 65712376],
-                (object)['category_name' => 'Capacity Building & Lingkungan', 'total_count' => 5, 'total_pm' => 601, 'total_amount' => 33916067],
-            ]);
-        }
-
         // 4. Resume Penyaluran By Program
         $resumeProgram = $distributionRecords->groupBy(function($item) {
             if ($item->campaign && !empty($item->campaign->title)) {
@@ -459,17 +414,6 @@ class AdminController extends Controller
                 'total_amount'  => (float)$items->sum('amount')
             ];
         })->sortByDesc('total_amount')->values();
-
-        if ($resumeProgram->isEmpty()) {
-            $resumeProgram = collect([
-                (object)['program_title' => 'Asesment Medis & Pengobatan Dhuafa', 'total_count' => 48, 'total_pm' => 9500, 'total_amount' => 650000000],
-                (object)['program_title' => 'Penyaluran Qurban Terbaik NTB & NTT', 'total_count' => 35, 'total_pm' => 8200, 'total_amount' => 540000000],
-                (object)['program_title' => 'Bantuan Logistik Bencana Banjir Bandang', 'total_count' => 30, 'total_pm' => 6400, 'total_amount' => 420000000],
-                (object)['program_title' => 'Beasiswa Yatim & Dhuafa Nusantara', 'total_count' => 25, 'total_pm' => 4800, 'total_amount' => 280000000],
-                (object)['program_title' => 'Pembinaan Keagamaan Mualaf Pelosok', 'total_count' => 20, 'total_pm' => 3200, 'total_amount' => 150000000],
-                (object)['program_title' => 'Program Pemberdayaan Ekonomi Ummat', 'total_count' => 17, 'total_pm' => 2301, 'total_amount' => 79754069],
-            ]);
-        }
 
         // Filter Dropdown Lists
         $programGroups = ProgramGroup::all();
@@ -602,6 +546,8 @@ class AdminController extends Controller
             'distribution_date' => 'required|date',
             'notes'             => 'nullable|string',
             'asnaf'             => 'nullable|string',
+            'source_of_fund'    => 'nullable|string',
+            'pm_count'          => 'nullable|numeric|min:0',
             'city'              => 'nullable|string',
             'province'          => 'nullable|string',
             'status'            => 'nullable|in:Proses,Tersalur',
@@ -638,6 +584,8 @@ class AdminController extends Controller
             'distribution_date' => 'required|date',
             'notes'             => 'nullable|string',
             'asnaf'             => 'nullable|string',
+            'source_of_fund'    => 'nullable|string',
+            'pm_count'          => 'nullable|numeric|min:0',
             'city'              => 'nullable|string',
             'province'          => 'nullable|string',
             'status'            => 'nullable|in:Proses,Tersalur',

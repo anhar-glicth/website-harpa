@@ -17,13 +17,19 @@
         <div class="space-y-6">
 
             {{-- Page Header --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm flex items-center justify-between gap-4">
+            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-wrap items-center justify-between gap-4">
                 <div class="space-y-1">
                     <h1 class="text-2xl font-black text-slate-900 tracking-tight">Dashboard Penyaluran</h1>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Distribusi Management → Dashboard Analytics & Grafik Penyaluran</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm">
-                    <i class="fa-solid fa-chart-line text-lg"></i>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('admin.distributions') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-500/20 transition-all">
+                        <i class="fa-solid fa-truck-ramp-box text-xs"></i>
+                        <span>Input & List Penyaluran</span>
+                    </a>
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm">
+                        <i class="fa-solid fa-chart-line text-lg"></i>
+                    </div>
                 </div>
             </div>
 
@@ -322,7 +328,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
-                                @foreach($resumeAsnaf as $item)
+                                @forelse($resumeAsnaf as $item)
                                     @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
                                     <tr class="hover:bg-slate-50/80 transition-colors">
                                         <td class="py-3 px-6 font-bold text-slate-900">{{ $item->asnaf_name }}</td>
@@ -331,7 +337,11 @@
                                         <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
                                         <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="py-6 text-center text-slate-400 font-semibold text-xs">Belum ada data penyaluran pada periode ini.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -358,7 +368,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
-                                @foreach($resumeKota as $item)
+                                @forelse($resumeKota as $item)
                                     @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
                                     <tr class="hover:bg-slate-50/80 transition-colors">
                                         <td class="py-3 px-6 font-bold text-slate-900">{{ $item->city_name }}</td>
@@ -368,7 +378,11 @@
                                         <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
                                         <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="py-6 text-center text-slate-400 font-semibold text-xs">Belum ada data penyaluran pada periode ini.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -394,7 +408,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
-                                @foreach($resumeKategori as $item)
+                                @forelse($resumeKategori as $item)
                                     @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
                                     <tr class="hover:bg-slate-50/80 transition-colors">
                                         <td class="py-3 px-6 font-bold text-slate-900">{{ $item->category_name }}</td>
@@ -403,7 +417,11 @@
                                         <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
                                         <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="py-6 text-center text-slate-400 font-semibold text-xs">Belum ada data penyaluran pada periode ini.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -429,7 +447,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-50">
-                                @foreach($resumeProgram as $item)
+                                @forelse($resumeProgram as $item)
                                     @php $pct = $denomDana > 0 ? ($item->total_amount / $denomDana) * 100 : 0; @endphp
                                     <tr class="hover:bg-slate-50/80 transition-colors">
                                         <td class="py-3 px-6 font-bold text-slate-900">{{ $item->program_title }}</td>
@@ -438,7 +456,11 @@
                                         <td class="py-3 px-4 text-right font-black text-slate-900">Rp {{ number_format($item->total_amount, 0, ',', '.') }}</td>
                                         <td class="py-3 px-6 text-right font-mono font-bold text-emerald-600">{{ number_format($pct, 1) }}%</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="py-6 text-center text-slate-400 font-semibold text-xs">Belum ada data penyaluran pada periode ini.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -481,7 +503,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         },
         colors: ['#0284c7', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316'],
-        grid: { borderColor: '#f1f5f9' }
+        grid: { borderColor: '#f1f5f9' },
+        noData: {
+            text: 'Belum ada data penyaluran',
+            align: 'center',
+            verticalAlign: 'middle',
+            style: {
+                color: '#94a3b8',
+                fontSize: '13px',
+                fontFamily: 'Inter, sans-serif'
+            }
+        }
     };
 
     // 1. Chart Daily Nominal (Line Chart)
