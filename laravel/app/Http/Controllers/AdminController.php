@@ -200,11 +200,16 @@ class AdminController extends Controller
 
         $query = Distribution::query();
 
-        // Filter: Date Range (default start_date: 2022-08-19, end_date: current date e.g. 2026-08-07)
-        $startDate = $request->input('start_date', '2022-08-19');
-        $endDate   = $request->input('end_date', date('Y-m-d'));
+        // Filter: Date Range
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
 
-        $query->whereBetween('distribution_date', [$startDate, $endDate]);
+        if ($request->filled('start_date')) {
+            $query->whereDate('distribution_date', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('distribution_date', '<=', $request->end_date);
+        }
 
         if ($request->filled('program_group_id')) {
             $query->whereHas('campaign', function ($cq) use ($request) {
@@ -3533,57 +3538,70 @@ class AdminController extends Controller
         $chartProspekCounts = $byDate->map(fn($group) => $group->count())->values()->toArray();
         $chartProspekPotensiValues = array_fill(0, count($chartProspekDates), 0);
 
-        // 3. Chart Distribusi Target (Pie)
-        $safeTotalTarget = $totalAllProspects ?: 1;
-        $chartDistribusiTargetData = [
-            ['name' => 'Calon Donatur', 'y' => round(($prospectCalonDonors / $safeTotalTarget) * 100, 1), 'color' => '#38bdf8'],
-            ['name' => 'Donatur Resmi', 'y' => round(($prospectDonors / $safeTotalTarget) * 100, 1), 'color' => '#10b981'],
-        ];
-
-        // 4. Chart Distribusi Respon (Pie)
-        $allResponses = ProspectResponse::all();
-        $totalRespCount = $allResponses->count() ?: 1;
-        $respGrouped = $allResponses->groupBy('status');
-        $chartRespData = [];
-        $colorPalette = ['#38bdf8', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4'];
-        $cIdx = 0;
-        foreach ($respGrouped as $status => $items) {
-            $chartRespData[] = [
-                'name'  => $status ?: 'Follow Up',
-                'y'     => round(($items->count() / $totalRespCount) * 100, 1),
-                'color' => $colorPalette[$cIdx % count($colorPalette)],
+        // 3-10. Dynamic Distribusi Data for Pie Charts
+        if ($totalAllProspects == 0) {
+            $chartDistribusiTargetData     = [];
+            $chartRespData                 = [];
+            $chartDistribusiMediaData      = [];
+            $chartDistribusiMetodeData     = [];
+            $chartDistribusiJenisData      = [];
+            $chartDistribusiFundraiserData = [];
+            $chartDistribusiRumpunData     = [];
+            $chartDistribusiCampaignData   = [];
+        } else {
+            // 3. Chart Distribusi Target (Pie)
+            $safeTotalTarget = $totalAllProspects;
+            $chartDistribusiTargetData = [
+                ['name' => 'Calon Donatur', 'y' => round(($prospectCalonDonors / $safeTotalTarget) * 100, 1), 'color' => '#38bdf8'],
+                ['name' => 'Donatur Resmi', 'y' => round(($prospectDonors / $safeTotalTarget) * 100, 1), 'color' => '#10b981'],
             ];
-            $cIdx++;
-        }
-        if (empty($chartRespData)) {
-            $chartRespData = [['name' => 'Belum Diprospek', 'y' => 100.0, 'color' => '#38bdf8']];
-        }
 
-        // 5-10. Dynamic Distribusi Data for Pie Charts
-        $buildPieDistribution = function($collection, $fallbackName = 'Umum') {
-            if ($collection->isEmpty()) {
-                return [['name' => $fallbackName, 'y' => 100.0, 'color' => '#38bdf8']];
+            // 4. Chart Distribusi Respon (Pie)
+            $allResponses = ProspectResponse::whereIn('prospect_id', $allProspects->pluck('id'))->get();
+            $totalRespCount = $allResponses->count();
+            $respGrouped = $allResponses->groupBy('status');
+            $chartRespData = [];
+            $colorPalette = ['#38bdf8', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4'];
+            $cIdx = 0;
+            if ($totalRespCount > 0) {
+                foreach ($respGrouped as $status => $items) {
+                    $chartRespData[] = [
+                        'name'  => $status ?: 'Follow Up',
+                        'y'     => round(($items->count() / $totalRespCount) * 100, 1),
+                        'color' => $colorPalette[$cIdx % count($colorPalette)],
+                    ];
+                    $cIdx++;
+                }
+            } else {
+                $chartRespData = [['name' => 'Belum Diprospek', 'y' => 100.0, 'color' => '#38bdf8']];
             }
-            $pct = round(100.0 / $collection->count(), 1);
-            $colors = ['#38bdf8', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
-            $res = [];
-            foreach ($collection->values() as $idx => $item) {
-                $res[] = [
-                    'name'  => $item->name ?? $item->title ?? $fallbackName,
-                    'y'     => $pct,
-                    'color' => $colors[$idx % count($colors)],
-                ];
-            }
-            return $res;
-        };
 
-        $chartDistribusiMediaData      = $buildPieDistribution($prospectMedia, 'WhatsApp');
-        $chartDistribusiMetodeData     = $buildPieDistribution($prospectMethods, 'Direct/Chat');
-        $chartDistribusiJenisData      = $buildPieDistribution($prospectTypes, 'Follow Up');
-        $fundraisers                   = Fundraiser::where('status', 'Aktif')->get();
-        $chartDistribusiFundraiserData = $buildPieDistribution($fundraisers, 'CRM Staff');
-        $chartDistribusiRumpunData     = $buildPieDistribution($programGroups, 'Umum');
-        $chartDistribusiCampaignData   = $buildPieDistribution($programs->take(6), 'Program Kemanusiaan');
+            // 5-10. Dynamic Distribusi Data for Pie Charts
+            $buildPieDistribution = function($collection, $fallbackName = 'Umum') {
+                if ($collection->isEmpty()) {
+                    return [['name' => $fallbackName, 'y' => 100.0, 'color' => '#38bdf8']];
+                }
+                $pct = round(100.0 / $collection->count(), 1);
+                $colors = ['#38bdf8', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'];
+                $res = [];
+                foreach ($collection->values() as $idx => $item) {
+                    $res[] = [
+                        'name'  => $item->name ?? $item->title ?? $fallbackName,
+                        'y'     => $pct,
+                        'color' => $colors[$idx % count($colors)],
+                    ];
+                }
+                return $res;
+            };
+
+            $chartDistribusiMediaData      = $buildPieDistribution($prospectMedia, 'WhatsApp');
+            $chartDistribusiMetodeData     = $buildPieDistribution($prospectMethods, 'Direct/Chat');
+            $chartDistribusiJenisData      = $buildPieDistribution($prospectTypes, 'Follow Up');
+            $fundraisers                   = Fundraiser::where('status', 'Aktif')->get();
+            $chartDistribusiFundraiserData = $buildPieDistribution($fundraisers, 'CRM Staff');
+            $chartDistribusiRumpunData     = $buildPieDistribution($programGroups, 'Umum');
+            $chartDistribusiCampaignData   = $buildPieDistribution($programs->take(6), 'Program Kemanusiaan');
+        }
 
         // 11. Chart Total Prospek by PIC
         $chartPicCategories = [];

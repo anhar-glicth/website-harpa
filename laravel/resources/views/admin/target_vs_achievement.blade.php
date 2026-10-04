@@ -25,9 +25,9 @@
             <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3 text-xs font-semibold text-slate-700">
                 <form action="{{ route('admin.target_vs_achievement') }}" method="GET" class="flex flex-wrap items-center justify-center gap-3">
                     <span class="text-xs font-bold text-slate-700">Bulan (tgl berapapun mewakili Bulan) :</span>
-                    <input type="date" name="start_date" value="{{ request('start_date', '2025-08-05') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                    <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
                     <span>s/d :</span>
-                    <input type="date" name="end_date" value="{{ request('end_date', '2026-08-07') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                    <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
                     
                     <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all">
                         🔍 Show

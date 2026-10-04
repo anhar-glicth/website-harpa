@@ -277,7 +277,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <form method="POST" :action="`/admin/program-groups/${editData.id}/update`" class="space-y-4">
+            <form method="POST" :action="`{{ url('admin/program-groups') }}/${editData.id}/update`" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
@@ -338,7 +338,7 @@
                     Data "<span class="text-slate-800 font-black" x-text="selectedName"></span>" akan dihapus permanen dan tidak dapat dikembalikan.
                 </p>
             </div>
-            <form method="POST" :action="`/admin/program-groups/${selectedId}/delete`">
+            <form method="POST" :action="`{{ url('admin/program-groups') }}/${selectedId}/delete`">
                 @csrf
                 @method('DELETE')
                 <div class="flex gap-3">

@@ -91,12 +91,12 @@
                         <span class="text-slate-500 font-bold whitespace-nowrap">Bulan Target :</span>
                         <input type="date"
                                name="start_date"
-                               value="{{ request('start_date', '2026-08-01') }}"
+                               value="{{ request('start_date') }}"
                                class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
                         <span class="text-slate-400 font-bold">s/d</span>
                         <input type="date"
                                name="end_date"
-                               value="{{ request('end_date', '2026-08-07') }}"
+                               value="{{ request('end_date') }}"
                                class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
                     </div>
 
@@ -290,7 +290,7 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <form method="POST" :action="`/admin/targets/${editData.id}/update`" class="space-y-4">
+            <form method="POST" :action="`{{ url('admin/targets') }}/${editData.id}/update`" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
@@ -348,7 +348,7 @@
                     Target "<span class="text-slate-800 font-black" x-text="selectedCode"></span>" akan dihapus permanen.
                 </p>
             </div>
-            <form method="POST" :action="`/admin/targets/${selectedId}/delete`">
+            <form method="POST" :action="`{{ url('admin/targets') }}/${selectedId}/delete`">
                 @csrf
                 @method('DELETE')
                 <div class="flex gap-3">

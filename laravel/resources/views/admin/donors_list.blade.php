@@ -631,7 +631,7 @@
                 </h3>
                 <button @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <form :action="'/admin/donors/' + editData.id + '/update'" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
+            <form :action="'{{ url('admin/donors') }}/' + editData.id + '/update'" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
                 @csrf
                 @method('PUT')
                 <div class="space-y-1">
@@ -692,7 +692,7 @@
                 <h3 class="text-base font-black text-slate-900">Konfirmasi Hapus</h3>
                 <p class="text-xs text-slate-500 font-medium">Apakah Anda yakin ingin menghapus data donatur <span class="font-bold text-slate-900" x-text="selectedName"></span>?</p>
             </div>
-            <form :action="'/admin/donors/' + selectedId + '/delete'" method="POST" class="flex justify-center gap-3 pt-2">
+            <form :action="'{{ url('admin/donors') }}/' + selectedId + '/delete'" method="POST" class="flex justify-center gap-3 pt-2">
                 @csrf
                 @method('DELETE')
                 <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs">Batal</button>

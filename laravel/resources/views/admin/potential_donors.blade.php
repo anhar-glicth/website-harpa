@@ -388,7 +388,7 @@
                 </h3>
                 <button @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <form :action="'/admin/potential-donors/' + editData.id + '/update'" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
+            <form :action="'{{ url('admin/potential-donors') }}/' + editData.id + '/update'" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
                 @csrf
                 @method('PUT')
                 <div class="space-y-1">
@@ -423,7 +423,7 @@
                 <h3 class="text-base font-black text-slate-900">Konfirmasi Hapus</h3>
                 <p class="text-xs text-slate-500 font-medium">Apakah Anda yakin ingin menghapus calon donatur <span class="font-bold text-slate-900" x-text="selectedName"></span>?</p>
             </div>
-            <form :action="'/admin/potential-donors/' + selectedId + '/delete'" method="POST" class="flex justify-center gap-3 pt-2">
+            <form :action="'{{ url('admin/potential-donors') }}/' + selectedId + '/delete'" method="POST" class="flex justify-center gap-3 pt-2">
                 @csrf
                 @method('DELETE')
                 <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs">Batal</button>
@@ -442,7 +442,7 @@
                 <h3 class="text-base font-black text-slate-900">Ubah Menjadi Donatur Resmi</h3>
                 <p class="text-xs text-slate-500 font-medium">Ubah status <span class="font-bold text-slate-900" x-text="selectedName"></span> menjadi Donatur Resmi?</p>
             </div>
-            <form :action="'/admin/potential-donors/' + selectedId + '/set-donor'" method="POST" class="flex justify-center gap-3 pt-2">
+            <form :action="'{{ url('admin/potential-donors') }}/' + selectedId + '/set-donor'" method="POST" class="flex justify-center gap-3 pt-2">
                 @csrf
                 <button type="button" @click="showSetDonorModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs">Batal</button>
                 <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md">Ya, Set Donatur</button>

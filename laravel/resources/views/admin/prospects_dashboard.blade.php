@@ -48,9 +48,9 @@
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex items-center gap-2">
                             <span>Tgl Prospek :</span>
-                            <input type="date" name="start_date" value="{{ request('start_date', '2023-06-14') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
                             <span>s/d</span>
-                            <input type="date" name="end_date" value="{{ request('end_date', '2026-08-07') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
                         </div>
                         <div class="flex items-center gap-2">
                             <span>Target :</span>
@@ -396,7 +396,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            @foreach($topProspekCalonDonors as $idx => $tpcd)
+                            @forelse($topProspekCalonDonors as $idx => $tpcd)
                                 <tr class="hover:bg-slate-50">
                                     <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-900">{{ $tpcd['name'] }}</td>
@@ -406,7 +406,11 @@
                                     <td class="py-3 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($tpcd['total']) }}</td>
                                     <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ number_format($tpcd['potensi'], 0, ',', '.') }}</td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="py-6 text-center text-slate-400 font-bold">Tidak ada data prospek calon donatur.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

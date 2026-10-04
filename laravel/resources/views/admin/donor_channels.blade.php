@@ -270,7 +270,7 @@
                 </button>
             </div>
 
-            <form method="POST" :action="'/admin/donor-channels/' + editData.id + '/update'" class="space-y-4 text-xs font-semibold">
+            <form method="POST" :action="'{{ url('admin/donor-channels') }}/' + editData.id + '/update'" class="space-y-4 text-xs font-semibold">
                 @csrf
                 @method('PUT')
                 <div>
@@ -319,7 +319,7 @@
                 </p>
             </div>
 
-            <form method="POST" :action="'/admin/donor-channels/' + selectedId + '/delete'" class="flex items-center justify-center gap-3 pt-2">
+            <form method="POST" :action="'{{ url('admin/donor-channels') }}/' + selectedId + '/delete'" class="flex items-center justify-center gap-3 pt-2">
                 @csrf
                 @method('DELETE')
                 <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all">

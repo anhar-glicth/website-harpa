@@ -134,9 +134,9 @@
                                class="flex-1 border border-slate-200 rounded-xl px-4 py-2 text-xs font-medium focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 min-w-[280px]">
                         
                         <span class="text-xs font-bold text-slate-700">Tgl Donasi :</span>
-                        <input type="date" name="start_date" value="{{ request('start_date', '2025-06-11') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                        <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
                         <span class="text-xs">s/d</span>
-                        <input type="date" name="end_date" value="{{ request('end_date', date('Y-m-d')) }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                        <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
 
                         <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all">
                             🔍 Search
@@ -458,7 +458,7 @@
                 </h3>
                 <button @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <form :action="'/admin/transactions/' + editData.id + '/update'" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
+            <form :action="'{{ url('admin/transactions') }}/' + editData.id + '/update'" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
                 @csrf
                 @method('PUT')
                 <div class="space-y-1">
@@ -511,7 +511,7 @@
                 <h3 class="text-base font-black text-slate-900">Konfirmasi Hapus</h3>
                 <p class="text-xs text-slate-500 font-medium">Apakah Anda yakin ingin menghapus transaksi <span class="font-bold text-slate-900" x-text="selectedTrxId"></span>?</p>
             </div>
-            <form :action="'/admin/transactions/' + selectedId + '/delete'" method="POST" class="flex justify-center gap-3 pt-2">
+            <form :action="'{{ url('admin/transactions') }}/' + selectedId + '/delete'" method="POST" class="flex justify-center gap-3 pt-2">
                 @csrf
                 @method('DELETE')
                 <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs">Batal</button>

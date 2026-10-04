@@ -46,9 +46,9 @@
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex items-center gap-2">
                             <span>Tgl Donasi :</span>
-                            <input type="date" name="start_date" value="{{ request('start_date', '2025-07-09') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
                             <span>s/d</span>
-                            <input type="date" name="end_date" value="{{ request('end_date', '2026-08-07') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
                         </div>
                         <div class="flex items-center gap-2">
                             <span>Rumpun Program :</span>
