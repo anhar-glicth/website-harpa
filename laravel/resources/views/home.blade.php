@@ -36,45 +36,45 @@
 </section>
 
 <!-- Floating Stats Section -->
-<section class="max-w-7xl mx-auto px-4 -mt-16 sm:-mt-24 relative z-20">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+<section class="max-w-7xl mx-auto px-3 sm:px-4 -mt-14 sm:-mt-24 relative z-20">
+    <div class="grid grid-cols-3 gap-2 sm:gap-6">
         
         <!-- Penerima Manfaat -->
-        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
-            <div class="bg-emerald-50 w-16 h-16 rounded-2xl flex items-center justify-center text-emerald-600 text-2xl shrink-0">
+        <div class="bg-white p-3 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
+            <div class="bg-emerald-50 w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 text-lg sm:text-2xl shrink-0 mb-2 sm:mb-0">
                 <i class="fa-solid fa-users"></i>
             </div>
             <div>
-                <h4 class="text-xl sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
+                <h4 class="text-sm sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
                     {{ $settings->stats_beneficiaries ?? '2.500 +' }}
                 </h4>
-                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Penerima Manfaat</p>
+                <p class="text-slate-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest mt-1 sm:mt-1.5 leading-tight">Penerima Manfaat</p>
             </div>
         </div>
 
         <!-- Project Kebaikan -->
-        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
-            <div class="bg-primary-50 w-16 h-16 rounded-2xl flex items-center justify-center text-primary-600 text-2xl shrink-0">
+        <div class="bg-white p-3 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
+            <div class="bg-primary-50 w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-primary-600 text-lg sm:text-2xl shrink-0 mb-2 sm:mb-0">
                 <i class="fa-solid fa-gift"></i>
             </div>
             <div>
-                <h4 class="text-xl sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
+                <h4 class="text-sm sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
                     {{ $settings->stats_projects ?? '95 +' }}
                 </h4>
-                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Project Kebaikan</p>
+                <p class="text-slate-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest mt-1 sm:mt-1.5 leading-tight">Project Kebaikan</p>
             </div>
         </div>
 
         <!-- Perwakilan Relawan -->
-        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-xl flex items-center space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
-            <div class="bg-amber-50 w-16 h-16 rounded-2xl flex items-center justify-center text-amber-600 text-2xl shrink-0">
+        <div class="bg-white p-3 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
+            <div class="bg-amber-50 w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-amber-600 text-lg sm:text-2xl shrink-0 mb-2 sm:mb-0">
                 <i class="fa-solid fa-hands-holding-child"></i>
             </div>
             <div>
-                <h4 class="text-xl sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
+                <h4 class="text-sm sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
                     {{ $settings->stats_volunteers ?? '20 +' }}
                 </h4>
-                <p class="text-slate-500 font-bold text-[10px] uppercase tracking-widest mt-1.5">Perwakilan Relawan</p>
+                <p class="text-slate-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest mt-1 sm:mt-1.5 leading-tight">Perwakilan Relawan</p>
             </div>
         </div>
 
