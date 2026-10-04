@@ -613,6 +613,152 @@
         @endif
     </nav>
 
+    <!-- ================= LIVE DONATION SOCIAL PROOF POPUP ================= -->
+    @if(!$isDashboardOrAdmin)
+    <div 
+        x-data="liveDonationToast()" 
+        x-init="initToast()" 
+        x-cloak 
+        @mouseenter="paused = true" 
+        @mouseleave="paused = false"
+        class="fixed z-[1035] bottom-20 md:bottom-6 left-3 md:left-6 max-w-[340px] sm:max-w-sm pointer-events-auto select-none"
+    >
+        <div 
+            x-show="visible"
+            x-transition:enter="transition-all ease-out duration-400 transform"
+            x-transition:enter-start="opacity-0 translate-y-6 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition-all ease-in duration-300 transform"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+            class="bg-white/95 backdrop-blur-md border border-slate-100 hover:border-primary-300 rounded-2xl p-3 sm:p-3.5 shadow-[0_12px_32px_-6px_rgba(0,0,0,0.12)] flex items-center gap-3 relative overflow-hidden group transition-all duration-300 ring-1 ring-black/[0.04]"
+        >
+            <!-- Progress Line for 3-Second Cycle -->
+            <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-slate-100 overflow-hidden">
+                <div 
+                    class="h-full bg-gradient-to-r from-primary-500 to-amber-500 transition-all duration-[2400ms] ease-linear"
+                    :style="{ width: visible ? '100%' : '0%' }"
+                ></div>
+            </div>
+
+            <!-- Avatar -->
+            <div class="relative shrink-0 mt-0.5">
+                <img 
+                    :src="current.avatar" 
+                    :alt="current.name" 
+                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover shadow-sm ring-2 ring-primary-100"
+                >
+                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 ring-2 ring-white rounded-full flex items-center justify-center text-[7px] text-white shadow-sm">
+                    <i class="fa-solid fa-heart"></i>
+                </span>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-grow min-w-0 pr-4">
+                <div class="flex items-center gap-1.5 leading-none">
+                    <h5 class="text-xs font-black text-slate-800 truncate" x-text="current.name"></h5>
+                    <span class="text-[9px] font-bold text-slate-400 shrink-0">baru saja donasi</span>
+                </div>
+                
+                <div class="text-[11px] leading-snug mt-1 truncate">
+                    <span class="font-extrabold text-primary-600 font-montserrat" x-text="current.amount"></span>
+                    <span class="text-slate-400 font-medium">untuk</span>
+                    <span class="font-bold text-slate-700 truncate" x-text="current.campaign"></span>
+                </div>
+
+                <div class="flex items-center gap-2 mt-1 text-[9px] font-bold text-slate-400 leading-none">
+                    <span class="flex items-center gap-1">
+                        <i class="fa-regular fa-clock text-[8px] text-slate-400"></i>
+                        <span x-text="current.time"></span>
+                    </span>
+                    <span>•</span>
+                    <span class="text-emerald-600 flex items-center gap-1 font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Terverifikasi
+                    </span>
+                </div>
+            </div>
+
+            <!-- Dismiss Button -->
+            <button 
+                type="button" 
+                @click="dismiss()" 
+                class="absolute top-2 right-2 text-slate-300 hover:text-slate-600 p-1 transition-colors rounded-lg focus:outline-none"
+                title="Tutup Notifikasi"
+            >
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function liveDonationToast() {
+            return {
+                donations: @json($liveDonations ?? []),
+                fallback: [
+                    { name: "Hamba Allah", amount: "Rp 50.000", campaign: "Sumur Bor untuk Nusantara", time: "Baru saja", avatar: "https://ui-avatars.com/api/?name=HA&background=ea580c&color=fff&bold=true" },
+                    { name: "Siti Rahmawati", amount: "Rp 100.000", campaign: "Wakaf Al-Quran Pelosok", time: "2 menit lalu", avatar: "https://ui-avatars.com/api/?name=Siti+R&background=0284c7&color=fff&bold=true" },
+                    { name: "Budi Santoso", amount: "Rp 250.000", campaign: "Bantuan Pangan Dhuafa", time: "3 menit lalu", avatar: "https://ui-avatars.com/api/?name=Budi+S&background=10b981&color=fff&bold=true" },
+                    { name: "Ahmad Fauzi", amount: "Rp 50.000", campaign: "Sumur Bor untuk Nusantara", time: "5 menit lalu", avatar: "https://ui-avatars.com/api/?name=Ahmad+F&background=f59e0b&color=fff&bold=true" },
+                    { name: "Nurul Hidayah", amount: "Rp 200.000", campaign: "Sedekah Yatim Dhuafa", time: "8 menit lalu", avatar: "https://ui-avatars.com/api/?name=Nurul+H&background=8b5cf6&color=fff&bold=true" },
+                    { name: "Dedi Kurniawan", amount: "Rp 75.000", campaign: "Wakaf Al-Quran Pelosok", time: "11 menit lalu", avatar: "https://ui-avatars.com/api/?name=Dedi+K&background=ec4899&color=fff&bold=true" },
+                    { name: "Rina Permata", amount: "Rp 150.000", campaign: "Operasi Medis Anak Dhuafa", time: "14 menit lalu", avatar: "https://ui-avatars.com/api/?name=Rina+P&background=06b6d4&color=fff&bold=true" }
+                ],
+                list: [],
+                currentIndex: 0,
+                visible: false,
+                paused: false,
+                timer: null,
+
+                get current() {
+                    return (this.list && this.list.length > 0) ? this.list[this.currentIndex] : this.fallback[0];
+                },
+
+                initToast() {
+                    if (this.donations && this.donations.length > 0) {
+                        this.list = [...this.donations, ...this.fallback];
+                    } else {
+                        this.list = this.fallback;
+                    }
+
+                    // Mulai pertama kali setelah 1.2 detik
+                    setTimeout(() => {
+                        this.cycle();
+                    }, 1200);
+                },
+
+                cycle() {
+                    if (this.paused) {
+                        setTimeout(() => this.cycle(), 1000);
+                        return;
+                    }
+
+                    this.visible = true;
+
+                    // Tampil 2.4 detik, fade out 0.6 detik -> total siklus 3 detik berganti terus
+                    this.timer = setTimeout(() => {
+                        this.visible = false;
+
+                        setTimeout(() => {
+                            this.currentIndex = (this.currentIndex + 1) % this.list.length;
+                            this.cycle();
+                        }, 600);
+                    }, 2400);
+                },
+
+                dismiss() {
+                    this.visible = false;
+                    clearTimeout(this.timer);
+                    // Muncul kembali setelah 10 detik
+                    setTimeout(() => {
+                        this.cycle();
+                    }, 10000);
+                }
+            };
+        }
+    </script>
+    @endif
+
     <!-- ================= LOGIN MODAL ================= -->
     <div x-show="loginOpen" 
          x-cloak 
