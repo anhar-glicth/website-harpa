@@ -6,7 +6,7 @@
     <!-- Background Image -->
     <div class="absolute inset-0 z-0">
         <img 
-            src="{{ $settings->hero_image ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop' }}" 
+            src="{{ !empty($settings->hero_image) ? (str_starts_with($settings->hero_image, 'http') ? $settings->hero_image : asset($settings->hero_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop' }}" 
             class="w-full h-full object-cover scale-105"
             alt="Hero Charity"
         />
@@ -276,7 +276,7 @@
 <section class="bg-slate-900 text-white py-20 sm:py-28 relative overflow-hidden">
     <div class="absolute inset-0 opacity-20">
         <img 
-            src="{{ $settings->about_image ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&h=600&fit=crop' }}" 
+            src="{{ !empty($settings->about_image) ? (str_starts_with($settings->about_image, 'http') ? $settings->about_image : asset($settings->about_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&h=600&fit=crop' }}" 
             class="w-full h-full object-cover" 
             alt="Impact image"
         >

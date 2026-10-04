@@ -41,7 +41,7 @@
                                     <td class="py-4 text-primary-600">Rp {{ number_format($d->amount, 0, ',', '.') }}</td>
                                     <td class="py-4">
                                         @if($d->proof_image)
-                                            <a href="{{ $d->proof_image }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200/50 flex items-center justify-center space-x-1.5 w-max">
+                                            <a href="{{ asset($d->proof_image) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200/50 flex items-center justify-center space-x-1.5 w-max">
                                                 <i class="fa-solid fa-image"></i>
                                                 <span class="text-[9px] font-black">Lihat Foto</span>
                                             </a>

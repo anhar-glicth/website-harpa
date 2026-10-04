@@ -252,7 +252,7 @@
                                                 @endif
 
                                                 @if($t->result_attachment)
-                                                    <a href="{{ $t->result_attachment }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl border border-slate-200/50 flex items-center gap-1"><i class="fa-solid fa-image"></i> Lihat Foto Bukti</a>
+                                                    <a href="{{ asset($t->result_attachment) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl border border-slate-200/50 flex items-center gap-1"><i class="fa-solid fa-image"></i> Lihat Foto Bukti</a>
                                                 @endif
                                             </div>
                                         </div>

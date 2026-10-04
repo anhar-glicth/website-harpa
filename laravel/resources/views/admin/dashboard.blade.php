@@ -176,7 +176,7 @@
                                 <h4 class="font-montserrat font-black text-slate-900 uppercase tracking-tight text-sm">Upload <span class="text-primary-600">Bukti Selesai</span></h4>
                                 <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Tugas: <span class="text-slate-700" x-text="activeTodoTask"></span></p>
                             </div>
-                            <form :action="'/todo/' + activeTodoId + '/update'" method="POST" enctype="multipart/form-data" class="space-y-3">
+                            <form :action="'{{ url('todo') }}/' + activeTodoId + '/update'" method="POST" enctype="multipart/form-data" class="space-y-3">
                                 @csrf
                                 <input type="hidden" name="status" value="completed">
                                 <textarea name="result_note" rows="3" placeholder="Catatan hasil kerja..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3 text-xs font-semibold text-slate-800 outline-none focus:border-primary-500"></textarea>

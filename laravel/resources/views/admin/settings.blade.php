@@ -41,7 +41,7 @@
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Gambar Latar Hero</label>
                             <input type="file" name="hero_image" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
                             @if($settings && $settings->hero_image)
-                                <a href="{{ $settings->hero_image }}" target="_blank" class="text-[9px] font-bold text-primary-600 block mt-1.5">Lihat Foto Latar Saat Ini</a>
+                                <a href="{{ asset($settings->hero_image) }}" target="_blank" class="text-[9px] font-bold text-primary-600 block mt-1.5">Lihat Foto Latar Saat Ini</a>
                             @endif
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Gambar Visi/Misi</label>
                             <input type="file" name="about_image" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
                             @if($settings && $settings->about_image)
-                                <a href="{{ $settings->about_image }}" target="_blank" class="text-[9px] font-bold text-primary-600 block mt-1.5">Lihat Foto Saat Ini</a>
+                                <a href="{{ asset($settings->about_image) }}" target="_blank" class="text-[9px] font-bold text-primary-600 block mt-1.5">Lihat Foto Saat Ini</a>
                             @endif
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Gambar Dampak</label>
                             <input type="file" name="impact_image" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
                             @if($settings && $settings->impact_image)
-                                <a href="{{ $settings->impact_image }}" target="_blank" class="text-[9px] font-bold text-primary-600 block mt-1.5">Lihat Foto Dampak Saat Ini</a>
+                                <a href="{{ asset($settings->impact_image) }}" target="_blank" class="text-[9px] font-bold text-primary-600 block mt-1.5">Lihat Foto Dampak Saat Ini</a>
                             @endif
                         </div>
                     </div>
