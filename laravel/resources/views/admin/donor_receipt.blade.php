@@ -3,6 +3,9 @@
     if (!function_exists('terbilangRupiah')) {
         function terbilangRupiah($number) {
             $number = abs((float)$number);
+            if ($number == 0) {
+                return 'Nol';
+            }
             $words = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
             $result = "";
 
@@ -32,8 +35,8 @@
         }
     }
 
-    $donorName = $lastDonation->donor_name ?: ($donor->name ?? 'Donatur');
-    $amount = $lastDonation ? (float)$lastDonation->amount : 50000;
+    $donorName = ($lastDonation?->donor_name) ?: ($donor?->name ?? 'Donatur');
+    $amount = $lastDonation ? (float)$lastDonation->amount : 0;
     $amountInWords = ucwords(strtolower(terbilangRupiah($amount))) . ' Rupiah';
     
     // Format MR. No
@@ -47,6 +50,8 @@
         } else {
             $mrNo = str_pad($lastDonation->id, 6, '0', STR_PAD_LEFT);
         }
+    } else {
+        $mrNo = 'D-' . str_pad($donor?->id ?? '0', 6, '0', STR_PAD_LEFT);
     }
 
     // Tanggal Donasi
@@ -61,7 +66,7 @@
     $tglDonasi = $tglCarbon->translatedFormat('d F Y');
 
     // Metode Pembayaran & Bank
-    $paymentMethod = $lastDonation->payment_method ?? ($lastDonation->paymentMethod ?? 'Electronic Payment');
+    $paymentMethod = $lastDonation?->payment_method ?? ($lastDonation?->paymentMethod ?? 'Electronic Payment');
     $isCash = in_array(strtolower($paymentMethod), ['cash', 'tunai']);
     $isElectronic = !$isCash;
 
@@ -76,7 +81,7 @@
         $purpose = $lastDonation->campaign->title;
     }
 
-    $defaultReceiver = $lastDonation->collector->name ?? (Auth::check() ? Auth::user()->name : 'Staff Amal Abadi');
+    $defaultReceiver = $lastDonation?->collector?->name ?? (Auth::check() ? Auth::user()->name : 'Staff Amal Abadi');
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -268,6 +273,15 @@
             <i class="fa-solid fa-xmark"></i> Tutup
         </button>
     </div>
+
+    @if(!$lastDonation)
+        <div class="no-print w-full max-w-[1020px] mb-5 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-2xl flex items-center gap-3 text-xs shadow-sm">
+            <i class="fa-solid fa-circle-info text-amber-600 text-base shrink-0"></i>
+            <div>
+                <strong>Informasi:</strong> Donatur ini belum memiliki riwayat transaksi donasi tercatat di sistem. Kwitansi ditampilkan dengan data standar dan dapat disesuaikan melalui tombol <strong>Kustomisasi Logo, TTD & Penerima</strong>.
+            </div>
+        </div>
+    @endif
 
     {{-- Printable Money Receipt Container --}}
     <div class="receipt-wrapper relative bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden w-full max-w-[1020px] transition-all">
