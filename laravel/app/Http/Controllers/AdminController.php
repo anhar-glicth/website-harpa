@@ -2446,19 +2446,6 @@ class AdminController extends Controller
         if (!$lastDonation) {
             $lastDonation = $donor->donations()->with(['campaign', 'paymentVia', 'collector'])->latest()->first();
         }
-        if (!$lastDonation && ($donor->phone || $donor->email)) {
-            $lastDonation = Donation::with(['campaign', 'paymentVia', 'collector'])
-                ->where(function ($q) use ($donor) {
-                    if ($donor->phone) {
-                        $q->where('donor_phone', $donor->phone);
-                    }
-                    if ($donor->email) {
-                        $q->orWhere('donor_email', $donor->email);
-                    }
-                })
-                ->latest()
-                ->first();
-        }
 
         return view('admin.donor_receipt', [
             'donor'        => $donor,
