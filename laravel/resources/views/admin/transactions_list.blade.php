@@ -274,9 +274,16 @@
 
                 <button type="button" 
                         @click="if(selectedItem) { window.open('/admin/transactions/' + selectedItem.id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
-                        class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
-                    <i class="fa-solid fa-print"></i> Print
+                        class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                        title="Cetak kwitansi dari 1 baris yang dipilih">
+                    <i class="fa-solid fa-print"></i> Print (Pilihan)
                 </button>
+
+                <a href="{{ route('admin.transactions.batch_receipt', request()->query()) }}" target="_blank" 
+                   class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                   title="Download atau Cetak Semua Kwitansi Hasil Filter (atau Keseluruhan)">
+                    <i class="fa-solid fa-file-invoice"></i> Download / Cetak Kwitansi Terfilter
+                </a>
 
                 <button type="button" 
                         @click="if(selectedId) { openDelete(selectedId, selectedTrxId); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 

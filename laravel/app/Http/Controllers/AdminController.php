@@ -2179,7 +2179,7 @@ class AdminController extends Controller
     // TRANSACTION MANAGEMENT MODULES
     // ==========================================
 
-    public function donorsList(Request $request)
+    private function buildDonorsQuery(Request $request)
     {
         $query = User::where('role', 'user')
             ->with(['office', 'latestDonation.campaign', 'latestDonation.paymentVia'])
@@ -2233,6 +2233,13 @@ class AdminController extends Controller
             $query->where('rfm_alltime', $request->rfm_alltime);
         }
 
+        return $query;
+    }
+
+    public function donorsList(Request $request)
+    {
+        $query = $this->buildDonorsQuery($request);
+
         $donors = $query->latest()->paginate(10)->withQueryString();
         $totalDonorsCount = User::where('role', 'user')->count();
         $offices = Office::orderBy('name')->get();
@@ -2246,6 +2253,26 @@ class AdminController extends Controller
             'donorChannels' => $donorChannels,
             'prospectMedia' => $prospectMedia,
             'active' => 'donors_list',
+        ]);
+    }
+
+    public function donorsBatchReceipt(Request $request)
+    {
+        $query = $this->buildDonorsQuery($request)->whereHas('donations');
+        $donors = $query->latest()->take(200)->get();
+
+        $donations = $donors->map(function($donor) {
+            $donation = $donor->latestDonation;
+            if ($donation) {
+                $donation->setRelation('user', $donor);
+            }
+            return $donation;
+        })->filter()->values();
+
+        return view('admin.batch_receipt', [
+            'donations'   => $donations,
+            'source'      => 'donors',
+            'filterCount' => $donations->count(),
         ]);
     }
 
@@ -2468,18 +2495,21 @@ class AdminController extends Controller
         ]);
     }
 
-    public function transactionsList(Request $request)
+    private function buildTransactionsQuery(Request $request)
     {
-        $query = Donation::with(['user.office', 'campaign.group', 'paymentVia']);
+        $query = Donation::with(['user.office', 'campaign.group', 'paymentVia', 'collector']);
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('donor_name', 'like', "%{$search}%")
-                  ->orWhere('donor_email', 'like', "%{$search}%")
-                  ->orWhere('donor_phone', 'like', "%{$search}%")
+                  ->orWhere('id', 'like', "%{$search}%")
                   ->orWhere('transaction_id', 'like', "%{$search}%")
-                  ->orWhere('notes', 'like', "%{$search}%");
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%")
+                         ->orWhere('phone', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%");
+                  });
             });
         }
 
@@ -2489,18 +2519,52 @@ class AdminController extends Controller
         if ($request->filled('end_date')) {
             $query->whereDate('donation_date', '<=', $request->end_date);
         }
+        if ($request->filled('start_insert_date')) {
+            $query->whereDate('created_at', '>=', $request->start_insert_date);
+        }
+        if ($request->filled('end_insert_date')) {
+            $query->whereDate('created_at', '<=', $request->end_insert_date);
+        }
         if ($request->filled('program_id')) {
             $query->where('campaign_id', $request->program_id);
+        }
+        if ($request->filled('program_group_id')) {
+            $query->whereHas('campaign', function($cq) use ($request) {
+                $cq->where('program_group_id', $request->program_group_id);
+            });
         }
         if ($request->filled('payment_via_id')) {
             $query->where('payment_via_id', $request->payment_via_id);
         }
+        if ($request->filled('min_amount')) {
+            $query->where('amount', '>=', $request->min_amount);
+        }
+        if ($request->filled('max_amount')) {
+            $query->where('amount', '<=', $request->max_amount);
+        }
+        if ($request->filled('office_id')) {
+            $query->whereHas('user', function($uq) use ($request) {
+                $uq->where('office_id', $request->office_id);
+            });
+        }
+        if ($request->filled('segment')) {
+            $query->whereHas('user', function($uq) use ($request) {
+                $uq->where('segment', 'like', "%{$request->segment}%");
+            });
+        }
+
+        return $query;
+    }
+
+    public function transactionsList(Request $request)
+    {
+        $query = $this->buildTransactionsQuery($request);
 
         $totalQuantity   = (clone $query)->count();
         $totalDonorsCount= (clone $query)->whereNotNull('user_id')->distinct('user_id')->count('user_id');
         $totalCapaian    = (clone $query)->where('payment_status', 'Success')->sum('amount');
 
-        $donations     = $query->latest()->paginate(10)->withQueryString();
+        $donations     = $query->latest('donation_date')->paginate(10)->withQueryString();
         $programGroups = ProgramGroup::orderBy('name')->get();
         $programs      = Campaign::where('status', 'approved')->orderBy('title')->get();
         $paymentVias   = PaymentVia::orderBy('name')->get();
@@ -2518,6 +2582,18 @@ class AdminController extends Controller
             'donorChannels'      => $donorChannels,
             'offices'            => $offices,
             'active'             => 'transactions_list',
+        ]);
+    }
+
+    public function transactionsBatchReceipt(Request $request)
+    {
+        $query = $this->buildTransactionsQuery($request);
+        $donations = $query->latest('donation_date')->take(200)->get();
+
+        return view('admin.batch_receipt', [
+            'donations'   => $donations,
+            'source'      => 'transactions',
+            'filterCount' => $donations->count(),
         ]);
     }
 

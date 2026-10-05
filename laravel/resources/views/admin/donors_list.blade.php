@@ -392,6 +392,12 @@
                     <i class="fa-solid fa-file-excel"></i> Export
                 </a>
 
+                <a href="{{ route('admin.donors.batch_receipt', request()->query()) }}" target="_blank" 
+                   class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                   title="Download atau Cetak Semua Kwitansi Donatur Hasil Filter (atau Keseluruhan)">
+                    <i class="fa-solid fa-file-invoice"></i> Download / Cetak Kwitansi Terfilter
+                </a>
+
                 <button type="button" @click="showImportModal = true" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
                     <i class="fa-solid fa-file-import"></i> Import
                 </button>

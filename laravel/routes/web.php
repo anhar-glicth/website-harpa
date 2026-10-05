@@ -159,6 +159,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/donors/{id}/delete', [AdminController::class, 'deleteDonor'])->name('admin.donors.delete');
     Route::get('/admin/donors/export', [AdminController::class, 'exportDonors'])->name('admin.donors.export');
     Route::post('/admin/donors/import', [AdminController::class, 'importDonors'])->name('admin.donors.import');
+    Route::get('/admin/donors-batch-receipt', [AdminController::class, 'donorsBatchReceipt'])->name('admin.donors.batch_receipt');
     Route::get('/admin/donors/{id}/receipt', [AdminController::class, 'donorReceipt'])->name('admin.donors.receipt');
 
     Route::get('/admin/transactions-list', [AdminController::class, 'transactionsList'])->name('admin.transactions_list');
@@ -167,6 +168,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/transactions/{id}/delete', [AdminController::class, 'deleteTransaction'])->name('admin.transactions.delete');
     Route::get('/admin/transactions/export', [AdminController::class, 'exportTransactions'])->name('admin.transactions.export');
     Route::post('/admin/transactions/import', [AdminController::class, 'importTransactions'])->name('admin.transactions.import');
+    Route::get('/admin/transactions-batch-receipt', [AdminController::class, 'transactionsBatchReceipt'])->name('admin.transactions.batch_receipt');
     Route::get('/admin/transactions/{id}/receipt', [AdminController::class, 'transactionReceipt'])->name('admin.transactions.receipt');
     Route::get('/admin/prospects-list', [AdminController::class, 'prospectsList'])->name('admin.prospects_list');
     Route::post('/admin/prospects/store', [AdminController::class, 'storeProspect'])->name('admin.prospects.store');
