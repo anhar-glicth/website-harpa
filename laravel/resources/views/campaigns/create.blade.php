@@ -21,10 +21,16 @@
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Kategori</label>
                     <select name="category" required class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
-                        <option value="Kemanusiaan">Kemanusiaan</option>
-                        <option value="Pendidikan">Pendidikan</option>
-                        <option value="Kesehatan">Kesehatan</option>
-                        <option value="Dakwah">Dakwah</option>
+                        @if(isset($groups) && $groups->count() > 0)
+                            @foreach($groups as $grp)
+                                <option value="{{ $grp->name }}">{{ $grp->name }}</option>
+                            @endforeach
+                        @else
+                            <option value="Kemanusiaan">Kemanusiaan</option>
+                            <option value="Pendidikan">Pendidikan</option>
+                            <option value="Kesehatan">Kesehatan</option>
+                            <option value="Dakwah">Dakwah</option>
+                        @endif
                     </select>
                 </div>
                 <div>

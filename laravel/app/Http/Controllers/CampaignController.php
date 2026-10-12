@@ -57,12 +57,21 @@ class CampaignController extends Controller
         $data['author_id'] = Auth::id();
         $data['status'] = Auth::user()->hasAdminAccess() ? 'approved' : 'pending';
 
+        $group = ProgramGroup::where('name', $request->category)->first();
+        if ($group) {
+            $data['group_id'] = $group->id;
+        }
+
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('campaigns', 'public');
             $data['foto'] = '/storage/' . $path;
         }
 
         Campaign::create($data);
+
+        if (Auth::user()->hasAdminAccess()) {
+            return redirect()->route('admin.campaigns')->with('success', 'Kampanye berhasil dibuat dan langsung disetujui.');
+        }
 
         return redirect()->route('campaigns.index')->with('success', 'Kampanye berhasil diajukan dan sedang menunggu verifikasi.');
     }
