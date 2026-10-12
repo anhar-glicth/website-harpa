@@ -541,11 +541,23 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak mencatat distribusi bantuan.');
         }
 
+        if (empty($request->program_id)) {
+            $request->merge(['program_id' => null]);
+        }
+
+        $name = $request->input('pic_name') ?: $request->input('recipient_name');
+        if ($name) {
+            $request->merge([
+                'pic_name' => $name,
+                'recipient_name' => $name,
+            ]);
+        }
+
         $request->validate([
             'distribution_code' => 'nullable|string|max:50',
             'program_id'        => 'nullable|exists:campaigns,id',
-            'recipient_name'    => 'required|string|max:255',
-            'pic_name'          => 'nullable|string|max:255',
+            'recipient_name'    => 'nullable|string|max:255',
+            'pic_name'          => 'required|string|max:255',
             'pic_phone'         => 'nullable|string|max:50',
             'amount'            => 'required|numeric|min:1000',
             'distribution_date' => 'required|date',
@@ -562,8 +574,14 @@ class AdminController extends Controller
         if (empty($data['distribution_code'])) {
             $data['distribution_code'] = 'DIS-' . date('Ym') . '-' . rand(100, 999);
         }
+        if (empty($data['recipient_name'])) {
+            $data['recipient_name'] = $data['pic_name'] ?? 'Penerima Manfaat';
+        }
         if (empty($data['pic_name'])) {
             $data['pic_name'] = $data['recipient_name'];
+        }
+        if (empty($data['program_id'])) {
+            $data['program_id'] = null;
         }
 
         Distribution::create($data);
@@ -579,11 +597,23 @@ class AdminController extends Controller
 
         $dis = Distribution::findOrFail($id);
 
+        if (empty($request->program_id)) {
+            $request->merge(['program_id' => null]);
+        }
+
+        $name = $request->input('pic_name') ?: $request->input('recipient_name');
+        if ($name) {
+            $request->merge([
+                'pic_name' => $name,
+                'recipient_name' => $name,
+            ]);
+        }
+
         $request->validate([
             'distribution_code' => 'nullable|string|max:50',
             'program_id'        => 'nullable|exists:campaigns,id',
-            'recipient_name'    => 'required|string|max:255',
-            'pic_name'          => 'nullable|string|max:255',
+            'recipient_name'    => 'nullable|string|max:255',
+            'pic_name'          => 'required|string|max:255',
             'pic_phone'         => 'nullable|string|max:50',
             'amount'            => 'required|numeric|min:1000',
             'distribution_date' => 'required|date',
@@ -596,7 +626,18 @@ class AdminController extends Controller
             'status'            => 'nullable|in:Proses,Tersalur',
         ]);
 
-        $dis->update($request->all());
+        $data = $request->all();
+        if (empty($data['recipient_name'])) {
+            $data['recipient_name'] = $data['pic_name'] ?? $dis->recipient_name;
+        }
+        if (empty($data['pic_name'])) {
+            $data['pic_name'] = $data['recipient_name'];
+        }
+        if (empty($data['program_id'])) {
+            $data['program_id'] = null;
+        }
+
+        $dis->update($data);
 
         return redirect()->back()->with('success', 'Data penyaluran berhasil diperbarui.');
     }

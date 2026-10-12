@@ -361,7 +361,6 @@
                         <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Nama PIC / Penerima <span class="text-rose-500">*</span></label>
                         <input type="text" name="pic_name" required placeholder="Nama PIC Penyaluran"
                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none placeholder:text-slate-400">
-                        <input type="hidden" name="recipient_name" x-bind:value="$el.previousElementSibling.value">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kontak PIC (No. HP/WA)</label>

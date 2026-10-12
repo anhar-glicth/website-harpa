@@ -107,7 +107,7 @@
         }
     </style>
 </head>
-<body x-data="{ loginOpen: false, registerOpen: false, mobileSidebarOpen: false }" x-init="if ({{ $errors->has('name') || $errors->has('password_confirmation') ? 'true' : 'false' }}) { registerOpen = true } else if ({{ $errors->any() ? 'true' : 'false' }}) { loginOpen = true }" class="font-sans bg-[#F8FAFC] text-slate-800 antialiased flex flex-col min-h-screen">
+<body x-data="{ loginOpen: false, registerOpen: false, mobileSidebarOpen: false }" x-init="@guest if ({{ $errors->has('name') || $errors->has('password_confirmation') ? 'true' : 'false' }}) { registerOpen = true } else if ({{ $errors->has('email') || $errors->has('password') ? 'true' : 'false' }}) { loginOpen = true } @endguest" class="font-sans bg-[#F8FAFC] text-slate-800 antialiased flex flex-col min-h-screen">
 
     @php
         $isDashboardOrAdmin = Auth::check() && (
