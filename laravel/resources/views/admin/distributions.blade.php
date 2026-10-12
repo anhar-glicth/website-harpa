@@ -346,8 +346,9 @@
                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none uppercase placeholder:text-slate-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Program Kampanye <span class="text-rose-500">*</span></label>
-                        <select name="program_id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Program Kampanye <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
+                        <select name="program_id" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                            <option value="">-- Non-Program / Penyaluran Umum --</option>
                             @foreach($campaigns as $camp)
                                 <option value="{{ $camp->id }}">{{ $camp->title }} (Saldo: Rp {{ number_format($camp->current_amount, 0, ',', '.') }})</option>
                             @endforeach
@@ -484,8 +485,9 @@
                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none uppercase">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Program Kampanye <span class="text-rose-500">*</span></label>
-                        <select name="program_id" x-model="editData.program_id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Program Kampanye <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
+                        <select name="program_id" x-model="editData.program_id" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                            <option :value="null">-- Non-Program / Penyaluran Umum --</option>
                             @foreach($campaigns as $camp)
                                 <option value="{{ $camp->id }}">{{ $camp->title }}</option>
                             @endforeach

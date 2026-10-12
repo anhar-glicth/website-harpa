@@ -11,11 +11,17 @@
 
         <!-- Dashboard Content -->
         <div class="lg:col-span-3 space-y-8">
-            <div class="space-y-2">
-                <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                    Kelola <span class="text-primary-600">Kampanye Penggalangan Dana</span>
-                </h1>
-                <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="space-y-2">
+                    <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                        Kelola <span class="text-primary-600">Kampanye Penggalangan Dana</span>
+                    </h1>
+                    <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+                </div>
+                <a href="{{ route('campaigns.create') }}" 
+                   class="inline-flex items-center gap-2 px-5 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-all">
+                    <i class="fa-solid fa-plus text-xs"></i> Tambah Kampanye Baru
+                </a>
             </div>
 
             <!-- Campaign list table -->

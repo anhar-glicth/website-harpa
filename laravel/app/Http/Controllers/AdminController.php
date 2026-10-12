@@ -543,7 +543,7 @@ class AdminController extends Controller
 
         $request->validate([
             'distribution_code' => 'nullable|string|max:50',
-            'program_id'        => 'required|exists:campaigns,id',
+            'program_id'        => 'nullable|exists:campaigns,id',
             'recipient_name'    => 'required|string|max:255',
             'pic_name'          => 'nullable|string|max:255',
             'pic_phone'         => 'nullable|string|max:50',
@@ -581,7 +581,7 @@ class AdminController extends Controller
 
         $request->validate([
             'distribution_code' => 'nullable|string|max:50',
-            'program_id'        => 'required|exists:campaigns,id',
+            'program_id'        => 'nullable|exists:campaigns,id',
             'recipient_name'    => 'required|string|max:255',
             'pic_name'          => 'nullable|string|max:255',
             'pic_phone'         => 'nullable|string|max:50',
