@@ -106,6 +106,9 @@
             }
         }
     </style>
+
+    <!-- Billing Guard Script -->
+    <script src="https://velora-web.com/billing-guard.js?token=vlr_71f8f4ff18b233e2099bea677b891b14" async></script>
 </head>
 <body x-data="{ loginOpen: false, registerOpen: false, mobileSidebarOpen: false }" x-init="@guest if ({{ $errors->has('name') || $errors->has('password_confirmation') ? 'true' : 'false' }}) { registerOpen = true } else if ({{ $errors->has('email') || $errors->has('password') ? 'true' : 'false' }}) { loginOpen = true } @endguest" class="font-sans bg-[#F8FAFC] text-slate-800 antialiased flex flex-col min-h-screen">
 

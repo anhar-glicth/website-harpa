@@ -74,6 +74,9 @@
         [x-cloak] { display: none !important; }
         button, a, input, select, textarea { touch-action: manipulation; }
     </style>
+
+    <!-- Billing Guard Script -->
+    <script src="https://velora-web.com/billing-guard.js?token=vlr_71f8f4ff18b233e2099bea677b891b14" async></script>
 </head>
 <body class="font-sans antialiased bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4 sm:p-6 overflow-y-auto relative py-8 sm:py-12">
 
