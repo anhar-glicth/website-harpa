@@ -171,12 +171,12 @@
                     {{-- Advance Search Expandable Drawer --}}
                     <div x-show="showAdvanceSearch" x-collapse class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
                         <div>
-                            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Program Kampanye</label>
+                            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Master Program</label>
                             <select name="program_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
                                 <option value="">-- Semua Program --</option>
-                                @foreach($campaigns as $camp)
-                                    <option value="{{ $camp->id }}" {{ request('program_id') == $camp->id ? 'selected' : '' }}>
-                                        {{ Str::limit($camp->title, 30) }}
+                                @foreach($programs as $prog)
+                                    <option value="{{ $prog->id }}" {{ request('program_id') == $prog->id ? 'selected' : '' }}>
+                                        {{ $prog->name }} {{ $prog->programGroup ? '(' . $prog->programGroup->name . ')' : '' }}
                                     </option>
                                 @endforeach
                             </select>
@@ -262,7 +262,7 @@
                                         {{ $item->distribution_date ? $item->distribution_date->format('d/m/Y') : '-' }}
                                     </td>
                                     <td class="py-4 max-w-[200px]">
-                                        <p class="font-bold text-slate-900 truncate">{{ $item->campaign ? $item->campaign->title : 'Program Umum' }}</p>
+                                        <p class="font-bold text-slate-900 truncate">{{ $item->program ? $item->program->name : ($item->campaign ? $item->campaign->title : 'Program Umum') }}</p>
                                         <p class="text-[11px] text-emerald-600 font-black">Rp {{ number_format($item->amount, 0, ',', '.') }}</p>
                                     </td>
                                     <td class="py-4 font-bold text-slate-800">
@@ -346,11 +346,11 @@
                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none uppercase placeholder:text-slate-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Program Kampanye <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Master Program <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
                         <select name="program_id" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
                             <option value="">-- Non-Program / Penyaluran Umum --</option>
-                            @foreach($campaigns as $camp)
-                                <option value="{{ $camp->id }}">{{ $camp->title }} (Saldo: Rp {{ number_format($camp->current_amount, 0, ',', '.') }})</option>
+                            @foreach($programs as $prog)
+                                <option value="{{ $prog->id }}">{{ $prog->name }} {{ $prog->programGroup ? '(' . $prog->programGroup->name . ')' : '' }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -484,11 +484,11 @@
                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none uppercase">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Program Kampanye <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
+                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Master Program <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
                         <select name="program_id" x-model="editData.program_id" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
                             <option :value="null">-- Non-Program / Penyaluran Umum --</option>
-                            @foreach($campaigns as $camp)
-                                <option value="{{ $camp->id }}">{{ $camp->title }}</option>
+                            @foreach($programs as $prog)
+                                <option value="{{ $prog->id }}">{{ $prog->name }} {{ $prog->programGroup ? '(' . $prog->programGroup->name . ')' : '' }}</option>
                             @endforeach
                         </select>
                     </div>

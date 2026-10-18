@@ -74,7 +74,7 @@
                                 <option value="">All</option>
                                 @foreach($programs as $p)
                                     <option value="{{ $p->id }}" {{ request('program_id') == $p->id ? 'selected' : '' }}>
-                                        {{ Str::limit($p->title, 25) }}
+                                        {{ Str::limit($p->name ?? $p->title, 25) }}
                                     </option>
                                 @endforeach
                             </select>

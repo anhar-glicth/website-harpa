@@ -36,6 +36,23 @@ class DatabaseSeeder extends Seeder
             \App\Models\ProgramGroup::updateOrCreate(['code' => $group['code']], $group);
         }
 
+        // 2b. Master Programs
+        $masterPrograms = [
+            ['name' => 'Bantuan Bencana Alam & Kemanusiaan', 'program_group_id' => 1, 'description' => 'Bantuan tanggap darurat dan logistik korban bencana', 'status' => 'Aktif'],
+            ['name' => 'Sembako Pangan Keluarga Dhuafa', 'program_group_id' => 1, 'description' => 'Paket sembako untuk keluarga prasejahtera', 'status' => 'Aktif'],
+            ['name' => 'Santunan Yatim & Piatu', 'program_group_id' => 1, 'description' => 'Bantuan uang tunai dan bingkisan anak yatim', 'status' => 'Aktif'],
+            ['name' => 'Beasiswa Generasi Berprestasi', 'program_group_id' => 2, 'description' => 'Dukungan SPP dan perlengkapan sekolah santri/siswa', 'status' => 'Aktif'],
+            ['name' => 'Bantuan Sarana Belajar & Madrasah', 'program_group_id' => 2, 'description' => 'Renovasi dan pengadaan fasilitas belajar madrasah pelosok', 'status' => 'Aktif'],
+            ['name' => 'Layanan Kesehatan & Pengobatan Dhuafa', 'program_group_id' => 3, 'description' => 'Pemeriksaan umum dan obat-obatan gratis masyarakat', 'status' => 'Aktif'],
+            ['name' => 'Ambulans & Siaga Medis Gratis', 'program_group_id' => 3, 'description' => 'Operasional antar jemput pasien darurat dhuafa', 'status' => 'Aktif'],
+            ['name' => 'Tebar Al-Quran & Kitab Pelosok', 'program_group_id' => 4, 'description' => 'Distribusi mushaf Al-Quran dan iqro ke daerah pelosok', 'status' => 'Aktif'],
+            ['name' => 'Bantuan Pembangunan Masjid/Musholla', 'program_group_id' => 4, 'description' => 'Bantuan material dan renovasi rumah ibadah', 'status' => 'Aktif'],
+            ['name' => 'Kafalah & Pembinaan Dai Pedalaman', 'program_group_id' => 4, 'description' => 'Insentif dan akomodasi dai pembina mualaf pelosok', 'status' => 'Aktif'],
+        ];
+        foreach ($masterPrograms as $mp) {
+            \App\Models\Program::updateOrCreate(['name' => $mp['name']], $mp);
+        }
+
         // 3. Donor Channels
         $channels = [
             ['name' => 'WEB', 'code' => 'WEB', 'status' => 'Aktif'],

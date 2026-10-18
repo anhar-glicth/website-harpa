@@ -212,8 +212,12 @@ class AdminController extends Controller
         }
 
         if ($request->filled('program_group_id')) {
-            $query->whereHas('campaign', function ($cq) use ($request) {
-                $cq->where('group_id', $request->program_group_id);
+            $query->where(function ($gq) use ($request) {
+                $gq->whereHas('program', function ($pq) use ($request) {
+                    $pq->where('program_group_id', $request->program_group_id);
+                })->orWhereHas('campaign', function ($cq) use ($request) {
+                    $cq->where('group_id', $request->program_group_id);
+                });
             });
         }
 
@@ -297,10 +301,13 @@ class AdminController extends Controller
         }
 
         // Fetch all matching distributions with relationships for PHP collection processing (100% safe against MySQL strict mode)
-        $distributionRecords = (clone $query)->with(['campaign.group'])->get();
+        $distributionRecords = (clone $query)->with(['program.programGroup', 'campaign.group'])->get();
 
         // 7. Distribusi Program Penyaluran Pie Chart Data
         $programGroupPie = $distributionRecords->groupBy(function($item) {
+            if ($item->program && $item->program->programGroup && !empty($item->program->programGroup->name)) {
+                return $item->program->programGroup->name;
+            }
             if ($item->campaign && $item->campaign->group && !empty($item->campaign->group->name)) {
                 return $item->campaign->group->name;
             }
@@ -328,6 +335,9 @@ class AdminController extends Controller
 
         // 8. Distribusi Nama Program Pie Chart Data
         $programNamePie = $distributionRecords->groupBy(function($item) {
+            if ($item->program && !empty($item->program->name)) {
+                return $item->program->name;
+            }
             if ($item->campaign && !empty($item->campaign->title)) {
                 return $item->campaign->title;
             }
@@ -369,9 +379,9 @@ class AdminController extends Controller
         $resumeKota = $distributionRecords->groupBy(function($item) {
             $c = !empty($item->city) ? $item->city : 'Kota Mataram';
             $p = !empty($item->province) ? $item->province : 'Nusa Tenggara Barat';
-            return $c . '|||' . $p;
+            return $c . '|' . $p;
         })->map(function($items, $key) {
-            $parts = explode('|||', $key);
+            $parts = explode('|', $key);
             return (object)[
                 'city_name'     => $parts[0] ?? 'Kota Mataram',
                 'province_name' => $parts[1] ?? 'Nusa Tenggara Barat',
@@ -383,6 +393,9 @@ class AdminController extends Controller
 
         // 3. Resume Penyaluran By Kategori Program
         $resumeKategori = $distributionRecords->groupBy(function($item) {
+            if ($item->program && $item->program->programGroup && !empty($item->program->programGroup->name)) {
+                return $item->program->programGroup->name;
+            }
             if ($item->campaign && $item->campaign->group && !empty($item->campaign->group->name)) {
                 return $item->campaign->group->name;
             }
@@ -404,6 +417,9 @@ class AdminController extends Controller
 
         // 4. Resume Penyaluran By Program
         $resumeProgram = $distributionRecords->groupBy(function($item) {
+            if ($item->program && !empty($item->program->name)) {
+                return $item->program->name;
+            }
             if ($item->campaign && !empty($item->campaign->title)) {
                 return $item->campaign->title;
             }
@@ -422,7 +438,7 @@ class AdminController extends Controller
 
         // Filter Dropdown Lists
         $programGroups = ProgramGroup::all();
-        $programs      = Campaign::where('status', 'approved')->get();
+        $programs      = Program::where('status', 'Aktif')->orderBy('name')->get();
         $asnafList     = Distribution::whereNotNull('asnaf')->where('asnaf', '!=', '')->distinct()->pluck('asnaf');
         $cities        = Distribution::whereNotNull('city')->where('city', '!=', '')->distinct()->pluck('city');
         $provinces     = Distribution::whereNotNull('province')->where('province', '!=', '')->distinct()->pluck('province');
@@ -479,7 +495,7 @@ class AdminController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin mengakses modul penyaluran.');
         }
 
-        $query = Distribution::with('campaign');
+        $query = Distribution::with(['program.programGroup', 'campaign']);
 
         // Search: ID Penyaluran / Nama / Kontak PIC / Program / Alamat / City / Province
         if ($request->filled('search')) {
@@ -492,6 +508,9 @@ class AdminController extends Controller
                   ->orWhere('location_name', 'like', "%{$search}%")
                   ->orWhere('city', 'like', "%{$search}%")
                   ->orWhere('province', 'like', "%{$search}%")
+                  ->orWhereHas('program', function ($pq) use ($search) {
+                      $pq->where('name', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('campaign', function ($cq) use ($search) {
                       $cq->where('title', 'like', "%{$search}%");
                   });
@@ -525,10 +544,12 @@ class AdminController extends Controller
 
         $totalFilteredAmount = (clone $query)->sum('amount');
         $distributions = $query->orderBy('distribution_date', 'desc')->paginate(10)->withQueryString();
+        $programs = Program::with('programGroup')->where('status', 'Aktif')->orderBy('name')->get();
         $campaigns = Campaign::where('status', 'approved')->get();
 
         return view('admin.distributions', [
             'distributions'       => $distributions,
+            'programs'            => $programs,
             'campaigns'           => $campaigns,
             'totalFilteredAmount' => $totalFilteredAmount,
             'active'              => 'distributions',
@@ -555,7 +576,7 @@ class AdminController extends Controller
 
         $request->validate([
             'distribution_code' => 'nullable|string|max:50',
-            'program_id'        => 'nullable|exists:campaigns,id',
+            'program_id'        => 'nullable|exists:programs,id',
             'recipient_name'    => 'nullable|string|max:255',
             'pic_name'          => 'required|string|max:255',
             'pic_phone'         => 'nullable|string|max:50',
@@ -611,7 +632,7 @@ class AdminController extends Controller
 
         $request->validate([
             'distribution_code' => 'nullable|string|max:50',
-            'program_id'        => 'nullable|exists:campaigns,id',
+            'program_id'        => 'nullable|exists:programs,id',
             'recipient_name'    => 'nullable|string|max:255',
             'pic_name'          => 'required|string|max:255',
             'pic_phone'         => 'nullable|string|max:50',
@@ -656,7 +677,7 @@ class AdminController extends Controller
 
     public function exportDistributions(Request $request)
     {
-        $query = Distribution::with('campaign');
+        $query = Distribution::with(['program', 'campaign']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -703,7 +724,7 @@ class AdminController extends Controller
                     $index + 1,
                     $row->distribution_code ?: ('DIS-' . $row->id),
                     $row->distribution_date ? $row->distribution_date->format('Y-m-d') : '',
-                    $row->campaign ? $row->campaign->title : 'Program Umum',
+                    $row->program ? $row->program->name : ($row->campaign ? $row->campaign->title : 'Program Umum'),
                     $row->amount,
                     $row->pic_name ?: $row->recipient_name,
                     $row->pic_phone ?: '-',

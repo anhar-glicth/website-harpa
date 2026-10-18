@@ -36,6 +36,11 @@ class Distribution extends Model
         'distribution_date' => 'date',
     ];
 
+    public function program()
+    {
+        return $this->belongsTo(Program::class, 'program_id');
+    }
+
     public function campaign()
     {
         return $this->belongsTo(Campaign::class, 'program_id');

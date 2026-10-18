@@ -17,4 +17,9 @@ class Program extends Model
     {
         return $this->belongsTo(ProgramGroup::class, 'program_group_id');
     }
+
+    public function distributions()
+    {
+        return $this->hasMany(Distribution::class, 'program_id');
+    }
 }
