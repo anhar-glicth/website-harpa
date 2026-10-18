@@ -54,6 +54,24 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -129,6 +147,8 @@
     authorizedSigImage: localStorage.getItem('receipt_authorized_sig_image') || '',
     showStamp: localStorage.getItem('receipt_show_stamp') !== 'false',
     customStampImage: localStorage.getItem('receipt_custom_stamp') || '',
+    stampSize: parseInt(localStorage.getItem('receipt_stamp_size') || '105'),
+    sigSize: parseInt(localStorage.getItem('receipt_sig_size') || '75'),
 
     handleLogoUpload(e) {
         const file = e.target.files[0];
@@ -189,6 +209,8 @@
         localStorage.setItem('receipt_authorized_title', this.authorizedTitle);
         localStorage.setItem('receipt_authorized_sig_type', this.authorizedSigType);
         localStorage.setItem('receipt_show_stamp', this.showStamp);
+        localStorage.setItem('receipt_stamp_size', this.stampSize);
+        localStorage.setItem('receipt_sig_size', this.sigSize);
         this.showCustomModal = false;
     },
     resetToDefault() {
@@ -203,6 +225,8 @@
         this.authorizedSigImage = '';
         this.showStamp = true;
         this.customStampImage = '';
+        this.stampSize = 105;
+        this.sigSize = 75;
         localStorage.removeItem('receipt_logo');
         localStorage.removeItem('receipt_receiver_name');
         localStorage.removeItem('receipt_receiver_title');
@@ -214,6 +238,8 @@
         localStorage.removeItem('receipt_authorized_sig_image');
         localStorage.removeItem('receipt_show_stamp');
         localStorage.removeItem('receipt_custom_stamp');
+        localStorage.removeItem('receipt_stamp_size');
+        localStorage.removeItem('receipt_sig_size');
     }
 }" class="p-4 sm:p-8 flex flex-col items-center min-h-screen">
 
@@ -474,18 +500,18 @@
                         
                         {{-- Signature 1: Received By --}}
                         <div class="flex flex-col items-center justify-end">
-                            <div class="h-14 flex items-center justify-center relative w-full">
+                            <div class="flex items-center justify-center relative w-full" :style="`height: ${sigSize}px;`">
                                 <template x-if="receiverSigType === 'digital'">
-                                    <svg class="w-24 h-12 text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
+                                    <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M10 38 C 20 20, 25 10, 30 25 C 35 40, 40 5, 45 35 C 50 35, 60 25, 75 28 C 85 30, 90 20, 95 35" stroke-linecap="round"/>
                                         <path d="M22 28 L 65 30" stroke-width="1.5"/>
                                     </svg>
                                 </template>
                                 <template x-if="receiverSigType === 'image' && receiverSigImage">
-                                    <img :src="receiverSigImage" class="max-h-14 max-w-full object-contain" alt="TTD Penerima">
+                                    <img :src="receiverSigImage" :style="`max-height: ${sigSize}px;`" class="max-w-full object-contain" alt="TTD Penerima">
                                 </template>
                                 <template x-if="receiverSigType === 'blank'">
-                                    <div class="h-14 w-full"></div>
+                                    <div :style="`height: ${sigSize}px;`" class="w-full"></div>
                                 </template>
                             </div>
                             <div class="w-full border-t border-slate-400 pt-1 mt-1">
@@ -502,7 +528,8 @@
                         <div class="flex flex-col items-center justify-end relative">
                             <!-- Official Stamp Watermark behind signature -->
                             <template x-if="showStamp">
-                                <div class="absolute -top-3 right-0 w-16 h-16 pointer-events-none opacity-85 transform -rotate-12 z-20">
+                                <div class="absolute -top-7 -right-2 sm:-right-4 pointer-events-none opacity-85 transform -rotate-12 z-20"
+                                     :style="`width: ${stampSize}px; height: ${stampSize}px;`">
                                     <template x-if="customStampImage">
                                         <img :src="customStampImage" class="w-full h-full object-contain" alt="Stempel">
                                     </template>
@@ -518,18 +545,18 @@
                                 </div>
                             </template>
 
-                            <div class="h-14 flex items-center justify-center relative z-10 w-full">
+                            <div class="flex items-center justify-center relative z-10 w-full" :style="`height: ${sigSize}px;`">
                                 <template x-if="authorizedSigType === 'digital'">
-                                    <svg class="w-24 h-12 text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
+                                    <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M15 40 C 25 15, 30 8, 38 20 C 45 32, 50 12, 60 28 C 70 35, 80 18, 90 25" stroke-linecap="round"/>
                                         <path d="M10 32 L 85 24" stroke-width="1.5"/>
                                     </svg>
                                 </template>
                                 <template x-if="authorizedSigType === 'image' && authorizedSigImage">
-                                    <img :src="authorizedSigImage" class="max-h-14 max-w-full object-contain" alt="TTD Pimpinan">
+                                    <img :src="authorizedSigImage" :style="`max-height: ${sigSize}px;`" class="max-w-full object-contain" alt="TTD Pimpinan">
                                 </template>
                                 <template x-if="authorizedSigType === 'blank'">
-                                    <div class="h-14 w-full"></div>
+                                    <div :style="`height: ${sigSize}px;`" class="w-full"></div>
                                 </template>
                             </div>
                             <div class="w-full border-t border-slate-400 pt-1 mt-1 relative z-10">
@@ -568,13 +595,14 @@
         
         <div @click.away="showCustomModal = false" class="bg-white border border-slate-100 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 my-auto max-h-[92vh] overflow-y-auto">
             
+            {{-- Modal Header --}}
             <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm">
                         <i class="fa-solid fa-pen-ruler"></i>
                     </div>
                     <div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-900">Kustomisasi Logo & TTD Kwitansi</h3>
+                        <h3 class="text-base sm:text-lg font-black text-slate-900">Kustomisasi Kwitansi (Money Receipt)</h3>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Perubahan ini otomatis diterapkan ke seluruh kwitansi</p>
                     </div>
                 </div>
@@ -583,137 +611,227 @@
                 </button>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-4">
 
                 <!-- 1. PENGATURAN LOGO -->
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
+                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/70 space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                            <i class="fa-solid fa-image text-primary-600"></i> Logo Kwitansi
+                            <i class="fa-solid fa-image text-sky-600"></i> Logo Kwitansi
                         </span>
-                        <button type="button" @click="receiptLogo = '{{ asset('images/logo.jpeg') }}'; localStorage.removeItem('receipt_logo');" class="text-[10px] font-bold text-primary-600 hover:underline">
-                            Reset ke Logo Amal Abadi
+                        <button type="button" @click="receiptLogo = '{{ asset('images/logo.jpeg') }}'; localStorage.removeItem('receipt_logo');" class="text-[10px] font-bold text-sky-600 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-left"></i> Reset ke Logo Amal Abadi
                         </button>
                     </div>
                     <div class="flex flex-col sm:flex-row items-center gap-4">
                         <div class="h-16 w-36 bg-white p-2 rounded-xl border border-slate-200 flex items-center justify-center shadow-xs shrink-0">
                             <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="max-h-full max-w-full object-contain" alt="Logo">
                         </div>
-                        <div class="flex-1 space-y-1.5 w-full">
-                            <label class="block text-[10px] font-bold uppercase text-slate-500">Upload Logo Baru (Opsional)</label>
-                            <input type="file" @change="handleLogoUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer">
-                            <span class="text-[9px] text-slate-400 block">Format: PNG, JPG, JPEG. Rekomendasi PNG transparan.</span>
+                        <div class="flex-1 space-y-2 w-full">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <label class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span>Pilih Gambar Logo Baru</span>
+                                    <input type="file" @change="handleLogoUpload" accept="image/*" class="hidden">
+                                </label>
+                            </div>
+                            <span class="text-[9px] text-slate-400 block font-medium">Format didukung: PNG, JPG, JPEG (Disarankan PNG transparan).</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. PENGATURAN PENERIMA (RECEIVED BY) -->
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
+                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/70 space-y-3">
                     <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
                         <i class="fa-solid fa-user-check text-sky-600"></i> Penerima (Received By)
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Nama Penerima</label>
-                            <input type="text" x-model="receiverName" placeholder="Nama Staff Penerima" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                            <input type="text" x-model="receiverName" placeholder="Nama Staff Penerima" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Label Jabatan</label>
-                            <input type="text" x-model="receiverTitle" placeholder="RECEIVED BY" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                            <input type="text" x-model="receiverTitle" placeholder="RECEIVED BY" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
                         </div>
                     </div>
 
                     <div class="pt-2">
                         <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Model Tanda Tangan Penerima</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <button type="button" @click="receiverSigType = 'digital'" :class="receiverSigType === 'digital' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                            <button type="button" @click="receiverSigType = 'digital'" 
+                                    :class="receiverSigType === 'digital' ? 'bg-sky-600 text-white border-sky-600 shadow-md shadow-sky-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
+                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
                                 <i class="fa-solid fa-signature mr-1"></i> TTD Digital
                             </button>
-                            <button type="button" @click="receiverSigType = 'image'" :class="receiverSigType === 'image' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                            <button type="button" @click="receiverSigType = 'image'" 
+                                    :class="receiverSigType === 'image' ? 'bg-sky-600 text-white border-sky-600 shadow-md shadow-sky-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
+                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
                                 <i class="fa-solid fa-upload mr-1"></i> Upload TTD
                             </button>
-                            <button type="button" @click="receiverSigType = 'blank'" :class="receiverSigType === 'blank' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                            <button type="button" @click="receiverSigType = 'blank'" 
+                                    :class="receiverSigType === 'blank' ? 'bg-sky-600 text-white border-sky-600 shadow-md shadow-sky-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
+                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
                                 <i class="fa-solid fa-pen-nib mr-1"></i> TTD Basah
                             </button>
                         </div>
                         <template x-if="receiverSigType === 'image'">
-                            <div class="pt-2 space-y-1.5">
-                                <input type="file" @change="handleReceiverSigUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer">
-                                <span class="text-[9px] text-slate-400 block">Upload foto tanda tangan penerima (PNG transparan disarankan).</span>
+                            <div class="pt-2 p-3 bg-white rounded-xl border border-sky-100 space-y-2 mt-2">
+                                <div class="flex items-center gap-3">
+                                    <template x-if="receiverSigImage">
+                                        <div class="h-10 w-24 border border-slate-200 rounded-lg p-1 bg-slate-50 flex items-center justify-center shrink-0">
+                                            <img :src="receiverSigImage" class="max-h-full max-w-full object-contain" alt="TTD">
+                                        </div>
+                                    </template>
+                                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span x-text="receiverSigImage ? 'Ganti Foto TTD' : 'Pilih Foto Tanda Tangan'"></span>
+                                        <input type="file" @change="handleReceiverSigUpload" accept="image/*" class="hidden">
+                                    </label>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-medium">Unggah foto atau scan tanda tangan penerima (PNG transparan disarankan).</p>
                             </div>
                         </template>
                     </div>
                 </div>
 
-                <!-- 3. PENGATURAN AUTHORIZED SIGNATURE (PIMPINAN / PEJABAT) -->
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
+                <!-- 3. PENGATURAN AUTHORIZED SIGNATURE (PIMPINAN / PEJABAT) & STEMPEL -->
+                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/70 space-y-3">
                     <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
                         <i class="fa-solid fa-stamp text-indigo-600"></i> Pimpinan (Authorized Signature) & Stempel
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Nama Pimpinan / Pejabat</label>
-                            <input type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                            <input type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Label Jabatan</label>
-                            <input type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20">
+                            <input type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
                         </div>
                     </div>
 
                     <div class="pt-2">
                         <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Model Tanda Tangan Pimpinan</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <button type="button" @click="authorizedSigType = 'digital'" :class="authorizedSigType === 'digital' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                            <button type="button" @click="authorizedSigType = 'digital'" 
+                                    :class="authorizedSigType === 'digital' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
+                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
                                 <i class="fa-solid fa-signature mr-1"></i> TTD Digital
                             </button>
-                            <button type="button" @click="authorizedSigType = 'image'" :class="authorizedSigType === 'image' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                            <button type="button" @click="authorizedSigType = 'image'" 
+                                    :class="authorizedSigType === 'image' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
+                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
                                 <i class="fa-solid fa-upload mr-1"></i> Upload TTD
                             </button>
-                            <button type="button" @click="authorizedSigType = 'blank'" :class="authorizedSigType === 'blank' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'" class="p-2.5 rounded-xl border text-[10px] font-black uppercase text-center transition-all">
+                            <button type="button" @click="authorizedSigType = 'blank'" 
+                                    :class="authorizedSigType === 'blank' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
+                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
                                 <i class="fa-solid fa-pen-nib mr-1"></i> TTD Basah
                             </button>
                         </div>
                         <template x-if="authorizedSigType === 'image'">
-                            <div class="pt-2 space-y-1.5">
-                                <input type="file" @change="handleAuthorizedSigUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer">
-                                <span class="text-[9px] text-slate-400 block">Upload foto tanda tangan pimpinan (PNG transparan disarankan).</span>
+                            <div class="pt-2 p-3 bg-white rounded-xl border border-indigo-100 space-y-2 mt-2">
+                                <div class="flex items-center gap-3">
+                                    <template x-if="authorizedSigImage">
+                                        <div class="h-10 w-24 border border-slate-200 rounded-lg p-1 bg-slate-50 flex items-center justify-center shrink-0">
+                                            <img :src="authorizedSigImage" class="max-h-full max-w-full object-contain" alt="TTD">
+                                        </div>
+                                    </template>
+                                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span x-text="authorizedSigImage ? 'Ganti Foto TTD' : 'Pilih Foto Tanda Tangan'"></span>
+                                        <input type="file" @change="handleAuthorizedSigUpload" accept="image/*" class="hidden">
+                                    </label>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-medium">Unggah foto atau scan tanda tangan pimpinan (PNG transparan disarankan).</p>
                             </div>
                         </template>
                     </div>
 
                     <!-- Stempel Settings -->
-                    <div class="pt-2 border-t border-slate-200/80 space-y-2">
-                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox" x-model="showStamp" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                            <span class="text-xs font-bold text-slate-700">Tampilkan Stempel Resmi Yayasan</span>
+                    <div class="pt-3 border-t border-slate-200/80 space-y-2">
+                        <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" x-model="showStamp" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <span class="text-xs font-bold text-slate-800">Tampilkan Stempel Resmi Yayasan</span>
                         </label>
                         <template x-if="showStamp">
-                            <div class="pt-1 space-y-1.5">
-                                <label class="block text-[10px] font-bold uppercase text-slate-500">Upload Stempel Sendiri (Opsional, kosongkan untuk stempel digital bawaan)</label>
-                                <input type="file" @change="handleStampUpload" accept="image/*" class="w-full text-xs text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
-                                <template x-if="customStampImage">
-                                    <button type="button" @click="customStampImage = ''; localStorage.removeItem('receipt_custom_stamp');" class="text-[10px] font-bold text-rose-600 hover:underline">
-                                        Hapus stempel custom (Gunakan stempel digital standar)
-                                    </button>
-                                </template>
+                            <div class="pt-1 p-3 bg-white rounded-xl border border-indigo-100 space-y-2 mt-1">
+                                <div class="flex items-center gap-3 flex-wrap">
+                                    <template x-if="customStampImage">
+                                        <div class="h-12 w-12 border border-slate-200 rounded-lg p-1 bg-slate-50 flex items-center justify-center shrink-0">
+                                            <img :src="customStampImage" class="max-h-full max-w-full object-contain" alt="Stempel Custom">
+                                        </div>
+                                    </template>
+                                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <span x-text="customStampImage ? 'Ganti Stempel Custom' : 'Upload Stempel Custom (Opsional)'"></span>
+                                        <input type="file" @change="handleStampUpload" accept="image/*" class="hidden">
+                                    </label>
+                                    <template x-if="customStampImage">
+                                        <button type="button" @click="customStampImage = ''; localStorage.removeItem('receipt_custom_stamp');" class="text-[10px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 transition-colors">
+                                            <i class="fa-solid fa-trash-can"></i> Hapus Stempel Custom
+                                        </button>
+                                    </template>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-medium">Jika tidak diupload, sistem otomatis menampilkan Stempel Digital Resmi Amal Abadi.</p>
                             </div>
                         </template>
+                    </div>
+
+                    <!-- Slider Ukuran Stempel & Tanda Tangan -->
+                    <div class="pt-3 border-t border-slate-200/80">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-stamp text-indigo-600"></i> Ukuran Stempel
+                                    </label>
+                                    <span class="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[11px] font-black" x-text="stampSize + ' px'"></span>
+                                </div>
+                                <input type="range" min="65" max="140" step="5" x-model="stampSize" class="w-full accent-indigo-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
+                                <div class="flex justify-between text-[9px] text-slate-400 font-bold">
+                                    <span>Kecil (65px)</span>
+                                    <span>Standar (105px)</span>
+                                    <span>Besar (140px)</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-signature text-sky-600"></i> Ukuran TTD
+                                    </label>
+                                    <span class="px-2 py-0.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-[11px] font-black" x-text="sigSize + ' px'"></span>
+                                </div>
+                                <input type="range" min="50" max="115" step="5" x-model="sigSize" class="w-full accent-sky-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
+                                <div class="flex justify-between text-[9px] text-slate-400 font-bold">
+                                    <span>Kecil (50px)</span>
+                                    <span>Standar (75px)</span>
+                                    <span>Besar (115px)</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100">
-                <button type="button" @click="resetToDefault()" class="text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors">
-                    <i class="fa-solid fa-rotate-left mr-1"></i> Reset ke Standar Bawaan
+            {{-- Modal Footer --}}
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-5 border-t border-slate-200/80">
+                <button type="button" @click="resetToDefault()" class="text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Reset ke Standar Bawaan</span>
                 </button>
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <button type="button" @click="showCustomModal = false" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+                    <button type="button" @click="showCustomModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-all active:scale-95">
                         Tutup
                     </button>
-                    <button type="button" @click="savePreferences()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-indigo-500/20 transition-all">
-                        <i class="fa-solid fa-check mr-1.5"></i> Terapkan ke Seluruh Kwitansi
+                    <button type="button" @click="savePreferences()" 
+                            style="background: linear-gradient(135deg, #0284c7 0%, #4338ca 100%); color: #ffffff;"
+                            class="px-6 py-2.5 rounded-xl text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 active:scale-95">
+                        <i class="fa-solid fa-check text-sm text-white"></i>
+                        <span class="text-white">Terapkan ke Seluruh Kwitansi</span>
                     </button>
                 </div>
             </div>
