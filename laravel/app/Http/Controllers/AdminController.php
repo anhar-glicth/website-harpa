@@ -766,8 +766,8 @@ class AdminController extends Controller
         $header = fgetcsv($handle);
         
         $importedCount = 0;
-        $firstCampaign = Campaign::where('status', 'approved')->first();
-        $defaultCampaignId = $firstCampaign ? $firstCampaign->id : 1;
+        $firstProgram = Program::where('status', 'Aktif')->first();
+        $defaultProgramId = $firstProgram ? $firstProgram->id : null;
 
         while (($row = fgetcsv($handle)) !== false) {
             if (empty($row) || count($row) < 2) continue;
@@ -784,7 +784,7 @@ class AdminController extends Controller
 
             Distribution::create([
                 'distribution_code' => $code,
-                'program_id'        => $defaultCampaignId,
+                'program_id'        => $defaultProgramId,
                 'recipient_name'    => $pic,
                 'pic_name'          => $pic,
                 'pic_phone'         => $phone,
