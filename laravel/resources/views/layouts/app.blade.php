@@ -155,25 +155,25 @@
     @endphp
 
     @if(!$isDashboardOrAdmin)
-    <!-- Premium Floating Navbar -->
-    <header x-data="{ open: false }" class="sticky top-0 z-[1050] w-full px-3 sm:px-6 lg:px-8 pt-2.5 sm:pt-4">
-        <nav class="max-w-7xl mx-auto bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl sm:rounded-3xl shadow-sm px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between transition-all duration-300">
+    <!-- Full-Width Modern Header (Non-Floating) -->
+    <header x-data="{ open: false, scrolled: false }" x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 15 })" class="sticky top-0 z-[1050] w-full bg-white/95 backdrop-blur-xl border-b border-slate-200/80 transition-all duration-300" :class="scrolled ? 'shadow-md py-2.5 sm:py-3' : 'shadow-xs py-3 sm:py-4'">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <!-- Logo & Brand -->
             <a href="{{ route('home') }}" class="flex items-center space-x-2 group">
-                <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300" alt="Amal Abadi">
+                <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300" alt="Yayasan Harpa Indonesia Madani">
             </a>
 
             <!-- Desktop Menu Links -->
             <div class="hidden md:flex items-center space-x-1 font-bold text-xs uppercase tracking-wider text-slate-500">
-                <a href="{{ route('home') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700' : '' }}">Home</a>
-                <a href="{{ route('campaigns.index') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700' : '' }}">Kampanye</a>
-                <a href="{{ route('zakat.index') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700' : '' }}">Zakat</a>
-                <a href="{{ route('prayers.index') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700' : '' }}">Doa</a>
-                <a href="{{ route('news') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700' : '' }}">Berita</a>
+                <a href="{{ route('home') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Home</a>
+                <a href="{{ route('campaigns.index') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Kampanye</a>
+                <a href="{{ route('zakat.index') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Zakat</a>
+                <a href="{{ route('prayers.index') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Doa</a>
+                <a href="{{ route('news') }}" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Berita</a>
                 
                 <!-- Dropdown Menu Lainnya -->
                 <div x-data="{ openLainnya: false }" class="relative">
-                    <button @click="openLainnya = !openLainnya" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 flex items-center space-x-1 outline-none">
+                    <button @click="openLainnya = !openLainnya" class="px-4 py-2 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 flex items-center space-x-1 outline-none">
                         <span>Lainnya</span>
                         <i class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200" :class="openLainnya ? 'rotate-180' : ''"></i>
                     </button>
@@ -248,7 +248,7 @@
                 @else
                     <!-- Guest Buttons -->
                     <button @click="loginOpen = true; registerOpen = false" class="text-xs font-bold uppercase tracking-widest text-slate-600 hover:text-primary-600 px-4 py-2 transition-colors">Login</button>
-                    <button @click="registerOpen = true; loginOpen = false" class="bg-primary-600 text-white text-xs font-black uppercase tracking-widest px-6 py-3 rounded-2xl hover:bg-primary-700 shadow-lg shadow-primary-600/10 hover:shadow-primary-600/20 transition-all duration-300">Daftar</button>
+                    <button @click="registerOpen = true; loginOpen = false" class="bg-primary-600 text-white text-xs font-black uppercase tracking-widest px-6 py-2.5 rounded-xl hover:bg-primary-700 shadow-md shadow-primary-600/20 hover:shadow-primary-600/30 transition-all duration-300">Daftar</button>
                 @endauth
             </div>
 
@@ -264,14 +264,14 @@
         <div x-show="open" 
              x-cloak
              x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 -translate-y-3"
+             x-transition:enter-start="opacity-0 -translate-y-2"
              x-transition:enter-end="opacity-100 translate-y-0"
              x-transition:leave="transition ease-in duration-150"
              x-transition:leave-start="opacity-100 translate-y-0"
-             x-transition:leave-end="opacity-0 -translate-y-3"
+             x-transition:leave-end="opacity-0 -translate-y-2"
              @click.away="open = false" 
              style="display: none;" 
-             class="md:hidden mt-2 max-w-7xl mx-auto bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto">
+             class="md:hidden w-full bg-white border-b border-slate-200/90 px-5 sm:px-6 py-5 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto">
             <div class="flex flex-col space-y-1.5 font-bold text-xs uppercase tracking-wider text-slate-600">
                 <a href="{{ route('home') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
                     <i class="fa-solid fa-house mr-2 text-slate-400"></i> Home
