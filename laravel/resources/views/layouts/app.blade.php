@@ -519,7 +519,7 @@
             <div class="lg:col-span-4 space-y-4">
                 <div class="flex items-center gap-3">
                     <div class="inline-block bg-white p-2 rounded-2xl shadow-sm shrink-0">
-                        <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 w-auto object-contain" alt="Yayasan Harpa Indonesia Madani">
+                        <img src="{{ asset('images/logo.png') }}?v=2" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpeg') }}';" class="h-10 w-auto object-contain" alt="Yayasan Harpa Indonesia Madani">
                     </div>
                     <div>
                         <h3 class="font-montserrat font-black text-sm uppercase text-white leading-tight">Yayasan Harpa</h3>
