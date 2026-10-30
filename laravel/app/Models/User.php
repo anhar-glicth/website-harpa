@@ -95,12 +95,18 @@ class User extends Authenticatable
     public const ROLE_PROGRAM_MANAGER = 'program_manager';
     public const ROLE_CRM_STAFF = 'crm_staff';
     public const ROLE_FIELD_WORKER = 'field_worker';
+    public const ROLE_MARKETING = 'marketing';
     public const ROLE_USER = 'user';
 
     // Role helper methods
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isMarketing(): bool
+    {
+        return $this->role === self::ROLE_MARKETING;
     }
 
     public function isOperator(): bool
@@ -141,6 +147,7 @@ class User extends Authenticatable
             self::ROLE_FINANCE,
             self::ROLE_PROGRAM_MANAGER,
             self::ROLE_CRM_STAFF,
+            self::ROLE_MARKETING,
         ]);
     }
 
@@ -153,6 +160,7 @@ class User extends Authenticatable
             self::ROLE_PROGRAM_MANAGER => 'Manager Program',
             self::ROLE_CRM_STAFF => 'Staff CRM & Telemarketing',
             self::ROLE_FIELD_WORKER => 'Petugas Lapangan',
+            self::ROLE_MARKETING => 'Staff Marketing & Meta Ads',
             default => 'Donatur',
         };
     }
@@ -184,6 +192,9 @@ class User extends Authenticatable
                 'prospect_types', 'prospect_responses', 'targets', 'donors_list', 'donors_dashboard',
                 'prospects_list', 'potential_donors', 'prospects_dashboard', 'target_vs_achievement',
                 'rfm_dashboard', 'attendance', 'tasks'
+            ]),
+            self::ROLE_MARKETING => in_array($menuKey, [
+                'dashboard', 'marketing_dashboard', 'marketing_input', 'analytics', 'campaigns', 'attendance', 'tasks'
             ]),
             default => false,
         };

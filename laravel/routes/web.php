@@ -8,6 +8,7 @@ use App\Http\Controllers\FieldController;
 use App\Http\Controllers\DonorDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Harpa\HarpaDataController;
+use App\Http\Controllers\MarketingController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -210,6 +211,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/settings', [HarpaDataController::class, 'updateSettings'])->name('settings.update');
     });
 
+    // Marketing & Meta Ads Routes (Super Admin & Staff Marketing)
+    Route::prefix('admin/marketing')->name('admin.marketing.')->group(function () {
+        Route::get('/dashboard', [MarketingController::class, 'dashboard'])->name('dashboard');
+        Route::get('/ads', [MarketingController::class, 'index'])->name('index');
+        Route::get('/ads/create', [MarketingController::class, 'create'])->name('create');
+        Route::post('/ads/store', [MarketingController::class, 'store'])->name('store');
+        Route::get('/ads/{id}/edit', [MarketingController::class, 'edit'])->name('edit');
+        Route::put('/ads/{id}/update', [MarketingController::class, 'update'])->name('update');
+        Route::delete('/ads/{id}/delete', [MarketingController::class, 'destroy'])->name('destroy');
+        Route::get('/ads/export', [MarketingController::class, 'export'])->name('export');
+    });
+
     // Super Admin Strictly Protected Routes (Kelola Staff, Web Settings, Master Karyawan, Evaluasi Kinerja)
     Route::middleware(['superadmin'])->group(function () {
         Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
@@ -269,6 +282,8 @@ Route::get('/init-roles', function () {
         ['name' => 'Staff CRM Amal Abadi', 'username' => 'crm_abadi', 'email' => 'crm@abadi-ntb.com', 'role' => 'crm_staff'],
         ['name' => 'Siti Admin Data Entry', 'username' => 'operator', 'email' => 'operator@humanity.org', 'role' => 'operator'],
         ['name' => 'Operator Amal Abadi', 'username' => 'operator_abadi', 'email' => 'operator@abadi-ntb.com', 'role' => 'operator'],
+        ['name' => 'Fadli Staff Marketing', 'username' => 'marketing', 'email' => 'marketing@humanity.org', 'role' => 'marketing'],
+        ['name' => 'Marketing Amal Abadi', 'username' => 'marketing_abadi', 'email' => 'marketing@abadi-ntb.com', 'role' => 'marketing'],
         ['name' => 'Ahmad Donatur', 'username' => 'donatur', 'email' => 'donatur@humanity.org', 'role' => 'user'],
         ['name' => 'Donatur Amal Abadi', 'username' => 'donatur_abadi', 'email' => 'donatur@abadi-ntb.com', 'role' => 'user'],
     ];

@@ -426,6 +426,41 @@
         </div>
     </div>
 
+    <!-- 4.6. MARKETING & META ADS GROUP -->
+    @if(Auth::user()->canAccessMenu('marketing_dashboard') || Auth::user()->canAccessMenu('marketing_input'))
+    <div x-data="{ isOpen: {{ str_starts_with($active ?? '', 'marketing_') ? 'true' : 'false' }} }" class="border-t border-slate-100">
+        <div @click="isOpen = !isOpen" class="bg-gradient-to-r from-blue-700 to-indigo-800 px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:from-blue-800 hover:to-indigo-900 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-brands fa-meta text-blue-300"></i> Marketing & Meta Ads
+            </span>
+            <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
+        </div>
+        <div x-show="isOpen" x-collapse class="p-3 space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+            @if(Auth::user()->canAccessMenu('marketing_dashboard'))
+            <!-- Dashboard & Analisa Ads -->
+            <a href="{{ route('admin.marketing.dashboard') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'marketing_dashboard' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'marketing_dashboard' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-chart-line text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Dashboard & Analisa</span>
+            </a>
+            @endif
+
+            @if(Auth::user()->canAccessMenu('marketing_input'))
+            <!-- Input & Data Meta Ads -->
+            <a href="{{ route('admin.marketing.index') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ in_array($active ?? '', ['marketing_index', 'marketing_create', 'marketing_edit']) ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ in_array($active ?? '', ['marketing_index', 'marketing_create', 'marketing_edit']) ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-brands fa-meta text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Data Iklan & Input</span>
+            </a>
+            @endif
+        </div>
+    </div>
+    @endif
+
     <!-- 5. TRANSACTION MANAGEMENT GROUP -->
     @if(Auth::user()->canAccessMenu('donors_list') || Auth::user()->canAccessMenu('transactions_list') || Auth::user()->canAccessMenu('prospects_list') || Auth::user()->canAccessMenu('potential_donors') || Auth::user()->canAccessMenu('transactions_dashboard') || Auth::user()->canAccessMenu('donors_dashboard') || Auth::user()->canAccessMenu('prospects_dashboard') || Auth::user()->canAccessMenu('target_vs_achievement') || Auth::user()->canAccessMenu('rfm_dashboard'))
     <div x-data="{ isOpen: {{ in_array($active ?? '', ['donors_list', 'transactions_list', 'prospects_list', 'potential_donors', 'transactions_dashboard', 'donors_dashboard', 'prospects_dashboard', 'target_vs_achievement', 'rfm_dashboard']) ? 'true' : 'false' }} }" class="border-t border-slate-100">
