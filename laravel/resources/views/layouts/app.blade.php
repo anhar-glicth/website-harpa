@@ -514,55 +514,109 @@
 
     <!-- Premium Footer -->
     <footer class="bg-[#063f5c] text-slate-200 pt-16 pb-8 px-6 sm:px-10 mt-20 border-t border-[#04324a]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-            <!-- Brand & Tagline -->
-            <div class="space-y-4">
-                <div class="inline-block bg-white p-2.5 rounded-2xl shadow-sm">
-                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 w-auto object-contain" alt="Amal Abadi">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-12">
+            <!-- Brand & Tagline & Legalitas -->
+            <div class="lg:col-span-4 space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="inline-block bg-white p-2 rounded-2xl shadow-sm shrink-0">
+                        <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 w-auto object-contain" alt="Yayasan Harpa Indonesia Madani">
+                    </div>
+                    <div>
+                        <h3 class="font-montserrat font-black text-sm uppercase text-white leading-tight">Yayasan Harpa</h3>
+                        <p class="text-[10px] font-black text-[#f7ad1a] tracking-widest uppercase">Indonesia Madani</p>
+                    </div>
                 </div>
                 <p class="text-xs font-medium leading-relaxed text-slate-300">
-                    Menghubungkan kebaikan hati Anda untuk mendukung kehidupan sesama yang membutuhkan secara transparan dan tepercaya.
+                    Yayasan Harpa Indonesia Madani merupakan lembaga sekaligus Platform Crowdfunding yang mendukung berbagai Program Kemanusiaan di Luar dan Dalam Negeri.
                 </p>
+
+                <!-- Legalitas Kemenkumham Badge -->
+                <div class="p-3.5 rounded-2xl bg-[#04324a] border border-[#0e567d]/40 space-y-1">
+                    <div class="flex items-center gap-2 text-[#f7ad1a] text-[10px] font-black uppercase tracking-wider">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                        <span>Legalitas Terdaftar Resmi</span>
+                    </div>
+                    <p class="text-[10px] text-slate-200 leading-snug">
+                        Terdaftar di Kementerian Hukum dan HAM RI<br>
+                        <span class="font-bold text-white tracking-wide">SK No. AHU-0017523.AH.01.04.Tahun 2025</span>
+                    </p>
+                </div>
+
                 <!-- Social media -->
-                <div class="flex space-x-3 pt-2">
-                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-instagram text-sm"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-facebook-f text-sm"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-twitter text-sm"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-youtube text-sm"></i></a>
+                <div class="flex space-x-2.5 pt-1">
+                    <a href="https://wa.me/6287748030166" target="_blank" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="Instagram"><i class="fa-brands fa-instagram text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="Facebook"><i class="fa-brands fa-facebook-f text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="YouTube"><i class="fa-brands fa-youtube text-sm"></i></a>
                 </div>
             </div>
 
             <!-- Links: Navigation -->
-            <div class="space-y-4">
-                <h4 class="text-xs font-black uppercase tracking-widest text-white">Navigasi</h4>
-                <ul class="space-y-2.5 text-xs font-bold uppercase tracking-wider">
+            <div class="lg:col-span-2 space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#f7ad1a]"></span> Navigasi
+                </h4>
+                <ul class="space-y-2 text-xs font-bold uppercase tracking-wider">
                     <li><a href="{{ route('home') }}" class="hover:text-[#f7ad1a] transition-colors">Home</a></li>
                     <li><a href="{{ route('campaigns.index') }}" class="hover:text-[#f7ad1a] transition-colors">Daftar Kampanye</a></li>
                     <li><a href="{{ route('zakat.index') }}" class="hover:text-[#f7ad1a] transition-colors">Kalkulator Zakat</a></li>
                     <li><a href="{{ route('prayers.index') }}" class="hover:text-[#f7ad1a] transition-colors">Doa Bersama</a></li>
-                </ul>
-            </div>
-
-            <!-- Links: Legal / Support -->
-            <div class="space-y-4">
-                <h4 class="text-xs font-black uppercase tracking-widest text-white">Dukungan</h4>
-                <ul class="space-y-2.5 text-xs font-bold uppercase tracking-wider">
+                    <li><a href="{{ route('news') }}" class="hover:text-[#f7ad1a] transition-colors">Kabar Penyaluran</a></li>
                     <li><a href="{{ route('about') }}" class="hover:text-[#f7ad1a] transition-colors">Tentang Kami</a></li>
-                    <li><a href="{{ route('contact') }}" class="hover:text-[#f7ad1a] transition-colors">Hubungi Kami</a></li>
                     <li><a href="{{ route('volunteer') }}" class="hover:text-[#f7ad1a] transition-colors">Gabung Relawan</a></li>
                 </ul>
             </div>
 
+            <!-- Kontak Info -->
+            <div class="lg:col-span-3 space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#f7ad1a]"></span> Kontak Info
+                </h4>
+                <p class="text-[11px] text-slate-300 font-medium leading-relaxed">
+                    Silahkan hubungi kami dikontak berikut :
+                </p>
+                <ul class="space-y-3 text-xs text-slate-300 font-medium">
+                    <li>
+                        <a href="https://wa.me/6287748030166" target="_blank" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
+                            <i class="fa-brands fa-whatsapp text-sm text-[#f7ad1a] mt-0.5 shrink-0 group-hover:scale-110 transition-transform"></i>
+                            <span class="font-bold tracking-wide">+62 877-4803-0166</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:info@indonesiamadani.org" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
+                            <i class="fa-solid fa-envelope text-sm text-[#f7ad1a] mt-0.5 shrink-0 group-hover:scale-110 transition-transform"></i>
+                            <span class="break-all font-semibold">info@indonesiamadani.org</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://indonesiamadani.org" target="_blank" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
+                            <i class="fa-solid fa-globe text-sm text-[#f7ad1a] mt-0.5 shrink-0 group-hover:scale-110 transition-transform"></i>
+                            <span class="font-semibold">indonesiamadani.org</span>
+                        </a>
+                    </li>
+                    <li class="flex items-start gap-2.5 leading-relaxed pt-1">
+                        <i class="fa-solid fa-location-dot text-sm text-[#f7ad1a] mt-1 shrink-0"></i>
+                        <span class="text-[11px] text-slate-300 font-medium leading-relaxed">
+                            Jl. Panji Tilar Negara No. 150A, Tanjung Karang Permai, Kota Mataram, Nusa Tenggara Barat 83116
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
             <!-- Newsletter subscribe -->
-            <div class="space-y-4">
-                <h4 class="text-xs font-black uppercase tracking-widest text-white">Langganan Berita</h4>
+            <div class="lg:col-span-3 space-y-4">
+                <h4 class="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#f7ad1a]"></span> Langganan Berita
+                </h4>
                 <p class="text-xs font-medium leading-relaxed text-slate-300">
                     Dapatkan update berkala mengenai penyaluran donasi dan cerita dampak langsung dari lapangan.
                 </p>
-                <form action="{{ route('newsletter') }}" method="POST" class="flex gap-2">
+                <form action="{{ route('newsletter') }}" method="POST" class="space-y-2.5">
                     @csrf
-                    <input type="email" name="email" required placeholder="Email Anda" class="w-full bg-[#04324a] border border-[#032537] text-white rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#f7ad1a] font-bold transition-all">
-                    <button type="submit" class="bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black px-4 rounded-xl flex items-center justify-center transition-colors"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    <input type="email" name="email" required placeholder="Email Anda" class="w-full bg-[#04324a] border border-[#032537] text-white rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#f7ad1a] font-bold transition-all placeholder:text-slate-400">
+                    <button type="submit" class="w-full bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md shadow-black/10">
+                        <i class="fa-solid fa-paper-plane text-xs"></i> Langganan
+                    </button>
                 </form>
             </div>
         </div>
@@ -571,8 +625,8 @@
 
         <!-- Copyright -->
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center gap-4">
-            <p>Copyright &copy; 2026 Amal Abadi. All Rights Reserved.</p>
-            <p>Dikembangkan oleh <span class="text-[#f7ad1a]">velora.id</span></p>
+            <p>&copy; {{ date('Y') }} Yayasan Harpa Indonesia Madani. All Rights Reserved.</p>
+            <p>Platform Crowdfunding Kemanusiaan &bull; <a href="https://indonesiamadani.org" target="_blank" class="text-[#f7ad1a] hover:underline">indonesiamadani.org</a></p>
         </div>
     </footer>
 

@@ -26,10 +26,10 @@
       <div class="max-w-7xl mx-auto px-6 text-center space-y-4">
         <div class="flex items-center justify-center gap-3 grayscale opacity-40 mb-6">
            <img src="/logo-icon.png" class="w-6 h-6 object-contain" alt="Amal Abadi" />
-           <span class="text-xl font-black tracking-tighter text-slate-900 italic uppercase">Amal Abadi</span>
+           <span class="text-xl font-black tracking-tighter text-slate-900 italic uppercase">Yayasan Harpa Indonesia Madani</span>
         </div>
         <p class="text-[10px] md:text-sm font-bold text-slate-400 uppercase tracking-[0.3em]">
-          &copy; 2026 Amal Abadi. Semua Kebaikan Berawal dari Sini.
+          &copy; 2026 Yayasan Harpa Indonesia Madani. SK No. AHU-0017523.AH.01.04.Tahun 2025.
         </p>
       </div>
     </footer>

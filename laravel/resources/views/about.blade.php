@@ -10,7 +10,7 @@
             </h1>
             <div class="w-12 h-1.5 bg-primary-500 rounded-full"></div>
             <p class="text-slate-600 leading-relaxed font-semibold text-xs sm:text-sm">
-                Peduli Sesama adalah platform donasi digital modern yang dirancang untuk menghubungkan kebaikan hati para donatur dengan mereka yang membutuhkan secara transparan, cepat, dan aman. Kami berdedikasi penuh untuk menghadirkan perubahan positif nyata di tengah masyarakat melalui berbagai program kemanusiaan, pendidikan, kesehatan, dan dakwah syiar Islam.
+                <strong>Yayasan Harpa Indonesia Madani</strong> merupakan lembaga sekaligus Platform Crowdfunding yang mendukung berbagai Program Kemanusiaan di Luar dan Dalam Negeri. Terdaftar resmi di Kementerian Hukum dan HAM RI (SK No. AHU-0017523.AH.01.04.Tahun 2025), kami berdedikasi penuh untuk menghadirkan perubahan positif nyata di tengah masyarakat melalui program kemanusiaan, pendidikan, dan pemberdayaan umat secara amanah, cepat, dan 100% transparan.
             </p>
             <div class="bg-slate-50 border border-slate-100 p-6 rounded-3xl space-y-4">
                 <h3 class="font-montserrat font-black uppercase text-xs sm:text-sm tracking-wider text-slate-800">Prinsip Utama Kami</h3>

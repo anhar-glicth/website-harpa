@@ -23,8 +23,8 @@
                         <i class="fa-solid fa-phone text-lg"></i>
                     </div>
                     <div>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Telepon</span>
-                        <span class="text-sm font-bold text-slate-800 tracking-wider block mt-1">+6287816431029</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Telepon / WhatsApp</span>
+                        <a href="https://wa.me/6287748030166" target="_blank" class="text-sm font-bold text-slate-800 hover:text-primary-600 tracking-wider block mt-1 transition-colors">+62 877-4803-0166</a>
                     </div>
                 </div>
 
@@ -33,11 +33,33 @@
                     <div class="w-12 h-12 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-envelope text-lg"></i>
                     </div>
-                   
+                    <div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Alamat Email</span>
+                        <a href="mailto:info@indonesiamadani.org" class="text-sm font-bold text-slate-800 hover:text-primary-600 tracking-wider block mt-1 transition-colors">info@indonesiamadani.org</a>
+                    </div>
+                </div>
+
+                <!-- Website -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-globe text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Website Resmi</span>
+                        <a href="https://indonesiamadani.org" target="_blank" class="text-sm font-bold text-slate-800 hover:text-primary-600 tracking-wider block mt-1 transition-colors">indonesiamadani.org</a>
+                    </div>
                 </div>
 
                 <!-- Address -->
-              
+                <div class="flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid fa-location-dot text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Kantor Yayasan</span>
+                        <span class="text-xs font-semibold text-slate-700 leading-relaxed block mt-1">Jl. Panji Tilar Negara No. 150A, Tanjung Karang Permai, Kota Mataram, Nusa Tenggara Barat 83116</span>
+                    </div>
+                </div>
             </div>
         </div>
 
