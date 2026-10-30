@@ -60,12 +60,24 @@
                 extend: {
                     colors: {
                         primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
+                            50: '#edf5f9',
+                            100: '#d5e7f1',
+                            200: '#b0cfe1',
+                            300: '#81b1cd',
+                            400: '#4d8cb5',
+                            500: '#0e567d',
+                            600: '#063f5c',
+                            700: '#04324a',
+                            800: '#032537',
+                            900: '#021a28',
+                        },
+                        secondary: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            500: '#f7ad1a',
+                            600: '#df9408',
+                            700: '#b97307',
                         }
                     }
                 }
@@ -98,7 +110,7 @@
 
         /* Dot leaders style */
         .dotted-line {
-            border-bottom: 2px dotted #ea580c;
+            border-bottom: 2px dotted #f7ad1a;
             display: inline-block;
         }
 
@@ -343,7 +355,7 @@
 
             {{-- Top Right Decorative Corner Badge --}}
             <div class="absolute top-0 right-0 w-24 h-24 overflow-hidden pointer-events-none z-10">
-                <div class="absolute -top-10 -right-10 w-28 h-28 rounded-3xl bg-gradient-to-br from-[#1e3a8a] via-[#0284c7] to-[#00c0f3] shadow-md transform rotate-12"></div>
+                <div class="absolute -top-10 -right-10 w-28 h-28 rounded-3xl bg-gradient-to-br from-[#021a28] via-[#063f5c] to-[#063f5c] shadow-md transform rotate-12"></div>
             </div>
 
             <div class="relative z-10 p-8 sm:p-10 space-y-6">
@@ -359,7 +371,7 @@
 
                     {{-- Center Title: MONEY RECEIPT --}}
                     <div class="col-span-5 text-center">
-                        <h1 class="font-montserrat font-black text-2xl sm:text-3xl text-[#00c0f3] tracking-[0.18em] uppercase drop-shadow-sm">
+                        <h1 class="font-montserrat font-black text-2xl sm:text-3xl text-[#063f5c] tracking-[0.18em] uppercase drop-shadow-sm">
                             MONEY RECEIPT
                         </h1>
                     </div>
@@ -367,8 +379,8 @@
                     {{-- Top Right: Date Field --}}
                     <div class="col-span-3 text-right pr-6">
                         <div class="inline-flex items-baseline gap-2">
-                            <span class="font-montserrat font-black text-xs text-[#312e81]">Date</span>
-                            <span class="font-bold text-xs text-slate-900 border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2 min-w-[130px] text-center">
+                            <span class="font-montserrat font-black text-xs text-[#063f5c]">Date</span>
+                            <span class="font-bold text-xs text-slate-900 border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2 min-w-[130px] text-center">
                                 {{ $tglDonasi }}
                             </span>
                         </div>
@@ -380,7 +392,7 @@
                     
                     {{-- MR. No Row --}}
                     <div class="flex items-baseline gap-2">
-                        <span class="font-montserrat font-black text-xl sm:text-2xl text-[#312e81] tracking-tight">MR. No</span>
+                        <span class="font-montserrat font-black text-xl sm:text-2xl text-[#063f5c] tracking-tight">MR. No</span>
                         <span class="font-montserrat font-black text-lg sm:text-xl text-slate-900 tracking-wider px-2">
                             {{ $mrNo }}
                         </span>
@@ -388,10 +400,10 @@
 
                     {{-- Received with thanks from Row --}}
                     <div class="flex items-baseline gap-2 w-full">
-                        <span class="font-semibold text-xs text-[#312e81] whitespace-nowrap min-w-[165px]">
+                        <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap min-w-[165px]">
                             Received with thanks from
                         </span>
-                        <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2">
+                        <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
                             <span class="font-bold text-slate-900 text-sm tracking-wide">
                                 {{ $donorName }}
                             </span>
@@ -400,10 +412,10 @@
 
                     {{-- Amount in word Row --}}
                     <div class="flex items-baseline gap-2 w-full">
-                        <span class="font-semibold text-xs text-[#312e81] whitespace-nowrap min-w-[165px]">
+                        <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap min-w-[165px]">
                             Amount in word
                         </span>
-                        <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2">
+                        <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
                             <span class="font-bold text-slate-900 text-sm tracking-wide italic">
                                 {{ $amountInWords }}
                             </span>
@@ -417,29 +429,29 @@
                         <div class="sm:col-span-5 flex items-center gap-6">
                             {{-- By cash --}}
                             <label class="inline-flex items-center gap-2 cursor-default select-none">
-                                <span class="w-5 h-5 rounded border-2 border-[#ea580c] flex items-center justify-center bg-white">
+                                <span class="w-5 h-5 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-white">
                                     @if($isCash)
-                                        <i class="fa-solid fa-check text-[#ea580c] text-xs"></i>
+                                        <i class="fa-solid fa-check text-[#f7ad1a] text-xs"></i>
                                     @endif
                                 </span>
-                                <span class="font-semibold text-xs text-[#312e81]">By cash</span>
+                                <span class="font-semibold text-xs text-[#063f5c]">By cash</span>
                             </label>
 
                             {{-- Electronic Payment --}}
                             <label class="inline-flex items-center gap-2 cursor-default select-none">
-                                <span class="w-5 h-5 rounded border-2 border-[#ea580c] flex items-center justify-center bg-white shadow-sm">
+                                <span class="w-5 h-5 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-white shadow-sm">
                                     @if($isElectronic)
-                                        <i class="fa-solid fa-check text-[#ea580c] text-xs"></i>
+                                        <i class="fa-solid fa-check text-[#f7ad1a] text-xs"></i>
                                     @endif
                                 </span>
-                                <span class="font-semibold text-xs text-[#312e81]">Electronic Payment</span>
+                                <span class="font-semibold text-xs text-[#063f5c]">Electronic Payment</span>
                             </label>
                         </div>
 
                         {{-- Bank Field --}}
                         <div class="sm:col-span-4 flex items-baseline gap-2">
-                            <span class="font-semibold text-xs text-[#312e81] whitespace-nowrap">Bank</span>
-                            <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2">
+                            <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap">Bank</span>
+                            <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
                                 <span class="font-extrabold text-slate-900 text-xs tracking-wider uppercase">
                                     {{ $bankName }}
                                 </span>
@@ -448,8 +460,8 @@
 
                         {{-- Date Field --}}
                         <div class="sm:col-span-3 flex items-baseline gap-2">
-                            <span class="font-semibold text-xs text-[#312e81] whitespace-nowrap">Date</span>
-                            <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2 text-right">
+                            <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap">Date</span>
+                            <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2 text-right">
                                 <span class="font-bold text-slate-900 text-xs">
                                     {{ $tglDonasi }}
                                 </span>
@@ -460,10 +472,10 @@
 
                     {{-- For the purpose Row --}}
                     <div class="flex items-baseline gap-2 w-full pt-1">
-                        <span class="font-semibold text-xs text-[#312e81] whitespace-nowrap min-w-[165px]">
+                        <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap min-w-[165px]">
                             For the purpose
                         </span>
-                        <div class="flex-grow border-b-2 border-dotted border-[#ea580c] pb-0.5 px-2">
+                        <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
                             <span class="font-extrabold text-slate-900 text-sm tracking-wide">
                                 {{ $purpose }}
                             </span>
@@ -477,8 +489,8 @@
                     
                     {{-- Left: IDR Box / Amount Badge --}}
                     <div class="md:col-span-4 flex items-center gap-3">
-                        <span class="font-montserrat font-black text-xl text-[#312e81] tracking-tight">IDR</span>
-                        <div class="bg-gradient-to-r from-[#00c0f3] via-[#0284c7] to-[#3730a3] text-white px-6 py-2.5 rounded-2xl shadow-lg shadow-sky-100 flex items-center justify-center">
+                        <span class="font-montserrat font-black text-xl text-[#063f5c] tracking-tight">IDR</span>
+                        <div class="bg-gradient-to-r from-[#063f5c] via-[#063f5c] to-[#032537] text-white px-6 py-2.5 rounded-2xl shadow-lg shadow-sky-100 flex items-center justify-center">
                             <span class="font-montserrat font-black text-xl sm:text-2xl tracking-wide whitespace-nowrap">
                                 Rp.{{ number_format($amount, 0, ',', '.') }},-
                             </span>
@@ -487,7 +499,7 @@
 
                     {{-- Center: Doa dalam Bahasa Arab & Terjemahan --}}
                     <div class="md:col-span-4 text-center space-y-1.5 px-2">
-                        <p class="font-amiri font-bold text-base text-[#312e81] leading-relaxed dir-rtl" dir="rtl">
+                        <p class="font-amiri font-bold text-base text-[#063f5c] leading-relaxed dir-rtl" dir="rtl">
                             أَجَرَكَ اللهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ لَكَ فِيمَا أَبْقَيْتَ وَجَعَلَهُ لَكَ طَهُورًا
                         </p>
                         <p class="text-[9px] text-slate-600 leading-normal italic font-medium">
@@ -535,11 +547,11 @@
                                     </template>
                                     <template x-if="!customStampImage">
                                         <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
-                                            <circle cx="50" cy="50" r="46" stroke="#ea580c" stroke-width="3" stroke-dasharray="4 2"/>
-                                            <circle cx="50" cy="50" r="38" stroke="#00a8cc" stroke-width="2"/>
-                                            <text x="50" y="32" font-size="8" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="Montserrat">AMAL ABADI</text>
-                                            <text x="50" y="52" font-size="7" font-weight="bold" fill="#00a8cc" text-anchor="middle" font-family="Montserrat">VERIFIED</text>
-                                            <text x="50" y="70" font-size="8" font-weight="900" fill="#ea580c" text-anchor="middle" font-family="Montserrat">YAYASAN</text>
+                                            <circle cx="50" cy="50" r="46" stroke="#f7ad1a" stroke-width="3" stroke-dasharray="4 2"/>
+                                            <circle cx="50" cy="50" r="38" stroke="#063f5c" stroke-width="2"/>
+                                            <text x="50" y="32" font-size="8" font-weight="900" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">AMAL ABADI</text>
+                                            <text x="50" y="52" font-size="7" font-weight="bold" fill="#063f5c" text-anchor="middle" font-family="Montserrat">VERIFIED</text>
+                                            <text x="50" y="70" font-size="8" font-weight="900" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">YAYASAN</text>
                                         </svg>
                                     </template>
                                 </div>
@@ -576,7 +588,7 @@
             </div>
 
             {{-- 4. BOTTOM BANNER (Full Width Bar) --}}
-            <div class="w-full bg-gradient-to-r from-[#00a8cc] via-[#0284c7] to-[#312e81] py-2.5 px-8 sm:px-10 flex flex-wrap items-center justify-between text-white text-xs font-montserrat font-bold tracking-wide">
+            <div class="w-full bg-gradient-to-r from-[#063f5c] via-[#063f5c] to-[#063f5c] py-2.5 px-8 sm:px-10 flex flex-wrap items-center justify-between text-white text-xs font-montserrat font-bold tracking-wide">
                 <div class="flex items-center gap-2">
                     <span>www.amalabadi.org</span>
                 </div>
@@ -828,7 +840,7 @@
                         Tutup
                     </button>
                     <button type="button" @click="savePreferences()" 
-                            style="background: linear-gradient(135deg, #0284c7 0%, #4338ca 100%); color: #ffffff;"
+                            style="background: linear-gradient(135deg, #063f5c 0%, #04324a 100%); color: #ffffff;"
                             class="px-6 py-2.5 rounded-xl text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 active:scale-95">
                         <i class="fa-solid fa-check text-sm text-white"></i>
                         <span class="text-white">Terapkan ke Seluruh Kwitansi</span>

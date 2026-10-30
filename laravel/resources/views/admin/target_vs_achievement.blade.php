@@ -152,7 +152,7 @@
                 panKey: 'shift',
                 resetZoomButton: {
                     position: { align: 'right', x: -10, y: 10 },
-                    theme: { fill: '#1e293b', stroke: '#38bdf8', r: 6, style: { color: '#38bdf8', fontWeight: 'bold' } }
+                    theme: { fill: '#1e293b', stroke: '#0e567d', r: 6, style: { color: '#0e567d', fontWeight: 'bold' } }
                 }
             },
             title: { style: { color: '#ffffff', fontWeight: 'bold', fontSize: '15px' } },
@@ -171,7 +171,7 @@
             xAxis: { categories: months },
             yAxis: { title: { text: 'Nominal (Rp)' } },
             series: [
-                { name: 'Capaian', data: @json($chartCapaianData), color: '#38bdf8' },
+                { name: 'Capaian', data: @json($chartCapaianData), color: '#0e567d' },
                 { name: 'Target',  data: @json($chartTargetData), color: '#10b981' }
             ]
         }));

@@ -370,7 +370,7 @@
                     labels: rfmLabels,
                     datasets: [{
                         data: rfmData,
-                        backgroundColor: ['#f97316', '#29abe2', '#ea580c', '#0284c7', '#fed7aa', '#bae6fd']
+                        backgroundColor: ['#063f5c', '#f7ad1a', '#04324a', '#df9408', '#b0cfe1', '#fde68a']
                     }]
                 },
                 options: {

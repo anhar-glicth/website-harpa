@@ -25,7 +25,7 @@
         </p>
 
         <div class="pt-4 flex flex-col sm:flex-row justify-center items-center gap-4">
-            <a href="#campaigns" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest px-10 py-5 rounded-2xl shadow-xl shadow-primary-600/30 hover:shadow-primary-600/40 transition-all duration-300 transform hover:-translate-y-1">
+            <a href="#campaigns" class="w-full sm:w-auto bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black text-xs uppercase tracking-widest px-10 py-5 rounded-2xl shadow-xl shadow-[#f7ad1a]/30 hover:shadow-[#f7ad1a]/40 transition-all duration-300 transform hover:-translate-y-1">
                 Mulai Berdonasi <i class="fa-solid fa-arrow-down ml-2"></i>
             </a>
             <a href="{{ route('volunteer') }}" class="w-full sm:w-auto bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-black text-xs uppercase tracking-widest px-10 py-5 rounded-2xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
@@ -87,7 +87,7 @@
         <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
             Daftar <span class="text-primary-600">Kampanye Aktif</span>
         </h2>
-        <div class="w-12 h-1 bg-primary-500 mx-auto rounded-full"></div>
+        <div class="w-12 h-1.5 bg-[#f7ad1a] mx-auto rounded-full"></div>
         <p class="text-slate-400 font-bold text-[10px] sm:text-xs tracking-widest uppercase mt-3">Salurkan kebaikan Anda ke program pilihan berikut</p>
     </div>
 
@@ -127,7 +127,7 @@
                         <!-- Progress Bar -->
                         <div class="space-y-1 sm:space-y-1.5">
                             <div class="w-full bg-slate-100 h-1.5 sm:h-2.5 rounded-full overflow-hidden">
-                                <div class="bg-primary-600 h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                                <div class="bg-gradient-to-r from-[#063f5c] to-[#f7ad1a] h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
                             </div>
                             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-[8px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-wider gap-0.5">
                                 <span>{{ number_format($percent, 1) }}% Terkumpul</span>
@@ -273,7 +273,7 @@
 </script>
 
 <!-- About & Impact Mission Section -->
-<section class="bg-slate-900 text-white py-20 sm:py-28 relative overflow-hidden">
+<section class="bg-[#063f5c] text-white py-20 sm:py-28 relative overflow-hidden">
     <div class="absolute inset-0 opacity-20">
         <img 
             src="{{ !empty($settings->about_image) ? (str_starts_with($settings->about_image, 'http') ? $settings->about_image : asset($settings->about_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&h=600&fit=crop' }}" 
@@ -283,16 +283,16 @@
     </div>
     <div class="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         <div class="space-y-6">
-            <span class="text-[10px] font-black uppercase tracking-[0.22em] text-primary-400">VISI & MISI KITA</span>
+            <span class="text-[10px] font-black uppercase tracking-[0.22em] text-[#f7ad1a]">VISI & MISI KITA</span>
             <h2 class="text-2xl sm:text-4xl font-montserrat font-black uppercase tracking-tight italic">
-                Penyaluran yang <span class="text-primary-500">Transparan</span> dan Bertanggung Jawab
+                Penyaluran yang <span class="text-[#f7ad1a]">Transparan</span> dan Bertanggung Jawab
             </h2>
-            <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+            <div class="w-12 h-1.5 bg-[#f7ad1a] rounded-full"></div>
             <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-semibold">
                 {{ $settings->about_mission ?? 'Kami memastikan setiap rupiah yang Anda donasikan akan tersalurkan langsung kepada penerima manfaat yang berhak dengan dokumentasi dan pelaporan yang terperinci di website kami.' }}
             </p>
             <div class="pt-4">
-                <a href="{{ route('about') }}" class="bg-primary-600 hover:bg-primary-700 text-white text-xs font-black uppercase tracking-widest px-8 py-4 rounded-xl transition duration-300">
+                <a href="{{ route('about') }}" class="bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] text-xs font-black uppercase tracking-widest px-8 py-4 rounded-xl transition duration-300 shadow-lg shadow-black/20">
                     Pelajari Selengkapnya
                 </a>
             </div>
@@ -301,21 +301,21 @@
             <h3 class="text-lg font-montserrat font-black uppercase tracking-wide">Dampak yang Diciptakan</h3>
             <div class="space-y-4">
                 <div class="flex items-start space-x-4">
-                    <div class="bg-primary-500/10 text-primary-400 w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+                    <div class="bg-white/10 text-[#f7ad1a] w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-book-quran"></i>
                     </div>
                     <div>
                         <h4 class="text-xs font-black uppercase tracking-wider">Mushaf Al-Quran Pelosok</h4>
-                        <p class="text-[11px] text-slate-400 leading-normal">Membantu ribuan santri di pesantren pelosok NTT mendapatkan Al-Quran yang layak.</p>
+                        <p class="text-[11px] text-slate-300 leading-normal">Membantu ribuan santri di pesantren pelosok NTT mendapatkan Al-Quran yang layak.</p>
                     </div>
                 </div>
                 <div class="flex items-start space-x-4">
-                    <div class="bg-primary-500/10 text-primary-400 w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+                    <div class="bg-white/10 text-[#f7ad1a] w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-graduation-cap"></i>
                     </div>
                     <div>
                         <h4 class="text-xs font-black uppercase tracking-wider">Pendidikan Anak Dhuafa</h4>
-                        <p class="text-[11px] text-slate-400 leading-normal">Bantuan perlengkapan dan sarana sekolah di wilayah bencana.</p>
+                        <p class="text-[11px] text-slate-300 leading-normal">Bantuan perlengkapan dan sarana sekolah di wilayah bencana.</p>
                     </div>
                 </div>
             </div>
@@ -329,7 +329,7 @@
         <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
             Papan <span class="text-primary-600">Doa Donatur</span>
         </h2>
-        <div class="w-12 h-1 bg-primary-500 mx-auto rounded-full"></div>
+        <div class="w-12 h-1.5 bg-[#f7ad1a] mx-auto rounded-full"></div>
         <p class="text-slate-400 font-bold text-[10px] sm:text-xs tracking-widest uppercase mt-3">Mari saling mendoakan dan mengaminkan kebaikan bersama</p>
     </div>
 

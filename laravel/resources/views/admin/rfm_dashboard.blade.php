@@ -509,7 +509,7 @@
             xAxis: { categories: profiles },
             yAxis: { title: { text: 'Jumlah Donatur' } },
             series: [
-                { name: 'RFM 90 Days',  data: @json($chartRfmComparison90), color: '#38bdf8' },
+                { name: 'RFM 90 Days',  data: @json($chartRfmComparison90), color: '#0e567d' },
                 { name: 'RFM All Time', data: @json($chartRfmComparisonAll), color: '#10b981' }
             ]
         }));
@@ -542,7 +542,7 @@
             title: { text: 'Heatmap Matrix RFM (90 Days vs All Time)' },
             xAxis: { categories: profiles, title: { text: 'RFM 90 Days' } },
             yAxis: { categories: ['DORMANT', 'LOW_ENGAGEMENT', 'NEED_ATTENTION', 'POTENTIAL', 'LOYAL', 'CHAMPION'], title: { text: 'RFM All Time' }, reversed: false },
-            colorAxis: { min: 0, minColor: '#0f172a', maxColor: '#38bdf8' },
+            colorAxis: { min: 0, minColor: '#0f172a', maxColor: '#0e567d' },
             legend: { align: 'right', layout: 'vertical', margin: 0, verticalAlign: 'top', y: 25, symbolHeight: 280 },
             series: [{
                 name: 'Total Donatur',

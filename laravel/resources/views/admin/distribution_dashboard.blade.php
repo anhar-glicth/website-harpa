@@ -502,7 +502,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         },
-        colors: ['#0284c7', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316'],
+        colors: ['#063f5c', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f7ad1a'],
         grid: { borderColor: '#f1f5f9' },
         noData: {
             text: 'Belum ada data penyaluran',
@@ -525,7 +525,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }],
         chart: { ...themeOptions.chart, type: 'line', height: 320 },
         stroke: { curve: 'smooth', width: 3 },
-        colors: ['#0284c7'],
+        colors: ['#063f5c'],
         markers: { size: 5, hover: { size: 7 } },
         xaxis: { categories: @json($dailyDates), labels: { style: { colors: '#64748b', fontWeight: 600 } } },
         yaxis: {
@@ -549,7 +549,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }],
         chart: { ...themeOptions.chart, type: 'line', height: 320 },
         stroke: { curve: 'smooth', width: 3 },
-        colors: ['#0284c7'],
+        colors: ['#063f5c'],
         markers: { size: 5, hover: { size: 7 } },
         xaxis: { categories: @json($dailyDates), labels: { style: { colors: '#64748b', fontWeight: 600 } } },
         yaxis: {
@@ -573,7 +573,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }],
         chart: { ...themeOptions.chart, type: 'line', height: 300 },
         stroke: { curve: 'smooth', width: 3 },
-        colors: ['#0284c7'],
+        colors: ['#063f5c'],
         markers: { size: 6 },
         dataLabels: {
             enabled: true,
@@ -594,7 +594,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }],
         chart: { ...themeOptions.chart, type: 'line', height: 300 },
         stroke: { curve: 'smooth', width: 3 },
-        colors: ['#0284c7'],
+        colors: ['#063f5c'],
         markers: { size: 6 },
         dataLabels: {
             enabled: true,
@@ -612,7 +612,7 @@ document.addEventListener("DOMContentLoaded", function () {
         series: @json($asnafValues),
         labels: @json($asnafLabels),
         chart: { ...themeOptions.chart, type: 'pie', height: 320 },
-        colors: ['#38bdf8', '#10b981', '#f59e0b', '#f97316', '#a855f7', '#ec4899', '#c084fc'],
+        colors: ['#0e567d', '#10b981', '#f59e0b', '#f7ad1a', '#a855f7', '#ec4899', '#c084fc'],
         legend: { position: 'right', labels: { colors: '#334155' } },
         tooltip: {
             y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
@@ -626,7 +626,7 @@ document.addEventListener("DOMContentLoaded", function () {
         series: @json($sourceValues),
         labels: @json($sourceLabels),
         chart: { ...themeOptions.chart, type: 'pie', height: 320 },
-        colors: ['#0284c7', '#10b981', '#f59e0b', '#f97316'],
+        colors: ['#063f5c', '#10b981', '#f59e0b', '#f7ad1a'],
         legend: { position: 'right', labels: { colors: '#334155' } },
         tooltip: {
             y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
@@ -640,7 +640,7 @@ document.addEventListener("DOMContentLoaded", function () {
         series: @json($programGroupValues),
         labels: @json($programGroupLabels),
         chart: { ...themeOptions.chart, type: 'pie', height: 320 },
-        colors: ['#f97316', '#0284c7', '#10b981', '#eab308', '#ec4899', '#8b5cf6'],
+        colors: ['#f7ad1a', '#063f5c', '#10b981', '#eab308', '#ec4899', '#8b5cf6'],
         legend: { position: 'right', labels: { colors: '#334155' } },
         tooltip: {
             y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }
@@ -654,7 +654,7 @@ document.addEventListener("DOMContentLoaded", function () {
         series: @json($programNameValues),
         labels: @json($programNameLabels),
         chart: { ...themeOptions.chart, type: 'pie', height: 320 },
-        colors: ['#0284c7', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f97316', '#a855f7'],
+        colors: ['#063f5c', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4', '#f7ad1a', '#a855f7'],
         legend: { position: 'right', labels: { colors: '#334155' } },
         tooltip: {
             y: { formatter: (val) => 'Rp ' + new Intl.NumberFormat('id-ID').format(val) }

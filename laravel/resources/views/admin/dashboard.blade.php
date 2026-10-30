@@ -393,7 +393,7 @@
             datasets: [{
                 label: 'Total Donasi (Rp)',
                 data: monthlyTotals,
-                backgroundColor: '#f97316',
+                backgroundColor: '#063f5c',
                 borderRadius: 8
             }]
         },
@@ -422,7 +422,7 @@
             labels: categories,
             datasets: [{
                 data: categoryTotals,
-                backgroundColor: ['#f97316', '#29abe2', '#ea580c', '#0284c7', '#fed7aa', '#bae6fd']
+                backgroundColor: ['#063f5c', '#f7ad1a', '#04324a', '#df9408', '#b0cfe1', '#fde68a']
             }]
         },
         options: {
@@ -446,7 +446,7 @@
             datasets: [{
                 label: 'Efektivitas Kerja (%)',
                 data: staffEffectiveness,
-                backgroundColor: '#29abe2',
+                backgroundColor: '#f7ad1a',
                 borderRadius: 8
             }]
         },

@@ -34,33 +34,64 @@
                     },
                     colors: {
                         primary: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            200: '#fed7aa',
-                            500: '#f97316',
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            800: '#9a3412',
+                            50: '#edf5f9',
+                            100: '#d5e7f1',
+                            200: '#b0cfe1',
+                            300: '#81b1cd',
+                            400: '#4d8cb5',
+                            500: '#0e567d',
+                            600: '#063f5c',
+                            650: '#053953',
+                            700: '#04324a',
+                            800: '#032537',
+                            900: '#021a28',
+                            950: '#010f18',
                         },
                         secondary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            500: '#29abe2',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f7ad1a',
+                            550: '#eda214',
+                            600: '#df9408',
+                            650: '#cb8407',
+                            700: '#b97307',
+                            800: '#93580d',
+                            900: '#78470f',
                         },
                         emerald: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#29abe2',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f7ad1a',
+                            550: '#eda214',
+                            600: '#b97307',
+                            650: '#cb8407',
+                            700: '#93580d',
+                            800: '#78470f',
+                        },
+                        amber: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f7ad1a',
+                            550: '#eda214',
+                            600: '#df9408',
+                            650: '#cb8407',
+                            700: '#b97307',
+                            800: '#93580d',
+                            900: '#78470f',
+                        },
+                        brand: {
+                            navy: '#063f5c',
+                            gold: '#f7ad1a',
+                            white: '#ffffff',
                         }
                     }
                 }
@@ -170,7 +201,7 @@
                     <div x-data="{ userMenu: false }" class="relative">
                         <button @click="userMenu = !userMenu" class="flex items-center space-x-3 bg-slate-50 border border-slate-100 hover:border-slate-200 px-4 py-2 rounded-2xl transition duration-200">
                             @if(Auth::user()->hasCustomPhoto())
-                                <img src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-7 h-7 rounded-xl object-cover" alt="Profile">
+                                <img src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=063f5c&color=fff';" class="w-7 h-7 rounded-xl object-cover" alt="Profile">
                             @else
                                 <div class="w-7 h-7 bg-primary-100 text-primary-700 rounded-xl flex items-center justify-center font-bold text-xs uppercase">
                                     {{ substr(Auth::user()->name, 0, 2) }}
@@ -482,22 +513,22 @@
     </main>
 
     <!-- Premium Footer -->
-    <footer class="bg-slate-900 text-slate-400 pt-16 pb-8 px-6 sm:px-10 mt-20 border-t border-slate-800">
+    <footer class="bg-[#063f5c] text-slate-200 pt-16 pb-8 px-6 sm:px-10 mt-20 border-t border-[#04324a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             <!-- Brand & Tagline -->
             <div class="space-y-4">
                 <div class="inline-block bg-white p-2.5 rounded-2xl shadow-sm">
                     <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 w-auto object-contain" alt="Amal Abadi">
                 </div>
-                <p class="text-xs font-medium leading-relaxed">
+                <p class="text-xs font-medium leading-relaxed text-slate-300">
                     Menghubungkan kebaikan hati Anda untuk mendukung kehidupan sesama yang membutuhkan secara transparan dan tepercaya.
                 </p>
                 <!-- Social media -->
                 <div class="flex space-x-3 pt-2">
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-primary-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-instagram text-sm"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-primary-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-facebook-f text-sm"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-primary-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-twitter text-sm"></i></a>
-                    <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-primary-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-youtube text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-instagram text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-facebook-f text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-twitter text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-youtube text-sm"></i></a>
                 </div>
             </div>
 
@@ -505,10 +536,10 @@
             <div class="space-y-4">
                 <h4 class="text-xs font-black uppercase tracking-widest text-white">Navigasi</h4>
                 <ul class="space-y-2.5 text-xs font-bold uppercase tracking-wider">
-                    <li><a href="{{ route('home') }}" class="hover:text-primary-500 transition-colors">Home</a></li>
-                    <li><a href="{{ route('campaigns.index') }}" class="hover:text-primary-500 transition-colors">Daftar Kampanye</a></li>
-                    <li><a href="{{ route('zakat.index') }}" class="hover:text-primary-500 transition-colors">Kalkulator Zakat</a></li>
-                    <li><a href="{{ route('prayers.index') }}" class="hover:text-primary-500 transition-colors">Doa Bersama</a></li>
+                    <li><a href="{{ route('home') }}" class="hover:text-[#f7ad1a] transition-colors">Home</a></li>
+                    <li><a href="{{ route('campaigns.index') }}" class="hover:text-[#f7ad1a] transition-colors">Daftar Kampanye</a></li>
+                    <li><a href="{{ route('zakat.index') }}" class="hover:text-[#f7ad1a] transition-colors">Kalkulator Zakat</a></li>
+                    <li><a href="{{ route('prayers.index') }}" class="hover:text-[#f7ad1a] transition-colors">Doa Bersama</a></li>
                 </ul>
             </div>
 
@@ -516,32 +547,32 @@
             <div class="space-y-4">
                 <h4 class="text-xs font-black uppercase tracking-widest text-white">Dukungan</h4>
                 <ul class="space-y-2.5 text-xs font-bold uppercase tracking-wider">
-                    <li><a href="{{ route('about') }}" class="hover:text-primary-500 transition-colors">Tentang Kami</a></li>
-                    <li><a href="{{ route('contact') }}" class="hover:text-primary-500 transition-colors">Hubungi Kami</a></li>
-                    <li><a href="{{ route('volunteer') }}" class="hover:text-primary-500 transition-colors">Gabung Relawan</a></li>
+                    <li><a href="{{ route('about') }}" class="hover:text-[#f7ad1a] transition-colors">Tentang Kami</a></li>
+                    <li><a href="{{ route('contact') }}" class="hover:text-[#f7ad1a] transition-colors">Hubungi Kami</a></li>
+                    <li><a href="{{ route('volunteer') }}" class="hover:text-[#f7ad1a] transition-colors">Gabung Relawan</a></li>
                 </ul>
             </div>
 
             <!-- Newsletter subscribe -->
             <div class="space-y-4">
                 <h4 class="text-xs font-black uppercase tracking-widest text-white">Langganan Berita</h4>
-                <p class="text-xs font-medium leading-relaxed">
+                <p class="text-xs font-medium leading-relaxed text-slate-300">
                     Dapatkan update berkala mengenai penyaluran donasi dan cerita dampak langsung dari lapangan.
                 </p>
                 <form action="{{ route('newsletter') }}" method="POST" class="flex gap-2">
                     @csrf
-                    <input type="email" name="email" required placeholder="Email Anda" class="w-full bg-slate-800 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-xs outline-none focus:border-primary-500 font-bold transition-all">
-                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 rounded-xl flex items-center justify-center transition-colors"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                    <input type="email" name="email" required placeholder="Email Anda" class="w-full bg-[#04324a] border border-[#032537] text-white rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#f7ad1a] font-bold transition-all">
+                    <button type="submit" class="bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black px-4 rounded-xl flex items-center justify-center transition-colors"><i class="fa-solid fa-paper-plane text-xs"></i></button>
                 </form>
             </div>
         </div>
 
-        <hr class="border-slate-800 my-8">
+        <hr class="border-[#04324a] my-8">
 
         <!-- Copyright -->
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-widest text-center gap-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center gap-4">
             <p>Copyright &copy; 2026 Amal Abadi. All Rights Reserved.</p>
-            <p>Dikembangkan oleh <span class="text-slate-300">velora.id</span></p>
+            <p>Dikembangkan oleh <span class="text-[#f7ad1a]">velora.id</span></p>
         </div>
     </footer>
 

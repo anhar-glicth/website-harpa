@@ -90,7 +90,7 @@
                                 <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Foto Profil</label>
                                 <div class="flex items-center gap-3">
                                     <div class="relative shrink-0">
-                                        <img id="photo-preview" src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-12 h-12 rounded-2xl object-cover border-2 border-slate-150 shadow-sm" alt="Preview Foto">
+                                        <img id="photo-preview" src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=063f5c&color=fff';" class="w-12 h-12 rounded-2xl object-cover border-2 border-slate-150 shadow-sm" alt="Preview Foto">
                                         <span id="new-photo-badge" class="hidden absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-[8px]" title="Foto baru dipilih">
                                             <i class="fa-solid fa-check"></i>
                                         </span>
@@ -198,7 +198,7 @@
                 if (this.checked) {
                     if (photoInput) photoInput.value = '';
                     if (newBadge) newBadge.classList.add('hidden');
-                    previewImg.src = "https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff";
+                    previewImg.src = "https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=063f5c&color=fff";
                 } else {
                     previewImg.src = defaultAvatar;
                 }

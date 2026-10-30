@@ -351,7 +351,7 @@
                 panKey: 'shift',
                 resetZoomButton: {
                     position: { align: 'right', x: -10, y: 10 },
-                    theme: { fill: '#1e293b', stroke: '#38bdf8', r: 6, style: { color: '#38bdf8', fontWeight: 'bold' } }
+                    theme: { fill: '#1e293b', stroke: '#0e567d', r: 6, style: { color: '#0e567d', fontWeight: 'bold' } }
                 }
             },
             title: { style: { color: '#ffffff', fontWeight: 'bold', fontSize: '15px' } },
@@ -433,7 +433,7 @@
             title: { text: 'Total Data Berdasarkan Kantor' },
             xAxis: { categories: @json($chartDonorsOfficeLabels) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Data', data: @json($chartDonorsOfficeValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Data', data: @json($chartDonorsOfficeValues), color: '#0e567d' }]
         }));
 
         // 8. Chart Total Data Berdasarkan PIC Prospek
@@ -442,7 +442,7 @@
             title: { text: 'Total Data Berdasarkan PIC Prospek' },
             xAxis: { categories: @json($chartDonorsPicLabels) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Data', data: @json($chartDonorsPicValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Data', data: @json($chartDonorsPicValues), color: '#0e567d' }]
         }));
 
     });

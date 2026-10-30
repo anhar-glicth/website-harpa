@@ -329,10 +329,10 @@
                     position: { align: 'right', x: -10, y: 10 },
                     theme: { 
                         fill: '#1e293b', 
-                        stroke: '#38bdf8', 
+                        stroke: '#0e567d', 
                         r: 6, 
-                        states: { hover: { fill: '#38bdf8', style: { color: '#ffffff' } } }, 
-                        style: { color: '#38bdf8', fontWeight: 'bold', fontSize: '11px' } 
+                        states: { hover: { fill: '#0e567d', style: { color: '#ffffff' } } }, 
+                        style: { color: '#0e567d', fontWeight: 'bold', fontSize: '11px' } 
                     }
                 }
             },
@@ -359,7 +359,7 @@
             series: [{
                 name: 'Total Nominal',
                 data: @json($chartDateValues),
-                color: '#38bdf8'
+                color: '#0e567d'
             }]
         }));
 
@@ -372,7 +372,7 @@
             series: [{
                 name: 'Total Nominal',
                 data: @json($chartMonthValues),
-                color: '#38bdf8'
+                color: '#0e567d'
             }]
         }));
 
@@ -382,7 +382,7 @@
             title: { text: 'Dashboard Transaksi Per Hari' },
             xAxis: { categories: @json($chartDays) },
             yAxis: { title: { text: 'Nominal Transaksi' } },
-            series: [{ name: 'Total Nominal', data: @json($chartDayValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartDayValues), color: '#0e567d' }]
         }));
 
         // 4. Chart Per Jam
@@ -391,7 +391,7 @@
             title: { text: 'Dashboard Transaksi Per Jam' },
             xAxis: { categories: @json(array_map('strval', $chartHours)) },
             yAxis: { title: { text: 'Nominal Transaksi' } },
-            series: [{ name: 'Total Nominal', data: @json($chartHourValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartHourValues), color: '#0e567d' }]
         }));
 
         // 5. Chart Per Rumpun Program
@@ -400,7 +400,7 @@
             title: { text: 'Total Nominal Berdasarkan Rumpun Program' },
             xAxis: { categories: @json($chartRumpunLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: @json($chartRumpunValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartRumpunValues), color: '#0e567d' }]
         }));
 
         // 6. Chart Per Program
@@ -409,7 +409,7 @@
             title: { text: 'Total Nominal Berdasarkan Program' },
             xAxis: { categories: @json($chartProgramLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: @json($chartProgramValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartProgramValues), color: '#0e567d' }]
         }));
 
         // 7. Chart Per Kantor
@@ -418,7 +418,7 @@
             title: { text: 'Total Nominal Berdasarkan Kantor' },
             xAxis: { categories: @json($chartOfficeLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: @json($chartOfficeValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartOfficeValues), color: '#0e567d' }]
         }));
 
         // 8. Chart Per PIC Prospek
@@ -427,7 +427,7 @@
             title: { text: 'Total Nominal Berdasarkan PIC Prospek' },
             xAxis: { categories: @json($chartPicLabels) },
             yAxis: { title: { text: 'Total Nominal (Rp)' } },
-            series: [{ name: 'Total Nominal', data: @json($chartPicValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartPicValues), color: '#0e567d' }]
         }));
 
         // 9. Chart Distribusi Via Bayar (PIE CHART)

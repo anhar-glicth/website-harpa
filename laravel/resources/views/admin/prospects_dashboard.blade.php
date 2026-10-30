@@ -437,7 +437,7 @@
                 panKey: 'shift',
                 resetZoomButton: {
                     position: { align: 'right', x: -10, y: 10 },
-                    theme: { fill: '#1e293b', stroke: '#38bdf8', r: 6, style: { color: '#38bdf8', fontWeight: 'bold' } }
+                    theme: { fill: '#1e293b', stroke: '#0e567d', r: 6, style: { color: '#0e567d', fontWeight: 'bold' } }
                 }
             },
             title: { style: { color: '#ffffff', fontWeight: 'bold', fontSize: '15px' } },
@@ -453,7 +453,7 @@
             title: { text: 'Dashboard Prospek Per Tanggal (Potensi Dana)' },
             xAxis: { categories: @json($chartProspekDates) },
             yAxis: { title: { text: 'Nominal Potensi Dana' } },
-            series: [{ name: 'Total Nominal', data: @json($chartProspekPotensiValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Nominal', data: @json($chartProspekPotensiValues), color: '#0e567d' }]
         }));
 
         // 2. Chart Prospek Per Tanggal (Total)
@@ -462,7 +462,7 @@
             title: { text: 'Dashboard Prospek Per Tanggal (Total)' },
             xAxis: { categories: @json($chartProspekDates) },
             yAxis: { title: { text: 'Total Prospek' } },
-            series: [{ name: 'Total Prospek', data: @json($chartProspekCounts), color: '#38bdf8' }]
+            series: [{ name: 'Total Prospek', data: @json($chartProspekCounts), color: '#0e567d' }]
         }));
 
         // 3. Chart Distribusi Target (Pie)
@@ -535,7 +535,7 @@
             title: { text: 'Total Prospek Berdasarkan PIC Prospek' },
             xAxis: { categories: @json($chartPicCategories) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Prospek', data: @json($chartPicValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Prospek', data: @json($chartPicValues), color: '#0e567d' }]
         }));
 
         // 12. Chart Total Data Berdasarkan Kantor (Column)
@@ -544,7 +544,7 @@
             title: { text: 'Total Data Berdasarkan Kantor' },
             xAxis: { categories: @json($chartOfficeCategories) },
             yAxis: { title: { text: 'Total Data' } },
-            series: [{ name: 'Total Data', data: @json($chartOfficeValues), color: '#38bdf8' }]
+            series: [{ name: 'Total Data', data: @json($chartOfficeValues), color: '#0e567d' }]
         }));
 
     });

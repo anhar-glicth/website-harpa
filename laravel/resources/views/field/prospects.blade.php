@@ -18,7 +18,7 @@
             <div class="bg-white border border-slate-100 p-8 rounded-3xl space-y-6 shadow-sm">
                 <div class="flex items-center space-x-3">
                     @if(Auth::user()->hasCustomPhoto())
-                        <img src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ea580c&color=fff';" class="w-12 h-12 rounded-2xl object-cover shadow-sm border border-slate-100" alt="">
+                        <img src="{{ Auth::user()->profile_photo_url }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=063f5c&color=fff';" class="w-12 h-12 rounded-2xl object-cover shadow-sm border border-slate-100" alt="">
                     @else
                         <div class="w-12 h-12 bg-primary-50 text-primary-700 rounded-2xl flex items-center justify-center font-black text-base uppercase border border-slate-100 shadow-sm">
                             {{ substr(Auth::user()->name, 0, 2) }}
