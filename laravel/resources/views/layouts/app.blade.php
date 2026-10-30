@@ -348,8 +348,8 @@
                     <i class="fa-solid fa-bars text-base"></i>
                 </button>
                 <a href="{{ route('home') }}" class="flex items-center gap-2">
-                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-8 w-auto object-contain" alt="Amal Abadi">
-                    <span class="text-xs font-black uppercase tracking-wider text-slate-800 hidden sm:inline">Amal Abadi</span>
+                    <img src="{{ asset('images/logo.png') }}?v=2" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpeg') }}';" class="h-8 w-auto object-contain" alt="Indonesia Madani">
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-800 hidden sm:inline">Indonesia Madani</span>
                 </a>
             </div>
 
@@ -403,7 +403,7 @@
                             <!-- Drawer Header with Close Button -->
                             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
                                 <div class="flex items-center gap-2.5">
-                                    <img src="{{ asset('images/logo.jpeg') }}" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-8 w-auto object-contain" alt="Amal Abadi">
+                                    <img src="{{ asset('images/logo.png') }}?v=2" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpeg') }}';" class="h-8 w-auto object-contain" alt="Indonesia Madani">
                                     <div>
                                         <h3 class="text-xs font-black uppercase tracking-wider text-slate-800">Menu Navigasi</h3>
                                         <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">{{ Auth::user()->role_label }}</p>
