@@ -1,17 +1,78 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Hero Section -->
-<section class="relative min-h-[75vh] flex items-center justify-center text-center text-white overflow-hidden py-32 px-6">
-    <!-- Background Image -->
-    <div class="absolute inset-0 z-0">
-        <img 
-            src="{{ !empty($settings->hero_image) ? (str_starts_with($settings->hero_image, 'http') ? $settings->hero_image : asset($settings->hero_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop' }}" 
-            class="w-full h-full object-cover scale-105"
-            alt="Hero Charity"
-        />
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+<!-- Hero Section with 4-Second Auto Slider -->
+<section 
+    x-data="{
+        activeSlide: 0,
+        paused: false,
+        slides: [
+            '{{ !empty($settings->hero_image) ? (str_starts_with($settings->hero_image, 'http') ? $settings->hero_image : asset($settings->hero_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop' }}',
+            'https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=2070&auto=format&fit=crop',
+            'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop'
+        ],
+        timer: null,
+        init() {
+            this.timer = setInterval(() => {
+                if (!this.paused) {
+                    this.next();
+                }
+            }, 4000);
+        },
+        next() {
+            this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+        },
+        prev() {
+            this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
+        }
+    }"
+    @mouseenter="paused = true"
+    @mouseleave="paused = false"
+    class="relative min-h-[75vh] flex items-center justify-center text-center text-white overflow-hidden py-32 px-6"
+>
+    <!-- Background Slider Images with Crossfade -->
+    <div class="absolute inset-0 z-0 overflow-hidden bg-slate-950">
+        <template x-for="(slide, index) in slides" :key="index">
+            <div 
+                x-show="activeSlide === index"
+                x-transition:enter="transition-opacity ease-out duration-1000"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity ease-in duration-1000"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="absolute inset-0 w-full h-full transform transition-transform duration-[6000ms] ease-out"
+                :class="activeSlide === index ? 'scale-105' : 'scale-100'"
+            >
+                <img 
+                    :src="slide" 
+                    class="w-full h-full object-cover"
+                    alt="Hero Charity Slide"
+                />
+            </div>
+        </template>
+        <!-- Dark Overlay Gradient for contrast & readability -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/80 backdrop-blur-[1px]"></div>
     </div>
+
+    <!-- Navigation Arrows -->
+    <button 
+        @click="prev()" 
+        type="button" 
+        class="hidden md:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-black/30 hover:bg-[#f7ad1a] hover:text-[#063f5c] text-white items-center justify-center backdrop-blur-md border border-white/20 transition-all duration-300 active:scale-95 shadow-lg group"
+        title="Slide Sebelumnya"
+    >
+        <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-0.5 transition-transform"></i>
+    </button>
+    <button 
+        @click="next()" 
+        type="button" 
+        class="hidden md:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-black/30 hover:bg-[#f7ad1a] hover:text-[#063f5c] text-white items-center justify-center backdrop-blur-md border border-white/20 transition-all duration-300 active:scale-95 shadow-lg group"
+        title="Slide Berikutnya"
+    >
+        <i class="fa-solid fa-chevron-right text-sm group-hover:translate-x-0.5 transition-transform"></i>
+    </button>
 
     <!-- Hero Content -->
     <div class="relative z-10 w-full max-w-4xl mx-auto space-y-8">
@@ -32,6 +93,19 @@
                 Gabung Relawan <i class="fa-solid fa-users ml-2"></i>
             </a>
         </div>
+    </div>
+
+    <!-- Slider Dots Indicators -->
+    <div class="absolute bottom-20 sm:bottom-32 left-0 right-0 z-20 flex justify-center items-center gap-2.5 pointer-events-auto">
+        <template x-for="(slide, index) in slides" :key="index">
+            <button 
+                @click="activeSlide = index" 
+                type="button" 
+                class="h-2 rounded-full transition-all duration-300 focus:outline-none"
+                :class="activeSlide === index ? 'w-8 bg-[#f7ad1a] shadow-md shadow-[#f7ad1a]/40' : 'w-2 bg-white/50 hover:bg-white/80'"
+                :title="'Pindah ke slide ' + (index + 1)">
+            </button>
+        </template>
     </div>
 </section>
 
