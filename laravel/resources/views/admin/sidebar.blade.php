@@ -343,6 +343,89 @@
     </div>
     @endif
 
+    <!-- 4.5. SISTEM DATA HARPA GROUP (Alur A - F) -->
+    <div x-data="{ isOpen: {{ str_starts_with($active ?? '', 'harpa_') ? 'true' : 'false' }} }" class="border-t border-slate-100">
+        <div @click="isOpen = !isOpen" class="bg-[#063f5c] px-6 py-4.5 flex justify-between items-center text-white cursor-pointer hover:bg-[#04324a] transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-database text-[#f7ad1a]"></i> Sistem Data Harpa
+            </span>
+            <i class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''"></i>
+        </div>
+        <div x-show="isOpen" x-collapse class="p-3 space-y-1.5 animate-in slide-in-from-top-2 duration-300">
+            <!-- Papan Kerja (Gerbang Berhenti) -->
+            <a href="{{ route('admin.harpa.papan_kerja') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_papan_kerja' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_papan_kerja' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-clipboard-check text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Papan Kerja</span>
+            </a>
+
+            <!-- Impor Donasi (FH, IM, WA) -->
+            <a href="{{ route('admin.harpa.import_donasi') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_import_donasi' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_import_donasi' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-file-import text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Impor Donasi (Alur A)</span>
+            </a>
+
+            <!-- Riwayat Blast Everpro & Diagnosa -->
+            <a href="{{ route('admin.harpa.blast_history') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_blast' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_blast' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Riwayat Blast & Diagnosa</span>
+            </a>
+
+            <!-- Cek Nomor WA (WBS Pro) -->
+            <a href="{{ route('admin.harpa.wbs') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_wbs' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_wbs' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-phone-slash text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Nomor Mati (WBS Pro)</span>
+            </a>
+
+            <!-- Rekap & Waterfall Keputusan (Alur C) -->
+            <a href="{{ route('admin.harpa.rekap') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_rekap' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_rekap' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-filter-circle-dollar text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Rekap & Waterfall (Alur C)</span>
+            </a>
+
+            <!-- Daftar Kirim CRM (Alur D) -->
+            <a href="{{ route('admin.harpa.daftar_kirim') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_daftar_kirim' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_daftar_kirim' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-list-check text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Daftar Kirim (Alur D)</span>
+            </a>
+
+            <!-- Laporan Analitik (Alur F) -->
+            <a href="{{ route('admin.harpa.laporan') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_laporan' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_laporan' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-chart-pie text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Laporan Analitik (Alur F)</span>
+            </a>
+
+            <!-- Pengaturan Ambang Harpa -->
+            <a href="{{ route('admin.harpa.settings') }}" 
+               class="w-full flex items-center gap-4 px-5 py-3 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 group border border-transparent text-left outline-none {{ $active === 'harpa_settings' ? 'bg-primary-600 text-white shadow-xl shadow-primary-200/50 scale-[1.02]' : 'text-slate-400 hover:bg-white hover:text-primary-600 hover:border-primary-100 hover:shadow-lg hover:shadow-slate-50' }}">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 {{ $active === 'harpa_settings' ? 'bg-white/20 text-white rotate-12' : 'bg-slate-50 text-slate-400 group-hover:bg-primary-50 group-hover:text-primary-600 group-hover:rotate-12' }}">
+                    <i class="fa-solid fa-sliders text-xs"></i>
+                </div>
+                <span class="whitespace-nowrap">Pengaturan Ambang</span>
+            </a>
+        </div>
+    </div>
+
     <!-- 5. TRANSACTION MANAGEMENT GROUP -->
     @if(Auth::user()->canAccessMenu('donors_list') || Auth::user()->canAccessMenu('transactions_list') || Auth::user()->canAccessMenu('prospects_list') || Auth::user()->canAccessMenu('potential_donors') || Auth::user()->canAccessMenu('transactions_dashboard') || Auth::user()->canAccessMenu('donors_dashboard') || Auth::user()->canAccessMenu('prospects_dashboard') || Auth::user()->canAccessMenu('target_vs_achievement') || Auth::user()->canAccessMenu('rfm_dashboard'))
     <div x-data="{ isOpen: {{ in_array($active ?? '', ['donors_list', 'transactions_list', 'prospects_list', 'potential_donors', 'transactions_dashboard', 'donors_dashboard', 'prospects_dashboard', 'target_vs_achievement', 'rfm_dashboard']) ? 'true' : 'false' }} }" class="border-t border-slate-100">

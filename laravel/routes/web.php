@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\DonorDashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Harpa\HarpaDataController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -188,6 +189,26 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/prospects-dashboard', [AdminController::class, 'prospectsDashboard'])->name('admin.prospects_dashboard');
     Route::get('/admin/target-vs-achievement', [AdminController::class, 'targetVsAchievementDashboard'])->name('admin.target_vs_achievement');
     Route::get('/admin/rfm-dashboard', [AdminController::class, 'rfmDashboard'])->name('admin.rfm_dashboard');
+
+    // Harpa Data Engine Routes (Alur A - F)
+    Route::prefix('admin/harpa')->name('admin.harpa.')->group(function () {
+        Route::get('/papan-kerja', [HarpaDataController::class, 'papanKerja'])->name('papan_kerja');
+        Route::post('/papan-kerja/approve', [HarpaDataController::class, 'papanKerjaApprove'])->name('papan_kerja.approve');
+        Route::get('/import-donasi', [HarpaDataController::class, 'importDonationsForm'])->name('import_donasi');
+        Route::post('/import-donasi', [HarpaDataController::class, 'importDonationsSubmit'])->name('import_donasi.submit');
+        Route::get('/blast', [HarpaDataController::class, 'blastHistory'])->name('blast_history');
+        Route::post('/blast', [HarpaDataController::class, 'importBlastSubmit'])->name('blast.submit');
+        Route::get('/wbs', [HarpaDataController::class, 'wbsPro'])->name('wbs');
+        Route::post('/wbs', [HarpaDataController::class, 'importWbsSubmit'])->name('wbs.submit');
+
+        // Alur C, D, F & Settings
+        Route::get('/rekap', [HarpaDataController::class, 'rekapSegmen'])->name('rekap');
+        Route::get('/daftar-kirim', [HarpaDataController::class, 'daftarKirim'])->name('daftar_kirim');
+        Route::get('/daftar-kirim/export/{type}', [HarpaDataController::class, 'exportDaftarKirim'])->name('daftar_kirim.export');
+        Route::get('/laporan', [HarpaDataController::class, 'laporanAnalitik'])->name('laporan');
+        Route::get('/settings', [HarpaDataController::class, 'settings'])->name('settings');
+        Route::post('/settings', [HarpaDataController::class, 'updateSettings'])->name('settings.update');
+    });
 
     // Super Admin Strictly Protected Routes (Kelola Staff, Web Settings, Master Karyawan, Evaluasi Kinerja)
     Route::middleware(['superadmin'])->group(function () {
