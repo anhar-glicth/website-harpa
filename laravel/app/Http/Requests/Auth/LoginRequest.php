@@ -47,19 +47,22 @@ class LoginRequest extends FormRequest
 
         $defaultAccounts = [
             'admin@humanity.org' => ['name' => 'Admin Humanity', 'username' => 'admin', 'role' => 'admin'],
-            'admin@abadi-ntb.com' => ['name' => 'Super Admin Amal Abadi', 'username' => 'admin_abadi', 'role' => 'admin'],
+            'admin@harpa.id' => ['name' => 'Super Admin Harpa', 'username' => 'admin_harpa', 'role' => 'admin'],
+            'admin@harapanpalestina.com' => ['name' => 'Super Admin Harapan Palestina', 'username' => 'admin_palestina', 'role' => 'admin'],
+            'marketing@humanity.org' => ['name' => 'Fadli Staff Marketing', 'username' => 'marketing', 'role' => 'marketing'],
+            'marketing@harpa.id' => ['name' => 'Staff Marketing Harpa', 'username' => 'marketing_harpa', 'role' => 'marketing'],
             'finance@humanity.org' => ['name' => 'Rina Staff Keuangan', 'username' => 'finance', 'role' => 'finance'],
-            'finance@abadi-ntb.com' => ['name' => 'Staff Keuangan Amal Abadi', 'username' => 'finance_abadi', 'role' => 'finance'],
+            'finance@harpa.id' => ['name' => 'Staff Keuangan Harpa', 'username' => 'finance_harpa', 'role' => 'finance'],
             'petugas@humanity.org' => ['name' => 'Budi Petugas Lapangan', 'username' => 'petugas', 'role' => 'field_worker'],
-            'petugas@abadi-ntb.com' => ['name' => 'Petugas Lapangan Amal Abadi', 'username' => 'petugas_abadi', 'role' => 'field_worker'],
+            'petugas@harpa.id' => ['name' => 'Petugas Lapangan Harpa', 'username' => 'petugas_harpa', 'role' => 'field_worker'],
             'program@humanity.org' => ['name' => 'Fajri Manager Program', 'username' => 'program', 'role' => 'program_manager'],
-            'program@abadi-ntb.com' => ['name' => 'Manager Program Amal Abadi', 'username' => 'program_abadi', 'role' => 'program_manager'],
+            'program@harpa.id' => ['name' => 'Manager Program Harpa', 'username' => 'program_harpa', 'role' => 'program_manager'],
             'crm@humanity.org' => ['name' => 'Dwi Staff CRM Telemarketing', 'username' => 'crm', 'role' => 'crm_staff'],
-            'crm@abadi-ntb.com' => ['name' => 'Staff CRM Amal Abadi', 'username' => 'crm_abadi', 'role' => 'crm_staff'],
+            'crm@harpa.id' => ['name' => 'Staff CRM Harpa', 'username' => 'crm_harpa', 'role' => 'crm_staff'],
             'operator@humanity.org' => ['name' => 'Siti Admin Data Entry', 'username' => 'operator', 'role' => 'operator'],
-            'operator@abadi-ntb.com' => ['name' => 'Operator Data Entry', 'username' => 'operator_abadi', 'role' => 'operator'],
+            'operator@harpa.id' => ['name' => 'Operator Data Entry Harpa', 'username' => 'operator_harpa', 'role' => 'operator'],
             'donatur@humanity.org' => ['name' => 'Ahmad Donatur', 'username' => 'donatur', 'role' => 'user'],
-            'donatur@abadi-ntb.com' => ['name' => 'Donatur Amal Abadi', 'username' => 'donatur_abadi', 'role' => 'user'],
+            'donatur@harpa.id' => ['name' => 'Donatur Harpa', 'username' => 'donatur_harpa', 'role' => 'user'],
         ];
 
         if (array_key_exists($email, $defaultAccounts) && $password === 'password123') {
