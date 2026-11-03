@@ -115,15 +115,27 @@ class FieldController extends Controller
             'task' => 'required|string|max:255',
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
+            'status' => 'nullable|in:pending,in_progress,completed',
         ]);
 
-        TodoList::create([
+        $status = $request->status ?? 'pending';
+
+        $todo = TodoList::create([
             'user_id' => Auth::id(),
             'task' => $request->task,
             'description' => $request->description,
             'deadline' => $request->deadline,
-            'status' => 'pending',
+            'status' => $status,
+            'completed_at' => $status === 'completed' ? now() : null,
         ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas berhasil ditambahkan.',
+                'todo' => $todo->load(['user', 'assigner'])
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Tugas berhasil ditambahkan.');
     }
@@ -131,7 +143,7 @@ class FieldController extends Controller
     public function todoUpdate(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,completed',
+            'status' => 'required|in:pending,in_progress,completed',
             'result_attachment' => 'nullable|image|max:2048',
             'result_note' => 'nullable|string',
         ]);
@@ -141,10 +153,11 @@ class FieldController extends Controller
         $data = ['status' => $request->status];
         if ($request->status === 'completed') {
             $data['completed_at'] = now();
-            $data['result_note'] = $request->result_note;
+            if ($request->filled('result_note')) {
+                $data['result_note'] = $request->result_note;
+            }
         } else {
             $data['completed_at'] = null;
-            $data['result_note'] = null;
         }
 
         if ($request->hasFile('result_attachment')) {
@@ -153,6 +166,17 @@ class FieldController extends Controller
         }
 
         $todo->update($data);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Status tugas berhasil diperbarui.',
+                'todo' => $todo->load(['user', 'assigner'])
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Status tugas berhasil diperbarui.');
+    }
 
         return redirect()->back()->with('success', 'Tugas berhasil diperbarui.');
     }

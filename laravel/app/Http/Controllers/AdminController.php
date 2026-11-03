@@ -1260,23 +1260,89 @@ class AdminController extends Controller
             'task' => 'required|string|max:255',
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
+            'status' => 'nullable|in:pending,in_progress,completed',
         ]);
 
         $targetUser = User::find($request->user_id);
         if (!$targetUser || $targetUser->isUser()) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Tugas hanya dapat diberikan kepada staf atau pegawai.'], 422);
+            }
             return redirect()->back()->with('error', 'Tugas hanya dapat diberikan kepada staf atau pegawai.');
         }
 
-        \App\Models\TodoList::create([
+        $status = $request->status ?? 'pending';
+
+        $todo = \App\Models\TodoList::create([
             'user_id' => $request->user_id,
             'assigned_by' => auth()->id(),
             'task' => $request->task,
             'description' => $request->description,
             'deadline' => $request->deadline,
-            'status' => 'pending',
+            'status' => $status,
+            'completed_at' => $status === 'completed' ? now() : null,
         ]);
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas berhasil diberikan.',
+                'todo' => $todo->load(['user', 'assigner'])
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Tugas berhasil diberikan.');
+    }
+
+    public function moveTask(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,in_progress,completed',
+            'result_note' => 'nullable|string',
+        ]);
+
+        $todo = \App\Models\TodoList::findOrFail($id);
+
+        if (!auth()->user()->isAdmin() && $todo->user_id !== auth()->id() && $todo->assigned_by !== auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'Tidak memiliki izin untuk memindahkan tugas ini.'], 403);
+        }
+
+        $todo->status = $request->status;
+        if ($request->status === 'completed') {
+            $todo->completed_at = now();
+            if ($request->filled('result_note')) {
+                $todo->result_note = $request->result_note;
+            }
+        } else {
+            $todo->completed_at = null;
+        }
+        $todo->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status tugas berhasil diubah ke ' . ($request->status === 'completed' ? 'Selesai' : ($request->status === 'in_progress' ? 'In Progress' : 'To Do')),
+            'todo' => $todo->load(['user', 'assigner'])
+        ]);
+    }
+
+    public function deleteTask($id)
+    {
+        $todo = \App\Models\TodoList::findOrFail($id);
+
+        if (!auth()->user()->isAdmin() && $todo->assigned_by !== auth()->id() && $todo->user_id !== auth()->id()) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Tidak memiliki izin untuk menghapus tugas ini.'], 403);
+            }
+            return redirect()->back()->with('error', 'Tidak memiliki izin untuk menghapus tugas ini.');
+        }
+
+        $todo->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Tugas berhasil dihapus.']);
+        }
+
+        return redirect()->back()->with('success', 'Tugas berhasil dihapus.');
     }
 
     public function performanceList()
