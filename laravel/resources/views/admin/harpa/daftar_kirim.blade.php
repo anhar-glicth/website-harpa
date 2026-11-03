@@ -2,33 +2,38 @@
 
 @section('content')
 <div class="min-h-screen bg-slate-50/60 pb-20">
-    <!-- Top Header Bar -->
-    <div class="bg-white border-b border-slate-200/80 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-                    <span>Sistem Data Harpa</span>
-                    <span>/</span>
-                    <span class="text-primary-600 font-black">Alur D: Daftar Kirim untuk CRM</span>
-                </div>
-                <h1 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 tracking-tight mt-1 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-primary-600"></i> Daftar Siap Kirim Broadcast
-                </h1>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber]) }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all">
-                    <i class="fa-solid fa-file-csv"></i>
-                    Unduh CSV untuk CRM
-                </a>
-                <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber, 'mask' => 1]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider transition-all" title="Ekspor Aman Tanpa Nomor Lengkap untuk Laporan Pihak Ketiga">
-                    <i class="fa-solid fa-user-shield"></i>
-                    Ekspor Aman
-                </a>
-            </div>
-        </div>
-    </div>
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 items-start min-w-0">
+            <!-- Sidebar Menu -->
+            <aside class="hidden lg:block space-y-6 shrink-0 w-[280px]">
+                @include('admin.sidebar', ['active' => 'harpa_daftar_kirim'])
+            </aside>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+            <!-- Main Content Area -->
+            <div class="space-y-6 min-w-0">
+                <!-- Top Header Bar -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                            <span>Sistem Data Harpa</span>
+                            <span>/</span>
+                            <span class="text-primary-600 font-black">Alur D: Daftar Kirim untuk CRM</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 tracking-tight mt-1 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-primary-600"></i> Daftar Siap Kirim Broadcast
+                        </h1>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber]) }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all">
+                            <i class="fa-solid fa-file-csv"></i>
+                            Unduh CSV untuk CRM
+                        </a>
+                        <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber, 'mask' => 1]) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider transition-all" title="Ekspor Aman Tanpa Nomor Lengkap untuk Laporan Pihak Ketiga">
+                            <i class="fa-solid fa-user-shield"></i>
+                            Ekspor Aman
+                        </a>
+                    </div>
+                </div>
         <!-- TABS NAVIGASI 5 DAFTAR KIRIM -->
         <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200">
             <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'jumat']) }}" class="px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap {{ $tab === 'jumat' ? 'bg-[#063f5c] text-white shadow-lg' : 'bg-white text-slate-600 hover:bg-slate-100' }}">
@@ -232,6 +237,7 @@
                     </table>
                 </div>
             @endif
+            </div>
         </div>
     </div>
 </div>
