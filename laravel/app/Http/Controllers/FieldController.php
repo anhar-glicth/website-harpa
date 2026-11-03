@@ -178,9 +178,6 @@ class FieldController extends Controller
         return redirect()->back()->with('success', 'Status tugas berhasil diperbarui.');
     }
 
-        return redirect()->back()->with('success', 'Tugas berhasil diperbarui.');
-    }
-
     public function prospects()
     {
         $prospects = Prospect::with('responses')->latest()->paginate(10);
