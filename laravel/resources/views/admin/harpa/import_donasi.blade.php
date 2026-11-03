@@ -2,29 +2,34 @@
 
 @section('content')
 <div class="min-h-screen bg-slate-50/60 pb-20">
-    <!-- Top Header Bar -->
-    <div class="bg-white border-b border-slate-200/80 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-                    <span>Sistem Data Harpa</span>
-                    <span>/</span>
-                    <span class="text-primary-600 font-black">Alur A: Masuk Data Donasi</span>
-                </div>
-                <h1 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 tracking-tight mt-1">
-                    Impor Data Donasi (FH, IM, WA)
-                </h1>
-            </div>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('admin.harpa.papan_kerja') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 font-bold text-xs uppercase tracking-wider transition-all">
-                    <i class="fa-solid fa-clipboard-check text-sm"></i>
-                    Buka Papan Kerja
-                </a>
-            </div>
-        </div>
-    </div>
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 items-start min-w-0">
+            <!-- Sidebar Menu -->
+            <aside class="hidden lg:block space-y-6 shrink-0 w-[280px]">
+                @include('admin.sidebar', ['active' => 'harpa_import_donasi'])
+            </aside>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+            <!-- Main Content Area -->
+            <div class="space-y-6 min-w-0">
+                <!-- Top Header Bar -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                            <span>Sistem Data Harpa</span>
+                            <span>/</span>
+                            <span class="text-primary-600 font-black">Alur A: Masuk Data Donasi</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 tracking-tight mt-1">
+                            Impor Data Donasi (FH, IM, WA)
+                        </h1>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('admin.harpa.papan_kerja') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 font-bold text-xs uppercase tracking-wider transition-all">
+                            <i class="fa-solid fa-clipboard-check text-sm"></i>
+                            Buka Papan Kerja
+                        </a>
+                    </div>
+                </div>
         <!-- Flash Messages -->
         @if(session('success'))
             <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-3 shadow-sm">
@@ -170,6 +175,7 @@
                         </div>
                     @endif
                 </div>
+            </div>
             </div>
         </div>
     </div>
