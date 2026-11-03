@@ -1178,13 +1178,14 @@ class AdminController extends Controller
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
+        $allTodos = (clone $query)->latest()->get();
         $todos = $query->latest()->paginate(15)->withQueryString();
-        $workers = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker'])
+        $workers = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker', 'marketing'])
             ->orderBy('name')
             ->get();
         $myTodos = \App\Models\TodoList::where('user_id', auth()->id())->latest()->get();
 
-        return view('admin.tasks', compact('todos', 'workers', 'myTodos'));
+        return view('admin.tasks', compact('todos', 'allTodos', 'workers', 'myTodos'));
     }
 
     public function exportTasks(Request $request)
