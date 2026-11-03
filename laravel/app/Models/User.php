@@ -148,6 +148,7 @@ class User extends Authenticatable
             self::ROLE_PROGRAM_MANAGER,
             self::ROLE_CRM_STAFF,
             self::ROLE_MARKETING,
+            self::ROLE_FIELD_WORKER,
         ]);
     }
 
@@ -195,6 +196,9 @@ class User extends Authenticatable
             ]),
             self::ROLE_MARKETING => in_array($menuKey, [
                 'dashboard', 'marketing_dashboard', 'marketing_input', 'analytics', 'campaigns', 'attendance', 'tasks'
+            ]),
+            self::ROLE_FIELD_WORKER => in_array($menuKey, [
+                'dashboard', 'attendance', 'tasks'
             ]),
             default => false,
         };

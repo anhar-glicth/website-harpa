@@ -147,12 +147,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/attendance/export', [AdminController::class, 'exportAttendance'])->name('admin.attendance.export');
     Route::get('/admin/tasks', [AdminController::class, 'taskList'])->name('admin.tasks');
     Route::post('/admin/tasks/store', [AdminController::class, 'storeTask'])->name('admin.tasks.store');
+    Route::post('/admin/tasks/{id}/move', [AdminController::class, 'moveTask'])->name('admin.tasks.move');
+    Route::delete('/admin/tasks/{id}/delete', [AdminController::class, 'deleteTask'])->name('admin.tasks.delete');
     Route::get('/admin/tasks/export', [AdminController::class, 'exportTasks'])->name('admin.tasks.export');
 
-    // Staff Personal Attendance & Todo Routes (Staff Only — donatur tidak boleh akses)
+    // Personal Attendance & Todo Routes
     Route::post('/attendance', [FieldController::class, 'attendanceStore'])->name('attendance.store');
     Route::post('/todo/store', [FieldController::class, 'todoStore'])->name('todo.store');
     Route::post('/todo/{id}/update', [FieldController::class, 'todoUpdate'])->name('todo.update');
+    Route::post('/todo/{id}/move', [AdminController::class, 'moveTask'])->name('todo.move');
+    Route::delete('/todo/{id}/delete', [AdminController::class, 'deleteTask'])->name('todo.delete');
     
     // Transaction Management Routes
     Route::get('/admin/donors-list', [AdminController::class, 'donorsList'])->name('admin.donors_list');
@@ -252,6 +256,8 @@ Route::middleware(['auth', 'field'])->group(function () {
     Route::post('/field/attendance', [FieldController::class, 'attendanceStore'])->name('field.attendance.store');
     Route::post('/field/todo/store', [FieldController::class, 'todoStore'])->name('field.todo.store');
     Route::post('/field/todo/{id}/update', [FieldController::class, 'todoUpdate'])->name('field.todo.update');
+    Route::post('/field/todo/{id}/move', [AdminController::class, 'moveTask'])->name('field.todo.move');
+    Route::delete('/field/todo/{id}/delete', [AdminController::class, 'deleteTask'])->name('field.todo.delete');
     Route::get('/field/prospects', [FieldController::class, 'prospects'])->name('field.prospects');
     Route::post('/field/prospects/store', [FieldController::class, 'storeProspect'])->name('field.prospects.store');
     Route::post('/field/prospects/{id}/response', [FieldController::class, 'storeProspectResponse'])->name('field.prospects.response');

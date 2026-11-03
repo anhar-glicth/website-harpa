@@ -30,14 +30,13 @@ class DonorDashboardController extends Controller
             ->sum('amount');
 
         $todayAttendance = collect();
-        $todos = collect();
+        $todos = TodoList::where('user_id', $userId)->latest()->get();
 
-        // Absensi & To-Do hanya untuk staff internal (bukan donatur)
+        // Absensi hanya untuk staff internal (bukan donatur)
         if (!Auth::user()->isUser()) {
             $todayAttendance = Attendance::where('user_id', $userId)
                 ->whereDate('created_at', now()->toDateString())
                 ->get();
-            $todos = TodoList::where('user_id', $userId)->latest()->get();
         }
 
         return view('dashboard', compact('donations', 'totalDonated', 'totalZakat', 'todayAttendance', 'todos'));
