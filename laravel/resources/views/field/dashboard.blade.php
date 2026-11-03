@@ -173,100 +173,14 @@
                 @endif
             </div>
 
-            <!-- 3. TO-DO LIST TAB -->
+            <!-- 3. TO-DO LIST TAB (TRELLO KANBAN BOARD) -->
             <div x-show="activeTab === 'todo'" class="space-y-6">
-                <div class="bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
-                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                        <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tighter italic text-base">Daftar <span class="text-primary-600">Tugas Lapangan</span></h3>
-                        <div class="flex items-center gap-3">
-                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $todos->where('status', 'completed')->count() }}/{{ $todos->count() }} Selesai</span>
-                            <div class="w-20 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-primary-600 rounded-full transition-all duration-500" style="width: {{ $todos->count() ? ($todos->where('status', 'completed')->count() / $todos->count()) * 100 : 0 }}%"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Form Tambah Tugas Internal Staff -->
-                    <div class="bg-slate-50 rounded-3xl p-6 space-y-4 border border-slate-100">
-                        <h4 class="text-[10px] font-black uppercase tracking-wider text-slate-400">Buat Tugas Lapangan Mandiri</h4>
-                        <form action="{{ route('field.todo.store') }}" method="POST" class="space-y-4">
-                            @csrf
-                            <input type="text" name="task" required placeholder="Judul tugas lapangan..." class="w-full p-4 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 font-bold text-xs transition-all uppercase">
-                            <textarea name="description" placeholder="Catatan tambahan / rincian pengerjaan tugas..." class="w-full p-4 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 font-semibold text-xs transition-all h-20 resize-none"></textarea>
-                            <div class="flex flex-col sm:flex-row gap-3 items-end">
-                                <div class="flex-grow w-full">
-                                    <label class="text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block ml-1">Tenggat Waktu (Deadline)</label>
-                                    <input name="deadline" type="datetime-local" class="w-full p-3.5 bg-white border border-slate-150 rounded-2xl outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 font-bold text-xs transition-all">
-                                </div>
-                                <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-black uppercase text-xs tracking-wider shrink-0">Simpan Tugas</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Todos list container -->
-                    @if($todos->count() > 0)
-                        <div class="space-y-3">
-                            @foreach($todos as $t)
-                                <div @click="expandedTodoId = (expandedTodoId === {{ $t->id }} ? null : {{ $t->id }})" :class="expandedTodoId === {{ $t->id }} ? 'border-primary-200 bg-primary-50/5' : 'border-slate-100 bg-slate-50/20'" class="p-5 rounded-2xl border transition-all duration-205 cursor-pointer space-y-4 hover:border-primary-100">
-                                    <div class="flex justify-between items-center gap-4">
-                                        <div class="flex items-center space-x-3.5">
-                                            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border {{ $t->status === 'completed' ? 'bg-primary-100 text-primary-700 border-primary-100' : 'bg-white text-slate-400 border-slate-100' }}">
-                                                <i class="fa-solid {{ $t->status === 'completed' ? 'fa-circle-check' : 'fa-clipboard-list' }}"></i>
-                                            </div>
-                                            <div>
-                                                <span class="block text-xs font-bold text-slate-800 uppercase {{ $t->status === 'completed' ? 'line-through text-slate-400' : '' }}">{{ $t->task }}</span>
-                                                @if($t->deadline)
-                                                    <span class="text-[9px] font-bold uppercase tracking-wider text-amber-600"><i class="fa-regular fa-clock mr-1"></i> {{ $t->deadline->format('d M Y H:i') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 transition-transform duration-200" :class="expandedTodoId === {{ $t->id }} ? 'rotate-180 text-primary-600' : ''"></i>
-                                    </div>
-
-                                    <!-- Expanded block -->
-                                    <div x-show="expandedTodoId === {{ $t->id }}" @click.stop style="display: none;" class="border-t border-slate-100 pt-4 space-y-4">
-                                        @if($t->description)
-                                            <div>
-                                                <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 block mb-1">Rincian Tugas:</span>
-                                                <p class="text-xs text-slate-600 font-semibold leading-relaxed bg-white border border-slate-100 p-4 rounded-xl">{{ $t->description }}</p>
-                                            </div>
-                                        @endif
-
-                                        @if($t->result_note)
-                                            <div>
-                                                <span class="text-[9px] font-black uppercase tracking-wider text-emerald-600 block mb-1">Catatan Hasil Selesai:</span>
-                                                <p class="text-xs text-slate-600 font-semibold leading-relaxed bg-emerald-50/20 border border-emerald-100/50 p-4 rounded-xl font-medium">"{{ $t->result_note }}"</p>
-                                            </div>
-                                        @endif
-
-                                        <div class="flex items-center justify-between gap-4 flex-wrap pt-2">
-                                            <div class="flex items-center gap-2">
-                                                @if($t->status === 'pending')
-                                                    <button @click="activeTodoId = {{ $t->id }}; activeTodoTask = '{{ addslashes($t->task) }}'; modalTodoResult = true" class="bg-primary-600 hover:bg-primary-700 text-white font-black text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl shadow">Tandai Selesai & Upload Bukti</button>
-                                                @else
-                                                    <form action="{{ route('field.todo.update', $t->id) }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="status" value="pending">
-                                                        <button type="submit" class="bg-slate-100 hover:bg-amber-50 hover:text-amber-700 text-slate-500 font-black text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl border border-slate-200/50">Batalkan Status Selesai</button>
-                                                    </form>
-                                                @endif
-
-                                                @if($t->result_attachment)
-                                                    <a href="{{ asset($t->result_attachment) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-[11px] uppercase tracking-wider px-5 py-3 rounded-xl border border-slate-200/50 flex items-center gap-1"><i class="fa-solid fa-image"></i> Lihat Foto Bukti</a>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="py-12 text-center">
-                            <i class="fa-solid fa-check-double text-slate-200 text-4xl mb-3 block"></i>
-                            <p class="text-slate-450 font-bold italic uppercase tracking-wider text-[10px] text-slate-400">Belum ada tugas lapangan yang direncanakan.</p>
-                        </div>
-                    @endif
-                </div>
+                <x-trello-board 
+                    :todos="$todos" 
+                    :canAssign="false" 
+                    :storeRoute="route('field.todo.store')" 
+                    :showViewToggle="true" 
+                />
             </div>
 
             <!-- 4. DISTRIBUTION REPORTS TAB -->
