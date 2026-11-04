@@ -584,6 +584,7 @@ class HarpaDataController extends Controller
         $tab = $request->query('tab', 'jumat');
         $bulan = $request->query('bulan');
         $sumber = $request->query('sumber');
+        $batchDate = $request->query('batch_date', date('Y-m-d'));
 
         $data = match ($tab) {
             'jumat'       => $this->engine->getKirimJumatList(),
@@ -594,13 +595,231 @@ class HarpaDataController extends Controller
             default       => $this->engine->getKirimJumatList(),
         };
 
+        // Ambil riwayat blast untuk tanggal/batch ini
+        $batchLabel = $tab . '-' . $batchDate;
+        
+        $blastRecords = RawBlast::where(function($q) use ($batchDate, $batchLabel) {
+            $q->whereDate('timestamp_blast', $batchDate)
+              ->orWhere('batch_tarik', $batchLabel);
+        })->orderBy('timestamp_blast', 'desc')->get()->keyBy('receiver_number');
+
+        $perkenalanMap = [];
+        if ($tab === 'perkenalan') {
+            $perkenalanMap = RefPerkenalanTerkirim::whereDate('tgl_dikirim', $batchDate)
+                ->pluck('tgl_dikirim', 'no_hp')
+                ->all();
+        }
+
+        $stats = [
+            'total'     => count($data),
+            'delivered' => 0,
+            'read'      => 0,
+            'failed'    => 0,
+            'pending'   => 0,
+        ];
+
+        foreach ($data as &$row) {
+            $phone = $row['no_hp'] ?? ($row['no_hp_lama'] ?? null);
+            if (!$phone) {
+                $row['current_status'] = 'PENDING';
+                $stats['pending']++;
+                continue;
+            }
+
+            $status = 'PENDING';
+            if (isset($blastRecords[$phone])) {
+                $rawStatus = strtoupper($blastRecords[$phone]->status);
+                if (str_contains($rawStatus, 'READ')) {
+                    $status = 'READ';
+                } elseif (str_contains($rawStatus, 'DELIVER') || str_contains($rawStatus, 'SUCC')) {
+                    $status = 'DELIVERED';
+                } elseif (str_contains($rawStatus, 'FAIL')) {
+                    $status = 'FAILED';
+                }
+            } elseif (isset($perkenalanMap[$phone])) {
+                $status = 'DELIVERED';
+            }
+
+            $row['current_status'] = $status;
+
+            if ($status === 'READ') {
+                $stats['read']++;
+            } elseif ($status === 'DELIVERED') {
+                $stats['delivered']++;
+            } elseif ($status === 'FAILED') {
+                $stats['failed']++;
+            } else {
+                $stats['pending']++;
+            }
+        }
+        unset($row);
+
+        $stats['finished'] = $stats['read'] + $stats['delivered'] + $stats['failed'];
+        $stats['percent'] = $stats['total'] > 0 ? round(($stats['finished'] / $stats['total']) * 100) : 0;
+
+        $clientData = [];
+        foreach ($data as $r) {
+            $phone = $r['no_hp'] ?? ($r['no_hp_lama'] ?? '');
+            $name = $r['nama'] ?? ($r['nama_lengkap'] ?? 'Donatur');
+            $donaturId = $r['donatur_id'] ?? '-';
+            $status = $r['current_status'] ?? 'PENDING';
+            $totalDonasi = $r['total_donasi'] ?? 0;
+
+            $clientData[] = [
+                'no_hp'           => (string)$phone,
+                'nama'            => (string)$name,
+                'donatur_id'      => (string)$donaturId,
+                'total_donasi'    => (int)$totalDonasi,
+                'status'          => (string)$status,
+                'segmen'          => (string)($r['segmen'] ?? ''),
+                'jadwal'          => (string)($r['jadwal'] ?? ''),
+                'alasan'          => (string)($r['alasan'] ?? ''),
+                'read_terakhir'   => isset($r['read_terakhir']) && $r['read_terakhir'] ? $r['read_terakhir']->format('d M Y') : 'Belum Pernah',
+                'sumber'          => (string)($r['sumber'] ?? ''),
+                'bulan_donasi'    => (string)($r['bulan_donasi'] ?? ''),
+                'frekuensi'       => (int)($r['frekuensi'] ?? 0),
+                'program'         => (string)($r['program_terakhir'] ?? ''),
+                'tgl_dikenalkan'  => (string)($r['tgl_dikenalkan'] ?? ''),
+                'sisa_hari_baru'  => (int)($r['sisa_hari_baru'] ?? 0),
+                'donasi_terakhir' => (string)($r['donasi_terakhir'] ?? ($r['tgl_donasi_terakhir'] ?? '-')),
+                'pic_crm'         => (string)($r['pic_crm'] ?? ''),
+                'catatan'         => (string)($r['catatan'] ?? ''),
+            ];
+        }
+
         return view('admin.harpa.daftar_kirim', [
-            'active' => 'harpa_daftar_kirim',
-            'tab'    => $tab,
-            'data'   => $data,
-            'bulan'  => $bulan,
-            'sumber' => $sumber,
+            'active'     => 'harpa_daftar_kirim',
+            'tab'        => $tab,
+            'data'       => $data,
+            'clientData' => $clientData,
+            'bulan'      => $bulan,
+            'sumber'     => $sumber,
+            'batchDate'  => $batchDate,
+            'batchLabel' => $batchLabel,
+            'stats'      => $stats,
         ]);
+    }
+
+    /**
+     * Update status tracking pengiriman broadcast (Alur D)
+     * Mendukung update per nomor atau batch massal via AJAX
+     */
+    public function updateDaftarKirimStatus(Request $request)
+    {
+        $validated = $request->validate([
+            'phones'     => 'required',
+            'status'     => 'required|in:PENDING,DELIVERED,READ,FAILED',
+            'tab'        => 'nullable|string',
+            'batch_date' => 'nullable|date',
+            'catatan'    => 'nullable|string',
+        ]);
+
+        $rawPhones = is_array($validated['phones']) ? $validated['phones'] : [$validated['phones']];
+        $status = strtoupper($validated['status']);
+        $tab = $validated['tab'] ?? 'jumat';
+        $batchDate = $validated['batch_date'] ?? date('Y-m-d');
+        $batchLabel = $tab . '-' . $batchDate;
+        $catatan = $validated['catatan'] ?? null;
+
+        $phones = [];
+        foreach ($rawPhones as $p) {
+            $cleaned = $this->engine->normalizePhoneNumber($p);
+            if ($cleaned) {
+                $phones[] = $cleaned;
+            }
+        }
+
+        if (empty($phones)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada nomor WhatsApp yang valid.'
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            if ($status === 'PENDING') {
+                // Hapus catatan blast hari/batch ini agar kembali berstatus pending
+                RawBlast::whereIn('receiver_number', $phones)
+                    ->where(function($q) use ($batchDate, $batchLabel) {
+                        $q->whereDate('timestamp_blast', $batchDate)
+                          ->orWhere('batch_tarik', $batchLabel);
+                    })->delete();
+
+                if ($tab === 'perkenalan') {
+                    RefPerkenalanTerkirim::whereIn('no_hp', $phones)
+                        ->whereDate('tgl_dikirim', $batchDate)
+                        ->delete();
+                }
+            } else {
+                foreach ($phones as $phone) {
+                    $blast = RawBlast::where('receiver_number', $phone)
+                        ->where(function($q) use ($batchDate, $batchLabel) {
+                            $q->whereDate('timestamp_blast', $batchDate)
+                              ->orWhere('batch_tarik', $batchLabel);
+                        })->first();
+
+                    if ($blast) {
+                        $blast->status = $status;
+                        $blast->save();
+                    } else {
+                        RawBlast::create([
+                            'receiver_number' => $phone,
+                            'broadcast_id'    => 'TRACKER_' . strtoupper($tab) . '_' . date('Ymd', strtotime($batchDate)),
+                            'message_id'      => 'TRK_' . uniqid(),
+                            'status'          => $status,
+                            'timestamp_blast' => \Carbon\Carbon::parse($batchDate)->setTime(now()->hour, now()->minute, now()->second),
+                            'batch_tarik'     => $batchLabel,
+                            'raw_json'        => [
+                                'source'     => 'daftar_kirim_tracker',
+                                'tab'        => $tab,
+                                'user_id'    => Auth::id(),
+                                'user_name'  => Auth::user()?->name ?? 'Admin CRM',
+                                'catatan'    => $catatan,
+                                'updated_at' => now()->toDateTimeString(),
+                            ],
+                        ]);
+                    }
+
+                    if ($tab === 'perkenalan' && in_array($status, ['DELIVERED', 'READ'])) {
+                        RefPerkenalanTerkirim::firstOrCreate(
+                            ['no_hp' => $phone],
+                            [
+                                'tgl_dikirim'  => $batchDate,
+                                'broadcast_id' => 'MANUAL_PERKENALAN_' . date('Ymd', strtotime($batchDate)),
+                                'catatan'      => $catatan ?: 'Dikenalkan via Tracker Alur D',
+                            ]
+                        );
+                    }
+
+                    MasterNomor::firstOrCreate(
+                        ['no_hp' => $phone],
+                        [
+                            'wa_aktif'     => true,
+                            'diperiksa_at' => now(),
+                            'sumber_cek'   => 'manual_tracker',
+                        ]
+                    );
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success'       => true,
+                'message'       => count($phones) . ' nomor berhasil diupdate ke status ' . $status,
+                'status'        => $status,
+                'updated_count' => count($phones),
+                'phones'        => $phones,
+            ]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Error updateDaftarKirimStatus: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

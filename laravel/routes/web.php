@@ -212,6 +212,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         // Alur C, D, F & Settings
         Route::get('/rekap', [HarpaDataController::class, 'rekapSegmen'])->name('rekap');
         Route::get('/daftar-kirim', [HarpaDataController::class, 'daftarKirim'])->name('daftar_kirim');
+        Route::post('/daftar-kirim/update-status', [HarpaDataController::class, 'updateDaftarKirimStatus'])->name('daftar_kirim.update_status');
         Route::get('/daftar-kirim/export/{type}', [HarpaDataController::class, 'exportDaftarKirim'])->name('daftar_kirim.export');
         Route::get('/laporan', [HarpaDataController::class, 'laporanAnalitik'])->name('laporan');
         Route::get('/settings', [HarpaDataController::class, 'settings'])->name('settings');
