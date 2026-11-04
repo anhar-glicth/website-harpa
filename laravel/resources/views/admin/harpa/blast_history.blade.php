@@ -24,7 +24,11 @@
                         </h1>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="document.getElementById('modal-upload-blast').classList.remove('hidden')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all">
+                        <button onclick="document.getElementById('modal-manual-blast').classList.remove('hidden')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            + Catat Blast Manual
+                        </button>
+                        <button onclick="document.getElementById('modal-upload-blast').classList.remove('hidden')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             Unggah Ekspor Everpro
                         </button>
@@ -189,6 +193,70 @@
                 </button>
                 <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-black uppercase tracking-widest shadow-md">
                     Unggah & Periksa
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Catat Blast Manual -->
+<div id="modal-manual-blast" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+                <h3 class="text-base font-montserrat font-black text-slate-800">Catat Riwayat Blast Manual</h3>
+                <p class="text-xs text-slate-400 font-medium">Input riwayat broadcast manual untuk satu nomor HP</p>
+            </div>
+            <button onclick="document.getElementById('modal-manual-blast').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <form action="{{ route('admin.harpa.blast.manual') }}" method="POST" class="space-y-4">
+            @csrf
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Nomor WhatsApp / HP Penerima <span class="text-rose-500">*</span></label>
+                <input type="text" name="receiver_number" required placeholder="08xxxxxxxxxx atau 628xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500">
+                <span class="text-[10px] text-slate-400 mt-1 block">Otomatis dinormalisasi ke format 628 (11–14 digit).</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jenis Broadcast</label>
+                    <select name="batch_type" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none">
+                        <option value="jumat">Selling Jumat</option>
+                        <option value="payday">Payday Bulanan</option>
+                        <option value="perkenalan">Perkenalan Donatur Baru</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tanggal Broadcast</label>
+                    <input type="date" name="batch_date" value="{{ date('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-slate-700 outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Status Penerimaan Pesan <span class="text-rose-500">*</span></label>
+                <select name="status" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 outline-none">
+                    <option value="READ">READ (Dibaca oleh Kontak / Centang 2 Biru)</option>
+                    <option value="DELIVERED">DELIVERED (Terkirim Sampai HP / Centang 2 Abu-abu)</option>
+                    <option value="SUCCESS">SUCCESS (Terkirim dari Sistem)</option>
+                    <option value="FAILED">FAILED (Gagal Terkirim / Nomor Tidak Aktif / Diblokir)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Catatan / Keterangan</label>
+                <input type="text" name="catatan" placeholder="Keterangan singkat..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-700 outline-none">
+            </div>
+
+            <div class="pt-3 flex justify-end gap-2">
+                <button type="button" onclick="document.getElementById('modal-manual-blast').classList.add('hidden')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
+                    Batal
+                </button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black uppercase tracking-widest shadow-md cursor-pointer">
+                    Simpan Riwayat Blast
                 </button>
             </div>
         </form>

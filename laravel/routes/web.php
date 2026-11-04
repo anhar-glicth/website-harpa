@@ -204,8 +204,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/import-donasi/manual', [HarpaDataController::class, 'storeManualDonation'])->name('import_donasi.manual');
         Route::get('/blast', [HarpaDataController::class, 'blastHistory'])->name('blast_history');
         Route::post('/blast', [HarpaDataController::class, 'importBlastSubmit'])->name('blast.submit');
+        Route::post('/blast/manual', [HarpaDataController::class, 'storeManualBlast'])->name('blast.manual');
         Route::get('/wbs', [HarpaDataController::class, 'wbsPro'])->name('wbs');
         Route::post('/wbs', [HarpaDataController::class, 'importWbsSubmit'])->name('wbs.submit');
+        Route::post('/wbs/manual', [HarpaDataController::class, 'storeManualDeadNumber'])->name('wbs.manual');
 
         // Alur C, D, F & Settings
         Route::get('/rekap', [HarpaDataController::class, 'rekapSegmen'])->name('rekap');

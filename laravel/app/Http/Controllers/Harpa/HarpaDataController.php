@@ -383,6 +383,46 @@ class HarpaDataController extends Controller
     }
 
     /**
+     * Catat Riwayat Blast Secara Manual untuk Suatu Nomor.
+     */
+    public function storeManualBlast(Request $request)
+    {
+        $request->validate([
+            'receiver_number' => 'required|string|max:50',
+            'status'          => 'required|in:READ,DELIVERED,SUCCESS,FAILED,LAINNYA',
+            'batch_type'      => 'required|in:jumat,payday,perkenalan',
+            'batch_date'      => 'required|date',
+            'catatan'         => 'nullable|string|max:255',
+        ]);
+
+        $norm = MasterNomor::normalize($request->receiver_number);
+        $phone = $norm['number'];
+        if (!$norm['is_valid'] || !$phone) {
+            return back()->withInput()->with('error', 'Format nomor HP tidak valid (wajib 628... panjang 11-14 digit).');
+        }
+
+        $batchLabel = $request->batch_type . '-' . $request->batch_date;
+        $broadcastId = 'MANUAL-' . strtoupper(Str::random(6)) . '-' . date('His');
+
+        RawBlast::create([
+            'receiver_number' => $phone,
+            'broadcast_id'    => $broadcastId,
+            'message_id'      => 'MSG-' . strtoupper(Str::random(8)),
+            'status'          => $request->status,
+            'timestamp_blast' => $request->batch_date . ' ' . date('H:i:s'),
+            'batch_tarik'     => $batchLabel,
+            'raw_json'        => json_encode([
+                'source'  => 'manual_input',
+                'user'    => Auth::user()->name,
+                'catatan' => $request->catatan,
+            ]),
+        ]);
+
+        return redirect()->route('admin.harpa.blast_history')
+            ->with('success', "Riwayat blast manual untuk nomor {$phone} berhasil dicatat dengan status: {$request->status} ({$batchLabel})!");
+    }
+
+    /**
      * Modul Cek Nomor WhatsApp (WBS Pro) & Nomor Mati (Alur E).
      */
     public function wbsPro(Request $request)
@@ -430,6 +470,65 @@ class HarpaDataController extends Controller
         }
 
         return back()->with('error', $res['message'] ?? 'Gagal memproses hasil WBS Pro.');
+    }
+
+    /**
+     * Tandai Nomor Mati / Aktif Kembali Secara Manual.
+     */
+    public function storeManualDeadNumber(Request $request)
+    {
+        $request->validate([
+            'no_hp'       => 'required|string|max:50',
+            'status_wa'   => 'required|in:0,1',
+            'tgl_cek'     => 'required|date',
+            'catatan'     => 'nullable|string|max:255',
+        ]);
+
+        $norm = MasterNomor::normalize($request->no_hp);
+        $phone = $norm['number'];
+        if (!$norm['is_valid'] || !$phone) {
+            return back()->withInput()->with('error', 'Format nomor HP tidak valid (wajib 628... panjang 11-14 digit).');
+        }
+
+        $isWaAktif = (bool)$request->status_wa;
+
+        DB::beginTransaction();
+        try {
+            // Update MasterNomor jika ada
+            $master = MasterNomor::find($phone);
+            if ($master) {
+                $master->wa_aktif = $isWaAktif;
+                if (!empty($request->catatan)) {
+                    $master->catatan = $request->catatan;
+                }
+                $master->save();
+            }
+
+            if (!$isWaAktif) {
+                // Catat di RawCekWa sebagai nomor mati
+                RawCekWa::updateOrCreate(
+                    ['no_hp' => $phone],
+                    [
+                        'is_wa_aktif' => false,
+                        'tgl_cek'     => $request->tgl_cek,
+                        'catatan'     => $request->catatan ?: ('Ditandai manual oleh ' . Auth::user()->name),
+                        'batch_tarik' => 'manual-' . date('Y-m'),
+                    ]
+                );
+            } else {
+                // Jika aktif kembali, hapus dari catatan nomor mati
+                RawCekWa::where('no_hp', $phone)->delete();
+            }
+
+            DB::commit();
+
+            $statusText = $isWaAktif ? 'AKTIF KEMBALI' : 'MATI (TIDAK AKTIF)';
+            return redirect()->route('admin.harpa.wbs')
+                ->with('success', "Nomor {$phone} berhasil diperbarui statusnya menjadi: {$statusText}!");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', 'Gagal memperbarui status nomor: ' . $e->getMessage());
+        }
     }
 
     /**
