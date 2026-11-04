@@ -201,6 +201,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/papan-kerja/approve', [HarpaDataController::class, 'papanKerjaApprove'])->name('papan_kerja.approve');
         Route::get('/import-donasi', [HarpaDataController::class, 'importDonationsForm'])->name('import_donasi');
         Route::post('/import-donasi', [HarpaDataController::class, 'importDonationsSubmit'])->name('import_donasi.submit');
+        Route::post('/import-donasi/manual', [HarpaDataController::class, 'storeManualDonation'])->name('import_donasi.manual');
         Route::get('/blast', [HarpaDataController::class, 'blastHistory'])->name('blast_history');
         Route::post('/blast', [HarpaDataController::class, 'importBlastSubmit'])->name('blast.submit');
         Route::get('/wbs', [HarpaDataController::class, 'wbsPro'])->name('wbs');
