@@ -209,6 +209,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/wbs', [HarpaDataController::class, 'importWbsSubmit'])->name('wbs.submit');
         Route::post('/wbs/manual', [HarpaDataController::class, 'storeManualDeadNumber'])->name('wbs.manual');
 
+        // Unduh Template Format File CSV / Excel
+        Route::get('/templates/{type}', [HarpaDataController::class, 'downloadTemplate'])->name('template.download');
+
         // Alur C, D, F & Settings
         Route::get('/rekap', [HarpaDataController::class, 'rekapSegmen'])->name('rekap');
         Route::get('/daftar-kirim', [HarpaDataController::class, 'daftarKirim'])->name('daftar_kirim');

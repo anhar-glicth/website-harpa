@@ -916,6 +916,114 @@ class HarpaDataController extends Controller
     }
 
     /**
+     * Download template format file CSV/Excel untuk Alur Impor Harpa (Alur A, B, E)
+     */
+    public function downloadTemplate(string $type)
+    {
+        return match ($type) {
+            'donasi' => $this->downloadDonasiTemplate(),
+            'blast'  => $this->downloadBlastTemplate(),
+            'wbs'    => $this->downloadWbsTemplate(),
+            default  => abort(404, 'Template tidak ditemukan'),
+        };
+    }
+
+    private function downloadDonasiTemplate()
+    {
+        $filename = "template_impor_donasi_harpa.csv";
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM agar rapi di Microsoft Excel
+            fputcsv($handle, [
+                'invoice_id',
+                'tanggal',
+                'campaign',
+                'nama',
+                'no_hp',
+                'nominal',
+                'kode_unik',
+                'status',
+                'via_bayar',
+            ]);
+
+            $sampleRows = [
+                ['INV-202611-001', '2026-11-01 08:30:15', 'Sedekah Subuh Palestina', 'Ahmad Fadhilah', '081234567890', '100000', '125', 'success', 'BCA'],
+                ['INV-202611-002', '2026-11-01 10:15:40', 'Bantuan Air Bersih Gaza', 'Siti Rahmawati', '6285712345678', '250000', '340', 'success', 'Mandiri'],
+                ['INV-202611-003', '2026-11-02 14:05:12', 'Paket Pangan Darurat Jabalia', 'Budi Santoso', '081987654321', '500000', '0', 'success', 'QRIS'],
+                ['INV-202611-004', '2026-11-02 19:45:00', 'Hangatkan Gaza Musim Dingin', 'Hj. Nurhayati', '6281399887766', '1000000', '500', 'success', 'BSI'],
+                ['INV-202611-005', '2026-11-03 07:20:10', 'Ambulans Darurat Khan Younis', 'Fikri Haikal', '082155443322', '50000', '12', 'waiting', 'BRI'],
+            ];
+
+            foreach ($sampleRows as $row) {
+                fputcsv($handle, $row);
+            }
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    private function downloadBlastTemplate()
+    {
+        $filename = "template_riwayat_blast_everpro_harpa.csv";
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+            fputcsv($handle, [
+                'receiver_number',
+                'broadcast_id',
+                'message_id',
+                'status',
+                'timestamp',
+            ]);
+
+            $sampleRows = [
+                ['6281234567890', 'SELLING_JUMAT_20261106', 'MSG-EVR-001', 'READ', '2026-11-06 09:15:30'],
+                ['6285712345678', 'SELLING_JUMAT_20261106', 'MSG-EVR-002', 'DELIVERED', '2026-11-06 09:15:32'],
+                ['6281987654321', 'SELLING_JUMAT_20261106', 'MSG-EVR-003', 'FAILED', '2026-11-06 09:15:35'],
+                ['6281399887766', 'PAYDAY_20261101', 'MSG-EVR-004', 'READ', '2026-11-01 10:00:12'],
+                ['6282155443322', 'PERKENALAN_DONATUR_202611', 'MSG-EVR-005', 'DELIVERED', '2026-11-02 11:30:00'],
+            ];
+
+            foreach ($sampleRows as $row) {
+                fputcsv($handle, $row);
+            }
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    private function downloadWbsTemplate()
+    {
+        $filename = "template_hasil_wbs_pro_harpa.csv";
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+            fputcsv($handle, [
+                'no_hp',
+                'status',
+            ]);
+
+            $sampleRows = [
+                ['6281234567890', 'Aktif'],
+                ['6285712345678', 'Aktif'],
+                ['6281987654321', 'Mati / Tidak Aktif'],
+                ['6281399887766', 'Invalid Number'],
+                ['6282155443322', 'Bukan WhatsApp'],
+                ['089912345678', 'Mati'],
+            ];
+
+            foreach ($sampleRows as $row) {
+                fputcsv($handle, $row);
+            }
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
      * =========================================================================
      * ALUR F: LAPORAN ANALITIK DONATUR
      * =========================================================================

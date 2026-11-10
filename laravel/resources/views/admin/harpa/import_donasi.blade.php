@@ -24,6 +24,10 @@
                         </h1>
                     </div>
                     <div class="flex items-center gap-2">
+                        <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all">
+                            <i class="fa-solid fa-file-arrow-down text-sm"></i>
+                            Unduh Template (.CSV)
+                        </a>
                         <a href="{{ route('admin.harpa.papan_kerja') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 font-bold text-xs uppercase tracking-wider transition-all">
                             <i class="fa-solid fa-clipboard-check text-sm"></i>
                             Buka Papan Kerja
@@ -113,6 +117,23 @@
                                     </div>
                                 </div>
 
+                                <!-- Download Template Callout Banner -->
+                                <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">
+                                            <i class="fa-solid fa-file-csv"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-xs font-bold text-slate-800">Format File Donasi Standar (.CSV / .Excel)</h4>
+                                            <p class="text-[11px] text-slate-500 font-medium">Unduh template acuan dengan 9 kolom standar agar data terbaca 100% tanpa error.</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-sm transition whitespace-nowrap">
+                                        <i class="fa-solid fa-download"></i>
+                                        Unduh Template CSV
+                                    </a>
+                                </div>
+
                                 <!-- File Input -->
                                 <div>
                                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
@@ -140,6 +161,189 @@
                                     </button>
                                 </div>
                             </form>
+                        </div>
+
+                        <!-- Panduan Format Kolom & Contoh Tabel Donasi -->
+                        <div x-data="{ openPreview: true, viewMode: 'table' }" class="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm space-y-5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center text-lg shrink-0">
+                                        <i class="fa-solid fa-table-columns"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-base font-montserrat font-black text-slate-800 flex items-center gap-2">
+                                            Panduan Format Kolom & Contoh Tabel
+                                        </h3>
+                                        <p class="text-xs text-slate-400 font-medium">Susunan header dan contoh baris data yang dikenali oleh Harpa Data Engine</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-black uppercase tracking-wider transition flex items-center gap-1.5 border border-emerald-200">
+                                        <i class="fa-solid fa-download"></i> Unduh File Contoh (.CSV)
+                                    </a>
+                                    <button type="button" @click="openPreview = !openPreview" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                                        <span x-text="openPreview ? 'Sembunyikan' : 'Buka Panduan'"></span>
+                                        <i class="fa-solid text-[10px]" :class="openPreview ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div x-show="openPreview" x-transition class="space-y-5">
+                                <!-- Mode Switcher: Penjelasan Kolom vs Contoh Data -->
+                                <div class="flex items-center gap-2 p-1 bg-slate-100 rounded-xl w-fit text-xs font-bold">
+                                    <button type="button" @click="viewMode = 'table'" :class="viewMode === 'table' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-1.5 rounded-lg transition cursor-pointer">
+                                        <i class="fa-solid fa-table mr-1"></i> Preview Contoh Data (Tabel)
+                                    </button>
+                                    <button type="button" @click="viewMode = 'columns'" :class="viewMode === 'columns' ? 'bg-white text-primary-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-1.5 rounded-lg transition cursor-pointer">
+                                        <i class="fa-solid fa-list-check mr-1"></i> Penjelasan 9 Kolom Standar
+                                    </button>
+                                </div>
+
+                                <!-- VIEW 1: PREVIEW CONTOH DATA (TABEL) -->
+                                <div x-show="viewMode === 'table'" class="overflow-x-auto rounded-2xl border border-slate-200/80">
+                                    <table class="w-full text-left text-xs whitespace-nowrap">
+                                        <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-600 border-b border-slate-200/80">
+                                            <tr>
+                                                <th class="py-3 px-3.5 bg-slate-100/70">invoice_id *</th>
+                                                <th class="py-3 px-3.5">tanggal *</th>
+                                                <th class="py-3 px-3.5">campaign *</th>
+                                                <th class="py-3 px-3.5">nama *</th>
+                                                <th class="py-3 px-3.5">no_hp *</th>
+                                                <th class="py-3 px-3.5 text-right">nominal *</th>
+                                                <th class="py-3 px-3.5 text-right">kode_unik</th>
+                                                <th class="py-3 px-3.5">status *</th>
+                                                <th class="py-3 px-3.5">via_bayar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-primary-600">INV-202611-001</td>
+                                                <td class="py-2.5 px-3.5 font-mono text-[11px]">2026-11-01 08:30:15</td>
+                                                <td class="py-2.5 px-3.5 font-semibold text-slate-800">Sedekah Subuh Palestina</td>
+                                                <td class="py-2.5 px-3.5">Ahmad Fadhilah</td>
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">081234567890</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono font-bold">100000</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono text-slate-400">125</td>
+                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5">BCA</td>
+                                            </tr>
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-primary-600">INV-202611-002</td>
+                                                <td class="py-2.5 px-3.5 font-mono text-[11px]">2026-11-01 10:15:40</td>
+                                                <td class="py-2.5 px-3.5 font-semibold text-slate-800">Bantuan Air Bersih Gaza</td>
+                                                <td class="py-2.5 px-3.5">Siti Rahmawati</td>
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">6285712345678</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono font-bold">250000</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono text-slate-400">340</td>
+                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5">Mandiri</td>
+                                            </tr>
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-primary-600">INV-202611-003</td>
+                                                <td class="py-2.5 px-3.5 font-mono text-[11px]">2026-11-02 14:05:12</td>
+                                                <td class="py-2.5 px-3.5 font-semibold text-slate-800">Paket Pangan Darurat Jabalia</td>
+                                                <td class="py-2.5 px-3.5">Budi Santoso</td>
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">081987654321</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono font-bold">500000</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono text-slate-400">0</td>
+                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5">QRIS</td>
+                                            </tr>
+                                            <tr class="hover:bg-slate-50">
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-primary-600">INV-202611-004</td>
+                                                <td class="py-2.5 px-3.5 font-mono text-[11px]">2026-11-02 19:45:00</td>
+                                                <td class="py-2.5 px-3.5 font-semibold text-slate-800">Hangatkan Gaza Musim Dingin</td>
+                                                <td class="py-2.5 px-3.5">Hj. Nurhayati</td>
+                                                <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">6281399887766</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono font-bold">1000000</td>
+                                                <td class="py-2.5 px-3.5 text-right font-mono text-slate-400">500</td>
+                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5">BSI</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- VIEW 2: PENJELASAN 9 KOLOM STANDAR -->
+                                <div x-show="viewMode === 'columns'" class="overflow-x-auto rounded-2xl border border-slate-200/80">
+                                    <table class="w-full text-left text-xs">
+                                        <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-600 border-b border-slate-200/80">
+                                            <tr>
+                                                <th class="py-2.5 px-3.5">Nama Kolom Standar</th>
+                                                <th class="py-2.5 px-3.5">Variasi Header Dikenali</th>
+                                                <th class="py-2.5 px-3.5 text-center">Status</th>
+                                                <th class="py-2.5 px-3.5">Format & Contoh Nilai</th>
+                                                <th class="py-2.5 px-3.5">Penjelasan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">invoice_id</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">id_transaksi, invoice, transaksi_id</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                                <td class="py-2 px-3.5 font-mono text-xs">INV-202611-001</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">ID unik transaksi untuk mencegah duplikasi.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">tanggal</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">date, waktu, created_at</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                                <td class="py-2 px-3.5 font-mono text-xs">2026-11-01 08:30:00</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Waktu donasi (YYYY-MM-DD atau DD/MM/YYYY).</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">campaign</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">program, judul_campaign, judul_program</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                                <td class="py-2 px-3.5 font-semibold text-slate-800">Sedekah Subuh Palestina</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Judul program donasi tujuan.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">nama</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">nama_lengkap, name, donatur</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                                <td class="py-2 px-3.5">Ahmad Fadhilah</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Nama lengkap donatur.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">no_hp</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">phone, telepon, whatsapp</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-emerald-700">081234567890 / 628...</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Nomor WhatsApp donatur (11–14 digit). Otomatis dinormalisasi ke 628.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">nominal</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">amount, donasi</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                                <td class="py-2 px-3.5 font-mono font-bold">100000</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Nominal donasi murni (angka tanpa titik/Rp).</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">kode_unik</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">unique_code</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">Opsional</span></td>
+                                                <td class="py-2 px-3.5 font-mono">125</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Kode unik transfer (jika ada).</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">status</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">payment_status</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                                <td class="py-2 px-3.5 font-mono">success / waiting</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Status verifikasi bayar.</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3.5 font-mono font-bold text-primary-600">via_bayar</td>
+                                                <td class="py-2 px-3.5 text-slate-500 font-mono text-[11px]">payment_method, bank</td>
+                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">Opsional</span></td>
+                                                <td class="py-2 px-3.5">BCA / Mandiri / QRIS</td>
+                                                <td class="py-2 px-3.5 text-slate-600 text-[11px]">Metode transfer / channel bank.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Info Aturan Data -->

@@ -24,6 +24,10 @@
                         </h1>
                     </div>
                     <div class="flex items-center gap-2">
+                        <a href="{{ route('admin.harpa.template.download', 'blast') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all">
+                            <i class="fa-solid fa-file-arrow-down text-emerald-400"></i>
+                            Unduh Template Blast (.CSV)
+                        </a>
                         <button onclick="document.getElementById('modal-manual-blast').classList.remove('hidden')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer">
                             <i class="fa-solid fa-pen-to-square"></i>
                             + Catat Blast Manual
@@ -156,42 +160,124 @@
 
 <!-- Modal Upload Everpro Blast -->
 <div id="modal-upload-blast" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <h3 class="text-base font-montserrat font-black text-slate-800">Unggah Ekspor Everpro</h3>
+            <div>
+                <h3 class="text-base font-montserrat font-black text-slate-800">Unggah Ekspor Riwayat Blast Everpro</h3>
+                <p class="text-xs text-slate-400 font-medium">Impor data status pengiriman pesan WhatsApp massal ke sistem Harpa</p>
+            </div>
             <button onclick="document.getElementById('modal-upload-blast').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
 
+        <!-- Download Template Banner -->
+        <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">
+                    <i class="fa-solid fa-file-csv"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-800">Format File Riwayat Blast (.CSV)</h4>
+                    <p class="text-[11px] text-slate-500 font-medium">Gunakan template resmi acuan agar kolom dan status terbaca akurat.</p>
+                </div>
+            </div>
+            <a href="{{ route('admin.harpa.template.download', 'blast') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-sm transition whitespace-nowrap">
+                <i class="fa-solid fa-download"></i>
+                Unduh Template Blast
+            </a>
+        </div>
+
         <form action="{{ route('admin.harpa.blast.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
 
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Jenis Broadcast (Batch Label)</label>
-                <select name="batch_type" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-slate-700 outline-none">
-                    <option value="jumat">Selling Jumat (jumat-YYYY-MM-DD)</option>
-                    <option value="payday">Payday Bulanan (payday-YYYY-MM-DD)</option>
-                    <option value="perkenalan">Perkenalan Donatur Baru (perkenalan-YYYY-MM-DD)</option>
-                </select>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Jenis Broadcast (Batch Label)</label>
+                    <select name="batch_type" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-slate-700 outline-none">
+                        <option value="jumat">Selling Jumat (jumat-YYYY-MM-DD)</option>
+                        <option value="payday">Payday Bulanan (payday-YYYY-MM-DD)</option>
+                        <option value="perkenalan">Perkenalan Donatur Baru (perkenalan-YYYY-MM-DD)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Tanggal Broadcast</label>
+                    <input type="date" name="batch_date" value="{{ date('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none">
+                </div>
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Tanggal Broadcast</label>
-                <input type="date" name="batch_date" value="{{ date('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">File Ekspor Everpro (.xlsx / .csv)</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Pilih File Ekspor Everpro (.xlsx / .csv)</label>
                 <input type="file" name="file" accept=".xlsx,.xls,.csv,.txt" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-primary-600 file:text-white cursor-pointer">
                 <p class="text-[10px] text-slate-400 mt-1">Kunci unik: nomor HP + BROADCAST ID. Duplikat akan otomatis ditolak.</p>
             </div>
 
-            <div class="pt-4 flex justify-end gap-2">
-                <button type="button" onclick="document.getElementById('modal-upload-blast').classList.add('hidden')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
+            <!-- Panduan Format Kolom & Contoh Preview Data -->
+            <div x-data="{ showBlastGuide: true }" class="rounded-2xl border border-slate-200/80 p-4 bg-slate-50/70 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-primary-600"></i>
+                        Format 5 Kolom yang Wajib / Dikenali
+                    </span>
+                    <button type="button" @click="showBlastGuide = !showBlastGuide" class="text-[10px] text-primary-600 font-bold hover:underline cursor-pointer">
+                        <span x-text="showBlastGuide ? 'Tutup' : 'Lihat'"></span>
+                    </button>
+                </div>
+
+                <div x-show="showBlastGuide" x-transition class="space-y-3">
+                    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+                        <table class="w-full text-left text-[11px]">
+                            <thead class="bg-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-600 border-b border-slate-200">
+                                <tr>
+                                    <th class="py-2 px-3">Kolom</th>
+                                    <th class="py-2 px-3">Alias</th>
+                                    <th class="py-2 px-3 text-center">Status</th>
+                                    <th class="py-2 px-3">Contoh Nilai</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <tr>
+                                    <td class="py-1.5 px-3 font-mono font-bold text-primary-600">receiver_number</td>
+                                    <td class="py-1.5 px-3 text-slate-500 font-mono text-[10px]">no_hp, receiver</td>
+                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                    <td class="py-1.5 px-3 font-mono font-bold text-emerald-700">6281234567890</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1.5 px-3 font-mono font-bold text-primary-600">broadcast_id</td>
+                                    <td class="py-1.5 px-3 text-slate-500 font-mono text-[10px]">id_broadcast, broadcast</td>
+                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                    <td class="py-1.5 px-3 font-mono text-slate-800">SELLING_JUMAT_20261106</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1.5 px-3 font-mono font-bold text-primary-600">message_id</td>
+                                    <td class="py-1.5 px-3 text-slate-500 font-mono text-[10px]">id_pesan</td>
+                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-100 text-slate-600">Opsional</span></td>
+                                    <td class="py-1.5 px-3 font-mono text-slate-500">MSG-EVR-001</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1.5 px-3 font-mono font-bold text-primary-600">status</td>
+                                    <td class="py-1.5 px-3 text-slate-500 font-mono text-[10px]">delivery_status</td>
+                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                    <td class="py-1.5 px-3"><span class="font-bold text-sky-700">READ</span> / <span class="font-bold text-blue-700">DELIVERED</span> / <span class="font-bold text-rose-700">FAILED</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-1.5 px-3 font-mono font-bold text-primary-600">timestamp</td>
+                                    <td class="py-1.5 px-3 text-slate-500 font-mono text-[10px]">time, waktu</td>
+                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-rose-100 text-rose-700">Wajib</span></td>
+                                    <td class="py-1.5 px-3 font-mono text-slate-600">2026-11-06 09:15:30</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-2 border-t border-slate-100">
+                <button type="button" onclick="document.getElementById('modal-upload-blast').classList.add('hidden')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-black uppercase tracking-widest shadow-md">
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-black uppercase tracking-widest shadow-md cursor-pointer">
                     Unggah & Periksa
                 </button>
             </div>
