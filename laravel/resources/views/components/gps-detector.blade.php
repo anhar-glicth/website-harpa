@@ -8,41 +8,41 @@
     'defaultOfficeName' => 'Kantor Pusat'
 ])
 
-<div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-3.5 space-y-2 text-left">
+<div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2 text-left">
     <div class="flex items-center justify-between gap-2 flex-wrap">
-        <div id="{{ $statusId }}" class="text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-location-crosshairs animate-pulse text-amber-500"></i>
-            <span>Mencari titik lokasi & koordinat GPS...</span>
+        <div id="{{ $statusId }}" class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-location-crosshairs text-amber-700" aria-hidden="true"></i>
+            <span>Mencari titik lokasi &amp; koordinat GPS...</span>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
             <button type="button" onclick="window.runGpsDetection_{{ str_replace('-', '_', $statusId) }}()" 
-                    class="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded-lg text-[9px] font-black uppercase tracking-wider border border-slate-200 shadow-2xs transition-all flex items-center gap-1 cursor-pointer">
-                <i class="fa-solid fa-arrows-rotate text-[8px]"></i> Deteksi Ulang
+                    class="min-h-[36px] px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 rounded-lg text-[11px] font-black uppercase tracking-wider border border-slate-300 shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-arrows-rotate text-[10px]" aria-hidden="true"></i> Deteksi Ulang
             </button>
             <button type="button" onclick="window.setOfficeLocation_{{ str_replace('-', '_', $statusId) }}()" 
-                    class="px-2.5 py-1 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-lg text-[9px] font-black uppercase tracking-wider border border-primary-200 shadow-2xs transition-all flex items-center gap-1 cursor-pointer">
-                <i class="fa-solid fa-building text-[8px]"></i> Lokasi Kantor
+                    class="min-h-[36px] px-3 py-1.5 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-lg text-[11px] font-black uppercase tracking-wider border border-primary-200 shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-building text-[10px]" aria-hidden="true"></i> Lokasi Kantor
             </button>
         </div>
     </div>
 
     <!-- Manual coordinate toggle -->
-    <details class="text-[9px] text-slate-400 group">
-        <summary class="cursor-pointer hover:text-slate-600 transition-colors uppercase font-bold tracking-wider select-none flex items-center gap-1">
-            <i class="fa-solid fa-sliders text-[8px]"></i> Input / Edit Koordinat Manual
+    <details class="text-xs text-slate-600 group">
+        <summary class="cursor-pointer hover:text-slate-900 transition-colors uppercase font-bold tracking-wider select-none flex items-center gap-1.5 py-1">
+            <i class="fa-solid fa-sliders text-[10px]" aria-hidden="true"></i> Input / Edit Koordinat Manual
         </summary>
-        <div class="mt-2 grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/60">
+        <div class="mt-2 grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
             <div>
-                <label class="block text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Latitude</label>
+                <label for="manual_lat_{{ str_replace('-', '_', $statusId) }}" class="block text-[11px] font-bold text-slate-600 uppercase tracking-widest mb-1">Latitude</label>
                 <input type="text" id="manual_lat_{{ str_replace('-', '_', $statusId) }}" placeholder="-6.175392"
                        onchange="window.syncManualCoords_{{ str_replace('-', '_', $statusId) }}()"
-                       class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-[11px] font-mono font-bold text-slate-700 outline-none focus:border-primary-500">
+                       class="w-full min-h-[38px] bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-slate-700 outline-none focus:border-primary-600">
             </div>
             <div>
-                <label class="block text-[8px] font-bold text-slate-400 uppercase tracking-widest mb-1">Longitude</label>
+                <label for="manual_lng_{{ str_replace('-', '_', $statusId) }}" class="block text-[11px] font-bold text-slate-600 uppercase tracking-widest mb-1">Longitude</label>
                 <input type="text" id="manual_lng_{{ str_replace('-', '_', $statusId) }}" placeholder="106.827153"
                        onchange="window.syncManualCoords_{{ str_replace('-', '_', $statusId) }}()"
-                       class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-[11px] font-mono font-bold text-slate-700 outline-none focus:border-primary-500">
+                       class="w-full min-h-[38px] bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-slate-700 outline-none focus:border-primary-600">
             </div>
         </div>
     </details>
@@ -63,7 +63,7 @@
     const defaultName = "{{ $defaultOfficeName }}";
 
     /**
-     * Reverse Geocoding via Nominatim (OpenStreetMap) — gratis, tanpa API key.
+     * Reverse Geocoding via Nominatim (OpenStreetMap), gratis tanpa API key.
      * Mengembalikan nama lokasi yang ringkas dan mudah dibaca.
      */
     async function reverseGeocode(lat, lng) {

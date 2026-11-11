@@ -5,14 +5,14 @@
     
     <!-- Toast Notifications -->
     @if(session('success'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-250 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center gap-3">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+        <div role="status" class="mb-6 p-4 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center gap-3">
+            <i class="fa-solid fa-circle-check text-emerald-700 text-base" aria-hidden="true"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-6 p-4 bg-red-50 border border-red-250 text-red-800 rounded-2xl font-semibold text-xs flex items-center gap-3">
-            <i class="fa-solid fa-circle-xmark text-red-600 text-base"></i>
+        <div role="alert" class="mb-6 p-4 bg-red-50 border border-red-300 text-red-900 rounded-2xl font-semibold text-xs flex items-center gap-3">
+            <i class="fa-solid fa-circle-xmark text-red-700 text-base" aria-hidden="true"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
@@ -31,8 +31,8 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div class="space-y-2">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.users') }}" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center transition-all">
-                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                        <a href="{{ route('admin.users') }}" aria-label="Kembali ke daftar pengguna" class="min-w-[44px] min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-arrow-left text-xs" aria-hidden="true"></i>
                         </a>
                         <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
                             Monitoring <span class="text-primary-600">Pegawai Lapangan</span>
@@ -41,41 +41,38 @@
                     <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
-                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Live Worker Analytics</span>
+                    <span class="w-2.5 h-2.5 bg-emerald-700 rounded-full" aria-hidden="true"></span>
+                    <span class="text-xs font-black text-slate-600 uppercase tracking-widest">Live Worker Analytics</span>
                 </div>
             </div>
 
             <!-- Profile & Effectiveness Header -->
-            <div class="bg-slate-900 rounded-[2.5rem] p-8 sm:p-10 text-white relative overflow-hidden shadow-2xl">
-                <div class="absolute -right-20 -top-20 w-80 h-80 bg-primary-500/10 rounded-full blur-3xl"></div>
-                <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl"></div>
-                
+            <div class="bg-[#063f5c] rounded-[2.5rem] p-8 sm:p-10 text-white relative overflow-hidden shadow-xl">
                 <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                     <!-- Left: Profile Info -->
                     <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-                        <div class="w-20 h-20 bg-gradient-to-br from-primary-400 to-emerald-600 rounded-[2rem] flex items-center justify-center text-3xl font-black text-white shadow-2xl border-4 border-white/10 shrink-0">
+                        <div class="w-20 h-20 bg-primary-700 rounded-[2rem] flex items-center justify-center text-3xl font-black text-[#f7ad1a] shadow-lg border-4 border-white/15 shrink-0">
                             {{ strtoupper(substr($user->name, 0, 1)) }}
                         </div>
                         <div class="space-y-1.5">
-                            <span class="px-3 py-1 bg-primary-600/35 border border-primary-500/30 text-primary-400 rounded-full text-[9px] font-black uppercase tracking-widest block w-fit mx-auto sm:mx-0">
+                            <span class="px-3 py-1 bg-slate-900/60 border border-[#f7ad1a]/40 text-[#f7ad1a] rounded-full text-xs font-black uppercase tracking-widest block w-fit mx-auto sm:mx-0">
                                 {{ str_replace('_', ' ', $user->role) }}
                             </span>
                             <h2 class="text-2xl font-black font-montserrat tracking-tight leading-none uppercase italic">{{ $user->name }}</h2>
-                            <p class="text-xs font-bold text-slate-350 tracking-wider">{{ $user->email }} — {{ $user->phone ?? 'Tidak ada nomor telepon' }}</p>
+                            <p class="text-xs font-bold text-slate-200 tracking-wider">{{ $user->email }} | {{ $user->phone ?? 'Tidak ada nomor telepon' }}</p>
                         </div>
                     </div>
                     
                     <!-- Right: Quick Performance Stat -->
                     <div class="flex flex-col items-center md:items-end gap-2 shrink-0 w-full md:w-auto">
                         <div class="text-center md:text-right">
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Efektivitas Tugas</p>
-                            <div class="text-4xl md:text-5xl font-black text-primary-400 tracking-tighter leading-none">
+                            <p class="text-xs font-black text-slate-200 uppercase tracking-widest mb-1">Efektivitas Tugas</p>
+                            <div class="text-4xl md:text-5xl font-black text-[#f7ad1a] tracking-tighter leading-none">
                                 {{ $stats['effectiveness'] }}%
                             </div>
                         </div>
-                        <div class="w-40 h-2 bg-white/10 rounded-full overflow-hidden mt-1">
-                            <div class="h-full bg-primary-500 transition-all duration-1000 ease-out" style="width: {{ $stats['effectiveness'] }}%"></div>
+                        <div class="w-40 h-2 bg-white/15 rounded-full overflow-hidden mt-1">
+                            <div class="h-full bg-[#f7ad1a] transition-all duration-700 ease-out" style="width: {{ $stats['effectiveness'] }}%"></div>
                         </div>
                     </div>
                 </div>
@@ -84,24 +81,24 @@
             <!-- Stats Mini Cards Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 <!-- Total Tasks -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-blue-50 text-blue-600 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
-                        <i class="fa-solid fa-list-check"></i>
+                <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
+                    <div class="bg-blue-50 text-blue-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Total Tugas</span>
-                        <h4 class="text-lg font-montserrat font-black text-slate-800 mt-1">{{ $stats['totalTasks'] }}</h4>
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider block leading-none">Total Tugas</span>
+                        <h3 class="text-lg font-montserrat font-black text-slate-800 mt-1">{{ $stats['totalTasks'] }}</h3>
                     </div>
                 </div>
 
                 <!-- Completed Tasks -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-emerald-50 text-emerald-600 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
-                        <i class="fa-solid fa-circle-check"></i>
+                <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
+                    <div class="bg-emerald-50 text-emerald-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Tugas Selesai</span>
-                        <h4 class="text-lg font-montserrat font-black text-emerald-650 mt-1">{{ $stats['completedTasks'] }}</h4>
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider block leading-none">Tugas Selesai</span>
+                        <h3 class="text-lg font-montserrat font-black text-emerald-700 mt-1">{{ $stats['completedTasks'] }}</h3>
                     </div>
                 </div>
 

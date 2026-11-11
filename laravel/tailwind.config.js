@@ -7,6 +7,7 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
+        './app/**/*.php',
     ],
 
     theme: {
@@ -14,6 +15,9 @@ export default {
             fontFamily: {
                 sans: ['Plus Jakarta Sans', ...defaultTheme.fontFamily.sans],
                 montserrat: ['Montserrat', 'sans-serif'],
+            },
+            spacing: {
+                '4.5': '1.125rem',
             },
             colors: {
                 primary: {
@@ -43,19 +47,6 @@ export default {
                     700: '#b97307',
                     800: '#93580d',
                     900: '#78470f',
-                },
-                emerald: {
-                    50: '#fffbeb',
-                    100: '#fef3c7',
-                    200: '#fde68a',
-                    300: '#fcd34d',
-                    400: '#fbbf24',
-                    500: '#f7ad1a',
-                    550: '#eda214',
-                    600: '#b97307',
-                    650: '#cb8407',
-                    700: '#93580d',
-                    800: '#78470f',
                 },
                 amber: {
                     50: '#fffbeb',

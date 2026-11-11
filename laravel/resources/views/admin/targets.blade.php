@@ -115,16 +115,16 @@
                 {{-- Toolbar Actions (Add, Edit, Delete, Export) --}}
                 <div class="flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
-                        <button @click="showAddModal = true"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-all duration-300">
-                            <i class="fa-solid fa-plus text-xs"></i> Add Target
+                        <button type="button" @click="showAddModal = true"
+                                class="inline-flex items-center min-h-[44px] gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-sm transition-colors">
+                            <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i> Add Target
                         </button>
                         <a href="{{ route('admin.targets.export', request()->query()) }}"
-                           class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-2xl text-xs font-bold transition-all shadow-sm">
-                            <i class="fa-solid fa-file-excel text-emerald-600"></i> Export Excel
+                           class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 rounded-2xl text-xs font-bold transition-colors shadow-sm">
+                            <i class="fa-solid fa-file-excel text-emerald-700" aria-hidden="true"></i> Export Excel
                         </a>
                     </div>
-                    <div class="text-xs font-semibold text-slate-500">
+                    <div class="text-xs font-semibold text-slate-600">
                         Total: <span class="font-bold text-slate-900">{{ $targets->total() }}</span> Data Target
                     </div>
                 </div>
@@ -133,7 +133,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="pb-4 w-8">#</th>
                                 <th class="pb-4">ID Target</th>
                                 <th class="pb-4">Bulan Target</th>
@@ -144,8 +144,8 @@
                         </thead>
                         <tbody class="text-sm">
                             @forelse($targets as $index => $item)
-                                <tr class="border-b border-slate-50 hover:bg-slate-50/60 transition-colors group">
-                                    <td class="py-4 text-slate-400 text-xs font-bold">
+                                <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                                    <td class="py-4 text-slate-600 text-xs font-bold">
                                         {{ $targets->firstItem() + $index }}
                                     </td>
                                     <td class="py-4">
@@ -154,43 +154,45 @@
                                         </span>
                                     </td>
                                     <td class="py-4 font-semibold text-slate-700">
-                                        {{ $item->target_date ? $item->target_date->translatedFormat('d F Y') : '—' }}
+                                        {{ $item->target_date ? $item->target_date->translatedFormat('d F Y') : '-' }}
                                     </td>
                                     <td class="py-4 font-bold text-slate-900">
                                         Rp {{ number_format($item->target_amount, 0, ',', '.') }}
                                     </td>
-                                    <td class="py-4 text-xs text-slate-500">
-                                        {{ Str::limit($item->notes, 50) ?: '—' }}
+                                    <td class="py-4 text-xs text-slate-600">
+                                        {{ Str::limit($item->notes, 50) ?: '-' }}
                                     </td>
                                     <td class="py-4">
                                         <div class="flex items-center justify-end gap-1.5">
-                                            <button @click="openEdit({{ json_encode($item) }})"
-                                                    class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-all" title="Edit">
-                                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                            <button type="button" @click="openEdit({{ json_encode($item) }})"
+                                                    aria-label="Edit target {{ $item->target_code }}"
+                                                    class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
+                                                <i class="fa-solid fa-pen-to-square text-sm" aria-hidden="true"></i>
                                             </button>
-                                            <button @click="openDelete({{ $item->id }}, '{{ addslashes($item->target_code) }}')"
-                                                    class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Hapus">
-                                                <i class="fa-solid fa-trash-can text-sm"></i>
+                                            <button type="button" @click="openDelete({{ $item->id }}, '{{ addslashes($item->target_code) }}')"
+                                                    aria-label="Hapus target {{ $item->target_code }}"
+                                                    class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center p-1.5 text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
+                                                <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="py-14 text-center text-slate-400 font-bold uppercase tracking-wider">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-300 mb-3"></i>
+                                    <td colspan="6" class="py-14 text-center text-slate-600 font-bold uppercase tracking-wider">
+                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-400 mb-3" aria-hidden="true"></i>
                                         Belum ada data target.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
 
-                        {{-- Summary Footer Row (Presisi sesuai desain screenshot) --}}
+                        {{-- Summary Footer Row --}}
                         @if($targets->count() > 0)
                             <tfoot>
-                                <tr class="bg-amber-500/10 border-t-2 border-amber-500/30 text-slate-900 font-black text-sm">
+                                <tr class="bg-amber-50 border-t-2 border-amber-300 text-slate-900 font-black text-sm">
                                     <td class="py-3.5 px-3 text-amber-900 font-mono text-xs">Total</td>
-                                    <td class="py-3.5 text-primary-600 uppercase tracking-wider" colspan="2">TOTAL TARGET BULANAN</td>
+                                    <td class="py-3.5 text-primary-700 uppercase tracking-wider" colspan="2">TOTAL TARGET BULANAN</td>
                                     <td class="py-3.5 font-black text-slate-900 text-base" colspan="3">
                                         Rp {{ number_format($totalNominalTarget, 0, ',', '.') }}
                                     </td>
@@ -212,8 +214,10 @@
 
     </div>{{-- end grid --}}
 
-    {{-- ============ MODAL: ADD TARGET ============ --}}
+    {{-- Modal: Tambah Target --}}
     <div x-show="showAddModal"
+         @keydown.escape.window="showAddModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-add-target-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -222,46 +226,46 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showAddModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showAddModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-5 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Tambah Master Target</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Isi data target bulanan baru</p>
+                    <h2 id="modal-add-target-title" class="text-lg font-black text-slate-900">Tambah Master Target</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Isi data target bulanan baru</p>
                 </div>
-                <button @click="showAddModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah target" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <form method="POST" action="{{ route('admin.targets.store') }}" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">ID / Kode Target <span class="text-rose-500">*</span></label>
-                    <input type="text" name="target_code" required placeholder="Contoh: TGT-2026-08"
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase placeholder:text-slate-400">
+                    <label for="add_target_code" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">ID / Kode Target <span class="text-rose-700">*</span></label>
+                    <input id="add_target_code" type="text" name="target_code" required placeholder="Contoh: TGT-2026-08"
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 uppercase placeholder:text-slate-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Bulan Target <span class="text-rose-500">*</span></label>
-                    <input type="date" name="target_date" required value="{{ date('Y-m-01') }}"
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="add_target_date" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Bulan Target <span class="text-rose-700">*</span></label>
+                    <input id="add_target_date" type="date" name="target_date" required value="{{ date('Y-m-01') }}"
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Nominal Target (Rp) <span class="text-rose-500">*</span></label>
-                    <input type="number" name="target_amount" required step="1000" min="0" placeholder="Contoh: 50000000"
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400">
+                    <label for="add_target_amount" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Nominal Target (Rp) <span class="text-rose-700">*</span></label>
+                    <input id="add_target_amount" type="number" name="target_amount" required step="1000" min="0" placeholder="Contoh: 50000000"
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 placeholder:text-slate-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Keterangan</label>
-                    <textarea name="notes" rows="3" placeholder="Keterangan singkat..."
-                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400 resize-none"></textarea>
+                    <label for="add_target_notes" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Keterangan</label>
+                    <textarea id="add_target_notes" name="notes" rows="3" placeholder="Keterangan singkat..."
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 placeholder:text-slate-500 resize-none"></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showAddModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan
                     </button>
                 </div>
@@ -269,8 +273,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: EDIT TARGET ============ --}}
+    {{-- Modal: Edit Target --}}
     <div x-show="showEditModal"
+         @keydown.escape.window="showEditModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-edit-target-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -279,47 +285,47 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showEditModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showEditModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-5 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Edit Master Target</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Perbarui data target bulanan</p>
+                    <h2 id="modal-edit-target-title" class="text-lg font-black text-slate-900">Edit Master Target</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Perbarui data target bulanan</p>
                 </div>
-                <button @click="showEditModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit target" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <form method="POST" :action="`{{ url('admin/targets') }}/${editData.id}/update`" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">ID / Kode Target <span class="text-rose-500">*</span></label>
-                    <input type="text" name="target_code" x-model="editData.target_code" required
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase">
+                    <label for="edit_target_code" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">ID / Kode Target <span class="text-rose-700">*</span></label>
+                    <input id="edit_target_code" type="text" name="target_code" x-model="editData.target_code" required
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 uppercase">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Bulan Target <span class="text-rose-500">*</span></label>
-                    <input type="date" name="target_date" x-model="editData.target_date" required
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_target_date" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Bulan Target <span class="text-rose-700">*</span></label>
+                    <input id="edit_target_date" type="date" name="target_date" x-model="editData.target_date" required
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Nominal Target (Rp) <span class="text-rose-500">*</span></label>
-                    <input type="number" name="target_amount" x-model="editData.target_amount" required step="1000" min="0"
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_target_amount" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Nominal Target (Rp) <span class="text-rose-700">*</span></label>
+                    <input id="edit_target_amount" type="number" name="target_amount" x-model="editData.target_amount" required step="1000" min="0"
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Keterangan</label>
-                    <textarea name="notes" rows="3" x-model="editData.notes"
-                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"></textarea>
+                    <label for="edit_target_notes" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Keterangan</label>
+                    <textarea id="edit_target_notes" name="notes" rows="3" x-model="editData.notes"
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 resize-none"></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showEditModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -327,8 +333,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: DELETE ============ --}}
+    {{-- Modal: Hapus Target --}}
     <div x-show="showDeleteModal"
+         @keydown.escape.window="showDeleteModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-delete-target-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -337,15 +345,15 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showDeleteModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center space-y-5 z-10">
-            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl mx-auto">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-700 text-2xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
             </div>
             <div>
-                <h3 class="text-lg font-black text-slate-900">Hapus Master Target?</h3>
-                <p class="text-sm text-slate-500 font-semibold mt-1">
-                    Target "<span class="text-slate-800 font-black" x-text="selectedCode"></span>" akan dihapus permanen.
+                <h2 id="modal-delete-target-title" class="text-lg font-black text-slate-900">Hapus Master Target?</h2>
+                <p class="text-sm text-slate-600 font-semibold mt-1">
+                    Target "<span class="text-slate-900 font-black" x-text="selectedCode"></span>" akan dihapus permanen.
                 </p>
             </div>
             <form method="POST" :action="`{{ url('admin/targets') }}/${selectedId}/delete`">
@@ -353,11 +361,11 @@
                 @method('DELETE')
                 <div class="flex gap-3">
                     <button type="button" @click="showDeleteModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-rose-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Ya, Hapus
                     </button>
                 </div>

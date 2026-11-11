@@ -89,20 +89,20 @@
         <div class="lg:col-span-3 space-y-8">
             
             <!-- HEADER PANEL STAFF -->
-            <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden">
                 <div class="space-y-1.5 relative z-10">
                     <div class="flex items-center gap-3">
                         <h1 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 tracking-tight leading-none uppercase italic">Panel <span class="text-primary-600">Staff Lapangan</span></h1>
-                        <span class="bg-primary-600 text-white text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-lg shadow-primary-600/10">Live</span>
+                        <span class="bg-primary-600 text-white text-xs font-black uppercase px-3 py-1 rounded-full shadow-sm">Live</span>
                     </div>
-                    <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest">Halo, {{ Auth::user()->name }} — Manajemen Aktivitas Lapangan</p>
+                    <p class="text-xs text-slate-600 font-bold uppercase tracking-widest">Halo, {{ Auth::user()->name }} | Manajemen Aktivitas Lapangan</p>
                 </div>
                 
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap gap-2.5 sm:gap-3 z-10 shrink-0">
-                    <button @click="modalNews = true" class="px-6 py-3.5 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl font-black uppercase text-xs sm:text-sm tracking-wider transition-all border border-primary-100 whitespace-nowrap">Tulis Berita</button>
-                    <button @click="modalDistribution = true" class="px-6 py-3.5 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl font-black uppercase text-xs sm:text-sm tracking-wider transition-all border border-primary-100 whitespace-nowrap">Lapor Penyaluran</button>
-                    <button @click="modalCampaign = true" class="px-7 py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-black uppercase text-xs sm:text-sm tracking-wider transition-all shadow-lg shadow-primary-600/15 whitespace-nowrap">Kampanye Baru</button>
+                    <button type="button" @click="modalNews = true" class="min-h-[44px] px-5 py-3 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl font-black uppercase text-xs sm:text-sm tracking-wider transition-colors border border-primary-200 whitespace-nowrap">Tulis Berita</button>
+                    <button type="button" @click="modalDistribution = true" class="min-h-[44px] px-5 py-3 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl font-black uppercase text-xs sm:text-sm tracking-wider transition-colors border border-primary-200 whitespace-nowrap">Lapor Penyaluran</button>
+                    <button type="button" @click="modalCampaign = true" class="min-h-[44px] px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-black uppercase text-xs sm:text-sm tracking-wider transition-colors shadow-sm whitespace-nowrap">Kampanye Baru</button>
                 </div>
             </header>
 
@@ -113,26 +113,26 @@
                 @if($myCampaigns->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         @foreach($myCampaigns as $c)
-                            <div class="group bg-white rounded-[2rem] border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-305">
+                            <div class="group bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
                                 <div class="relative h-48 bg-slate-100 overflow-hidden">
-                                    <img src="{{ $c->foto ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600' }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" alt="">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                    <span class="absolute top-6 left-6 px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[9px] font-black uppercase rounded-full border border-white/20">{{ $c->category ?? 'Umum' }}</span>
+                                    <img src="{{ $c->foto ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600' }}" width="600" height="320" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="{{ $c->title }}">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" aria-hidden="true"></div>
+                                    <span class="absolute top-4 left-4 px-3 py-1 bg-slate-900/90 text-white text-xs font-black uppercase rounded-full border border-white/15">{{ $c->category ?? 'Umum' }}</span>
                                 </div>
                                 <div class="p-6 sm:p-8 space-y-4">
-                                    <h3 class="font-montserrat font-black text-slate-800 uppercase italic text-base group-hover:text-primary-600 transition-colors">{{ $c->title }}</h3>
-                                    <div class="flex justify-between items-end border-t border-slate-50 pt-4">
+                                    <h2 class="font-montserrat font-black text-slate-800 uppercase italic text-base group-hover:text-primary-600 transition-colors">{{ $c->title }}</h2>
+                                    <div class="flex justify-between items-end border-t border-slate-200 pt-4">
                                         <div class="space-y-1">
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Status</p>
+                                            <p class="text-xs font-black text-slate-600 uppercase tracking-widest">Status</p>
                                             @if($c->status === 'approved')
-                                                <span class="text-[9px] font-black uppercase px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 tracking-wider">AKTIF</span>
+                                                <span class="text-xs font-black uppercase px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 tracking-wider">AKTIF</span>
                                             @else
-                                                <span class="text-[9px] font-black uppercase px-2.5 py-1 rounded bg-amber-50 text-amber-700 tracking-wider">PROSES VERIFIKASI</span>
+                                                <span class="text-xs font-black uppercase px-2.5 py-1 rounded bg-amber-50 text-amber-800 tracking-wider">PROSES VERIFIKASI</span>
                                             @endif
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Terkumpul</p>
-                                            <p class="font-montserrat font-black text-primary-600 text-base italic">Rp {{ number_format($c->current_amount, 0, ',', '.') }}</p>
+                                            <p class="text-xs font-black text-slate-600 uppercase tracking-widest mb-0.5">Terkumpul</p>
+                                            <p class="font-montserrat font-black text-primary-700 text-base italic">Rp {{ number_format($c->current_amount, 0, ',', '.') }}</p>
                                         </div>
                                     </div>
                                     <button @click="activeCampaignId = {{ $c->id }}; activeCampaignTitle = '{{ addslashes($c->title) }}'; modalUpdate = true" class="w-full mt-2 py-4 bg-slate-900 hover:bg-primary-600 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all">Kirim Kabar Terbaru</button>

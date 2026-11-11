@@ -1,4 +1,11 @@
 <x-guest-layout>
+    <div class="space-y-1 mb-4">
+        <h1 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight">
+            Reset <span class="text-primary-600">Kata Sandi</span>
+        </h1>
+        <p class="text-xs text-slate-600 font-semibold">Buat kata sandi baru untuk akun Anda</p>
+    </div>
+
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
 

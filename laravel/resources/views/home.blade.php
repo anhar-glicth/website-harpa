@@ -1,340 +1,357 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Hero Section with 4-Second Auto Slider -->
+@php
+    $primaryHeroImage = !empty($settings->hero_image)
+        ? (str_starts_with($settings->hero_image, 'http') ? $settings->hero_image : asset($settings->hero_image))
+        : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop';
+
+    $heroSlides = [
+        ['url' => $primaryHeroImage, 'alt' => 'Penyaluran bantuan kemanusiaan Yayasan Harpa Indonesia Madani'],
+        ['url' => 'https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop', 'alt' => 'Aksi kepedulian dan distribusi logistik kemanusiaan'],
+        ['url' => 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=2070&auto=format&fit=crop', 'alt' => 'Program pendidikan anak dan masyarakat penerima manfaat'],
+        ['url' => 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop', 'alt' => 'Kolaborasi relawan dan donatur untuk sesama'],
+    ];
+
+    $statFirstValue = !empty($settings?->stats_beneficiaries) ? $settings->stats_beneficiaries : number_format($realStats['distributions'] ?? 0, 0, ',', '.');
+    $statFirstLabel = !empty($settings?->stats_beneficiaries) ? 'Penerima Manfaat' : 'Titik Penyaluran';
+    $statProjectsValue = !empty($settings?->stats_projects) ? $settings->stats_projects : number_format($realStats['campaigns'] ?? 0, 0, ',', '.');
+    $statVolunteersValue = !empty($settings?->stats_volunteers) ? $settings->stats_volunteers : number_format($realStats['volunteers'] ?? 0, 0, ',', '.');
+@endphp
+
+<!-- Hero section with pausable slide carousel -->
 <section 
     x-data="{
         activeSlide: 0,
+        totalSlides: {{ count($heroSlides) }},
         paused: false,
-        slides: [
-            '{{ !empty($settings->hero_image) ? (str_starts_with($settings->hero_image, 'http') ? $settings->hero_image : asset($settings->hero_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop' }}',
-            'https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=2070&auto=format&fit=crop',
-            'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2070&auto=format&fit=crop'
-        ],
+        userPaused: false,
         timer: null,
         init() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                this.userPaused = true;
+                this.paused = true;
+                return;
+            }
             this.timer = setInterval(() => {
-                if (!this.paused) {
+                if (!this.paused && !this.userPaused) {
                     this.next();
                 }
-            }, 4000);
+            }, 4500);
+        },
+        togglePause() {
+            this.userPaused = !this.userPaused;
+            this.paused = this.userPaused;
         },
         next() {
-            this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+            this.activeSlide = (this.activeSlide + 1) % this.totalSlides;
         },
         prev() {
-            this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
+            this.activeSlide = (this.activeSlide - 1 + this.totalSlides) % this.totalSlides;
         }
     }"
     @mouseenter="paused = true"
-    @mouseleave="paused = false"
-    class="relative min-h-[75vh] flex items-center justify-center text-center text-white overflow-hidden py-32 px-6"
+    @mouseleave="if (!userPaused) paused = false"
+    class="relative min-h-[70vh] flex items-center justify-center text-center text-white overflow-hidden py-24 sm:py-32 px-6"
 >
-    <!-- Background Slider Images with Crossfade -->
+    <!-- Hero images -->
     <div class="absolute inset-0 z-0 overflow-hidden bg-slate-950">
-        <template x-for="(slide, index) in slides" :key="index">
+        @foreach($heroSlides as $index => $slide)
             <div 
-                x-show="activeSlide === index"
-                x-transition:enter="transition-opacity ease-out duration-1000"
+                x-show="activeSlide === {{ $index }}"
+                @if($index > 0) x-cloak @endif
+                x-transition:enter="transition-opacity ease-out duration-700"
                 x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100"
-                x-transition:leave="transition-opacity ease-in duration-1000"
+                x-transition:leave="transition-opacity ease-in duration-700"
                 x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0"
-                class="absolute inset-0 w-full h-full transform transition-transform duration-[6000ms] ease-out"
-                :class="activeSlide === index ? 'scale-105' : 'scale-100'"
+                class="absolute inset-0 w-full h-full"
             >
                 <img 
-                    :src="slide" 
+                    src="{{ $slide['url'] }}" 
+                    width="1920"
+                    height="1080"
+                    @if($index === 0) fetchpriority="high" decoding="sync" @else loading="lazy" decoding="async" @endif
                     class="w-full h-full object-cover"
-                    alt="Hero Charity Slide"
-                />
+                    alt="{{ $slide['alt'] }}"
+                >
             </div>
-        </template>
-        <!-- Dark Overlay Gradient for contrast & readability -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/80 backdrop-blur-[1px]"></div>
+        @endforeach
+        <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/80"></div>
     </div>
 
-    <!-- Navigation Arrows -->
+    <!-- Navigation arrows -->
     <button 
         @click="prev()" 
         type="button" 
-        class="hidden md:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-black/30 hover:bg-[#f7ad1a] hover:text-[#063f5c] text-white items-center justify-center backdrop-blur-md border border-white/20 transition-all duration-300 active:scale-95 shadow-lg group"
-        title="Slide Sebelumnya"
+        aria-label="Slide sebelumnya"
+        class="hidden md:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-xl bg-slate-950/70 hover:bg-[#f7ad1a] hover:text-[#063f5c] text-white items-center justify-center border border-white/25 transition-colors duration-200 shadow-lg"
     >
-        <i class="fa-solid fa-chevron-left text-sm group-hover:-translate-x-0.5 transition-transform"></i>
+        <i class="fa-solid fa-chevron-left text-sm" aria-hidden="true"></i>
     </button>
     <button 
         @click="next()" 
         type="button" 
-        class="hidden md:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-black/30 hover:bg-[#f7ad1a] hover:text-[#063f5c] text-white items-center justify-center backdrop-blur-md border border-white/20 transition-all duration-300 active:scale-95 shadow-lg group"
-        title="Slide Berikutnya"
+        aria-label="Slide berikutnya"
+        class="hidden md:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-xl bg-slate-950/70 hover:bg-[#f7ad1a] hover:text-[#063f5c] text-white items-center justify-center border border-white/25 transition-colors duration-200 shadow-lg"
     >
-        <i class="fa-solid fa-chevron-right text-sm group-hover:translate-x-0.5 transition-transform"></i>
+        <i class="fa-solid fa-chevron-right text-sm" aria-hidden="true"></i>
     </button>
 
-    <!-- Hero Content -->
+    <!-- Hero content -->
     <div class="relative z-10 w-full max-w-4xl mx-auto space-y-8">
-        
-        <h1 class="text-3xl sm:text-5xl md:text-7xl font-montserrat font-black leading-tight tracking-tight uppercase break-words px-4">
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-montserrat font-black leading-tight tracking-tight uppercase break-words px-4">
             {{ $settings->hero_title ?? 'Uluran Tangan Anda, Harapan Mereka' }}
         </h1>
         
-        <p class="text-xs sm:text-sm md:text-lg text-white/95 max-w-2xl mx-auto font-bold leading-relaxed break-words px-4">
+        <p class="text-sm md:text-lg text-white/95 max-w-2xl mx-auto font-semibold leading-relaxed break-words px-4">
             {{ $settings->hero_subtitle ?? 'Kami menghubungkan kebaikan hati Anda dengan mereka yang benar-benar membutuhkan bantuan di seluruh pelosok negeri.' }}
         </p>
 
         <div class="pt-4 flex flex-col sm:flex-row justify-center items-center gap-4">
-            <a href="#campaigns" class="w-full sm:w-auto bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black text-xs uppercase tracking-widest px-10 py-5 rounded-2xl shadow-xl shadow-[#f7ad1a]/30 hover:shadow-[#f7ad1a]/40 transition-all duration-300 transform hover:-translate-y-1">
-                Mulai Berdonasi <i class="fa-solid fa-arrow-down ml-2"></i>
+            <a href="#campaigns" class="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black text-xs uppercase tracking-wider px-8 py-4 rounded-xl shadow-lg transition-colors duration-200">
+                <span>Mulai Berdonasi</span>
+                <i class="fa-solid fa-arrow-down ml-2" aria-hidden="true"></i>
             </a>
-            <a href="{{ route('volunteer') }}" class="w-full sm:w-auto bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-black text-xs uppercase tracking-widest px-10 py-5 rounded-2xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                Gabung Relawan <i class="fa-solid fa-users ml-2"></i>
+            <a href="{{ route('volunteer') }}" class="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center bg-[#063f5c]/90 border border-white/30 hover:bg-[#04324a] text-white font-black text-xs uppercase tracking-wider px-8 py-4 rounded-xl transition-colors duration-200">
+                <span>Gabung Relawan</span>
+                <i class="fa-solid fa-users ml-2" aria-hidden="true"></i>
             </a>
         </div>
     </div>
 
-    <!-- Slider Dots Indicators -->
-    <div class="absolute bottom-20 sm:bottom-32 left-0 right-0 z-20 flex justify-center items-center gap-2.5 pointer-events-auto">
-        <template x-for="(slide, index) in slides" :key="index">
-            <button 
-                @click="activeSlide = index" 
-                type="button" 
-                class="h-2 rounded-full transition-all duration-300 focus:outline-none"
-                :class="activeSlide === index ? 'w-8 bg-[#f7ad1a] shadow-md shadow-[#f7ad1a]/40' : 'w-2 bg-white/50 hover:bg-white/80'"
-                :title="'Pindah ke slide ' + (index + 1)">
-            </button>
-        </template>
+    <!-- Slider dots and pause control -->
+    <div class="absolute bottom-16 sm:bottom-28 left-0 right-0 z-20 flex justify-center items-center gap-3 pointer-events-auto">
+        <button 
+            type="button" 
+            @click="togglePause()" 
+            :aria-pressed="userPaused"
+            :aria-label="userPaused ? 'Putar slide otomatis' : 'Jeda slide otomatis'"
+            class="min-w-[44px] min-h-[44px] px-3 py-1.5 rounded-xl bg-slate-950/75 hover:bg-slate-900 text-white border border-white/25 text-[11px] font-bold inline-flex items-center justify-center gap-1.5 transition-colors"
+        >
+            <i class="fa-solid text-xs" :class="userPaused ? 'fa-play' : 'fa-pause'" aria-hidden="true"></i>
+            <span x-text="userPaused ? 'Putar' : 'Jeda'"></span>
+        </button>
+
+        <div class="flex items-center gap-1">
+            @foreach($heroSlides as $index => $slide)
+                <button 
+                    @click="activeSlide = {{ $index }}" 
+                    type="button" 
+                    aria-label="Tampilkan slide {{ $index + 1 }}"
+                    class="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl transition-colors"
+                >
+                    <span 
+                        class="h-2 rounded-full transition-all duration-300"
+                        :class="activeSlide === {{ $index }} ? 'w-8 bg-[#f7ad1a]' : 'w-2 bg-white/60 hover:bg-white'"
+                    ></span>
+                </button>
+            @endforeach
+        </div>
     </div>
 </section>
 
-<!-- Floating Stats Section -->
-<section class="max-w-7xl mx-auto px-3 sm:px-4 -mt-14 sm:-mt-24 relative z-20">
-    <div class="grid grid-cols-3 gap-2 sm:gap-6">
-        
-        <!-- Penerima Manfaat -->
-        <div class="bg-white p-3 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
-            <div class="bg-emerald-50 w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-emerald-600 text-lg sm:text-2xl shrink-0 mb-2 sm:mb-0">
-                <i class="fa-solid fa-users"></i>
+<!-- Real impact counters from site settings or database records -->
+<section class="max-w-7xl mx-auto px-3 sm:px-4 -mt-10 sm:-mt-20 relative z-20">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
+        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200/80">
+            <div class="bg-emerald-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-emerald-700 text-lg sm:text-xl shrink-0 border border-emerald-200">
+                <i class="fa-solid fa-users" aria-hidden="true"></i>
             </div>
             <div>
-                <h4 class="text-sm sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
-                    {{ $settings->stats_beneficiaries ?? '2.500 +' }}
-                </h4>
-                <p class="text-slate-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest mt-1 sm:mt-1.5 leading-tight">Penerima Manfaat</p>
+                <h2 class="text-lg sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
+                    {{ $statFirstValue }}
+                </h2>
+                <p class="text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-1.5 leading-tight">{{ $statFirstLabel }}</p>
             </div>
         </div>
 
-        <!-- Project Kebaikan -->
-        <div class="bg-white p-3 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
-            <div class="bg-primary-50 w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-primary-600 text-lg sm:text-2xl shrink-0 mb-2 sm:mb-0">
-                <i class="fa-solid fa-gift"></i>
+        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200/80">
+            <div class="bg-primary-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-primary-700 text-lg sm:text-xl shrink-0 border border-primary-100">
+                <i class="fa-solid fa-gift" aria-hidden="true"></i>
             </div>
             <div>
-                <h4 class="text-sm sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
-                    {{ $settings->stats_projects ?? '95 +' }}
-                </h4>
-                <p class="text-slate-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest mt-1 sm:mt-1.5 leading-tight">Project Kebaikan</p>
+                <h2 class="text-lg sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
+                    {{ $statProjectsValue }}
+                </h2>
+                <p class="text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-1.5 leading-tight">Project Kebaikan</p>
             </div>
         </div>
 
-        <!-- Perwakilan Relawan -->
-        <div class="bg-white p-3 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl flex flex-col sm:flex-row items-center text-center sm:text-left sm:space-x-6 border border-slate-100/50 hover:shadow-2xl hover:-translate-y-1 transition duration-300">
-            <div class="bg-amber-50 w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center text-amber-600 text-lg sm:text-2xl shrink-0 mb-2 sm:mb-0">
-                <i class="fa-solid fa-hands-holding-child"></i>
+        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200/80">
+            <div class="bg-amber-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-amber-800 text-lg sm:text-xl shrink-0 border border-amber-200">
+                <i class="fa-solid fa-hands-holding-child" aria-hidden="true"></i>
             </div>
             <div>
-                <h4 class="text-sm sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
-                    {{ $settings->stats_volunteers ?? '20 +' }}
-                </h4>
-                <p class="text-slate-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest mt-1 sm:mt-1.5 leading-tight">Perwakilan Relawan</p>
+                <h2 class="text-lg sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
+                    {{ $statVolunteersValue }}
+                </h2>
+                <p class="text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-1.5 leading-tight">Perwakilan Relawan</p>
             </div>
         </div>
-
     </div>
 </section>
 
-<!-- Campaigns Section -->
-<section id="campaigns" class="max-w-7xl mx-auto px-3 sm:px-4 py-20 sm:py-28">
-    <div class="text-center max-w-2xl mx-auto mb-16 space-y-2">
-        <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+<!-- Active Campaigns -->
+<section id="campaigns" class="max-w-7xl mx-auto px-3 sm:px-4 py-16 sm:py-24">
+    <div class="text-center max-w-2xl mx-auto mb-12 space-y-2">
+        <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight">
             Daftar <span class="text-primary-600">Kampanye Aktif</span>
         </h2>
         <div class="w-12 h-1.5 bg-[#f7ad1a] mx-auto rounded-full"></div>
-        <p class="text-slate-400 font-bold text-[10px] sm:text-xs tracking-widest uppercase mt-3">Salurkan kebaikan Anda ke program pilihan berikut</p>
+        <p class="text-slate-600 font-semibold text-xs sm:text-sm mt-3">Salurkan kebaikan Anda ke program pilihan berikut</p>
     </div>
 
-    <!-- Campaigns Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
-        @foreach($campaigns as $c)
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+        @forelse($campaigns as $c)
             @php
                 $percent = $c->target_amount > 0 ? min(100, ($c->current_amount / $c->target_amount) * 100) : 0;
             @endphp
-            <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 hover:border-slate-200/80 hover:shadow-2xl shadow-sm transition-all duration-300 flex flex-col group overflow-hidden">
-                <!-- Cover Image -->
-                <a href="{{ route('campaigns.show', $c->id) }}" class="relative h-32 sm:h-56 overflow-hidden block">
+            <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-primary-200 hover:shadow-xl shadow-sm transition-all duration-300 flex flex-col group overflow-hidden">
+                <a href="{{ route('campaigns.show', $c->id) }}" class="relative aspect-video overflow-hidden block bg-slate-100">
                     <img 
                         src="{{ $c->foto ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&fit=crop' }}" 
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        width="800"
+                        height="450"
+                        loading="lazy"
+                        decoding="async"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                         alt="{{ $c->title }}"
                     >
-                    <span class="absolute top-2 left-2 sm:top-4 sm:left-4 bg-slate-900/80 backdrop-blur-md text-white text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg border border-white/10">
+                    <span class="absolute top-3 left-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
                         {{ $c->category }}
                     </span>
                 </a>
 
-                <!-- Card Body -->
-                <div class="p-3.5 sm:p-8 flex-grow flex flex-col justify-between space-y-3 sm:space-y-6">
-                    <div class="space-y-1.5 sm:space-y-3">
-                        <h3 class="font-montserrat font-black uppercase text-xs sm:text-base text-slate-800 leading-snug sm:leading-tight group-hover:text-primary-600 transition-colors duration-200 line-clamp-2">
+                <div class="p-5 sm:p-7 flex-grow flex flex-col justify-between space-y-4">
+                    <div class="space-y-2">
+                        <h3 class="font-montserrat font-black uppercase text-sm sm:text-base text-slate-900 leading-snug group-hover:text-primary-600 transition-colors duration-200 line-clamp-2">
                             <a href="{{ route('campaigns.show', $c->id) }}" class="hover:underline">
                                 {{ $c->title }}
                             </a>
                         </h3>
-                        <p class="hidden sm:block text-xs text-slate-500 font-medium line-clamp-3">
+                        <p class="text-xs text-slate-600 font-medium line-clamp-3 leading-relaxed">
                             {{ $c->description }}
                         </p>
                     </div>
 
-                    <div class="space-y-2.5 sm:space-y-4">
-                        <!-- Progress Bar -->
-                        <div class="space-y-1 sm:space-y-1.5">
-                            <div class="w-full bg-slate-100 h-1.5 sm:h-2.5 rounded-full overflow-hidden">
-                                <div class="bg-gradient-to-r from-[#063f5c] to-[#f7ad1a] h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                    <div class="space-y-3">
+                        <div class="space-y-1.5">
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div class="bg-[#063f5c] h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
                             </div>
-                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-[8px] sm:text-[10px] font-bold text-slate-500 uppercase tracking-wider gap-0.5">
+                            <div class="flex justify-between items-center text-[11px] font-bold text-slate-600 gap-2">
                                 <span>{{ number_format($percent, 1) }}% Terkumpul</span>
                                 <span class="truncate">Target: Rp {{ number_format($c->target_amount, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-1 sm:pt-2 gap-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2 gap-3 border-t border-slate-100">
                             <div>
-                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase block tracking-wider leading-none">Terkumpul</span>
-                                <span class="text-xs sm:text-base font-montserrat font-black text-slate-800 leading-tight block mt-0.5 sm:mt-0">
+                                <span class="text-[10px] font-bold text-slate-600 uppercase block tracking-wider leading-none">Terkumpul</span>
+                                <span class="text-sm sm:text-base font-montserrat font-black text-slate-900 leading-tight block mt-1">
                                     Rp {{ number_format($c->current_amount, 0, ',', '.') }}
                                 </span>
                             </div>
-                            <a href="{{ route('campaigns.show', $c->id) }}" class="w-full sm:w-auto text-center bg-primary-50 hover:bg-primary-600 hover:text-white text-primary-700 text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-2 sm:px-5 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-300 active:scale-95">
-                                Detail <i class="fa-solid fa-arrow-right ml-0.5 sm:ml-1 text-[9px] sm:text-xs"></i>
+                            <a href="{{ route('campaigns.show', $c->id) }}" class="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center bg-primary-50 hover:bg-primary-600 hover:text-white text-primary-700 text-xs font-black uppercase tracking-wider px-5 py-2.5 rounded-xl transition-colors duration-200">
+                                Lihat Detail
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div class="sm:col-span-2 lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-10 text-center space-y-2">
+                <i class="fa-solid fa-hand-holding-heart text-slate-500 text-3xl" aria-hidden="true"></i>
+                <h3 class="text-sm font-bold text-slate-800">Belum ada kampanye aktif saat ini</h3>
+                <p class="text-xs text-slate-600">Program penggalangan dana terbaru akan tampil di sini setelah dipublikasikan admin.</p>
+            </div>
+        @endforelse
     </div>
 </section>
 
-<!-- ===== MAP OF KINDNESS: DISTRIBUTIONS ===== -->
+<!-- Distribution Map Section -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-<section class="py-24 sm:py-32 bg-white relative overflow-hidden border-t border-slate-100">
-    <!-- Background Accents -->
-    <div class="absolute top-0 right-0 w-1/3 h-full bg-slate-50/50 -skew-x-12 transform origin-top translate-x-20"></div>
-
-    <div class="max-w-7xl mx-auto px-6 relative z-10">
-        <div class="flex flex-col lg:flex-row items-center gap-16">
-            
-            <!-- Left Side: Description -->
-            <div class="w-full lg:w-1/3 space-y-8">
-                <div class="space-y-4">
+<section class="py-20 sm:py-28 bg-white relative border-t border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            <div class="w-full lg:w-1/3 space-y-6">
+                <div class="space-y-3">
                     <div class="flex items-center gap-3">
-                        <span class="w-12 h-[2px] bg-primary-600"></span>
-                        <span class="text-primary-600 font-black uppercase text-[10px] tracking-[0.4em]">Jejak Kebaikan</span>
+                        <span class="w-10 h-0.5 bg-primary-600"></span>
+                        <span class="text-primary-700 font-black uppercase text-xs tracking-wider">Jejak Kebaikan</span>
                     </div>
-                    <h2 class="text-3xl sm:text-5xl font-montserrat font-black text-slate-900 leading-tight tracking-tight uppercase italic">
-                        Peta <br/>
-                        <span class="text-primary-600">Penyaluran</span>
+                    <h2 class="text-3xl sm:text-4xl font-montserrat font-black text-slate-900 leading-tight uppercase">
+                        Peta <span class="text-primary-600">Penyaluran</span>
                     </h2>
-                    <p class="text-slate-500 text-xs sm:text-sm leading-relaxed font-semibold">
-                        Setiap donasi Anda adalah amanah. Lihat bagaimana bantuan tersalurkan secara langsung ke berbagai titik lokasi di seluruh penjuru negeri yang dilaporkan langsung oleh petugas lapangan kami.
+                    <p class="text-slate-600 text-sm leading-relaxed font-medium">
+                        Setiap donasi Anda adalah amanah. Pantau titik penyaluran yang dilaporkan langsung oleh petugas lapangan kami beserta dokumentasi di lokasi.
                     </p>
                 </div>
 
-                <!-- Mini Stats/Info Cards -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-4 p-5 bg-slate-50 border border-slate-100 rounded-3xl transition duration-300 hover:shadow-lg hover:bg-white group">
-                        <div class="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-xl group-hover:bg-primary-600 group-hover:text-white transition-colors duration-350">
-                            📍
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200/80 rounded-2xl">
+                        <div class="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-primary-700 text-base shrink-0">
+                            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h4 class="font-montserrat font-black text-slate-800 text-[11px] uppercase tracking-wide">Titik Presisi GPS</h4>
-                            <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Lokasi akurat sesuai koordinat petugas.</p>
+                            <h3 class="font-montserrat font-black text-slate-900 text-xs uppercase tracking-wide">Titik Presisi GPS</h3>
+                            <p class="text-xs text-slate-600 font-medium mt-0.5">Lokasi akurat sesuai koordinat petugas.</p>
                         </div>
                     </div>
                     
-                    <div class="flex items-center gap-4 p-5 bg-slate-50 border border-slate-100 rounded-3xl transition duration-300 hover:shadow-lg hover:bg-white group">
-                        <div class="w-12 h-12 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center text-xl group-hover:bg-primary-600 group-hover:text-white transition-colors duration-350">
-                            📸
+                    <div class="flex items-center gap-4 p-4 bg-slate-50 border border-slate-200/80 rounded-2xl">
+                        <div class="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-primary-700 text-base shrink-0">
+                            <i class="fa-solid fa-camera" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h4 class="font-montserrat font-black text-slate-800 text-[11px] uppercase tracking-wide">Dokumentasi Nyata</h4>
-                            <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Bukti foto penyaluran di tiap titik.</p>
+                            <h3 class="font-montserrat font-black text-slate-900 text-xs uppercase tracking-wide">Dokumentasi Nyata</h3>
+                            <p class="text-xs text-slate-600 font-medium mt-0.5">Bukti foto penyaluran di setiap titik.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 pt-2">
-                    <span class="relative flex h-3.5 w-3.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
-                    </span>
-                    <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">Pembaruan Lapangan Aktif</span>
+                <div class="flex items-center gap-2.5 pt-1">
+                    <span class="inline-block rounded-full h-2.5 w-2.5 bg-emerald-700" aria-hidden="true"></span>
+                    <span class="text-xs font-bold text-slate-600">Tercatat {{ number_format($distributions->count(), 0, ',', '.') }} titik lokasi penyaluran</span>
                 </div>
             </div>
 
-            <!-- Right Side: Map Card -->
             <div class="w-full lg:w-2/3">
-                <div class="relative">
-                    <!-- Blur backgrounds -->
-                    <div class="absolute -top-6 -right-6 w-32 h-32 bg-primary-100 rounded-full blur-3xl opacity-40"></div>
-                    <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-emerald-100 rounded-full blur-3xl opacity-40"></div>
-
-                    <!-- Map wrapper container -->
-                    <div class="relative bg-white p-3 rounded-[2.5rem] sm:rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] border border-slate-100 overflow-hidden">
-                        <div id="map" class="w-full h-[400px] sm:h-[500px] rounded-[2rem] sm:rounded-[2.5rem] z-10 border border-slate-50"></div>
-                        
-                        <!-- Floating Map Tag -->
-                        <div class="absolute top-6 right-6 z-20 pointer-events-none bg-slate-900/90 backdrop-blur-md text-white py-2 px-4 rounded-full text-[8px] font-black tracking-widest uppercase flex items-center gap-1.5 shadow-md">
-                            <i class="fa-solid fa-map-pin text-primary-500"></i>
-                            Klik Marker Untuk Rincian
-                        </div>
+                <div class="relative bg-white p-3 rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
+                    <div id="map" class="w-full h-[380px] sm:h-[480px] rounded-2xl z-10 border border-slate-200"></div>
+                    <div class="mt-2.5 px-2 flex items-center justify-between text-xs text-slate-600 font-medium">
+                        <span><i class="fa-solid fa-map-pin text-primary-700 mr-1.5" aria-hidden="true"></i>Klik penanda biru pada peta untuk melihat rincian penyaluran.</span>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
-<!-- Script to populate map markers -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         if (typeof L === 'undefined') return;
 
-        // Set center view of map to Indonesia coordinates
         const map = L.map('map', { scrollWheelZoom: false }).setView([-2.5489, 118.0149], 5);
-        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href=&quot;https://www.openstreetmap.org/copyright&quot;>OpenStreetMap</a> contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // Add distribution markers dynamically from db records passed by controller
         @foreach($distributions as $d)
             @if($d->latitude && $d->longitude)
                 (function() {
                     const marker = L.marker([{{ $d->latitude }}, {{ $d->longitude }}]).addTo(map);
-                    
                     const popupContent = `
                         <div class="w-56 p-1 font-sans text-slate-800">
-                            ${ '{{ $d->photo_url }}' ? `<img src="{{ $d->photo_url }}" class="w-full h-24 object-cover rounded-lg mb-2 shadow-sm" />` : '' }
-                            <h4 class="font-bold text-slate-900 text-xs mb-1">{{ $d->title }}</h4>
-                            <p class="text-[10px] text-slate-550 leading-relaxed mb-2">{{ $d->description }}</p>
-                            <div class="flex justify-between items-center text-[8px] font-bold text-slate-400 uppercase pt-1.5 border-t border-slate-100">
-                                <span>Petugas: {{ $d->worker->name }}</span>
+                            ${ '{{ $d->photo_url }}' ? `<img src="{{ $d->photo_url }}" width="224" height="96" alt="{{ e($d->title) }}" class="w-full h-24 object-cover rounded-lg mb-2" />` : '' }
+                            <h4 class="font-bold text-slate-900 text-xs mb-1">{{ e($d->title) }}</h4>
+                            <p class="text-[11px] text-slate-600 leading-relaxed mb-2">{{ e($d->description) }}</p>
+                            <div class="flex justify-between items-center text-[10px] font-bold text-slate-600 pt-1.5 border-t border-slate-200">
+                                <span>Petugas: {{ e($d->worker->name ?? 'Petugas') }}</span>
                                 <span>{{ $d->distribution_date->format('d M Y') }}</span>
                             </div>
                         </div>
@@ -347,49 +364,53 @@
 </script>
 
 <!-- About & Impact Mission Section -->
-<section class="bg-[#063f5c] text-white py-20 sm:py-28 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-20">
+<section class="bg-[#063f5c] text-white py-20 sm:py-24 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-15">
         <img 
             src="{{ !empty($settings->about_image) ? (str_starts_with($settings->about_image, 'http') ? $settings->about_image : asset($settings->about_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&h=600&fit=crop' }}" 
+            width="1200"
+            height="600"
+            loading="lazy"
+            decoding="async"
             class="w-full h-full object-cover" 
-            alt="Impact image"
+            alt=""
         >
     </div>
-    <div class="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <div class="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <div class="space-y-6">
-            <span class="text-[10px] font-black uppercase tracking-[0.22em] text-[#f7ad1a]">VISI & MISI KITA</span>
-            <h2 class="text-2xl sm:text-4xl font-montserrat font-black uppercase tracking-tight italic">
+            <span class="text-xs font-black uppercase tracking-wider text-[#f7ad1a]">Visi dan Misi Lembaga</span>
+            <h2 class="text-2xl sm:text-4xl font-montserrat font-black uppercase tracking-tight">
                 Penyaluran yang <span class="text-[#f7ad1a]">Transparan</span> dan Bertanggung Jawab
             </h2>
             <div class="w-12 h-1.5 bg-[#f7ad1a] rounded-full"></div>
-            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-semibold">
-                {{ $settings->about_mission ?? 'Kami memastikan setiap rupiah yang Anda donasikan akan tersalurkan langsung kepada penerima manfaat yang berhak dengan dokumentasi dan pelaporan yang terperinci di website kami.' }}
+            <p class="text-sm text-slate-200 leading-relaxed font-medium">
+                {{ $settings->about_mission ?? 'Kami memastikan setiap rupiah yang Anda donasikan tersalurkan langsung kepada penerima manfaat yang berhak dengan dokumentasi dan pelaporan terbuka.' }}
             </p>
-            <div class="pt-4">
-                <a href="{{ route('about') }}" class="bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] text-xs font-black uppercase tracking-widest px-8 py-4 rounded-xl transition duration-300 shadow-lg shadow-black/20">
-                    Pelajari Selengkapnya
+            <div class="pt-2">
+                <a href="{{ route('about') }}" class="inline-flex items-center justify-center min-h-[44px] bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] text-xs font-black uppercase tracking-wider px-8 py-3.5 rounded-xl transition-colors duration-200 shadow-lg">
+                    Tentang Lembaga Kami
                 </a>
             </div>
         </div>
-        <div class="bg-white/5 border border-white/10 backdrop-blur-md p-8 rounded-3xl space-y-6">
-            <h3 class="text-lg font-montserrat font-black uppercase tracking-wide">Dampak yang Diciptakan</h3>
-            <div class="space-y-4">
+        <div class="bg-[#04324a]/95 border border-[#0e567d] p-8 rounded-3xl space-y-6">
+            <h3 class="text-lg font-montserrat font-black uppercase tracking-wide text-white">Fokus Penyaluran</h3>
+            <div class="space-y-5">
                 <div class="flex items-start space-x-4">
-                    <div class="bg-white/10 text-[#f7ad1a] w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-book-quran"></i>
+                    <div class="bg-[#063f5c] border border-[#0e567d] text-[#f7ad1a] w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-book-quran" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <h4 class="text-xs font-black uppercase tracking-wider">Mushaf Al-Quran Pelosok</h4>
-                        <p class="text-[11px] text-slate-300 leading-normal">Membantu ribuan santri di pesantren pelosok NTT mendapatkan Al-Quran yang layak.</p>
+                        <h4 class="text-xs font-black uppercase tracking-wider text-white">Mushaf Al-Quran Pelosok</h4>
+                        <p class="text-xs text-slate-200 leading-relaxed mt-1">Mendistribusikan mushaf Al-Quran untuk santri di pesantren wilayah pelosok.</p>
                     </div>
                 </div>
                 <div class="flex items-start space-x-4">
-                    <div class="bg-white/10 text-[#f7ad1a] w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-graduation-cap"></i>
+                    <div class="bg-[#063f5c] border border-[#0e567d] text-[#f7ad1a] w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <h4 class="text-xs font-black uppercase tracking-wider">Pendidikan Anak Dhuafa</h4>
-                        <p class="text-[11px] text-slate-300 leading-normal">Bantuan perlengkapan dan sarana sekolah di wilayah bencana.</p>
+                        <h4 class="text-xs font-black uppercase tracking-wider text-white">Pendidikan Anak Dhuafa</h4>
+                        <p class="text-xs text-slate-200 leading-relaxed mt-1">Menyalurkan perlengkapan belajar dan sarana sekolah di wilayah terdampak bencana.</p>
                     </div>
                 </div>
             </div>
@@ -397,91 +418,101 @@
     </div>
 </section>
 
-<!-- Prayer Board / Doa Bersama Section -->
-<section class="max-w-7xl mx-auto px-4 py-20 sm:py-28">
-    <div class="text-center max-w-2xl mx-auto mb-16 space-y-2">
-        <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+<!-- Prayer Board -->
+<section class="max-w-7xl mx-auto px-4 py-16 sm:py-24">
+    <div class="text-center max-w-2xl mx-auto mb-12 space-y-2">
+        <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight">
             Papan <span class="text-primary-600">Doa Donatur</span>
         </h2>
         <div class="w-12 h-1.5 bg-[#f7ad1a] mx-auto rounded-full"></div>
-        <p class="text-slate-400 font-bold text-[10px] sm:text-xs tracking-widest uppercase mt-3">Mari saling mendoakan dan mengaminkan kebaikan bersama</p>
+        <p class="text-slate-600 font-semibold text-xs sm:text-sm mt-3">Mari saling mendoakan dan mengaminkan kebaikan bersama</p>
     </div>
 
-    <!-- Prayer Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        @foreach($prayers as $p)
-            <div class="bg-white border border-slate-100 p-6 sm:p-8 rounded-3xl shadow-sm hover:shadow-xl hover:border-slate-200/60 transition duration-300 flex flex-col justify-between min-h-[160px]">
-                <div class="space-y-3">
-                    <p class="text-xs text-slate-600 font-semibold italic">
-                        "{{ $p->message }}"
-                    </p>
-                </div>
-                <div class="flex items-center justify-between pt-4 border-t border-slate-50 mt-4">
+        @forelse($prayers as $p)
+            <div class="bg-white border border-slate-200/80 p-6 sm:p-7 rounded-2xl shadow-sm flex flex-col justify-between min-h-[160px]">
+                <p class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+                    "{{ $p->message }}"
+                </p>
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 mt-4 gap-3">
                     <div>
-                        <span class="text-[10px] font-bold text-slate-800 uppercase block tracking-wider">
+                        <span class="text-xs font-bold text-slate-900 block">
                             {{ $p->is_anonymous ? 'Donatur Anonim' : $p->name }}
                         </span>
-                        <span class="text-[8px] text-slate-400 font-semibold uppercase tracking-wider">{{ $p->created_at->diffForHumans() }}</span>
+                        <span class="text-[11px] text-slate-600 font-medium">{{ $p->created_at->diffForHumans() }}</span>
                     </div>
                     <form action="{{ route('prayers.upvote', $p->id) }}" method="POST">
                         @csrf
-                        <button type="submit" class="bg-primary-50 hover:bg-primary-600 text-primary-700 hover:text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition duration-300 flex items-center gap-1.5">
-                            <i class="fa-solid fa-hands-praying"></i> Aamiin ({{ $p->aamiin_count }})
+                        <button type="submit" class="min-h-[44px] bg-primary-50 hover:bg-primary-600 text-primary-700 hover:text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center gap-1.5 border border-primary-100">
+                            <i class="fa-solid fa-hands-praying" aria-hidden="true"></i>
+                            <span>Aamiin ({{ $p->aamiin_count }})</span>
                         </button>
                     </form>
                 </div>
             </div>
-        @endforeach
+        @empty
+            <div class="sm:col-span-2 lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-8 text-center">
+                <p class="text-xs font-bold text-slate-600">Belum ada doa yang dikirimkan. Jadilah yang pertama mengirimkan doa kebaikan.</p>
+            </div>
+        @endforelse
     </div>
 
     <div class="text-center pt-10">
-        <a href="{{ route('prayers.index') }}" class="text-xs font-black uppercase tracking-widest text-primary-600 hover:text-primary-700">
-            Kirim Doa atau Lihat Semua Doa <i class="fa-solid fa-arrow-right ml-1"></i>
+        <a href="{{ route('prayers.index') }}" class="inline-flex items-center justify-center min-h-[44px] px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider text-primary-700 hover:bg-primary-50 transition-colors">
+            Kirim Doa atau Lihat Semua Doa
         </a>
     </div>
 </section>
 
-<!-- News/Articles Section -->
-<section class="bg-slate-50/50 border-y border-slate-100 py-20 sm:py-28">
+<!-- News / Articles Section -->
+<section class="bg-slate-50 border-y border-slate-200/80 py-16 sm:py-24">
     <div class="max-w-7xl mx-auto px-4">
-        <div class="flex flex-col sm:flex-row justify-between items-end mb-16 gap-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-end mb-12 gap-4">
             <div>
-                <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                    Kabar <span class="text-primary-600">Terbaru & Dampak</span>
+                <h2 class="text-2xl sm:text-4xl font-montserrat font-black text-slate-900 uppercase tracking-tight">
+                    Kabar <span class="text-primary-600">Terbaru dan Dampak</span>
                 </h2>
-                <p class="text-slate-400 font-bold text-[10px] sm:text-xs tracking-widest uppercase mt-2">Update penyaluran donasi dan cerita dari penerima manfaat</p>
+                <p class="text-slate-600 font-semibold text-xs sm:text-sm mt-2">Update penyaluran donasi dan cerita dari penerima manfaat</p>
             </div>
-            <a href="{{ route('news') }}" class="bg-white hover:bg-slate-100 border border-slate-200/60 text-slate-700 text-xs font-black uppercase tracking-widest px-6 py-3.5 rounded-2xl transition duration-300">
+            <a href="{{ route('news') }}" class="min-h-[44px] inline-flex items-center justify-center bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-black uppercase tracking-wider px-6 py-3 rounded-xl transition-colors">
                 Lihat Semua Artikel
             </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            @foreach($news as $n)
-                <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col group hover:shadow-xl transition duration-300">
-                    <div class="h-48 overflow-hidden bg-slate-100">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            @forelse($news as $n)
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden flex flex-col group hover:shadow-lg transition-all duration-300">
+                    <div class="aspect-video overflow-hidden bg-slate-100">
                         <img 
                             src="{{ $n->image ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&fit=crop' }}" 
-                            class="w-full h-full object-cover group-hover:scale-105 transition duration-500" 
+                            width="800"
+                            height="450"
+                            loading="lazy"
+                            decoding="async"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                             alt="{{ $n->title }}"
                         >
                     </div>
                     <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
                         <div class="space-y-2">
-                            <span class="bg-primary-50 text-primary-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">
+                            <span class="inline-block bg-primary-50 text-primary-700 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md border border-primary-100">
                                 {{ $n->tag }}
                             </span>
-                            <h3 class="font-montserrat font-black uppercase text-sm sm:text-base text-slate-800 line-clamp-2 leading-tight group-hover:text-primary-600 transition-colors">
-                                <a href="{{ route('news.detail', $n->id) }}">{{ $n->title }}</a>
+                            <h3 class="font-montserrat font-black uppercase text-sm sm:text-base text-slate-900 line-clamp-2 leading-tight group-hover:text-primary-600 transition-colors">
+                                <a href="{{ route('news.detail', $n->id) }}" class="hover:underline">{{ $n->title }}</a>
                             </h3>
                         </div>
-                        <div class="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider pt-2 border-t border-slate-50">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-600 pt-3 border-t border-slate-100">
                             <span>{{ $n->created_at->format('d M Y') }}</span>
-                            <a href="{{ route('news.detail', $n->id) }}" class="text-primary-600 font-black">Baca <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                            <a href="{{ route('news.detail', $n->id) }}" class="text-primary-700 font-black hover:underline">Baca Artikel</a>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <div class="sm:col-span-3 bg-white border border-slate-200 rounded-2xl p-8 text-center">
+                    <p class="text-xs font-bold text-slate-600">Belum ada artikel penyaluran yang diterbitkan.</p>
+                </div>
+            @endforelse
         </div>
     </div>
 </section>

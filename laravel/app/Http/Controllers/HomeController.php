@@ -21,7 +21,13 @@ class HomeController extends Controller
         $prayers = Prayer::latest()->take(5)->get();
         $distributions = \App\Models\Distribution::with(['campaign', 'worker'])->whereNotNull('latitude')->whereNotNull('longitude')->get();
 
-        return view('home', compact('settings', 'campaigns', 'news', 'prayers', 'distributions'));
+        $realStats = [
+            'campaigns'     => Campaign::where('status', 'approved')->count(),
+            'distributions' => \App\Models\Distribution::count(),
+            'volunteers'    => Volunteer::count(),
+        ];
+
+        return view('home', compact('settings', 'campaigns', 'news', 'prayers', 'distributions', 'realStats'));
     }
 
     public function about()

@@ -1,3 +1,113 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    a[href],
+    button,
+    summary,
+    select,
+    label[for],
+    label:has(> input[type="checkbox"], > input[type="radio"]),
+    [role="button"],
+    [role="link"],
+    [role="tab"],
+    [role="menuitem"],
+    [role="option"],
+    [role="switch"],
+    input[type="checkbox"],
+    input[type="radio"],
+    input[type="file"],
+    input[type="submit"],
+    input[type="button"],
+    input[type="reset"],
+    input[type="range"],
+    input[type="color"] {
+        cursor: pointer;
+    }
+
+    :disabled,
+    [aria-disabled="true"] {
+        cursor: not-allowed;
+    }
+
+    button,
+    a,
+    input,
+    select,
+    textarea {
+        touch-action: manipulation;
+    }
+
+    :focus-visible {
+        outline: 2px solid #063f5c !important;
+        outline-offset: 2px !important;
+    }
+
+    .bg-\[\#063f5c\] :focus-visible,
+    .bg-primary-600 :focus-visible,
+    .bg-primary-700 :focus-visible,
+    .bg-slate-900 :focus-visible {
+        outline-color: #f7ad1a !important;
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 9999;
+    background: #063f5c;
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    font-weight: 800;
+    font-size: 0.75rem;
+    border-radius: 0 0 0.75rem 0;
+}
+
+.skip-link:focus {
+    left: 0.5rem;
+    top: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+    main > section.py-20,
+    main > section.py-12 {
+        padding-top: 1rem !important;
+        padding-bottom: 6rem !important;
+        padding-left: 0.875rem !important;
+        padding-right: 0.875rem !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
