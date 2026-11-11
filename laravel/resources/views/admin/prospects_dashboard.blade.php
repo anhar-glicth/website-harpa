@@ -368,7 +368,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="py-6 text-center text-slate-400 font-bold">Tidak ada data prospek donatur.</td>
+                                    <td colspan="9" class="py-6 text-center text-slate-600 font-bold">Tidak ada data prospek donatur.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -378,13 +378,13 @@
 
             {{-- Table 4: Top 20 Prospek Calon Donatur Base On Potensi Dana --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                     <span class="font-black text-xs uppercase tracking-wider">Top 20 Prospek Calon Donatur Base On Potensi Dana</span>
-                    <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    <button type="button" aria-label="Export Top 20 Prospek Calon Donatur" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Nama Donatur</th>

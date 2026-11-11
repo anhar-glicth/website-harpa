@@ -13,31 +13,31 @@
         {{-- Main Content Column --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Tab Navigation Header (Presisi Screenshot User) --}}
+            {{-- Top Tab Navigation Header --}}
             <div class="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-0 overflow-x-auto">
-                <a href="{{ route('admin.donors_list') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.donors_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Donatur
                 </a>
-                <a href="{{ route('admin.transactions_list') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.transactions_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Transaksi
                 </a>
-                <a href="{{ route('admin.prospects_list') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.prospects_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Prospek
                 </a>
-                <a href="{{ route('admin.potential_donors') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.potential_donors') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Calon Donatur
                 </a>
-                <a href="{{ route('admin.transactions_dashboard') }}" class="px-4 py-2 rounded-t-xl text-xs font-black bg-emerald-700 text-white shadow-sm">
+                <a href="{{ route('admin.transactions_dashboard') }}" aria-current="page" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-black bg-emerald-700 text-white shadow-sm">
                     Dashboard Transaksi
                 </a>
             </div>
 
-            {{-- Top Red Header Banner --}}
-            <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex items-center justify-between">
+            {{-- Top Header Banner --}}
+            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
                 <span class="flex items-center gap-2">
                     <i class="fa-solid fa-chart-line text-white"></i> Dashboard Transaksi
                 </span>
-                <span class="text-xs text-white/80 font-normal">Transaction Management → Dashboard Transaksi</span>
+                <span class="text-xs text-emerald-100 font-normal">Transaction Management / Dashboard Transaksi</span>
             </div>
 
             {{-- Filter Form Controls --}}
@@ -45,14 +45,14 @@
                 <form action="{{ route('admin.transactions_dashboard') }}" method="GET" class="space-y-3">
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex items-center gap-2">
-                            <span>Tgl Donasi :</span>
-                            <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <label for="trx_dash_start">Tgl Donasi :</label>
+                            <input id="trx_dash_start" type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
                             <span>s/d</span>
-                            <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <input id="trx_dash_end" type="date" name="end_date" aria-label="Tanggal akhir donasi" value="{{ request('end_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Rumpun Program :</span>
-                            <select name="program_group_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="trx_dash_group">Rumpun Program :</label>
+                            <select id="trx_dash_group" name="program_group_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Rumpun</option>
                                 @foreach($programGroups as $pg)
                                     <option value="{{ $pg->id }}">{{ $pg->name }}</option>
@@ -60,8 +60,8 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Program :</span>
-                            <select name="program_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="trx_dash_program">Program :</label>
+                            <select id="trx_dash_program" name="program_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Program</option>
                                 @foreach($programs as $prg)
                                     <option value="{{ $prg->id }}">{{ $prg->title }}</option>
@@ -69,23 +69,23 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Donatur :</span>
-                            <select name="donor_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="trx_dash_donor">Donatur :</label>
+                            <select id="trx_dash_donor" name="donor_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Donatur</option>
                                 @foreach($donors as $dnr)
                                     <option value="{{ $dnr->id }}">{{ $dnr->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-4 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                            🔍 Show
+                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-4 py-2 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-magnifying-glass"></i> Show
                         </button>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-4 pt-1">
                         <div class="flex items-center gap-2">
-                            <span>PIC Prospek :</span>
-                            <select name="pic_prospect" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[160px]">
+                            <label for="trx_dash_pic">PIC Prospek :</label>
+                            <select id="trx_dash_pic" name="pic_prospect" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[160px]">
                                 <option value="">Semua PIC</option>
                                 @foreach($picUsers as $pic)
                                     <option value="{{ $pic->name }}" {{ request('pic_prospect') == $pic->name ? 'selected' : '' }}>{{ $pic->name }}</option>
@@ -93,8 +93,8 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Kantor :</span>
-                            <select name="office_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[160px]">
+                            <label for="trx_dash_office">Kantor :</label>
+                            <select id="trx_dash_office" name="office_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[160px]">
                                 <option value="">Pilih Kantor</option>
                                 @foreach($offices as $ofc)
                                     <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -109,28 +109,28 @@
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Capaian Total
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Capaian Total
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalCapaian, 0, ',', '.') }}</p>
                     </div>
 
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Donatur
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Total Donatur
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalDonorsCount) }}</p>
                     </div>
 
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Transaksi
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Total Transaksi
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalTransactionsCount) }}</p>
                     </div>
 
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
                             Rata-rata Donasi
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($averageDonation, 0, ',', '.') }}</p>
@@ -142,9 +142,9 @@
             <div class="space-y-6">
 
                 {{-- Hint Notification for Zooming & Panning --}}
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 text-xs text-sky-400 font-semibold flex items-center justify-between shadow-md">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 text-xs text-sky-300 font-semibold flex items-center justify-between shadow-md">
                     <span class="flex items-center gap-2">
-                        <i class="fa-solid fa-magnifying-glass-plus text-sky-400 text-sm"></i>
+                        <i class="fa-solid fa-magnifying-glass-plus text-sky-300 text-sm"></i>
                         <span><strong>Fitur Zoom & Pan Grafik Active:</strong> Klik & drag (tahan mouse) pada area grafik untuk memperbesar (Zoom-In) rentang tanggal/bulan. Tahan tombol <code>Shift</code> sambil drag untuk me-pan area grafik.</span>
                     </span>
                 </div>
@@ -206,13 +206,13 @@
 
                 {{-- Table 1: Resume Capaian PIC Prospek (Col 7) --}}
                 <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Capaian PIC Prospek</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume Capaian PIC" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
-                            <thead class="bg-slate-50 text-[11px] font-bold text-slate-900 border-b border-slate-200">
+                            <thead class="bg-slate-50 text-xs font-bold text-slate-900 border-b border-slate-200">
                                 <tr>
                                     <th class="py-2.5 px-3 text-center">No</th>
                                     <th class="py-2.5 px-3">PIC Prospek</th>
@@ -223,10 +223,10 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($resumePicList as $idx => $rPic)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-2 px-3 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2 px-3 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2 px-3 font-semibold text-slate-900">{{ $rPic['name'] }}</td>
                                         <td class="py-2 px-3 text-right font-mono font-bold text-slate-800">{{ number_format($rPic['amount'], 0, ',', '.') }}</td>
-                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">{{ $rPic['percent'] }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700">{{ $rPic['percent'] }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -236,13 +236,13 @@
 
                 {{-- Table 2: Resume Capaian Per Kantor (Col 5) --}}
                 <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Capaian Per Kantor</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume Capaian Per Kantor" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
-                            <thead class="bg-slate-50 text-[11px] font-bold text-slate-900 border-b border-slate-200">
+                            <thead class="bg-slate-50 text-xs font-bold text-slate-900 border-b border-slate-200">
                                 <tr>
                                     <th class="py-2.5 px-3 text-center">No</th>
                                     <th class="py-2.5 px-3">Kantor</th>
@@ -253,10 +253,10 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($resumeOfficeList as $idx => $rOfc)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-2 px-3 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2 px-3 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2 px-3 font-semibold text-slate-900">{{ $rOfc['name'] }}</td>
                                         <td class="py-2 px-3 text-right font-mono font-bold text-slate-800">{{ number_format($rOfc['amount'], 0, ',', '.') }}</td>
-                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">{{ $rOfc['percent'] }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700">{{ $rOfc['percent'] }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -268,13 +268,13 @@
 
             {{-- Table 3: Top 20 Donatur Base On Kontribusi Donasi (Full Width) --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                     <span class="font-black text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi</span>
-                    <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    <button type="button" aria-label="Export Top 20 Donatur" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Nama Donatur</th>
@@ -290,7 +290,7 @@
                         <tbody class="divide-y divide-slate-100">
                             @foreach($topDonorsList as $idx => $td)
                                 <tr class="{{ !empty($td['highlight']) ? 'bg-amber-100 font-bold' : 'hover:bg-slate-50' }}">
-                                    <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                    <td class="py-3 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-900">{{ $td['name'] }}</td>
                                     <td class="py-3 px-4 font-mono text-emerald-700 font-bold">{{ $td['id_donatur'] }}</td>
                                     <td class="py-3 px-4 text-slate-700">{{ $td['office'] }}</td>
@@ -298,7 +298,7 @@
                                     <td class="py-3 px-4 text-slate-700">{{ $td['profile'] }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-800">{{ $td['pic'] }}</td>
                                     <td class="py-3 px-4 text-right font-mono font-black text-slate-900">{{ number_format($td['amount'], 0, ',', '.') }}</td>
-                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ $td['percent'] }}</td>
+                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-700">{{ $td['percent'] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -321,7 +321,7 @@
         const darkTheme = {
             chart: { 
                 backgroundColor: '#0f172a', 
-                style: { fontFamily: 'Segoe UI, sans-serif' },
+                style: { fontFamily: 'Plus Jakarta Sans, sans-serif' },
                 zoomType: 'x',
                 panning: { enabled: true, type: 'x' },
                 panKey: 'shift',
@@ -329,10 +329,10 @@
                     position: { align: 'right', x: -10, y: 10 },
                     theme: { 
                         fill: '#1e293b', 
-                        stroke: '#0e567d', 
+                        stroke: '#38bdf8', 
                         r: 6, 
                         states: { hover: { fill: '#0e567d', style: { color: '#ffffff' } } }, 
-                        style: { color: '#0e567d', fontWeight: 'bold', fontSize: '11px' } 
+                        style: { color: '#7dd3fc', fontWeight: 'bold', fontSize: '11px' } 
                     }
                 }
             },

@@ -325,13 +325,13 @@
 
                 {{-- Table 3: Resume RFM 90 Days By Office --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM 90 Days By Office</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume RFM 90 Days By Office" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">Kantor</th>
@@ -356,7 +356,7 @@
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-900">{{ number_format($rOfc90['dormant']) }}</td>
                                     </tr>
                                 @endforeach
-                                {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                {{-- TOTAL Row Highlighted Amber --}}
                                 @php $totOfc90 = collect($resumeRfm90ByOffice); @endphp
                                 <tr class="bg-amber-400 text-slate-900 font-black border-t border-amber-500">
                                     <td class="py-3 px-4 text-center font-mono">{{ $totOfc90->count() ?: '-' }}</td>
@@ -375,13 +375,13 @@
 
                 {{-- Table 4: Resume RFM All Time By Office --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM All Time By Office</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume RFM All Time By Office" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">Kantor</th>
@@ -397,7 +397,7 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($resumeRfmAllTimeByOffice as $idx => $rOfcAt)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-2.5 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2.5 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rOfcAt['name'] }}</td>
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['champion']) }}</td>
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rOfcAt['loyal']) }}</td>
