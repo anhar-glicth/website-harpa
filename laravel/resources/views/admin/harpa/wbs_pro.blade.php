@@ -119,7 +119,8 @@
                                         </span>
                                     </td>
                                     <td class="py-3 px-4">
-                                        <span class="px-2 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider bg-rose-100 text-rose-800">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>
                                             0 (Mati)
                                         </span>
                                     </td>

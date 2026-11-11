@@ -120,8 +120,8 @@
                             <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i> Add Target
                         </button>
                         <a href="{{ route('admin.targets.export', request()->query()) }}"
-                           class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 rounded-2xl text-xs font-bold transition-colors shadow-sm">
-                            <i class="fa-solid fa-file-excel text-emerald-700" aria-hidden="true"></i> Export Excel
+                           class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 bg-white text-slate-800 border border-slate-300 hover:border-[#063f5c] hover:text-[#063f5c] rounded-xl text-xs font-bold transition-colors">
+                            <i class="fa-solid fa-file-excel text-[#063f5c]" aria-hidden="true"></i> Export Excel
                         </a>
                     </div>
                     <div class="text-xs font-semibold text-slate-600">

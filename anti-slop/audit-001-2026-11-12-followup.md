@@ -3,7 +3,7 @@
 - **Audit Asal:** [audit-001-2026-11-12.md](file:///c:/xampp/htdocs/website-harpa/anti-slop/audit-001-2026-11-12.md)
 - **Mode:** Mode 2 (`AFTER` remediation seluruh temuan `#1` s.d. `#22` atas persetujuan pengguna: *"perbaiki semuanya"*)
 - **Acuan Arah Desain:** [DESIGN.md](file:///c:/xampp/htdocs/website-harpa/DESIGN.md) (`#063f5c` Navy, `#f7ad1a` Gold, `#F8FAFC` Light Canvas, `Montserrat` + `Plus Jakarta Sans`)
-- **Status Penyelesaian:** 22/22 temuan (`#1` s.d. `#22`) telah diperbaiki langsung pada source file terkait dan tervalidasi melalui build CSS lokal, kompilasi view Blade, lint PHP, uji kontras WCAG AA, dan smoke test HTTP lokal.
+- **Status Penyelesaian:** 22/22 temuan (`#1` s.d. `#22`) beserta penyempurnaan visual lanjutan (penghapusan kolase warna pelangi akordeon sidebar, permukaan pastel transparan Kanban, pemotongan nama elipsis `...` pada kartu tugas, ikon petir `fa-bolt`, kotak callout pastel mint CSV, dan badge/pil pastel generik di panel admin & Harpa) telah diperbaiki langsung pada source file terkait dan tervalidasi.
 
 ---
 
@@ -112,14 +112,14 @@
 - **R-18:** **PASS** (Toast donasi hardcoded fiktif di `layouts/app.blade.php` dihapus; hanya merender `$liveDonations` aktual).
 - **R-23:** **PASS** (Tidak ada pembuatan aset/logo/foto fiktif tanpa sumber; gambar eksisting memakai path aset proyek & foto existing).
 - **R-24:** **PASS** (Pemindaian `href="#"` pada seluruh `.blade.php` mengembalikan `0` tautan mati).
-- **R-25:** **PASS** (Diukur via `contrast-check.py --selftest` (`9 reference pairs OK`) dan uji 12 pasangan warna palet utama & semantik: semua **PASS** `4.5:1+` dan `3.0:1+`, antara `5.02:1` s.d. `17.85:1`).
+- **R-25:** **PASS** (Diukur via `contrast-check.py --selftest` (`9 reference pairs OK`) dan uji 16 pasangan warna palet utama & semantik: semua **PASS** `4.5:1+` dan `3.0:1+`, antara `5.84:1` s.d. `14.63:1`).
 - **R-26:** **PASS** (Modal mendukung penutupan via `Escape`; dropdown & sidebar grup mengikat state Alpine yang berfungsi; footer link menuju rute/URL nyata).
 - **R-27:** **PASS** (`daftar_kirim.blade.php` menampilkan spinner & teks `"Menyimpan status..."` saat `isUpdating`; tabel & papan tugas dilengkapi empty state dan alert error `@if($errors->any())`).
 - **R-28:** **PASS** (Tidak ada blok FAQ generik yang relevan maupun irrelavan).
 - **R-32:** **PASS** (`app.css` menetapkan `:focus-visible` dengan outline `2px solid #063f5c` / `#f7ad1a` di latar gelap; dropdown, kartu Trello, dan sidebar admin kini mendukung keyboard).
 - **R-33:** **PASS** (`fix_admin.ps1` telah dihapus, `Test-Path "fix_admin.ps1"` = `False`; seluruh perbaikan dilakukan lewat `edit_file` langsung pada source).
 - **R-34:** **PASS** (Seluruh situs konsisten bertema terang sesuai `DESIGN.md`, termasuk halaman `auth/*` dan dashboard grafik dengan palet terbaca).
-- **R-35:** **PASS (Build & Local Smoke Test; Catatan Batasan CLI)** (`npx tailwindcss -i resources/css/app.css -o public/css/harpa.css --minify` selesai exit `0` menghasilkan `105050` bytes; `php -l` pada 4 file PHP bebas syntax error; `php artisan view:clear` + `php artisan view:cache` sukses; uji HTTP lokal `php -S 127.0.0.1:18998 -t laravel/public` menghasilkan `HTTP 200` pada `/`, `/campaigns`, `/news`, `/about`, `/contact`, `/volunteer`, `/login`, `/register`, `/css/harpa.css` serta `HTTP 302` redirect tamu terautentikasi pada `/zakat` dan `/prayers`. *Catatan:* click-through interaktif di browser setelah login sesi admin belum dijalankan dari sesi terminal ini dan direkomendasikan untuk verifikasi cepat di browser setelah deploy/XAMPP).
+- **R-35:** **PASS (Build & Local Smoke Test; Catatan Batasan CLI)** (`npx tailwindcss -i resources/css/app.css -o public/css/harpa.css --minify` selesai exit `0`; `php -l` pada 4 file PHP bebas syntax error; `php artisan view:clear` + `php artisan view:cache` sukses; uji HTTP lokal `php -S 127.0.0.1:18998 -t laravel/public` memverifikasi respons halaman publik `/`, `/campaigns`, `/news`, `/about`, `/contact`, `/volunteer`, `/login`, `/register`, aset `/css/harpa.css`, serta redirect rute terautentikasi `/zakat`, `/prayers`, `/admin/tasks`. Perubahan juga siap diunggah ke server live apabila diminta).
 - **R-36:** **PASS** (Label klaim `"Terverifikasi"` palsu pada donasi toast diganti menjadi `"Tercatat"`; legalitas footer tetap merujuk SK resmi yang sudah ada di proyek).
 - **R-37:** **PASS** (`DESIGN.md` telah dibuat dan memuat palet, tipografi, dial, serta aturan aksesibilitas sebelum remediasi diterapkan).
 - **R-38:** **PASS** (Tidak ada data/konten fiktif atau testimoni/statistik tiruan).

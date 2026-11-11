@@ -93,7 +93,7 @@
                                placeholder="Nama Lengkap/ID/No HP/Email" 
                                class="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] text-xs font-medium focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700 min-w-[240px]">
                         
-                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                        <button type="submit" class="bg-white hover:border-[#063f5c] text-slate-800 hover:text-[#063f5c] border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                             <i class="fa-solid fa-magnifying-glass"></i> Search
                         </button>
                         

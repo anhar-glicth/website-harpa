@@ -153,7 +153,7 @@
                         <button type="button" @click="showAddModal = true" class="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-colors">
                             <i class="fa-solid fa-plus text-xs"></i> Add Karyawan
                         </button>
-                        <a href="{{ route('admin.karyawan.export', request()->query()) }}" class="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 rounded-2xl text-xs font-bold transition-colors shadow-sm">
+                        <a href="{{ route('admin.karyawan.export', request()->query()) }}" class="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-white text-slate-800 border border-slate-300 hover:border-[#063f5c] hover:text-[#063f5c] rounded-xl text-xs font-bold transition-colors">
                             <i class="fa-solid fa-file-excel text-emerald-700"></i> Export Excel
                         </a>
                     </div>

@@ -43,7 +43,7 @@
             </a>
             <form method="POST" action="{{ route('logout') }}" class="flex-1">
                 @csrf
-                <button type="submit" class="w-full min-h-[44px] flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black uppercase tracking-wider text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 hover:text-rose-800 transition-colors" title="Keluar dari Akun">
+                <button type="submit" class="w-full min-h-[44px] flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl text-xs font-black uppercase tracking-wider text-rose-700 bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-800 transition-colors" title="Keluar dari Akun">
                     <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Keluar
                 </button>
             </form>
