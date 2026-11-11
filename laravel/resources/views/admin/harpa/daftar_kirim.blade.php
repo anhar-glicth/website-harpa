@@ -155,43 +155,43 @@
                         </button>
 
                         <!-- Pending -->
-                        <button type="button" @click="statusFilter = 'PENDING'" :class="statusFilter === 'PENDING' ? 'ring-2 ring-amber-900 shadow-sm bg-amber-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'PENDING'" :class="statusFilter === 'PENDING' ? 'ring-2 ring-[#063f5c] bg-slate-50 border-[#063f5c]' : 'bg-white border-slate-200 hover:bg-slate-50'" class="border rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-black uppercase tracking-wider text-amber-900">Belum Kirim</span>
-                                <i class="fa-regular fa-clock text-amber-900 text-xs" aria-hidden="true"></i>
+                                <span class="text-xs font-black uppercase tracking-wider text-slate-700">Belum Kirim</span>
+                                <i class="fa-regular fa-clock text-[#f7ad1a] text-xs" aria-hidden="true"></i>
                             </div>
-                            <div class="text-xl font-montserrat font-black text-amber-900 mt-1" x-text="stats.pending"></div>
-                            <span class="text-xs text-amber-900 font-medium">Antrean Menunggu</span>
+                            <div class="text-xl font-montserrat font-black text-slate-900 mt-1" x-text="stats.pending"></div>
+                            <span class="text-xs text-slate-600 font-medium">Antrean Menunggu</span>
                         </button>
 
                         <!-- Delivered -->
-                        <button type="button" @click="statusFilter = 'DELIVERED'" :class="statusFilter === 'DELIVERED' ? 'ring-2 ring-blue-700 shadow-sm bg-blue-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'DELIVERED'" :class="statusFilter === 'DELIVERED' ? 'ring-2 ring-[#063f5c] bg-slate-50 border-[#063f5c]' : 'bg-white border-slate-200 hover:bg-slate-50'" class="border rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-black uppercase tracking-wider text-blue-800">Terkirim</span>
+                                <span class="text-xs font-black uppercase tracking-wider text-slate-700">Terkirim</span>
                                 <i class="fa-solid fa-check-double text-blue-700 text-xs" aria-hidden="true"></i>
                             </div>
-                            <div class="text-xl font-montserrat font-black text-blue-700 mt-1" x-text="stats.delivered"></div>
-                            <span class="text-xs text-blue-700 font-medium">Centang 2 Abu</span>
+                            <div class="text-xl font-montserrat font-black text-slate-900 mt-1" x-text="stats.delivered"></div>
+                            <span class="text-xs text-slate-600 font-medium">Centang 2 Abu</span>
                         </button>
 
                         <!-- Read -->
-                        <button type="button" @click="statusFilter = 'READ'" :class="statusFilter === 'READ' ? 'ring-2 ring-emerald-700 shadow-sm bg-emerald-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'READ'" :class="statusFilter === 'READ' ? 'ring-2 ring-[#063f5c] bg-slate-50 border-[#063f5c]' : 'bg-white border-slate-200 hover:bg-slate-50'" class="border rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-black uppercase tracking-wider text-emerald-800">Sudah Dibaca</span>
+                                <span class="text-xs font-black uppercase tracking-wider text-slate-700">Sudah Dibaca</span>
                                 <i class="fa-solid fa-check-double text-emerald-700 text-xs" aria-hidden="true"></i>
                             </div>
-                            <div class="text-xl font-montserrat font-black text-emerald-700 mt-1" x-text="stats.read"></div>
-                            <span class="text-xs text-emerald-700 font-medium">Centang 2 Biru</span>
+                            <div class="text-xl font-montserrat font-black text-slate-900 mt-1" x-text="stats.read"></div>
+                            <span class="text-xs text-slate-600 font-medium">Centang 2 Biru</span>
                         </button>
 
                         <!-- Failed -->
-                        <button type="button" @click="statusFilter = 'FAILED'" :class="statusFilter === 'FAILED' ? 'ring-2 ring-rose-700 shadow-sm bg-rose-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors col-span-2 sm:col-span-1 min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'FAILED'" :class="statusFilter === 'FAILED' ? 'ring-2 ring-[#063f5c] bg-slate-50 border-[#063f5c]' : 'bg-white border-slate-200 hover:bg-slate-50'" class="border rounded-2xl p-3.5 text-left transition-colors col-span-2 sm:col-span-1 min-h-[44px]">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-black uppercase tracking-wider text-rose-800">Gagal Kirim</span>
+                                <span class="text-xs font-black uppercase tracking-wider text-slate-700">Gagal Kirim</span>
                                 <i class="fa-solid fa-circle-xmark text-rose-700 text-xs" aria-hidden="true"></i>
                             </div>
-                            <div class="text-xl font-montserrat font-black text-rose-700 mt-1" x-text="stats.failed"></div>
-                            <span class="text-xs text-rose-700 font-medium">Gagal Terkirim</span>
+                            <div class="text-xl font-montserrat font-black text-slate-900 mt-1" x-text="stats.failed"></div>
+                            <span class="text-xs text-slate-600 font-medium">Gagal Terkirim</span>
                         </button>
                     </div>
                 </div>
@@ -337,23 +337,18 @@
                                         <!-- Status Tracker Selector (Dropdown) -->
                                         <td class="py-3 px-4 relative" @click.outside="row.dropdownOpen = false">
                                             <!-- Status Button Badge -->
-                                            <button type="button" @click="row.dropdownOpen = !row.dropdownOpen" :aria-expanded="row.dropdownOpen ? 'true' : 'false'" class="inline-flex items-center gap-1.5 min-h-[36px] px-2.5 py-1 rounded-xl text-xs font-black tracking-wide border shadow-xs transition" :class="{
-                                                'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100': row.status === 'PENDING',
-                                                'bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100': row.status === 'DELIVERED',
-                                                'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100': row.status === 'READ',
-                                                'bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100': row.status === 'FAILED'
-                                            }">
+                                            <button type="button" @click="row.dropdownOpen = !row.dropdownOpen" :aria-expanded="row.dropdownOpen ? 'true' : 'false'" class="inline-flex items-center gap-1.5 min-h-[36px] px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200 hover:bg-slate-100 transition">
                                                 <template x-if="row.status === 'PENDING'">
-                                                    <span><i class="fa-regular fa-clock text-amber-700 mr-1" aria-hidden="true"></i>Belum Kirim</span>
+                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>Belum Kirim</span>
                                                 </template>
                                                 <template x-if="row.status === 'DELIVERED'">
-                                                    <span><i class="fa-solid fa-check-double text-blue-700 mr-1" aria-hidden="true"></i>Terkirim</span>
+                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-700" aria-hidden="true"></span>Terkirim</span>
                                                 </template>
                                                 <template x-if="row.status === 'READ'">
-                                                    <span><i class="fa-solid fa-check-double text-sky-700 mr-1" aria-hidden="true"></i>Dibaca</span>
+                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>Dibaca</span>
                                                 </template>
                                                 <template x-if="row.status === 'FAILED'">
-                                                    <span><i class="fa-solid fa-circle-xmark text-rose-700 mr-1" aria-hidden="true"></i>Gagal</span>
+                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>Gagal</span>
                                                 </template>
                                                 <i class="fa-solid fa-chevron-down text-[10px] text-slate-600 ml-1" aria-hidden="true"></i>
                                             </button>
@@ -364,19 +359,19 @@
                                                     Ubah Status Donatur
                                                 </div>
                                                 <div class="py-1">
-                                                    <button type="button" @click="updateSingle(row.no_hp, 'READ')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-emerald-50 text-emerald-800 flex items-center gap-2">
-                                                        <i class="fa-solid fa-check-double text-sky-700 w-4" aria-hidden="true"></i>
+                                                    <button type="button" @click="updateSingle(row.no_hp, 'READ')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-slate-50 text-slate-800 flex items-center gap-2">
+                                                        <i class="fa-solid fa-check-double text-emerald-700 w-4" aria-hidden="true"></i>
                                                         <span><strong>Dibaca</strong> (Read / Centang 2 Biru)</span>
                                                     </button>
-                                                    <button type="button" @click="updateSingle(row.no_hp, 'DELIVERED')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-blue-50 text-blue-800 flex items-center gap-2">
+                                                    <button type="button" @click="updateSingle(row.no_hp, 'DELIVERED')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-slate-50 text-slate-800 flex items-center gap-2">
                                                         <i class="fa-solid fa-check-double text-blue-700 w-4" aria-hidden="true"></i>
                                                         <span><strong>Terkirim</strong> (Delivered / Centang 2 Abu)</span>
                                                     </button>
-                                                    <button type="button" @click="updateSingle(row.no_hp, 'FAILED')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-rose-50 text-rose-800 flex items-center gap-2">
+                                                    <button type="button" @click="updateSingle(row.no_hp, 'FAILED')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-slate-50 text-rose-700 flex items-center gap-2">
                                                         <i class="fa-solid fa-circle-xmark text-rose-700 w-4" aria-hidden="true"></i>
                                                         <span><strong>Gagal</strong> (Failed)</span>
                                                     </button>
-                                                    <button type="button" @click="updateSingle(row.no_hp, 'PENDING')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-slate-100 text-slate-700 flex items-center gap-2">
+                                                    <button type="button" @click="updateSingle(row.no_hp, 'PENDING')" class="w-full text-left px-3 py-2 min-h-[40px] hover:bg-slate-50 text-slate-700 flex items-center gap-2">
                                                         <i class="fa-regular fa-clock text-slate-600 w-4" aria-hidden="true"></i>
                                                         <span><strong>Belum Kirim</strong> (Pending)</span>
                                                     </button>
@@ -411,15 +406,15 @@
                                             </td>
                                             <td class="py-3 px-4 text-slate-600" x-text="row.donasi_terakhir"></td>
                                             <td class="py-3 px-4">
-                                                <span class="font-mono text-xs text-primary-700 font-bold block" x-text="row.donatur_id"></span>
-                                                <span class="text-slate-800 font-semibold truncate max-w-[180px] block" x-text="row.nama"></span>
+                                                <span class="text-slate-800 font-semibold break-words">{{ $tab === 'perkenalan' ? '' : '' }}<span class="font-mono text-xs text-primary-700 font-bold block" x-text="row.donatur_id"></span><span x-text="row.nama"></span></span>
                                             </td>
                                             <td class="py-3 px-4">
-                                                <span class="px-2 py-0.5 rounded text-[11px] font-black uppercase tracking-wider" :class="row.sumber === 'IM' ? 'bg-primary-50 text-primary-700' : 'bg-amber-50 text-amber-800'">
+                                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
+                                                    <span class="w-1.5 h-1.5 rounded-full" :class="row.sumber === 'IM' ? 'bg-[#063f5c]' : 'bg-[#f7ad1a]'" aria-hidden="true"></span>
                                                     <span x-text="row.sumber"></span> &bull; <span x-text="row.bulan_donasi"></span>
                                                 </span>
                                             </td>
-                                            <td class="py-3 px-4 text-slate-700 truncate max-w-xs" x-text="row.program"></td>
+                                            <td class="py-3 px-4 text-slate-700 max-w-xs break-words" x-text="row.program"></td>
 
                                         <!-- TAB: JUMAT BARU -->
                                         @elseif($tab === 'jumat_baru')
@@ -428,7 +423,8 @@
                                             <td class="py-3 px-4 font-semibold text-slate-800" x-text="row.nama"></td>
                                             <td class="py-3 px-4 text-slate-700" x-text="row.tgl_dikenalkan"></td>
                                             <td class="py-3 px-4">
-                                                <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-amber-100 text-amber-800">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>
                                                     <span x-text="row.sisa_hari_baru"></span> Hari Lagi
                                                 </span>
                                             </td>
@@ -439,10 +435,10 @@
                                             <td class="py-3 px-4 font-mono font-bold text-slate-900" x-text="row.no_hp"></td>
                                             <td class="py-3 px-4">
                                                 <span class="font-mono text-xs text-primary-700 font-bold block" x-text="row.donatur_id"></span>
-                                                <span class="text-slate-800 font-semibold truncate max-w-[160px] block" x-text="row.nama"></span>
+                                                <span class="text-slate-800 font-semibold break-words block" x-text="row.nama"></span>
                                             </td>
                                             <td class="py-3 px-4">
-                                                <span class="px-2 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider bg-primary-100 text-primary-800" x-text="row.segmen"></span>
+                                                <span class="px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800" x-text="row.segmen"></span>
                                             </td>
                                             <td class="py-3 px-4 font-bold text-xs" :class="row.jadwal && row.jadwal.includes('CEK') ? 'text-amber-800' : 'text-emerald-700'" x-text="row.jadwal"></td>
                                             <td class="py-3 px-4 font-bold text-emerald-700 text-xs" x-text="formatRupiah(row.total_donasi)"></td>

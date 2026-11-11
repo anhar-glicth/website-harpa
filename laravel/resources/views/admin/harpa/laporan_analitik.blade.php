@@ -89,30 +89,35 @@
                                         <td class="py-3 px-4 font-semibold text-slate-800">{{ $d['nama_lengkap'] }}</td>
                                         <td class="py-3 px-4 font-mono text-slate-700">{{ $d['no_hp'] ?: '-' }}</td>
                                         <td class="py-3 px-4">
-                                            <span class="px-2 py-0.5 rounded text-[11px] font-black uppercase tracking-wider {{ $d['kategori'] === 'LOYAL' ? 'bg-primary-100 text-primary-800' : 'bg-slate-100 text-slate-700' }}">
+                                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
+                                                @if($d['kategori'] === 'LOYAL')
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>
+                                                @endif
                                                 {{ $d['kategori'] }}
                                             </span>
                                         </td>
                                         <td class="py-3 px-4">
-                                            <span class="px-2 py-0.5 rounded text-[11px] font-black uppercase tracking-wider 
-                                                {{ $d['badge'] === 'PLATINUM' ? 'bg-amber-100 text-amber-900 font-black ring-1 ring-amber-300' : '' }}
-                                                {{ $d['badge'] === 'GOLD' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                                {{ $d['badge'] === 'SILVER' ? 'bg-slate-200 text-slate-700' : '' }}
-                                                {{ $d['badge'] === 'NONE' ? 'text-slate-600' : '' }}
-                                            ">
+                                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
+                                                @if($d['badge'] === 'PLATINUM')
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>
+                                                @elseif($d['badge'] === 'GOLD')
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>
+                                                @elseif($d['badge'] === 'SILVER')
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400" aria-hidden="true"></span>
+                                                @endif
                                                 {{ $d['badge'] }}
                                             </span>
                                         </td>
                                         <td class="py-3 px-4">
-                                            <span class="px-2 py-0.5 rounded-md text-[11px] font-black uppercase tracking-wider
-                                                {{ $d['segmen_rfm'] === 'CHAMPION' ? 'bg-emerald-100 text-emerald-800' : '' }}
-                                                {{ $d['segmen_rfm'] === 'HIGH VALUE AT RISK' ? 'bg-rose-100 text-rose-800' : '' }}
-                                                {{ $d['segmen_rfm'] === 'LOYAL' ? 'bg-primary-100 text-primary-800' : '' }}
-                                                {{ $d['segmen_rfm'] === 'FRESH' ? 'bg-sky-100 text-sky-800' : '' }}
-                                                {{ $d['segmen_rfm'] === 'POTENTIAL' ? 'bg-amber-100 text-amber-800' : '' }}
-                                                {{ $d['segmen_rfm'] === 'DORMANT' ? 'bg-slate-200 text-slate-700' : '' }}
-                                                {{ $d['segmen_rfm'] === 'PROSPEK' ? 'bg-zinc-100 text-zinc-700' : '' }}
-                                            ">
+                                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
+                                                <span class="w-1.5 h-1.5 rounded-full shrink-0
+                                                    {{ $d['segmen_rfm'] === 'CHAMPION' ? 'bg-emerald-700' : '' }}
+                                                    {{ $d['segmen_rfm'] === 'HIGH VALUE AT RISK' ? 'bg-rose-700' : '' }}
+                                                    {{ $d['segmen_rfm'] === 'LOYAL' ? 'bg-[#063f5c]' : '' }}
+                                                    {{ $d['segmen_rfm'] === 'FRESH' ? 'bg-sky-700' : '' }}
+                                                    {{ $d['segmen_rfm'] === 'POTENTIAL' ? 'bg-[#f7ad1a]' : '' }}
+                                                    {{ in_array($d['segmen_rfm'], ['DORMANT', 'PROSPEK']) ? 'bg-slate-400' : '' }}
+                                                " aria-hidden="true"></span>
                                                 {{ $d['segmen_rfm'] }}
                                             </span>
                                         </td>

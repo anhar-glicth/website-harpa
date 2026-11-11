@@ -79,7 +79,7 @@
             <!-- Card 2: Kalender & Masa Tenggang Broadcast -->
             <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4">
                 <div class="pb-3 border-b border-slate-200 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 flex items-center justify-center text-lg">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg">
                         <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
                     </div>
                     <div>
@@ -112,7 +112,7 @@
             <!-- Card 3: Ambang Batas RFM Analitik -->
             <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4">
                 <div class="pb-3 border-b border-slate-200 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg">
                         <i class="fa-solid fa-brain" aria-hidden="true"></i>
                     </div>
                     <div>
