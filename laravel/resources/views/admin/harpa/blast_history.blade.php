@@ -66,13 +66,13 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($diagnosa as $key => $check)
-                    <div class="p-4 rounded-2xl border {{ $check['passed'] ? 'bg-emerald-50 border-emerald-300' : 'bg-rose-50 border-rose-300' }} flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-xl {{ $check['passed'] ? 'bg-emerald-700 text-white' : 'bg-rose-700 text-white' }} flex items-center justify-center text-sm shrink-0 mt-0.5">
+                    <div class="p-4 rounded-2xl bg-white border border-slate-200 border-l-4 {{ $check['passed'] ? 'border-l-emerald-700' : 'border-l-rose-700' }} flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 {{ $check['passed'] ? 'text-emerald-700' : 'text-rose-700' }} flex items-center justify-center text-sm shrink-0 mt-0.5">
                             <i class="fa-solid {{ $check['passed'] ? 'fa-check' : 'fa-xmark' }}" aria-hidden="true"></i>
                         </div>
                         <div class="space-y-1">
                             <h3 class="text-xs font-bold text-slate-800 leading-snug">{{ $check['name'] }}</h3>
-                            <p class="text-xs font-mono font-bold {{ $check['passed'] ? 'text-emerald-800' : 'text-rose-800' }}">
+                            <p class="text-xs font-mono font-bold {{ $check['passed'] ? 'text-emerald-700' : 'text-rose-700' }}">
                                 Hasil: {{ $check['value'] }}
                             </p>
                         </div>
@@ -132,13 +132,14 @@
                                     <td class="py-3 px-4 font-mono text-slate-600">{{ $b->broadcast_id }}</td>
                                     <td class="py-3 px-4 font-semibold text-slate-700">{{ $b->batch_tarik }}</td>
                                     <td class="py-3 px-4">
-                                        <span class="px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider 
-                                            {{ $b->status === 'READ' ? 'bg-emerald-100 text-emerald-800' : '' }}
-                                            {{ $b->status === 'DELIVERED' ? 'bg-sky-100 text-sky-800' : '' }}
-                                            {{ $b->status === 'SUCCESS' ? 'bg-primary-100 text-primary-800' : '' }}
-                                            {{ $b->status === 'FAILED' ? 'bg-rose-100 text-rose-800' : '' }}
-                                            {{ $b->status === 'LAINNYA' ? 'bg-amber-100 text-amber-800' : '' }}
-                                        ">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
+                                            <span class="w-1.5 h-1.5 rounded-full shrink-0
+                                                {{ $b->status === 'READ' ? 'bg-emerald-700' : '' }}
+                                                {{ $b->status === 'DELIVERED' ? 'bg-sky-700' : '' }}
+                                                {{ $b->status === 'SUCCESS' ? 'bg-[#063f5c]' : '' }}
+                                                {{ $b->status === 'FAILED' ? 'bg-rose-700' : '' }}
+                                                {{ $b->status === 'LAINNYA' ? 'bg-[#f7ad1a]' : '' }}
+                                            " aria-hidden="true"></span>
                                             {{ $b->status }}
                                         </span>
                                     </td>
@@ -172,17 +173,17 @@
         </div>
 
         <!-- Download Template Banner -->
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 border-l-4 border-l-[#063f5c] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">
+                <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg shrink-0">
                     <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
                 </div>
                 <div>
-                    <h3 class="text-xs font-bold text-slate-800">Format File Riwayat Blast (.CSV)</h3>
-                    <p class="text-xs text-slate-700 font-medium">Gunakan template resmi acuan agar kolom dan status terbaca akurat.</p>
+                    <h3 class="text-xs font-bold text-slate-900">Format File Riwayat Blast (.CSV)</h3>
+                    <p class="text-xs text-slate-600 font-medium">Gunakan template resmi acuan agar kolom dan status terbaca akurat.</p>
                 </div>
             </div>
-            <a href="{{ route('admin.harpa.template.download', 'blast') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider shadow-sm transition whitespace-nowrap">
+            <a href="{{ route('admin.harpa.template.download', 'blast') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-xs transition whitespace-nowrap">
                 <i class="fa-solid fa-download" aria-hidden="true"></i>
                 Unduh Template Blast
             </a>
@@ -240,13 +241,13 @@
                                 <tr>
                                     <td class="py-1.5 px-3 font-mono font-bold text-primary-700">receiver_number</td>
                                     <td class="py-1.5 px-3 text-slate-600 font-mono text-xs">no_hp, receiver</td>
-                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                    <td class="py-1.5 px-3 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                     <td class="py-1.5 px-3 font-mono font-bold text-emerald-700">6281234567890</td>
                                 </tr>
                                 <tr>
                                     <td class="py-1.5 px-3 font-mono font-bold text-primary-700">broadcast_id</td>
                                     <td class="py-1.5 px-3 text-slate-600 font-mono text-xs">id_broadcast, broadcast</td>
-                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                    <td class="py-1.5 px-3 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                     <td class="py-1.5 px-3 font-mono text-slate-800">SELLING_JUMAT_20261106</td>
                                 </tr>
                                 <tr>
@@ -258,13 +259,13 @@
                                 <tr>
                                     <td class="py-1.5 px-3 font-mono font-bold text-primary-700">status</td>
                                     <td class="py-1.5 px-3 text-slate-600 font-mono text-xs">delivery_status</td>
-                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                    <td class="py-1.5 px-3 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                     <td class="py-1.5 px-3"><span class="font-bold text-sky-700">READ</span> / <span class="font-bold text-blue-700">DELIVERED</span> / <span class="font-bold text-rose-700">FAILED</span></td>
                                 </tr>
                                 <tr>
                                     <td class="py-1.5 px-3 font-mono font-bold text-primary-700">timestamp</td>
                                     <td class="py-1.5 px-3 text-slate-600 font-mono text-xs">time, waktu</td>
-                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                    <td class="py-1.5 px-3 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                     <td class="py-1.5 px-3 font-mono text-slate-700">2026-11-06 09:15:30</td>
                                 </tr>
                             </tbody>

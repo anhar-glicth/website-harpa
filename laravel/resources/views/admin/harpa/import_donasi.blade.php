@@ -169,7 +169,7 @@
                         <div x-data="{ openPreview: true, viewMode: 'table' }" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-2xl bg-primary-50 text-primary-700 flex items-center justify-center text-lg shrink-0">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg shrink-0">
                                         <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
                                     </div>
                                     <div>
@@ -180,7 +180,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-black uppercase tracking-wider transition flex items-center gap-1.5 border border-emerald-300">
+                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-white text-slate-800 hover:border-[#063f5c] hover:text-[#063f5c] text-xs font-black uppercase tracking-wider transition flex items-center gap-1.5 border border-slate-300">
                                         <i class="fa-solid fa-download" aria-hidden="true"></i> Unduh File Contoh (.CSV)
                                     </a>
                                     <button type="button" @click="openPreview = !openPreview" :aria-expanded="openPreview ? 'true' : 'false'" class="min-h-[40px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1 cursor-pointer">
@@ -226,7 +226,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">081234567890</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">100000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">125</td>
-                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
                                                 <td class="py-2.5 px-3.5">BCA</td>
                                             </tr>
                                             <tr class="hover:bg-slate-50">
@@ -237,7 +237,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">6285712345678</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">250000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">340</td>
-                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
                                                 <td class="py-2.5 px-3.5">Mandiri</td>
                                             </tr>
                                             <tr class="hover:bg-slate-50">
@@ -248,7 +248,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">081987654321</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">500000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">0</td>
-                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
                                                 <td class="py-2.5 px-3.5">QRIS</td>
                                             </tr>
                                             <tr class="hover:bg-slate-50">
@@ -259,7 +259,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">6281399887766</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">1000000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">500</td>
-                                                <td class="py-2.5 px-3.5"><span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800">success</span></td>
+                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
                                                 <td class="py-2.5 px-3.5">BSI</td>
                                             </tr>
                                         </tbody>
@@ -282,42 +282,42 @@
                                             <tr>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-primary-700">invoice_id</td>
                                                 <td class="py-2 px-3.5 text-slate-600 font-mono text-xs">id_transaksi, invoice, transaksi_id</td>
-                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                                <td class="py-2 px-3.5 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                                 <td class="py-2 px-3.5 font-mono text-xs">INV-202611-001</td>
                                                 <td class="py-2 px-3.5 text-slate-700 text-xs">ID unik transaksi untuk mencegah duplikasi.</td>
                                             </tr>
                                             <tr>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-primary-700">tanggal</td>
                                                 <td class="py-2 px-3.5 text-slate-600 font-mono text-xs">date, waktu, created_at</td>
-                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                                <td class="py-2 px-3.5 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                                 <td class="py-2 px-3.5 font-mono text-xs">2026-11-01 08:30:00</td>
                                                 <td class="py-2 px-3.5 text-slate-700 text-xs">Waktu donasi (YYYY-MM-DD atau DD/MM/YYYY).</td>
                                             </tr>
                                             <tr>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-primary-700">campaign</td>
                                                 <td class="py-2 px-3.5 text-slate-600 font-mono text-xs">program, judul_campaign, judul_program</td>
-                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                                <td class="py-2 px-3.5 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                                 <td class="py-2 px-3.5 font-semibold text-slate-800">Sedekah Subuh Palestina</td>
                                                 <td class="py-2 px-3.5 text-slate-700 text-xs">Judul program donasi tujuan.</td>
                                             </tr>
                                             <tr>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-primary-700">nama</td>
                                                 <td class="py-2 px-3.5 text-slate-600 font-mono text-xs">nama_lengkap, name, donatur</td>
-                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                                <td class="py-2 px-3.5 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                                 <td class="py-2 px-3.5">Ahmad Fadhilah</td>
                                                 <td class="py-2 px-3.5 text-slate-700 text-xs">Nama lengkap donatur.</td>
                                             </tr>
                                             <tr>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-primary-700">no_hp</td>
                                                 <td class="py-2 px-3.5 text-slate-600 font-mono text-xs">phone, telepon, whatsapp</td>
-                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                                <td class="py-2 px-3.5 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-emerald-700">081234567890 / 628...</td>
                                                 <td class="py-2 px-3.5 text-slate-700 text-xs">Nomor WhatsApp donatur (11–14 digit). Otomatis dinormalisasi ke 628.</td>
                                             </tr>
                                             <tr>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-primary-700">nominal</td>
                                                 <td class="py-2 px-3.5 text-slate-600 font-mono text-xs">amount, donasi</td>
-                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                                <td class="py-2 px-3.5 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                                 <td class="py-2 px-3.5 font-mono font-bold">100000</td>
                                                 <td class="py-2 px-3.5 text-slate-700 text-xs">Nominal donasi murni (angka tanpa titik/Rp).</td>
                                             </tr>
@@ -331,7 +331,7 @@
                                             <tr>
                                                 <td class="py-2 px-3.5 font-mono font-bold text-primary-700">status</td>
                                                 <td class="py-2 px-3.5 text-slate-600 font-mono text-xs">payment_status</td>
-                                                <td class="py-2 px-3.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                                <td class="py-2 px-3.5 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                                 <td class="py-2 px-3.5 font-mono">success / waiting</td>
                                                 <td class="py-2 px-3.5 text-slate-700 text-xs">Status verifikasi bayar.</td>
                                             </tr>
@@ -367,7 +367,7 @@
                     <div x-show="activeTab === 'manual'" x-transition:enter="transition ease-out duration-200" x-cloak class="space-y-8">
                         <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
                             <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200">
-                                <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg">
                                     <i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>
                                 </div>
                                 <div>
@@ -527,11 +527,11 @@
                         <div class="space-y-3">
                             @foreach($latestManual as $lm)
                                 <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 hover:bg-slate-100 transition space-y-1">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-xs font-bold text-slate-800 truncate max-w-[150px]">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-xs font-bold text-slate-800 break-words">
                                             {{ $lm->donatur?->nama_lengkap ?: 'Donatur' }}
                                         </span>
-                                        <span class="text-xs font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                                        <span class="text-xs font-black text-slate-900 whitespace-nowrap">
                                             Rp {{ number_format($lm->nominal, 0, ',', '.') }}
                                         </span>
                                     </div>
@@ -540,7 +540,7 @@
                                         <span>{{ $lm->tanggal?->format('d M Y') }}</span>
                                     </div>
                                     <div class="text-xs text-slate-600 flex items-center gap-1.5 pt-0.5">
-                                        <span class="px-1.5 py-0.5 rounded bg-slate-200 text-slate-800 font-black uppercase text-[11px]">{{ $lm->sumber_data }}</span>
+                                        <span class="px-1.5 py-0.5 rounded border border-slate-200 bg-white text-slate-800 font-black uppercase text-xs">{{ $lm->sumber_data }}</span>
                                         <span class="truncate">{{ $lm->campaign_title_raw }}</span>
                                     </div>
                                 </div>
@@ -566,7 +566,8 @@
                             @foreach($kontrolTarik as $kt)
                                 <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 hover:bg-slate-100 transition">
                                     <div class="flex items-center justify-between">
-                                        <span class="px-2 py-0.5 rounded-lg text-[11px] font-black uppercase tracking-wider {{ $kt->sumber === 'IM' ? 'bg-primary-50 text-primary-700' : ($kt->sumber === 'FH' ? 'bg-amber-50 text-amber-800' : 'bg-emerald-50 text-emerald-800') }}">
+                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-white text-xs font-bold uppercase tracking-wider text-slate-800">
+                                            <span class="w-1.5 h-1.5 rounded-full {{ $kt->sumber === 'IM' ? 'bg-[#063f5c]' : ($kt->sumber === 'FH' ? 'bg-[#f7ad1a]' : 'bg-emerald-700') }}" aria-hidden="true"></span>
                                             {{ $kt->sumber }} &bull; {{ $kt->periode }}
                                         </span>
                                         <span class="text-xs font-bold text-slate-700">{{ number_format($kt->jml_baris) }} baris</span>
