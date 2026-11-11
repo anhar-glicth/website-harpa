@@ -64,7 +64,7 @@
                 @if(empty($hitungDonatur))
                     <div class="text-center py-12 text-slate-600">
                         <i class="fa-regular fa-user text-3xl mb-2 text-slate-500" aria-hidden="true"></i>
-                        <p class="text-xs font-bold">Belum ada data donatur di master_donatur.</p>
+                        <p class="text-xs font-bold">Belum ada data donatur yang tercatat.</p>
                     </div>
                 @else
                     <div class="overflow-x-auto">

@@ -104,7 +104,7 @@
                     <div>
                         <label for="perkenalan_grace_days" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Masa Jumat Baru (Hari)</label>
                         <input id="perkenalan_grace_days" type="number" name="perkenalan_grace_days" value="{{ \App\Models\Harpa\HarpaSetting::get('perkenalan_grace_days', 28) }}" min="7" max="90" required class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 outline-none">
-                        <span class="text-xs text-slate-600 mt-1 block">Bawaan: 28 hari (masuk KIRIM_JUMAT_BARU)</span>
+                        <span class="text-xs text-slate-600 mt-1 block">Bawaan: 28 hari (masuk daftar Kirim Jumat Baru)</span>
                     </div>
                 </div>
             </div>

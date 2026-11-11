@@ -69,10 +69,10 @@
                 <div class="space-y-1.5">
                     <span class="text-xs font-black uppercase tracking-widest text-[#f7ad1a]">Aturan Alur E (WBS Pro)</span>
                     <h2 class="text-sm font-bold leading-relaxed">
-                        Nomor yang tidak aktif di WhatsApp otomatis ditandai <code class="text-[#f7ad1a] bg-slate-900/60 px-1.5 py-0.5 rounded">wa_aktif = 0</code> dan tidak pernah dihapus.
+                        Nomor yang tidak aktif di WhatsApp otomatis ditandai nonaktif dan tidak pernah dihapus.
                     </h2>
                     <p class="text-xs text-slate-200">
-                        Nomor mati otomatis dikeluarkan dari KIRIM_JUMAT, KIRIM_PAYDAY, KIRIM_PERKENALAN, dan memicu ALERT agar CRM meminta nomor baru jika pemiliknya adalah donatur.
+                        Nomor mati otomatis dikeluarkan dari daftar Kirim Jumat, Kirim Payday, dan Kirim Perkenalan, lalu memicu peringatan agar CRM meminta nomor baru jika pemiliknya donatur.
                     </p>
                 </div>
             </div>
@@ -83,7 +83,7 @@
             <div class="flex items-center justify-between pb-3 border-b border-slate-200">
                 <div>
                     <h2 class="text-sm font-montserrat font-black uppercase tracking-wider text-slate-800">
-                        Daftar Nomor Tidak Aktif (wa_aktif = 0)
+                        Daftar Nomor Tidak Aktif
                     </h2>
                     <p class="text-xs text-slate-600 font-medium mt-0.5">Nomor-nomor ini aman dari pengiriman pesan dan menunggu tindak lanjut CRM jika memiliki transaksi.</p>
                 </div>

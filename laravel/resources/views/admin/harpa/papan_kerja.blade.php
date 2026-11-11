@@ -81,7 +81,7 @@
                             {{ count($pendingData['unregistered_numbers'] ?? []) }}
                         </span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium">Nomor valid yang belum memiliki donatur_id.</p>
+                    <p class="text-xs text-slate-600 font-medium">Nomor valid yang belum memiliki ID donatur.</p>
                 </div>
 
                 <!-- Check 2: Judul Campaign Belum Dipetakan -->
@@ -92,7 +92,7 @@
                             {{ count($pendingData['unmapped_campaigns'] ?? []) }}
                         </span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium">Judul ejaan baru yang belum ada di ref_campaign_alias.</p>
+                    <p class="text-xs text-slate-600 font-medium">Judul ejaan baru yang belum ada di daftar alias kampanye.</p>
                 </div>
 
                 <!-- Check 3: Tanggal Gagal Dibaca -->
@@ -115,7 +115,7 @@
                             <h2 class="text-sm font-montserrat font-black uppercase tracking-wider text-slate-800">
                                 1. Setujui Pendaftaran Donatur Baru
                             </h2>
-                            <p class="text-xs text-slate-600 font-medium mt-0.5">Setiap nomor unik akan otomatis dibuatkan donatur_id baru (DNRxxxxxx).</p>
+                            <p class="text-xs text-slate-600 font-medium mt-0.5">Setiap nomor unik akan otomatis dibuatkan ID donatur baru (DNRxxxxxx).</p>
                         </div>
                         <span class="text-xs font-bold text-primary-700">{{ count($pendingData['unregistered_numbers']) }} Nomor</span>
                     </div>
