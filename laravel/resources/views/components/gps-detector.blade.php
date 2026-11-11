@@ -97,7 +97,7 @@
     /**
      * Update semua field koordinat dan tampilkan nama lokasi jika berhasil di-reverse geocode.
      */
-    async function updateFields(lat, lng, sourceLabel, badgeClass = 'text-emerald-600', skipGeocode = false) {
+    async function updateFields(lat, lng, sourceLabel, badgeClass = 'text-emerald-700', skipGeocode = false) {
         if (latInput) latInput.value = lat;
         if (lngInput) lngInput.value = lng;
         if (manualLat) manualLat.value = Number(lat).toFixed(6);
@@ -220,7 +220,7 @@
                     const lat = pos.coords.latitude;
                     const lng = pos.coords.longitude;
                     const acc = pos.coords.accuracy ? ` (±${Math.round(pos.coords.accuracy)}m)` : '';
-                    await updateFields(lat, lng, `GPS${acc}`, 'text-emerald-600');
+                    await updateFields(lat, lng, `GPS${acc}`, 'text-emerald-700');
                 },
                 function(err) {
                     // Try low accuracy fallback
@@ -228,7 +228,7 @@
                         async function(posLow) {
                             const lat = posLow.coords.latitude;
                             const lng = posLow.coords.longitude;
-                            await updateFields(lat, lng, 'GPS Wi-Fi', 'text-emerald-600');
+                            await updateFields(lat, lng, 'GPS Wi-Fi', 'text-emerald-700');
                         },
                         async function(errLow) {
                             // High & Low failed, fallback to IP Geolocation

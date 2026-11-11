@@ -256,26 +256,26 @@
 }" class="p-4 sm:p-8 flex flex-col items-center min-h-screen">
 
     {{-- Top Action Toolbar (Hide on print) --}}
-    <div class="no-print sticky top-3 z-50 mb-6 bg-white/95 backdrop-blur-md border border-slate-200 shadow-xl px-5 py-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 w-full max-w-[1020px]">
+    <div class="no-print sticky top-3 z-50 mb-6 bg-white border border-slate-200 shadow-xl px-5 py-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 w-full max-w-[1020px]">
         <div class="flex items-center gap-3">
-            <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm">
+            <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-sm">
                 <i class="fa-solid fa-file-invoice"></i>
             </span>
             <div>
                 <h2 class="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-wider">
                     Cetak Kwitansi Massal
                 </h2>
-                <p class="text-[10px] font-bold text-slate-400">
-                    Total: <span class="text-indigo-600 font-black">{{ count($donations) }} Kwitansi</span> {{ request()->anyFilled(['search', 'start_date', 'end_date', 'program_id', 'payment_via_id', 'start_reg_date', 'end_reg_date', 'gender', 'segment', 'office_id']) ? '(Hasil Filter)' : '(Seluruh Data)' }}
+                <p class="text-xs font-bold text-slate-600">
+                    Total: <span class="text-indigo-700 font-black">{{ count($donations) }} Kwitansi</span> {{ request()->anyFilled(['search', 'start_date', 'end_date', 'program_id', 'payment_via_id', 'start_reg_date', 'end_reg_date', 'gender', 'segment', 'office_id']) ? '(Hasil Filter)' : '(Seluruh Data)' }}
                 </p>
             </div>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-            <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-200 text-xs flex items-center gap-2 transition-all active:scale-95">
+            <button type="button" onclick="window.print()" class="bg-indigo-700 hover:bg-indigo-800 text-white font-extrabold px-5 py-2.5 min-h-[44px] rounded-xl shadow-lg shadow-indigo-200 text-xs flex items-center gap-2 transition-colors">
                 <i class="fa-solid fa-print"></i> Cetak / Simpan Semua PDF
             </button>
-            <button @click="showCustomModal = true" class="bg-amber-500 hover:bg-amber-600 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-lg shadow-amber-200 text-xs flex items-center gap-2 transition-all active:scale-95">
+            <button type="button" @click="showCustomModal = true" class="bg-[#f7ad1a] hover:bg-amber-400 text-[#063f5c] font-extrabold px-4 py-2.5 min-h-[44px] rounded-xl shadow-lg shadow-amber-200 text-xs flex items-center gap-2 transition-colors">
                 <i class="fa-solid fa-pen-ruler"></i> Kustomisasi Logo & TTD
             </button>
             <button onclick="window.close()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold px-4 py-2.5 rounded-xl shadow text-xs transition-all active:scale-95">
@@ -649,7 +649,7 @@
                                     <input type="file" @change="handleLogoUpload" accept="image/*" class="hidden">
                                 </label>
                             </div>
-                            <span class="text-[9px] text-slate-400 block font-medium">Format didukung: PNG, JPG, JPEG (Disarankan PNG transparan).</span>
+                            <span class="text-xs text-slate-600 block font-medium">Format didukung: PNG, JPG, JPEG (Disarankan PNG transparan).</span>
                         </div>
                     </div>
                 </div>

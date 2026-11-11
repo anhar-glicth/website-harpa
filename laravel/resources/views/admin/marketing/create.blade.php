@@ -227,23 +227,23 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
-                                    Biaya Iklan / Ad Spend (Rp) <span class="text-rose-500">*</span>
+                                <label for="marketing_spend" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                                    Biaya Iklan / Ad Spend (Rp) <span class="text-rose-700">*</span>
                                 </label>
-                                <input type="number" step="0.01" name="spend" x-model.number="spend" required min="0"
+                                <input id="marketing_spend" type="number" step="0.01" name="spend" x-model.number="spend" required min="0"
                                        placeholder="Contoh: 150000"
-                                       class="w-full text-sm font-black text-slate-900 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500 py-3">
-                                <p class="text-[10px] text-slate-400 mt-1">Total biaya iklan yang dibayarkan ke Meta / platform</p>
+                                       class="w-full text-sm font-black text-slate-900 rounded-xl border-slate-300 focus:ring-primary-500 focus:border-primary-500 py-3">
+                                <p class="text-xs text-slate-600 mt-1">Total biaya iklan yang dibayarkan ke Meta / platform</p>
                             </div>
 
                             <div>
-                                <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                                <label for="marketing_donation_amount" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
                                     Total Donasi Didapat (Rp)
                                 </label>
-                                <input type="number" step="0.01" name="donation_amount" x-model.number="donation_amount" min="0"
+                                <input id="marketing_donation_amount" type="number" step="0.01" name="donation_amount" x-model.number="donation_amount" min="0"
                                        placeholder="Contoh: 600000"
-                                       class="w-full text-sm font-black text-emerald-600 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500 py-3">
-                                <p class="text-[10px] text-slate-400 mt-1">Nominal donasi yang terkonversi dari campaign iklan ini</p>
+                                       class="w-full text-sm font-black text-emerald-700 rounded-xl border-slate-300 focus:ring-primary-500 focus:border-primary-500 py-3">
+                                <p class="text-xs text-slate-600 mt-1">Nominal donasi yang terkonversi dari campaign iklan ini</p>
                             </div>
                         </div>
                     </div>

@@ -233,11 +233,11 @@
                             </div>
 
                             <div>
-                                <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                                <label for="marketing_edit_donation_amount" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
                                     Total Donasi Didapat (Rp)
                                 </label>
-                                <input type="number" step="0.01" name="donation_amount" x-model.number="donation_amount" min="0"
-                                       class="w-full text-sm font-black text-emerald-600 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500 py-3">
+                                <input id="marketing_edit_donation_amount" type="number" step="0.01" name="donation_amount" x-model.number="donation_amount" min="0"
+                                       class="w-full text-sm font-black text-emerald-700 rounded-xl border-slate-300 focus:ring-primary-500 focus:border-primary-500 py-3">
                             </div>
                         </div>
                     </div>

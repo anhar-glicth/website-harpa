@@ -627,7 +627,7 @@
                                     <input type="file" @change="handleLogoUpload" accept="image/*" class="hidden">
                                 </label>
                             </div>
-                            <span class="text-[9px] text-slate-400 block font-medium">Format didukung: PNG, JPG, JPEG (Disarankan PNG transparan).</span>
+                            <span class="text-xs text-slate-600 block font-medium">Format didukung: PNG, JPG, JPEG (Disarankan PNG transparan).</span>
                         </div>
                     </div>
                 </div>
@@ -808,22 +808,22 @@
                 </div>
 
                 <!-- 4. EDIT KETERANGAN CEPAT -->
-                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/70 space-y-3">
+                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
                     <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-file-pen text-emerald-600"></i> Koreksi Teks Kwitansi (Opsional)
+                        <i class="fa-solid fa-file-pen text-emerald-700"></i> Koreksi Teks Kwitansi (Opsional)
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Nama Donatur</label>
-                            <input type="text" x-model="receiptDonorName" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all">
+                            <label for="receipt_donor_name" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">Nama Donatur</label>
+                            <input id="receipt_donor_name" type="text" x-model="receiptDonorName" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 transition-all">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Bank</label>
-                            <input type="text" x-model="receiptBank" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all">
+                            <label for="receipt_bank" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">Bank</label>
+                            <input id="receipt_bank" type="text" x-model="receiptBank" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 transition-all">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Peruntukan Donasi (For the purpose)</label>
-                            <input type="text" x-model="receiptPurpose" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all">
+                            <label for="receipt_purpose" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">Peruntukan Donasi (For the purpose)</label>
+                            <input id="receipt_purpose" type="text" x-model="receiptPurpose" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20 transition-all">
                         </div>
                     </div>
                 </div>

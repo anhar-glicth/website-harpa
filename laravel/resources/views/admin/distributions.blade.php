@@ -316,24 +316,28 @@
 
     </div>{{-- end grid --}}
 
-    {{-- ============ MODAL: ADD PENYALURAN ============ --}}
+    {{-- Modal: Add Penyaluran --}}
     <div x-show="showAddModal"
+         x-cloak
+         @keydown.escape.window="showAddModal = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="add-distribution-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95"
-         class="fixed inset-0 z-50 flex items-center justify-center p-4"
-         style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showAddModal = false"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 space-y-5 z-10 max-h-[90vh] overflow-y-auto">
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50" @click="showAddModal = false"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 sm:p-8 space-y-5 z-10 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Tambah Penyaluran Bantuan</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Input laporan penyaluran baru ke sistem</p>
+                    <h2 id="add-distribution-title" class="text-lg font-black text-slate-900">Tambah Penyaluran Bantuan</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Input laporan penyaluran baru ke sistem</p>
                 </div>
-                <button @click="showAddModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
+                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah penyaluran" class="w-11 h-11 inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -341,13 +345,13 @@
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">ID Penyaluran</label>
-                        <input type="text" name="distribution_code" placeholder="Otomatis jika dikosongkan (DIS-...)"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none uppercase placeholder:text-slate-400">
+                        <label for="add_dist_code" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">ID Penyaluran</label>
+                        <input id="add_dist_code" type="text" name="distribution_code" placeholder="Otomatis jika dikosongkan (DIS-...)"
+                               class="w-full px-3.5 py-2.5 min-h-[44px] bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 uppercase placeholder:text-slate-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Master Program <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
-                        <select name="program_id" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label for="add_dist_program" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Master Program <span class="text-slate-600 font-normal lowercase">(opsional)</span></label>
+                        <select id="add_dist_program" name="program_id" class="w-full px-3.5 py-2.5 min-h-[44px] bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800">
                             <option value="">-- Non-Program / Penyaluran Umum --</option>
                             @foreach($programs as $prog)
                                 <option value="{{ $prog->id }}">{{ $prog->name }} {{ $prog->programGroup ? '(' . $prog->programGroup->name . ')' : '' }}</option>
@@ -358,9 +362,9 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Nama PIC / Penerima <span class="text-rose-500">*</span></label>
-                        <input type="text" name="pic_name" required placeholder="Nama PIC Penyaluran"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none placeholder:text-slate-400">
+                        <label for="add_dist_pic_name" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Nama PIC / Penerima <span class="text-rose-700">*</span></label>
+                        <input id="add_dist_pic_name" type="text" name="pic_name" required placeholder="Nama PIC Penyaluran"
+                               class="w-full px-3.5 py-2.5 min-h-[44px] bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 placeholder:text-slate-500">
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kontak PIC (No. HP/WA)</label>
@@ -445,7 +449,7 @@
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-500/20 transition-all">
+                            class="flex-1 py-3 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-700/20 transition-colors">
                         Simpan Penyaluran
                     </button>
                 </div>
@@ -453,24 +457,28 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: EDIT PENYALURAN ============ --}}
+    {{-- Modal: Edit Penyaluran --}}
     <div x-show="showEditModal"
+         x-cloak
+         @keydown.escape.window="showEditModal = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="edit-distribution-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95"
-         class="fixed inset-0 z-50 flex items-center justify-center p-4"
-         style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showEditModal = false"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 space-y-5 z-10 max-h-[90vh] overflow-y-auto">
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50" @click="showEditModal = false"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 sm:p-8 space-y-5 z-10 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Edit Penyaluran Bantuan</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Perbarui data laporan penyaluran</p>
+                    <h2 id="edit-distribution-title" class="text-lg font-black text-slate-900">Edit Penyaluran Bantuan</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Perbarui data laporan penyaluran</p>
                 </div>
-                <button @click="showEditModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit penyaluran" class="w-11 h-11 inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -479,13 +487,13 @@
                 @method('PUT')
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">ID Penyaluran</label>
-                        <input type="text" name="distribution_code" x-model="editData.distribution_code" required
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none uppercase">
+                        <label for="edit_dist_code" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">ID Penyaluran</label>
+                        <input id="edit_dist_code" type="text" name="distribution_code" x-model="editData.distribution_code" required
+                               class="w-full px-3.5 py-2.5 min-h-[44px] bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 uppercase">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Master Program <span class="text-slate-400 font-normal lowercase">(opsional)</span></label>
-                        <select name="program_id" x-model="editData.program_id" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label for="edit_dist_program" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Master Program <span class="text-slate-600 font-normal lowercase">(opsional)</span></label>
+                        <select id="edit_dist_program" name="program_id" x-model="editData.program_id" class="w-full px-3.5 py-2.5 min-h-[44px] bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800">
                             <option :value="null">-- Non-Program / Penyaluran Umum --</option>
                             @foreach($programs as $prog)
                                 <option value="{{ $prog->id }}">{{ $prog->name }} {{ $prog->programGroup ? '(' . $prog->programGroup->name . ')' : '' }}</option>
@@ -584,7 +592,7 @@
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-500/20 transition-all">
+                            class="flex-1 py-3 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-700/20 transition-colors">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -592,25 +600,29 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: DELETE ============ --}}
+    {{-- Modal: Delete --}}
     <div x-show="showDeleteModal"
+         x-cloak
+         @keydown.escape.window="showDeleteModal = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="delete-distribution-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95"
-         class="fixed inset-0 z-50 flex items-center justify-center p-4"
-         style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showDeleteModal = false"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center space-y-5 z-10">
-            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl mx-auto">
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50" @click="showDeleteModal = false"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 sm:p-8 text-center space-y-5 z-10">
+            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-700 text-2xl mx-auto">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div>
-                <h3 class="text-lg font-black text-slate-900">Hapus Penyaluran?</h3>
-                <p class="text-sm text-slate-500 font-semibold mt-1">
-                    Laporan Penyaluran "<span class="text-slate-800 font-black" x-text="selectedCode"></span>" akan dihapus secara permanen.
+                <h2 id="delete-distribution-title" class="text-lg font-black text-slate-900">Hapus Penyaluran?</h2>
+                <p class="text-sm text-slate-600 font-semibold mt-1">
+                    Laporan Penyaluran "<span class="text-slate-900 font-black" x-text="selectedCode"></span>" akan dihapus secara permanen.
                 </p>
             </div>
             <form method="POST" :action="'{{ url('admin/distributions') }}/' + selectedId + '/delete'">
@@ -618,11 +630,11 @@
                 @method('DELETE')
                 <div class="flex gap-3">
                     <button type="button" @click="showDeleteModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition-all">
+                            class="flex-1 py-3 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-xs font-black shadow-lg shadow-rose-500/20 transition-all">
+                            class="flex-1 py-3 min-h-[44px] bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-xs font-black shadow-lg shadow-rose-700/20 transition-colors">
                         Ya, Hapus
                     </button>
                 </div>
@@ -630,32 +642,36 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: IMPORT ============ --}}
+    {{-- Modal: Import --}}
     <div x-show="showImportModal"
+         x-cloak
+         @keydown.escape.window="showImportModal = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="import-distribution-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95"
-         class="fixed inset-0 z-50 flex items-center justify-center p-4"
-         style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showImportModal = false"></div>
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-5 z-10">
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50" @click="showImportModal = false"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 space-y-5 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Import Data Penyaluran</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Upload file CSV data penyaluran</p>
+                    <h2 id="import-distribution-title" class="text-lg font-black text-slate-900">Import Data Penyaluran</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Upload file CSV data penyaluran</p>
                 </div>
-                <button @click="showImportModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
+                <button type="button" @click="showImportModal = false" aria-label="Tutup modal import penyaluran" class="w-11 h-11 inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
             <form method="POST" action="{{ route('admin.distributions.import') }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
-                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2 text-slate-600">
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2 text-slate-700">
                     <p class="font-bold text-slate-800">Format Kolom CSV:</p>
-                    <p class="font-mono text-[11px] text-slate-500">No, ID Penyaluran, Tgl Penyaluran, Program, Nominal, Nama PIC, Kontak PIC, Tgl Insert, Kota/Kab, Provinsi</p>
+                    <p class="font-mono text-xs text-slate-600">No, ID Penyaluran, Tgl Penyaluran, Program, Nominal, Nama PIC, Kontak PIC, Tgl Insert, Kota/Kab, Provinsi</p>
                 </div>
 
                 <div>
