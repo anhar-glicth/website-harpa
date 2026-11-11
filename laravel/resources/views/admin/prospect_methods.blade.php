@@ -132,43 +132,45 @@
                         <tbody class="text-sm">
                             @forelse($prospectMethods as $index => $item)
                                 <tr class="border-b border-slate-50 hover:bg-slate-50/60 transition-colors group">
-                                    <td class="py-4 text-slate-400 text-xs font-bold">
+                                    <td class="py-4 text-slate-600 text-xs font-bold">
                                         {{ $prospectMethods->firstItem() + $index }}
                                     </td>
                                     <td class="py-4">
                                         <span class="font-bold text-slate-900">{{ $item->name }}</span>
                                     </td>
                                     <td class="py-4">
-                                        <span class="text-slate-500 text-xs">{{ Str::limit($item->description, 60) ?: '—' }}</span>
+                                        <span class="text-slate-600 text-xs">{{ Str::limit($item->description, 60) ?: '-' }}</span>
                                     </td>
                                     <td class="py-4 text-center">
                                         @if($item->status === 'Aktif')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[11px] font-black">
-                                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> y
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-[11px] font-black">
+                                                <span class="w-1.5 h-1.5 bg-emerald-600 rounded-full" aria-hidden="true"></span> y
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500 text-[11px] font-black">
-                                                <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span> n
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-[11px] font-black">
+                                                <span class="w-1.5 h-1.5 bg-slate-500 rounded-full" aria-hidden="true"></span> n
                                             </span>
                                         @endif
                                     </td>
                                     <td class="py-4">
                                         <div class="flex items-center justify-end gap-1.5">
-                                            <button @click="openEdit({{ json_encode($item) }})"
-                                                    class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-all" title="Edit">
-                                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                            <button type="button" @click="openEdit({{ json_encode($item) }})"
+                                                    aria-label="Edit {{ $item->name }}"
+                                                    class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
+                                                <i class="fa-solid fa-pen-to-square text-sm" aria-hidden="true"></i>
                                             </button>
-                                            <button @click="openDelete({{ $item->id }}, '{{ addslashes($item->name) }}')"
-                                                    class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Hapus">
-                                                <i class="fa-solid fa-trash-can text-sm"></i>
+                                            <button type="button" @click="openDelete({{ $item->id }}, '{{ addslashes($item->name) }}')"
+                                                    aria-label="Hapus {{ $item->name }}"
+                                                    class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center p-1.5 text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
+                                                <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="py-14 text-center text-slate-400 font-bold uppercase tracking-wider">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-300 mb-3"></i>
+                                    <td colspan="5" class="py-14 text-center text-slate-600 font-bold uppercase tracking-wider">
+                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-400 mb-3" aria-hidden="true"></i>
                                         Belum ada data metode prospek.
                                     </td>
                                 </tr>
@@ -188,8 +190,10 @@
 
     </div>{{-- end grid --}}
 
-    {{-- ============ MODAL: ADD METODE PROSPEK ============ --}}
+    {{-- Modal: Tambah Metode Prospek --}}
     <div x-show="showAddModal"
+         @keydown.escape.window="showAddModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-add-pm-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -198,44 +202,44 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showAddModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showAddModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-5 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Tambah Metode Prospek</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Isi data metode prospek baru</p>
+                    <h2 id="modal-add-pm-title" class="text-lg font-black text-slate-900">Tambah Metode Prospek</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Isi data metode prospek baru</p>
                 </div>
-                <button @click="showAddModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah metode prospek" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <form method="POST" action="{{ route('admin.prospect_methods.store') }}" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Nama Metode Prospek <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" required placeholder="Contoh: Presentasi, Blast / Broadcast"
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400">
+                    <label for="add_pm_name" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Nama Metode Prospek <span class="text-rose-700">*</span></label>
+                    <input id="add_pm_name" type="text" name="name" required placeholder="Contoh: Presentasi, Blast / Broadcast"
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 placeholder:text-slate-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Deskripsi</label>
-                    <textarea name="description" rows="3" placeholder="Deskripsi singkat metode prospek..."
-                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400 resize-none"></textarea>
+                    <label for="add_pm_desc" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi</label>
+                    <textarea id="add_pm_desc" name="description" rows="3" placeholder="Deskripsi singkat metode prospek..."
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 placeholder:text-slate-500 resize-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" required
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="add_pm_status" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Status <span class="text-rose-700">*</span></label>
+                    <select id="add_pm_status" name="status" required
+                            class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                         <option value="Aktif">Aktif</option>
                         <option value="Non-Aktif">Non-Aktif</option>
                     </select>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showAddModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan
                     </button>
                 </div>
@@ -243,8 +247,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: EDIT METODE PROSPEK ============ --}}
+    {{-- Modal: Edit Metode Prospek --}}
     <div x-show="showEditModal"
+         @keydown.escape.window="showEditModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-edit-pm-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -253,45 +259,45 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showEditModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showEditModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-5 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Edit Metode Prospek</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Perbarui data metode prospek</p>
+                    <h2 id="modal-edit-pm-title" class="text-lg font-black text-slate-900">Edit Metode Prospek</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Perbarui data metode prospek</p>
                 </div>
-                <button @click="showEditModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit metode prospek" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <form method="POST" :action="`{{ url('admin/prospect-methods') }}/${editData.id}/update`" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Nama Metode Prospek <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" x-model="editData.name" required
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_pm_name" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Nama Metode Prospek <span class="text-rose-700">*</span></label>
+                    <input id="edit_pm_name" type="text" name="name" x-model="editData.name" required
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Deskripsi</label>
-                    <textarea name="description" rows="3" x-model="editData.description"
-                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"></textarea>
+                    <label for="edit_pm_desc" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi</label>
+                    <textarea id="edit_pm_desc" name="description" rows="3" x-model="editData.description"
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 resize-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" x-model="editData.status" required
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_pm_status" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Status <span class="text-rose-700">*</span></label>
+                    <select id="edit_pm_status" name="status" x-model="editData.status" required
+                            class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                         <option value="Aktif">Aktif</option>
                         <option value="Non-Aktif">Non-Aktif</option>
                     </select>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showEditModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -299,8 +305,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: DELETE ============ --}}
+    {{-- Modal: Hapus Metode Prospek --}}
     <div x-show="showDeleteModal"
+         @keydown.escape.window="showDeleteModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-delete-pm-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -309,15 +317,15 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showDeleteModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center space-y-5 z-10">
-            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl mx-auto">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-700 text-2xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
             </div>
             <div>
-                <h3 class="text-lg font-black text-slate-900">Hapus Metode Prospek?</h3>
-                <p class="text-sm text-slate-500 font-semibold mt-1">
-                    Data "<span class="text-slate-800 font-black" x-text="selectedName"></span>" akan dihapus permanen.
+                <h2 id="modal-delete-pm-title" class="text-lg font-black text-slate-900">Hapus Metode Prospek?</h2>
+                <p class="text-sm text-slate-600 font-semibold mt-1">
+                    Data "<span class="text-slate-900 font-black" x-text="selectedName"></span>" akan dihapus permanen.
                 </p>
             </div>
             <form method="POST" :action="`{{ url('admin/prospect-methods') }}/${selectedId}/delete`">
@@ -325,11 +333,11 @@
                 @method('DELETE')
                 <div class="flex gap-3">
                     <button type="button" @click="showDeleteModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-rose-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Ya, Hapus
                     </button>
                 </div>

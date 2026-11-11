@@ -234,25 +234,25 @@
                     <p class="text-xs text-slate-600 mt-1">Opsional. Harus unik.</p>
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Deskripsi</label>
-                    <textarea name="description" rows="3" placeholder="Deskripsi singkat rumpun program..."
-                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400 resize-none"></textarea>
+                    <label for="add_pg_desc" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi</label>
+                    <textarea id="add_pg_desc" name="description" rows="3" placeholder="Deskripsi singkat rumpun program..."
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 placeholder:text-slate-500 resize-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" required
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="add_pg_status" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Status <span class="text-rose-700">*</span></label>
+                    <select id="add_pg_status" name="status" required
+                            class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                         <option value="Aktif">Aktif</option>
                         <option value="Non-Aktif">Non-Aktif</option>
                     </select>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showAddModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan
                     </button>
                 </div>
@@ -260,8 +260,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: EDIT RUMPUN PROGRAM ============ --}}
+    {{-- Modal: Edit Rumpun Program --}}
     <div x-show="showEditModal"
+         @keydown.escape.window="showEditModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-edit-pg-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -270,50 +272,50 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showEditModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showEditModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-6 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Edit Rumpun Program</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Perbarui data rumpun program</p>
+                    <h2 id="modal-edit-pg-title" class="text-lg font-black text-slate-900">Edit Rumpun Program</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Perbarui data rumpun program</p>
                 </div>
-                <button @click="showEditModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit rumpun program" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <form method="POST" :action="`{{ url('admin/program-groups') }}/${editData.id}/update`" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Nama Rumpun Program <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" x-model="editData.name" required
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_pg_name" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Nama Rumpun Program <span class="text-rose-700">*</span></label>
+                    <input id="edit_pg_name" type="text" name="name" x-model="editData.name" required
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Kode</label>
-                    <input type="text" name="code" x-model="editData.code"
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 uppercase">
+                    <label for="edit_pg_code" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Kode</label>
+                    <input id="edit_pg_code" type="text" name="code" x-model="editData.code"
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 uppercase">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Deskripsi</label>
-                    <textarea name="description" rows="3" x-model="editData.description"
-                              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-none"></textarea>
+                    <label for="edit_pg_desc" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Deskripsi</label>
+                    <textarea id="edit_pg_desc" name="description" rows="3" x-model="editData.description"
+                              class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 resize-none"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" x-model="editData.status" required
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_pg_status" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Status <span class="text-rose-700">*</span></label>
+                    <select id="edit_pg_status" name="status" x-model="editData.status" required
+                            class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                         <option value="Aktif">Aktif</option>
                         <option value="Non-Aktif">Non-Aktif</option>
                     </select>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showEditModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -321,8 +323,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: DELETE CONFIRMATION ============ --}}
+    {{-- Modal: Hapus Rumpun Program --}}
     <div x-show="showDeleteModal"
+         @keydown.escape.window="showDeleteModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-delete-pg-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -331,15 +335,15 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showDeleteModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center space-y-5 z-10">
-            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl mx-auto">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-700 text-2xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
             </div>
             <div>
-                <h3 class="text-lg font-black text-slate-900">Hapus Rumpun Program?</h3>
-                <p class="text-sm text-slate-500 font-semibold mt-1">
-                    Data "<span class="text-slate-800 font-black" x-text="selectedName"></span>" akan dihapus permanen dan tidak dapat dikembalikan.
+                <h2 id="modal-delete-pg-title" class="text-lg font-black text-slate-900">Hapus Rumpun Program?</h2>
+                <p class="text-sm text-slate-600 font-semibold mt-1">
+                    Data "<span class="text-slate-900 font-black" x-text="selectedName"></span>" akan dihapus permanen dan tidak dapat dikembalikan.
                 </p>
             </div>
             <form method="POST" :action="`{{ url('admin/program-groups') }}/${selectedId}/delete`">
@@ -347,11 +351,11 @@
                 @method('DELETE')
                 <div class="flex gap-3">
                     <button type="button" @click="showDeleteModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-rose-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Ya, Hapus
                     </button>
                 </div>

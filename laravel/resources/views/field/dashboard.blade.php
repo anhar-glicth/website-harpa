@@ -348,27 +348,27 @@
 
         </div>
     </div>
-    <!-- ================= ALPINE MODALS (STAFF ACTIONS) ================= -->
+    <!-- Staff Action Modals -->
 
     <!-- A. NEW CAMPAIGN MODAL -->
-    <div x-show="modalCampaign" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-        <div @click.away="modalCampaign = false" class="bg-white border border-slate-100 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
-            <button @click="modalCampaign = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-655"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div x-show="modalCampaign" @keydown.escape.window="modalCampaign = false" role="dialog" aria-modal="true" aria-labelledby="modal-field-campaign-title" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/70">
+        <div @click.away="modalCampaign = false" class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
+            <button type="button" @click="modalCampaign = false" aria-label="Tutup modal kampanye baru" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center absolute top-4 right-4 text-slate-600 hover:text-slate-900"><i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i></button>
             <div class="space-y-1">
-                <h3 class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Ajukan <span class="text-primary-600">Kampanye Baru</span></h3>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Usulkan program bantuan kemanusiaan baru</p>
+                <h2 id="modal-field-campaign-title" class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Ajukan <span class="text-primary-600">Kampanye Baru</span></h2>
+                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Usulkan program bantuan kemanusiaan baru</p>
             </div>
             <div class="overflow-y-auto pr-2 space-y-4 max-h-[60vh] no-scrollbar">
                 <form action="{{ route('field.campaigns.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 pr-1">
                     @csrf
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Judul Program</label>
-                        <input type="text" name="title" required placeholder="Contoh: Wakaf Quran Pelosok" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all focus:border-primary-500">
+                        <label for="fc_title" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Judul Program</label>
+                        <input id="fc_title" type="text" name="title" required placeholder="Contoh: Wakaf Quran Pelosok" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none transition-colors focus:border-primary-600">
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Kategori</label>
-                            <select name="category" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fc_category" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Kategori</label>
+                            <select id="fc_category" name="category" required class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                                 <option value="Kesehatan">Kesehatan</option>
                                 <option value="Pendidikan">Pendidikan</option>
                                 <option value="Dakwah">Dakwah</option>
@@ -376,71 +376,71 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Target Dana (Rupiah)</label>
-                            <input type="number" name="target_amount" required placeholder="Contoh: 15000000" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fc_target_amount" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Target Dana (Rupiah)</label>
+                            <input id="fc_target_amount" type="number" name="target_amount" required placeholder="Contoh: 15000000" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi Lengkap</label>
-                        <textarea name="description" required rows="4" placeholder="Tuliskan cerita, latar belakang, dan urgensi program bantuan ini..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500"></textarea>
+                        <label for="fc_description" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Deskripsi Lengkap</label>
+                        <textarea id="fc_description" name="description" required rows="4" placeholder="Tuliskan cerita, latar belakang, dan urgensi program bantuan ini..." class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600"></textarea>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Sampul Kampanye</label>
-                        <input type="file" name="foto" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fc_foto" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Foto Sampul Kampanye</label>
+                        <input id="fc_foto" type="file" name="foto" required class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
-                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4.5 rounded-2xl shadow-lg transition duration-300">Ajukan Kampanye <i class="fa-solid fa-paper-plane ml-2"></i></button>
+                    <button type="submit" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl shadow-md transition-colors">Ajukan Kampanye <i class="fa-solid fa-paper-plane ml-2" aria-hidden="true"></i></button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- B. NEW STORY/NEWS ARTICLE MODAL -->
-    <div x-show="modalNews" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-        <div @click.away="modalNews = false" class="bg-white border border-slate-100 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
-            <button @click="modalNews = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-655"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div x-show="modalNews" @keydown.escape.window="modalNews = false" role="dialog" aria-modal="true" aria-labelledby="modal-field-news-title" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/70">
+        <div @click.away="modalNews = false" class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
+            <button type="button" @click="modalNews = false" aria-label="Tutup modal berita kebaikan" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center absolute top-4 right-4 text-slate-600 hover:text-slate-900"><i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i></button>
             <div class="space-y-1">
-                <h3 class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Terbitkan <span class="text-primary-600">Berita Kebaikan</span></h3>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Bagikan cerita inspiratif penyaluran bantuan langsung dari lapangan</p>
+                <h2 id="modal-field-news-title" class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Terbitkan <span class="text-primary-600">Berita Kebaikan</span></h2>
+                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Bagikan cerita inspiratif penyaluran bantuan langsung dari lapangan</p>
             </div>
             <div class="overflow-y-auto pr-2 space-y-4 max-h-[60vh] no-scrollbar">
                 <form action="{{ route('field.news.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 pr-1">
                     @csrf
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Judul Berita</label>
-                        <input type="text" name="title" required placeholder="Contoh: Senyum Kebahagiaan Anak-anak Yatim NTT" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fn_title" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Judul Berita</label>
+                        <input id="fn_title" type="text" name="title" required placeholder="Contoh: Senyum Kebahagiaan Anak-anak Yatim NTT" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Tag / Kategori Berita</label>
-                        <input type="text" name="tag" required placeholder="Contoh: Penyaluran / Inspirasi / Dampak" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fn_tag" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Tag / Kategori Berita</label>
+                        <input id="fn_tag" type="text" name="tag" required placeholder="Contoh: Penyaluran / Inspirasi / Dampak" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Konten / Isi Berita</label>
-                        <textarea name="content" required rows="5" placeholder="Tulis rincian cerita penyaluran berita..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-850 outline-none focus:border-primary-500"></textarea>
+                        <label for="fn_content" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Konten / Isi Berita</label>
+                        <textarea id="fn_content" name="content" required rows="5" placeholder="Tulis rincian cerita penyaluran berita..." class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600"></textarea>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Dokumentasi</label>
-                        <input type="file" name="image" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fn_image" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Foto Dokumentasi</label>
+                        <input id="fn_image" type="file" name="image" required class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
-                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4.5 rounded-2xl shadow-lg transition duration-300">Terbitkan Berita <i class="fa-solid fa-cloud-arrow-up ml-2"></i></button>
+                    <button type="submit" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl shadow-md transition-colors">Terbitkan Berita <i class="fa-solid fa-cloud-arrow-up ml-2" aria-hidden="true"></i></button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- C. REPORT DISTRIBUTION MODAL -->
-    <div x-show="modalDistribution" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-        <div @click.away="modalDistribution = false" class="bg-white border border-slate-100 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
-            <button @click="modalDistribution = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-655"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div x-show="modalDistribution" @keydown.escape.window="modalDistribution = false" role="dialog" aria-modal="true" aria-labelledby="modal-field-dist-title" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/70">
+        <div @click.away="modalDistribution = false" class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
+            <button type="button" @click="modalDistribution = false" aria-label="Tutup modal laporan penyaluran" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center absolute top-4 right-4 text-slate-600 hover:text-slate-900"><i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i></button>
             <div class="space-y-1">
-                <h3 class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Kirim Laporan <span class="text-primary-600">Penyaluran Donasi</span></h3>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Kirimkan rincian bukti alokasi bantuan untuk transparansi donatur</p>
+                <h2 id="modal-field-dist-title" class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Kirim Laporan <span class="text-primary-600">Penyaluran Donasi</span></h2>
+                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Kirimkan rincian bukti alokasi bantuan untuk transparansi donatur</p>
             </div>
             <div class="overflow-y-auto pr-2 space-y-4 max-h-[60vh] no-scrollbar">
                 <form action="{{ route('field.distributions.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 pr-1">
                     @csrf
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Program Kampanye Terkait</label>
-                        <select name="campaign_id" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fd_campaign" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Program Kampanye Terkait</label>
+                        <select id="fd_campaign" name="campaign_id" required class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                             @foreach($allCampaigns as $ac)
                                 <option value="{{ $ac->id }}">{{ $ac->title }}</option>
                             @endforeach
@@ -448,108 +448,108 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Nama Laporan Penyaluran</label>
-                            <input type="text" name="title" required placeholder="Contoh: Berbagi beras Cicadas" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fd_title" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Nama Laporan Penyaluran</label>
+                            <input id="fd_title" type="text" name="title" required placeholder="Contoh: Berbagi beras Cicadas" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Penerima Manfaat / Kelompok</label>
-                            <input type="text" name="recipient_name" required placeholder="Contoh: Warga RT 02 Cicadas" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Nominal Dana Disalurkan (Rupiah)</label>
-                            <input type="number" name="amount" required placeholder="Contoh: 1500000" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Rincian Barang yang Disalurkan</label>
-                            <input type="text" name="items_distributed" required placeholder="Contoh: 50 Kantong Beras @ 5kg" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fd_recipient" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Penerima Manfaat / Kelompok</label>
+                            <input id="fd_recipient" type="text" name="recipient_name" required placeholder="Contoh: Warga RT 02 Cicadas" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Nama Lokasi Penyaluran</label>
-                            <input type="text" name="location_name" placeholder="Contoh: Masjid Jami Al-Ikhlas" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fd_amount" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Nominal Dana Disalurkan (Rupiah)</label>
+                            <input id="fd_amount" type="number" name="amount" required placeholder="Contoh: 1500000" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Link Google Maps (Opsional)</label>
-                            <input type="url" name="maps_link" placeholder="https://maps.google.com/..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fd_items" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Rincian Barang yang Disalurkan</label>
+                            <input id="fd_items" type="text" name="items_distributed" required placeholder="Contoh: 50 Kantong Beras @ 5kg" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Latitude GPS (Opsional)</label>
-                            <input type="text" name="latitude" id="dist_lat" placeholder="Koordinat Lintang" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fd_location" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Nama Lokasi Penyaluran</label>
+                            <input id="fd_location" type="text" name="location_name" placeholder="Contoh: Masjid Jami Al-Ikhlas" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Longitude GPS (Opsional)</label>
-                            <input type="text" name="longitude" id="dist_lng" placeholder="Koordinat Bujur" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                            <label for="fd_maps" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Link Google Maps (Opsional)</label>
+                            <input id="fd_maps" type="url" name="maps_link" placeholder="https://maps.google.com/..." class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="dist_lat" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Latitude GPS (Opsional)</label>
+                            <input type="text" name="latitude" id="dist_lat" placeholder="Koordinat Lintang" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
+                        </div>
+                        <div>
+                            <label for="dist_lng" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Longitude GPS (Opsional)</label>
+                            <input type="text" name="longitude" id="dist_lng" placeholder="Koordinat Bujur" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi / Keterangan Penyaluran</label>
-                        <textarea name="description" required rows="3" placeholder="Tuliskan catatan kondisi atau detail proses alokasi bantuan kemanusiaan..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500"></textarea>
+                        <label for="fd_desc" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Deskripsi / Keterangan Penyaluran</label>
+                        <textarea id="fd_desc" name="description" required rows="3" placeholder="Tuliskan catatan kondisi atau detail proses alokasi bantuan kemanusiaan..." class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600"></textarea>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Bukti Penyaluran Lapangan</label>
-                        <input type="file" name="photo" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fd_photo" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Foto Bukti Penyaluran Lapangan</label>
+                        <input id="fd_photo" type="file" name="photo" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
-                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4.5 rounded-2xl shadow-lg transition duration-300">Simpan Laporan <i class="fa-solid fa-shield-halved ml-2"></i></button>
+                    <button type="submit" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl shadow-md transition-colors">Simpan Laporan <i class="fa-solid fa-shield-halved ml-2" aria-hidden="true"></i></button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- D. SEND CAMPAIGN UPDATE (KABAR TERBARU) MODAL -->
-    <div x-show="modalUpdate" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-        <div @click.away="modalUpdate = false" class="bg-white border border-slate-100 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
-            <button @click="modalUpdate = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-655"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div x-show="modalUpdate" @keydown.escape.window="modalUpdate = false" role="dialog" aria-modal="true" aria-labelledby="modal-field-update-title" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/70">
+        <div @click.away="modalUpdate = false" class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
+            <button type="button" @click="modalUpdate = false" aria-label="Tutup modal kabar terbaru" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center absolute top-4 right-4 text-slate-600 hover:text-slate-900"><i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i></button>
             <div class="space-y-1">
-                <h3 class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Kirim <span class="text-primary-600">Kabar Terbaru</span></h3>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Kirim ke: <span class="text-slate-800 font-bold" x-text="activeCampaignTitle"></span></p>
+                <h2 id="modal-field-update-title" class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Kirim <span class="text-primary-600">Kabar Terbaru</span></h2>
+                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Kirim ke: <span class="text-slate-900 font-bold" x-text="activeCampaignTitle"></span></p>
             </div>
             <div class="overflow-y-auto pr-2 space-y-4 max-h-[60vh] no-scrollbar">
                 <form :action="'{{ url('/field/campaigns') }}/' + activeCampaignId + '/update'" method="POST" enctype="multipart/form-data" class="space-y-4 pr-1">
                     @csrf
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Judul Kabar Utama</label>
-                        <input type="text" name="title" required placeholder="Contoh: Pembelian Sembako Tahap 1" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fu_title" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Judul Kabar Utama</label>
+                        <input id="fu_title" type="text" name="title" required placeholder="Contoh: Pembelian Sembako Tahap 1" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Rincian Perkembangan Program</label>
-                        <textarea name="content" required rows="4" placeholder="Tuliskan update, progres pembelian barang, rencana penyaluran berikutnya..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-850 outline-none focus:border-primary-500"></textarea>
+                        <label for="fu_content" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Rincian Perkembangan Program</label>
+                        <textarea id="fu_content" name="content" required rows="4" placeholder="Tuliskan update, progres pembelian barang, rencana penyaluran berikutnya..." class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600"></textarea>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Dokumentasi Pendukung</label>
-                        <input type="file" name="image" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="fu_image" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Foto Dokumentasi Pendukung</label>
+                        <input id="fu_image" type="file" name="image" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
-                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4.5 rounded-2xl shadow-lg transition duration-300">Kirim Kabar Perkembangan <i class="fa-solid fa-bullhorn ml-2"></i></button>
+                    <button type="submit" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl shadow-md transition-colors">Kirim Kabar Perkembangan <i class="fa-solid fa-bullhorn ml-2" aria-hidden="true"></i></button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- E. MARK TODO COMPLETED & UPLOAD PROOF MODAL -->
-    <div x-show="modalTodoResult" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-        <div @click.away="modalTodoResult = false" class="bg-white border border-slate-100 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
-            <button @click="modalTodoResult = false" class="absolute top-6 right-6 text-slate-400 hover:text-slate-655"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div x-show="modalTodoResult" @keydown.escape.window="modalTodoResult = false" role="dialog" aria-modal="true" aria-labelledby="modal-field-todo-title" style="display: none;" class="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/70">
+        <div @click.away="modalTodoResult = false" class="bg-white border border-slate-200 w-full max-w-lg rounded-3xl p-8 shadow-2xl relative space-y-6 flex flex-col max-h-[90vh]">
+            <button type="button" @click="modalTodoResult = false" aria-label="Tutup modal selesaikan tugas" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center absolute top-4 right-4 text-slate-600 hover:text-slate-900"><i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i></button>
             <div class="space-y-1">
-                <h3 class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Selesaikan <span class="text-primary-600">Tugas Lapangan</span></h3>
-                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tugas: <span class="text-slate-850 font-bold" x-text="activeTodoTask"></span></p>
+                <h2 id="modal-field-todo-title" class="text-lg font-montserrat font-black uppercase text-slate-800 italic">Selesaikan <span class="text-primary-600">Tugas Lapangan</span></h2>
+                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Tugas: <span class="text-slate-900 font-bold" x-text="activeTodoTask"></span></p>
             </div>
             <div class="overflow-y-auto pr-2 space-y-4 max-h-[60vh] no-scrollbar">
                 <form :action="'{{ url('/field/todo') }}/' + activeTodoId + '/update'" method="POST" enctype="multipart/form-data" class="space-y-4 pr-1">
                     @csrf
                     <input type="hidden" name="status" value="completed">
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Laporan Hasil Pengerjaan</label>
-                        <textarea name="result_note" required rows="3" placeholder="Tuliskan keterangan penyelesaian tugas lapangan..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500"></textarea>
+                        <label for="ft_note" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Laporan Hasil Pengerjaan</label>
+                        <textarea id="ft_note" name="result_note" required rows="3" placeholder="Tuliskan keterangan penyelesaian tugas lapangan..." class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600"></textarea>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Bukti Hasil Kerja (Selfie/Penyaluran)</label>
-                        <input type="file" name="result_attachment" required class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                        <label for="ft_attachment" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Foto Bukti Hasil Kerja (Selfie/Penyaluran)</label>
+                        <input id="ft_attachment" type="file" name="result_attachment" required class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-600">
                     </div>
-                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4.5 rounded-2xl shadow-lg transition duration-300">Kirim Bukti & Selesaikan Tugas <i class="fa-solid fa-upload ml-2"></i></button>
+                    <button type="submit" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl shadow-md transition-colors">Kirim Bukti &amp; Selesaikan Tugas <i class="fa-solid fa-upload ml-2" aria-hidden="true"></i></button>
                 </form>
             </div>
         </div>
