@@ -631,7 +631,7 @@
                 type="button" 
                 @click="dismiss()" 
                 aria-label="Tutup notifikasi donasi"
-                class="absolute top-1 right-1 min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors rounded-lg"
+                class="absolute top-1 right-1 w-11 h-11 inline-flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors rounded-lg"
             >
                 <i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
             </button>
