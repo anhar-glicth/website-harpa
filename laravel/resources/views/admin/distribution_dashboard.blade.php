@@ -150,8 +150,8 @@
             </div>
 
             {{-- Summary Banner Bar --}}
-            <div class="bg-white border border-emerald-200 rounded-3xl overflow-hidden shadow-sm">
-                <div class="grid grid-cols-2 sm:grid-cols-5 text-center divide-x divide-emerald-100 bg-emerald-50/50">
+            <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+                <div class="grid grid-cols-2 sm:grid-cols-5 text-center divide-x divide-slate-200 bg-white">
 
                     {{-- Total Quantity --}}
                     <div class="p-4 space-y-1">
@@ -320,7 +320,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-700">
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-700">
                                     <th class="py-3 px-6">Asnaf</th>
                                     <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
                                     <th class="py-3 px-4 text-center">Total PM</th>
@@ -359,7 +359,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-700">
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-700">
                                     <th class="py-3 px-6">Kota</th>
                                     <th class="py-3 px-4">Provinsi</th>
                                     <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
@@ -400,7 +400,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-700">
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-700">
                                     <th class="py-3 px-6">Kategori Program</th>
                                     <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
                                     <th class="py-3 px-4 text-center">Total PM</th>
@@ -439,7 +439,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-emerald-50/50 border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-700">
+                                <tr class="bg-slate-50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-700">
                                     <th class="py-3 px-6">Nama Program</th>
                                     <th class="py-3 px-4 text-center">Jumlah Penyaluran</th>
                                     <th class="py-3 px-4 text-center">Total PM</th>

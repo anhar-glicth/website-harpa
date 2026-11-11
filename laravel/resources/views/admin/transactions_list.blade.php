@@ -281,9 +281,9 @@
                 </button>
 
                 <a href="{{ route('admin.transactions.batch_receipt', request()->query()) }}" target="_blank" 
-                   class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
+                   class="bg-[#063f5c] hover:bg-primary-700 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
                    title="Download atau Cetak Semua Kwitansi Hasil Filter (atau Keseluruhan)">
-                    <i class="fa-solid fa-file-invoice"></i> Download / Cetak Kwitansi Terfilter
+                    <i class="fa-solid fa-file-invoice" aria-hidden="true"></i> Download / Cetak Kwitansi Terfilter
                 </a>
 
                 <button type="button" 
@@ -302,8 +302,8 @@
 
                 <button type="button" 
                         @click="if(selectedItem) { window.open('/admin/transactions/' + selectedItem.id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
-                        class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-link"></i> Link Bukti Donasi
+                        class="bg-[#063f5c] hover:bg-primary-700 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                    <i class="fa-solid fa-link" aria-hidden="true"></i> Link Bukti Donasi
                 </button>
             </div>
 

@@ -104,12 +104,12 @@
 
                 <!-- Present Days -->
                 <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-indigo-50 text-indigo-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                    <div class="bg-primary-50 text-[#063f5c] w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
                         <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                     </div>
                     <div>
                         <span class="text-xs font-bold text-slate-600 uppercase tracking-widest block leading-none">Kehadiran</span>
-                        <p class="text-lg font-montserrat font-black text-indigo-700 mt-1">{{ $stats['presentDays'] }} Hari</p>
+                        <p class="text-lg font-montserrat font-black text-[#063f5c] mt-1">{{ $stats['presentDays'] }} Hari</p>
                     </div>
                 </div>
 

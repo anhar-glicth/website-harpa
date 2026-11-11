@@ -394,9 +394,9 @@
                 </a>
 
                 <a href="{{ route('admin.donors.batch_receipt', request()->query()) }}" target="_blank" 
-                   class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
+                   class="bg-[#063f5c] hover:bg-primary-700 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
                    title="Download atau Cetak Semua Kwitansi Donatur Hasil Filter (atau Keseluruhan)">
-                    <i class="fa-solid fa-file-invoice"></i> Download / Cetak Kwitansi Terfilter
+                    <i class="fa-solid fa-file-invoice" aria-hidden="true"></i> Download / Cetak Kwitansi Terfilter
                 </a>
 
                 <button type="button" @click="showImportModal = true" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">

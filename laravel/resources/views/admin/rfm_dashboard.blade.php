@@ -153,8 +153,8 @@
                 </button>
 
                 <div x-show="showGuide" x-collapse class="p-5 space-y-5 text-xs text-slate-700 border-t border-slate-100">
-                    <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-4 space-y-2">
-                        <h2 class="font-black text-emerald-900 text-xs">Apa itu RFM?</h2>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+                        <h2 class="font-black text-[#063f5c] text-xs">Apa itu RFM?</h2>
                         <p class="text-slate-700">RFM adalah metode segmentasi donatur berdasarkan: <strong>Recency</strong> (waktu donasi terakhir), <strong>Frequency</strong> (frekuensi donasi), &amp; <strong>Monetary</strong> (total nilai donasi).</p>
                     </div>
 
@@ -165,7 +165,7 @@
                             <ul class="space-y-1 text-xs">
                                 <li><strong class="text-emerald-700">CHAMPION:</strong> >= 3 transaksi &amp; total >= 500.000</li>
                                 <li><strong class="text-sky-700">LOYAL:</strong> 2 transaksi</li>
-                                <li><strong class="text-indigo-700">POTENTIAL:</strong> 1 transaksi</li>
+                                <li><strong class="text-[#063f5c]">POTENTIAL:</strong> 1 transaksi</li>
                                 <li><strong class="text-rose-700">DORMANT:</strong> Tidak ada transaksi</li>
                             </ul>
                         </div>
@@ -176,7 +176,7 @@
                                 <li><strong class="text-teal-700">NEW:</strong> Belum pernah donasi</li>
                                 <li><strong class="text-emerald-700">CHAMPION:</strong> &lt;= 90 hari, >= 3 transaksi, total >= 500.000</li>
                                 <li><strong class="text-sky-700">LOYAL:</strong> &lt;= 120 hari, >= 2 transaksi</li>
-                                <li><strong class="text-indigo-700">POTENTIAL:</strong> &lt;= 180 hari</li>
+                                <li><strong class="text-[#063f5c]">POTENTIAL:</strong> &lt;= 180 hari</li>
                                 <li><strong class="text-rose-700">DORMANT:</strong> &gt; 180 hari tidak donasi</li>
                             </ul>
                         </div>

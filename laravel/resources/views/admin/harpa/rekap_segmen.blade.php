@@ -40,31 +40,31 @@
             </a>
 
             <!-- 2. AKTIF Pembaca -->
-            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'AKTIF Pembaca']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'AKTIF Pembaca' ? 'bg-sky-700 text-white border-sky-700 ring-2 ring-sky-700' : 'bg-white hover:bg-sky-50/50 text-slate-800 border-slate-200' }}">
-                <span class="text-[11px] font-black uppercase tracking-wider block {{ $filterSegmen === 'AKTIF Pembaca' ? 'text-sky-100' : 'text-slate-600' }}">AKTIF Pembaca</span>
+            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'AKTIF Pembaca']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'AKTIF Pembaca' ? 'bg-sky-800 text-white border-sky-800 ring-2 ring-sky-800' : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200' }}">
+                <span class="text-xs font-black uppercase tracking-wider block {{ $filterSegmen === 'AKTIF Pembaca' ? 'text-sky-100' : 'text-slate-600' }}">AKTIF Pembaca</span>
                 <span class="text-xl font-montserrat font-black mt-1 block">{{ number_format($counts['AKTIF Pembaca'] ?? 0) }}</span>
-                <span class="text-[11px] font-semibold {{ $filterSegmen === 'AKTIF Pembaca' ? 'text-sky-100' : 'text-slate-600' }}">Kirim Saat Payday</span>
+                <span class="text-xs font-semibold {{ $filterSegmen === 'AKTIF Pembaca' ? 'text-sky-100' : 'text-slate-600' }}">Kirim Saat Payday</span>
             </a>
 
             <!-- 3. PANTAU -->
-            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'PANTAU Data Belum Cukup']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'PANTAU Data Belum Cukup' ? 'bg-amber-700 text-white border-amber-700 ring-2 ring-amber-700' : 'bg-white hover:bg-amber-50/50 text-slate-800 border-slate-200' }}">
-                <span class="text-[11px] font-black uppercase tracking-wider block {{ $filterSegmen === 'PANTAU Data Belum Cukup' ? 'text-amber-100' : 'text-slate-600' }}">PANTAU</span>
+            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'PANTAU Data Belum Cukup']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'PANTAU Data Belum Cukup' ? 'bg-amber-900 text-white border-amber-900 ring-2 ring-amber-900' : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200' }}">
+                <span class="text-xs font-black uppercase tracking-wider block {{ $filterSegmen === 'PANTAU Data Belum Cukup' ? 'text-amber-100' : 'text-slate-600' }}">PANTAU</span>
                 <span class="text-xl font-montserrat font-black mt-1 block">{{ number_format($counts['PANTAU Data Belum Cukup'] ?? 0) }}</span>
-                <span class="text-[11px] font-semibold {{ $filterSegmen === 'PANTAU Data Belum Cukup' ? 'text-amber-100' : 'text-slate-600' }}">Kirim s.d Cukup</span>
+                <span class="text-xs font-semibold {{ $filterSegmen === 'PANTAU Data Belum Cukup' ? 'text-amber-100' : 'text-slate-600' }}">Kirim s.d Cukup</span>
             </a>
 
             <!-- 4. ARSIP Bermasalah -->
-            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'ARSIP Nomor Bermasalah']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'ARSIP Nomor Bermasalah' ? 'bg-rose-700 text-white border-rose-700 ring-2 ring-rose-700' : 'bg-white hover:bg-rose-50/50 text-slate-800 border-slate-200' }}">
-                <span class="text-[11px] font-black uppercase tracking-wider block {{ $filterSegmen === 'ARSIP Nomor Bermasalah' ? 'text-rose-100' : 'text-slate-600' }}">Bermasalah</span>
+            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'ARSIP Nomor Bermasalah']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'ARSIP Nomor Bermasalah' ? 'bg-rose-800 text-white border-rose-800 ring-2 ring-rose-800' : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200' }}">
+                <span class="text-xs font-black uppercase tracking-wider block {{ $filterSegmen === 'ARSIP Nomor Bermasalah' ? 'text-rose-100' : 'text-slate-600' }}">Bermasalah</span>
                 <span class="text-xl font-montserrat font-black mt-1 block">{{ number_format($counts['ARSIP Nomor Bermasalah'] ?? 0) }}</span>
-                <span class="text-[11px] font-semibold {{ $filterSegmen === 'ARSIP Nomor Bermasalah' ? 'text-rose-100' : 'text-slate-600' }}">Gagal &ge; 2x</span>
+                <span class="text-xs font-semibold {{ $filterSegmen === 'ARSIP Nomor Bermasalah' ? 'text-rose-100' : 'text-slate-600' }}">Gagal &ge; 2x</span>
             </a>
 
             <!-- 5. ARSIP Tdk Baca -->
-            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'ARSIP Tidak Pernah Baca']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'ARSIP Tidak Pernah Baca' ? 'bg-slate-700 text-white border-slate-700 ring-2 ring-slate-700' : 'bg-white hover:bg-slate-100 text-slate-800 border-slate-200' }}">
-                <span class="text-[11px] font-black uppercase tracking-wider block {{ $filterSegmen === 'ARSIP Tidak Pernah Baca' ? 'text-slate-200' : 'text-slate-600' }}">Tdk Baca</span>
+            <a href="{{ route('admin.harpa.rekap', ['segmen' => 'ARSIP Tidak Pernah Baca']) }}" class="p-4 rounded-2xl border transition-colors {{ $filterSegmen === 'ARSIP Tidak Pernah Baca' ? 'bg-slate-800 text-white border-slate-800 ring-2 ring-slate-800' : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200' }}">
+                <span class="text-xs font-black uppercase tracking-wider block {{ $filterSegmen === 'ARSIP Tidak Pernah Baca' ? 'text-slate-200' : 'text-slate-600' }}">Tdk Baca</span>
                 <span class="text-xl font-montserrat font-black mt-1 block">{{ number_format($counts['ARSIP Tidak Pernah Baca'] ?? 0) }}</span>
-                <span class="text-[11px] font-semibold {{ $filterSegmen === 'ARSIP Tidak Pernah Baca' ? 'text-slate-200' : 'text-slate-600' }}">&ge; 3x read=0</span>
+                <span class="text-xs font-semibold {{ $filterSegmen === 'ARSIP Tidak Pernah Baca' ? 'text-slate-200' : 'text-slate-600' }}">&ge; 3x read=0</span>
             </a>
 
             <!-- 6. ARSIP Berhenti Baca -->

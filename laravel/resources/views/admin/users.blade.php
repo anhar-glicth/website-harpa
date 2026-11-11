@@ -136,11 +136,11 @@
                                         @elseif($user->role === 'finance')
                                             <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF KEUANGAN</span>
                                         @elseif($user->role === 'program_manager')
-                                            <span class="bg-purple-50 text-purple-700 border border-purple-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">MANAGER PROGRAM</span>
+                                            <span class="bg-primary-50 text-[#063f5c] border border-primary-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">MANAGER PROGRAM</span>
                                         @elseif($user->role === 'crm_staff')
                                             <span class="bg-rose-50 text-rose-700 border border-rose-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF CRM</span>
                                         @elseif($user->role === 'field_worker')
-                                            <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PETUGAS LAPANGAN</span>
+                                            <span class="bg-sky-50 text-sky-800 border border-sky-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PETUGAS LAPANGAN</span>
                                         @else
                                             <span class="bg-slate-100 text-slate-700 border border-slate-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">DONATUR</span>
                                         @endif

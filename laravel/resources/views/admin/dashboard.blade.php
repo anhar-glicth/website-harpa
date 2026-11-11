@@ -309,7 +309,7 @@
                         </div>
                         <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-600">
                             <span>Kabar Terbit:</span>
-                            <span class="text-indigo-700 font-bold bg-indigo-50 px-2 py-0.5 rounded">Berita Dampak</span>
+                            <span class="text-[#063f5c] font-bold bg-primary-50 border border-primary-200 px-2 py-0.5 rounded-md">Berita Dampak</span>
                         </div>
                     </div>
 
