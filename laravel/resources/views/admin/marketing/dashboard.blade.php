@@ -398,7 +398,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="9" class="py-8 text-center text-slate-400 font-bold">
+                                <td colspan="9" class="py-8 text-center text-slate-600 font-bold">
                                     Belum ada data performa iklan. Klik "Input Data Iklan" di atas untuk menambahkan data pertama.
                                 </td>
                             </tr>

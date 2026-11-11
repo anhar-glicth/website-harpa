@@ -103,24 +103,24 @@
                 </div>
 
                 <!-- Present Days -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-indigo-50 text-indigo-600 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
-                        <i class="fa-solid fa-location-dot"></i>
+                <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
+                    <div class="bg-indigo-50 text-indigo-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Kehadiran</span>
-                        <h4 class="text-lg font-montserrat font-black text-indigo-650 mt-1">{{ $stats['presentDays'] }} Hari</h4>
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-widest block leading-none">Kehadiran</span>
+                        <p class="text-lg font-montserrat font-black text-indigo-700 mt-1">{{ $stats['presentDays'] }} Hari</p>
                     </div>
                 </div>
 
                 <!-- Total Campaigns -->
-                <div class="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-amber-50 text-amber-600 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
-                        <i class="fa-solid fa-folder-open"></i>
+                <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
+                    <div class="bg-amber-50 text-amber-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block leading-none">Proyek</span>
-                        <h4 class="text-lg font-montserrat font-black text-amber-650 mt-1">{{ $stats['totalCampaigns'] }}</h4>
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-widest block leading-none">Proyek</span>
+                        <p class="text-lg font-montserrat font-black text-amber-800 mt-1">{{ $stats['totalCampaigns'] }}</p>
                     </div>
                 </div>
             </div>
@@ -129,31 +129,31 @@
             <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <!-- Assign Task Form (Left/Top) -->
                 <div class="xl:col-span-1 space-y-6">
-                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                    <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                         <div>
-                            <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Berikan <span class="text-primary-600">Tugas Baru</span></h3>
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Tugas akan masuk ke todo list petugas</p>
+                            <h2 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Berikan <span class="text-primary-600">Tugas Baru</span></h2>
+                            <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">Tugas akan masuk ke todo list petugas</p>
                         </div>
-                        <hr class="border-slate-100">
+                        <hr class="border-slate-200">
                         
                         <form action="{{ route('admin.users.assign_task', $user->id) }}" method="POST" class="space-y-4">
                             @csrf
                             <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Judul Tugas</label>
-                                <input type="text" name="task" required placeholder="Judul tugas..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500 uppercase tracking-wider">
+                                <label for="mon_task_title" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 ml-1">Judul Tugas</label>
+                                <input id="mon_task_title" type="text" name="task" required placeholder="Judul tugas..." class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 focus:border-primary-600 uppercase tracking-wider">
                             </div>
                             
                             <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Deskripsi Detail</label>
-                                <textarea name="description" rows="3" placeholder="Tuliskan catatan rincian tugas lapangan..." class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3.5 text-xs font-semibold text-slate-800 outline-none focus:border-primary-500"></textarea>
+                                <label for="mon_task_desc" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 ml-1">Deskripsi Detail</label>
+                                <textarea id="mon_task_desc" name="description" rows="3" placeholder="Tuliskan catatan rincian tugas lapangan..." class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-xs font-semibold text-slate-800 focus:border-primary-600"></textarea>
                             </div>
                             
                             <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Tenggat Waktu (Deadline)</label>
-                                <input type="datetime-local" name="deadline" class="w-full bg-slate-50 border border-slate-150 rounded-2xl px-4 py-3.5 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                                <label for="mon_task_deadline" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 ml-1">Tenggat Waktu (Deadline)</label>
+                                <input id="mon_task_deadline" type="datetime-local" name="deadline" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 focus:border-primary-600">
                             </div>
                             
-                            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">
+                            <button type="submit" class="w-full min-h-[48px] bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">
                                 Berikan Tugas
                             </button>
                         </form>
@@ -162,53 +162,53 @@
 
                 <!-- Tasks Log List (Right/Bottom) -->
                 <div class="xl:col-span-2 space-y-6">
-                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                    <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                         <div>
-                            <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Histori <span class="text-primary-600">Tugas Lapangan</span></h3>
-                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Tugas yang diberikan & progresnya</p>
+                            <h2 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Histori <span class="text-primary-600">Tugas Lapangan</span></h2>
+                            <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">Tugas yang diberikan &amp; progresnya</p>
                         </div>
-                        <hr class="border-slate-100">
+                        <hr class="border-slate-200">
 
                         @if($todos->count() > 0)
                             <div class="space-y-4">
                                 @foreach($todos as $t)
-                                    <div class="p-5 bg-slate-50 border border-slate-100 rounded-2xl space-y-4 hover:border-primary-100 transition-all">
+                                    <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-4 hover:border-primary-200 transition-colors">
                                         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                                             <div>
-                                                <h4 class="font-montserrat font-black text-slate-900 text-xs sm:text-sm uppercase tracking-wide italic">{{ $t->task }}</h4>
+                                                <h3 class="font-montserrat font-black text-slate-900 text-xs sm:text-sm uppercase tracking-wide italic">{{ $t->task }}</h3>
                                                 @if($t->description)
-                                                    <p class="text-xs text-slate-500 font-semibold mt-1 leading-relaxed">{{ $t->description }}</p>
+                                                    <p class="text-xs text-slate-600 font-semibold mt-1 leading-relaxed">{{ $t->description }}</p>
                                                 @endif
                                             </div>
-                                            <span class="px-3.5 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest text-center shrink-0 border {{ $t->status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow shadow-emerald-200/20' : 'bg-amber-50 text-amber-700 border-amber-200' }}">
+                                            <span class="px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest text-center shrink-0 border {{ $t->status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200' }}">
                                                 {{ $t->status === 'completed' ? 'SELESAI' : 'PENDING' }}
                                             </span>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-4 text-[10px] font-black uppercase tracking-wider text-slate-400 border-t border-slate-200/50 pt-3">
+                                        <div class="grid grid-cols-2 gap-4 text-xs font-black uppercase tracking-wider text-slate-600 border-t border-slate-200 pt-3">
                                             <div>
-                                                <span class="block text-[8px] text-slate-400 mb-0.5">Diberikan</span>
-                                                <span class="text-slate-700 block text-xs">{{ $t->created_at->format('d M Y H:i') }}</span>
+                                                <span class="block text-xs text-slate-600 mb-0.5">Diberikan</span>
+                                                <span class="text-slate-800 block text-xs">{{ $t->created_at->format('d M Y H:i') }}</span>
                                             </div>
                                             <div>
-                                                <span class="block text-[8px] text-red-400 mb-0.5">Deadline</span>
-                                                <span class="text-red-600 block text-xs">{{ $t->deadline ? $t->deadline->format('d M Y H:i') : '-' }}</span>
+                                                <span class="block text-xs text-rose-700 mb-0.5">Deadline</span>
+                                                <span class="text-rose-700 block text-xs">{{ $t->deadline ? $t->deadline->format('d M Y H:i') : '-' }}</span>
                                             </div>
                                         </div>
 
                                         <!-- Reporting Notes & Attachments -->
                                         @if($t->status === 'completed')
-                                            <div class="bg-white border border-slate-150 p-4 rounded-xl space-y-3 shadow-sm text-xs">
-                                                <div class="flex items-center gap-1.5 text-primary-650 font-black text-[9px] uppercase tracking-wider">
-                                                    <i class="fa-solid fa-circle-check"></i> Bukti Penyelesaian
+                                            <div class="bg-white border border-slate-200 p-4 rounded-xl space-y-3 shadow-sm text-xs">
+                                                <div class="flex items-center gap-1.5 text-primary-700 font-black text-xs uppercase tracking-wider">
+                                                    <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Bukti Penyelesaian
                                                 </div>
                                                 @if($t->result_note)
-                                                    <p class="text-slate-600 font-semibold italic bg-slate-50 p-3 rounded-lg border border-slate-100">"{{ $t->result_note }}"</p>
+                                                    <p class="text-slate-700 font-semibold italic bg-slate-50 p-3 rounded-lg border border-slate-200">"{{ $t->result_note }}"</p>
                                                 @endif
                                                 @if($t->result_attachment)
                                                     <div class="mt-2.5">
-                                                        <a href="{{ $t->result_attachment }}" target="_blank" class="w-full sm:w-fit inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-primary-650 text-white rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">
-                                                            <i class="fa-solid fa-image"></i> Lihat Foto Bukti
+                                                        <a href="{{ $t->result_attachment }}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-fit min-h-[44px] inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-primary-700 text-white rounded-lg text-xs font-black uppercase tracking-widest transition-colors">
+                                                            <i class="fa-solid fa-image" aria-hidden="true"></i> Lihat Foto Bukti
                                                         </a>
                                                     </div>
                                                 @endif
@@ -221,8 +221,8 @@
                                 {{ $todos->appends(request()->except('todo_page'))->links() }}
                             </div>
                         @else
-                            <div class="py-12 text-center text-slate-400 font-bold uppercase tracking-wider text-xs">
-                                <i class="fa-solid fa-clipboard-check text-slate-200 text-3xl mb-2 block"></i>
+                            <div class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider text-xs">
+                                <i class="fa-solid fa-clipboard-check text-slate-500 text-3xl mb-2 block" aria-hidden="true"></i>
                                 Belum ada tugas lapangan yang diberikan.
                             </div>
                         @endif
@@ -231,45 +231,45 @@
             </div>
 
             <!-- GPS Attendance Logs -->
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                 <div>
-                    <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Histori <span class="text-primary-600">Absensi GPS</span></h3>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Catatan check-in/out harian dengan koordinat</p>
+                    <h2 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Histori <span class="text-primary-600">Absensi GPS</span></h2>
+                    <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">Catatan check-in/out harian dengan koordinat</p>
                 </div>
-                <hr class="border-slate-100">
+                <hr class="border-slate-200">
 
                 @if($attendances->count() > 0)
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                     <th class="pb-4">Tipe Absen</th>
-                                    <th class="pb-4">Tanggal & Waktu</th>
+                                    <th class="pb-4">Tanggal &amp; Waktu</th>
                                     <th class="pb-4">Lokasi / Keterangan</th>
                                     <th class="pb-4">Koordinat GPS</th>
                                     <th class="pb-4 text-right">Selfie Bukti</th>
                                 </tr>
                             </thead>
-                            <tbody class="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+                            <tbody class="text-xs font-semibold text-slate-700 uppercase tracking-wide">
                                 @foreach($attendances as $att)
-                                    <tr class="border-b border-slate-50 last:border-0">
+                                    <tr class="border-b border-slate-100 last:border-0">
                                         <td class="py-4">
                                             @if($att->type === 'check_in')
-                                                <span class="bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK IN</span>
+                                                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK IN</span>
                                             @elseif($att->type === 'check_out')
-                                                <span class="bg-blue-50 text-blue-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK OUT</span>
+                                                <span class="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK OUT</span>
                                             @elseif($att->type === 'sakit')
-                                                <span class="bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SAKIT</span>
+                                                <span class="bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SAKIT</span>
                                             @else
-                                                <span class="bg-red-50 text-red-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">IZIN</span>
+                                                <span class="bg-red-50 text-red-700 border border-red-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">IZIN</span>
                                             @endif
                                         </td>
                                         <td class="py-4 text-slate-800">{{ $att->created_at->format('d M Y, H:i') }}</td>
-                                        <td class="py-4 text-slate-600">{{ $att->location ?? '-' }}</td>
-                                        <td class="py-4 text-slate-500 font-mono text-[11px]">
+                                        <td class="py-4 text-slate-700">{{ $att->location ?? '-' }}</td>
+                                        <td class="py-4 text-slate-600 font-mono text-xs">
                                             @if($att->latitude && $att->longitude)
-                                                <a href="https://www.google.com/maps/search/?api=1&query={{ $att->latitude }},{{ $att->longitude }}" target="_blank" class="text-primary-600 hover:underline">
-                                                    <i class="fa-solid fa-map-location-dot"></i> {{ $att->latitude }}, {{ $att->longitude }}
+                                                <a href="https://www.google.com/maps/search/?api=1&query={{ $att->latitude }},{{ $att->longitude }}" target="_blank" rel="noopener noreferrer" class="text-primary-700 hover:underline inline-flex items-center min-h-[44px]">
+                                                    <i class="fa-solid fa-map-location-dot mr-1" aria-hidden="true"></i> {{ $att->latitude }}, {{ $att->longitude }}
                                                 </a>
                                             @else
                                                 -
@@ -277,11 +277,11 @@
                                         </td>
                                         <td class="py-4 text-right">
                                             @if($att->attachment)
-                                                <a href="{{ $att->attachment }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-[9px] uppercase tracking-wider px-3.5 py-2 rounded-xl border border-slate-250/30 flex items-center justify-center gap-1 w-fit ml-auto">
-                                                    <i class="fa-solid fa-image"></i> Lihat Foto
+                                                <a href="{{ $att->attachment }}" target="_blank" rel="noopener noreferrer" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-xs uppercase tracking-wider px-3.5 py-2 min-h-[44px] rounded-xl border border-slate-300 inline-flex items-center justify-center gap-1 ml-auto">
+                                                    <i class="fa-solid fa-image" aria-hidden="true"></i> Lihat Foto
                                                 </a>
                                             @else
-                                                <span class="text-slate-400">-</span>
+                                                <span class="text-slate-600">-</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -293,8 +293,8 @@
                         {{ $attendances->appends(request()->except('attendance_page'))->links() }}
                     </div>
                 @else
-                    <div class="py-12 text-center text-slate-450 font-bold uppercase tracking-wider text-xs">
-                        <i class="fa-solid fa-user-clock text-slate-200 text-3xl mb-2 block"></i>
+                    <div class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider text-xs">
+                        <i class="fa-solid fa-user-clock text-slate-500 text-3xl mb-2 block" aria-hidden="true"></i>
                         Belum ada data absensi untuk petugas ini.
                     </div>
                 @endif
@@ -303,51 +303,51 @@
             <!-- Worker Development (Campaigns & Distributions) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Campaigns Created -->
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                     <div>
-                        <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Proyek Kampanye <span class="text-primary-600">Diajukan</span></h3>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Program penggalangan dana yang ditulis petugas</p>
+                        <h2 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Proyek Kampanye <span class="text-primary-600">Diajukan</span></h2>
+                        <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">Program penggalangan dana yang ditulis petugas</p>
                     </div>
-                    <hr class="border-slate-100">
+                    <hr class="border-slate-200">
 
                     @if($myCampaigns->count() > 0)
                         <div class="space-y-4">
                             @foreach($myCampaigns as $c)
-                                <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between gap-4">
+                                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between gap-4">
                                     <div>
-                                        <h4 class="font-montserrat font-black text-slate-800 text-xs uppercase tracking-wide truncate max-w-[200px]">{{ $c->title }}</h4>
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">Target: Rp {{ number_format($c->target_amount, 0, ',', '.') }}</p>
+                                        <h3 class="font-montserrat font-black text-slate-800 text-xs uppercase tracking-wide truncate max-w-[200px]">{{ $c->title }}</h3>
+                                        <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mt-0.5">Target: Rp {{ number_format($c->target_amount, 0, ',', '.') }}</p>
                                     </div>
-                                    <span class="px-2.5 py-1 rounded text-[8px] font-black uppercase tracking-widest {{ $c->status === 'approved' ? 'bg-emerald-50 text-emerald-700' : ($c->status === 'pending' ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700') }}">
+                                    <span class="px-2.5 py-1 rounded text-xs font-black uppercase tracking-widest {{ $c->status === 'approved' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($c->status === 'pending' ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-red-50 text-red-700 border border-red-200') }}">
                                         {{ $c->status }}
                                     </span>
                                 </div>
                             @endforeach
                         </div>
                     @else
-                        <div class="py-12 text-center text-slate-400 font-bold uppercase tracking-wider text-xs">
+                        <div class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider text-xs">
                             Belum ada proyek penggalangan dana yang dibuat.
                         </div>
                     @endif
                 </div>
 
                 <!-- Distributions Reported -->
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+                <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                     <div>
-                        <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Laporan Penyaluran <span class="text-primary-600">Dilaporkan</span></h3>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Penyaluran bantuan yang didistribusikan langsung</p>
+                        <h2 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">Laporan Penyaluran <span class="text-primary-600">Dilaporkan</span></h2>
+                        <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">Penyaluran bantuan yang didistribusikan langsung</p>
                     </div>
-                    <hr class="border-slate-100">
+                    <hr class="border-slate-200">
 
                     @if($myDistributions->count() > 0)
                         <div class="space-y-4">
                             @foreach($myDistributions as $d)
-                                <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-2">
+                                <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
                                     <div class="flex justify-between items-center gap-3">
-                                        <h4 class="font-montserrat font-black text-slate-800 text-xs uppercase tracking-wide truncate max-w-[200px]">{{ $d->title }}</h4>
+                                        <h3 class="font-montserrat font-black text-slate-800 text-xs uppercase tracking-wide truncate max-w-[200px]">{{ $d->title }}</h3>
                                         <span class="text-primary-700 font-montserrat font-black text-xs">Rp {{ number_format($d->amount, 0, ',', '.') }}</span>
                                     </div>
-                                    <div class="flex justify-between items-center text-[9px] text-slate-400 font-bold uppercase tracking-wider">
+                                    <div class="flex justify-between items-center text-xs text-slate-600 font-bold uppercase tracking-wider">
                                         <span>Penerima: {{ $d->recipient_name }}</span>
                                         <span>{{ $d->distribution_date ? $d->distribution_date->format('d M Y') : '-' }}</span>
                                     </div>
@@ -355,7 +355,7 @@
                             @endforeach
                         </div>
                     @else
-                        <div class="py-12 text-center text-slate-400 font-bold uppercase tracking-wider text-xs">
+                        <div class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider text-xs">
                             Belum ada laporan penyaluran bantuan.
                         </div>
                     @endif

@@ -142,8 +142,8 @@
                     </div>
                 @else
                     <div class="py-16 text-center bg-white rounded-[2rem] border border-slate-100">
-                        <i class="fa-solid fa-folder-open text-slate-200 text-4xl mb-3 block"></i>
-                        <p class="text-slate-400 font-bold italic uppercase tracking-wider text-xs">Belum ada proyek yang Anda buat.</p>
+                        <i class="fa-solid fa-folder-open text-slate-500 text-4xl mb-3 block" aria-hidden="true"></i>
+                        <p class="text-slate-600 font-bold italic uppercase tracking-wider text-xs">Belum ada proyek yang Anda buat.</p>
                     </div>
                 @endif
             </div>
@@ -153,22 +153,22 @@
                 @if($myNews->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($myNews as $n)
-                            <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all group space-y-4">
+                            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all group space-y-4">
                                 <div class="relative h-40 rounded-2xl overflow-hidden bg-slate-50">
-                                    <img src="{{ $n->image ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600' }}" class="w-full h-full object-cover" alt="">
+                                    <img src="{{ $n->image ?? 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600' }}" width="600" height="400" loading="lazy" decoding="async" class="w-full h-full object-cover" alt="{{ $n->title }}">
                                 </div>
                                 <div>
-                                    <p class="text-[8px] font-black text-primary-600 uppercase tracking-[0.2em] mb-1">{{ $n->created_at->format('d M Y') }}</p>
-                                    <h4 class="font-montserrat font-black text-slate-800 uppercase italic text-sm line-clamp-1">{{ $n->title }}</h4>
+                                    <p class="text-xs font-black text-primary-700 uppercase tracking-[0.2em] mb-1">{{ $n->created_at->format('d M Y') }}</p>
+                                    <h3 class="font-montserrat font-black text-slate-800 uppercase italic text-sm line-clamp-1">{{ $n->title }}</h3>
                                 </div>
-                                <p class="text-[10px] text-slate-400 font-semibold line-clamp-3 leading-relaxed">{{ $n->content }}</p>
+                                <p class="text-xs text-slate-600 font-semibold line-clamp-3 leading-relaxed">{{ $n->content }}</p>
                             </div>
                         @endforeach
                     </div>
                 @else
-                    <div class="py-16 text-center bg-white rounded-[2rem] border border-slate-100">
-                        <i class="fa-solid fa-newspaper text-slate-200 text-4xl mb-3 block"></i>
-                        <p class="text-slate-400 font-bold italic uppercase tracking-wider text-xs">Belum ada berita yang Anda terbitkan.</p>
+                    <div class="py-16 text-center bg-white rounded-[2rem] border border-slate-200">
+                        <i class="fa-solid fa-newspaper text-slate-500 text-4xl mb-3 block" aria-hidden="true"></i>
+                        <p class="text-slate-600 font-bold italic uppercase tracking-wider text-xs">Belum ada berita yang Anda terbitkan.</p>
                     </div>
                 @endif
             </div>
@@ -187,20 +187,20 @@
             <div x-show="activeTab === 'distributions'" style="display: none;" class="space-y-6">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="font-montserrat font-black text-slate-900 uppercase tracking-tighter italic text-base">Laporan <span class="text-primary-600">Penyaluran Saya</span></h3>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">{{ $myDistributions->count() }} laporan tercatat</p>
+                        <h2 class="font-montserrat font-black text-slate-900 uppercase tracking-tighter italic text-base">Laporan <span class="text-primary-600">Penyaluran Saya</span></h2>
+                        <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">{{ $myDistributions->count() }} laporan tercatat</p>
                     </div>
-                    <button @click="modalDistribution = true" class="flex items-center gap-2 px-6 py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg shadow-primary-600/10">
-                        <i class="fa-solid fa-plus"></i> Lapor Baru
+                    <button type="button" @click="modalDistribution = true" class="min-h-[44px] flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg shadow-primary-600/10">
+                        <i class="fa-solid fa-plus" aria-hidden="true"></i> Lapor Baru
                     </button>
                 </div>
 
                 @if($myDistributions->count() > 0)
-                    <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm">
+                    <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                    <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                         <th class="pb-4">Judul Penyaluran</th>
                                         <th class="pb-4">Penerima</th>
                                         <th class="pb-4">Nominal</th>
@@ -209,12 +209,12 @@
                                         <th class="pb-4 text-right">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody class="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+                                <tbody class="text-xs font-semibold text-slate-700 uppercase tracking-wide">
                                     @foreach($myDistributions as $d)
-                                        <tr class="border-b border-slate-50 last:border-0">
+                                        <tr class="border-b border-slate-100 last:border-0">
                                             <td class="py-4 pr-4">
                                                 <span class="block text-slate-800">{{ $d->title }}</span>
-                                                <span class="block text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Program: {{ $d->campaign->title ?? 'Umum' }}</span>
+                                                <span class="block text-xs text-slate-600 font-bold uppercase tracking-wider mt-0.5">Program: {{ $d->campaign->title ?? 'Umum' }}</span>
                                             </td>
                                             <td class="py-4">{{ $d->recipient_name }}</td>
                                             <td class="py-4 text-primary-700">Rp {{ number_format($d->amount, 0, ',', '.') }}</td>
@@ -222,9 +222,9 @@
                                             <td class="py-4">{{ $d->distribution_date ? $d->distribution_date->format('d M Y') : '-' }}</td>
                                             <td class="py-4 text-right">
                                                 @if($d->photo_url)
-                                                    <a href="{{ $d->photo_url }}" target="_blank" class="text-primary-600 hover:text-primary-800 text-xs font-black uppercase tracking-wider">Lihat Foto</a>
+                                                    <a href="{{ $d->photo_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center min-h-[44px] text-primary-700 hover:text-primary-800 text-xs font-black uppercase tracking-wider">Lihat Foto</a>
                                                 @else
-                                                    <span class="text-slate-400 text-xs font-bold uppercase tracking-wider">-</span>
+                                                    <span class="text-slate-600 text-xs font-bold uppercase tracking-wider">-</span>
                                                 @endif
                                             </td>
                                         </tr>
@@ -234,9 +234,9 @@
                         </div>
                     </div>
                 @else
-                    <div class="py-16 text-center bg-white rounded-[2rem] border border-slate-100">
-                        <i class="fa-solid fa-truck-ramp-box text-slate-200 text-4xl mb-3 block"></i>
-                        <p class="text-slate-400 font-bold italic uppercase tracking-wider text-xs">Belum ada laporan penyaluran yang Anda kirimkan.</p>
+                    <div class="py-16 text-center bg-white rounded-[2rem] border border-slate-200">
+                        <i class="fa-solid fa-truck-ramp-box text-slate-500 text-4xl mb-3 block" aria-hidden="true"></i>
+                        <p class="text-slate-600 font-bold italic uppercase tracking-wider text-xs">Belum ada laporan penyaluran yang Anda kirimkan.</p>
                     </div>
                 @endif
             </div>
@@ -248,8 +248,8 @@
                 <div class="lg:col-span-2 space-y-6">
                     <x-live-clock variant="card" />
 
-                    <div class="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-xl space-y-6">
-                        <h3 class="font-montserrat font-black uppercase text-sm text-slate-800 tracking-wider">Absensi GPS Harian</h3>
+                    <div class="bg-white border border-slate-200 p-8 rounded-[2rem] shadow-xl space-y-6">
+                        <h2 class="font-montserrat font-black uppercase text-sm text-slate-800 tracking-wider">Absensi GPS Harian</h2>
                         
                         <form action="{{ route('field.attendance.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
@@ -258,8 +258,8 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Tipe Absen</label>
-                                <select name="type" required class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                                <label for="field_att_type" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Tipe Absen</label>
+                                <select id="field_att_type" name="type" required class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-600 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 transition-colors">
                                     <option value="check_in">Check-In Masuk</option>
                                     <option value="check_out">Check-Out Pulang</option>
                                     <option value="izin">Izin</option>
@@ -267,54 +267,54 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Bukti / Selfi (Opsional)</label>
-                                <input type="file" name="attachment" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                                <label for="field_att_file" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Foto Bukti / Selfi (Opsional)</label>
+                                <input id="field_att_file" type="file" name="attachment" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-600 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-3 text-xs font-bold text-slate-800 transition-colors">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Lokasi / Keterangan Tambahan</label>
-                            <input type="text" name="location" id="field-loc" placeholder="Contoh: Kantor Cabang / Alamat Penyaluran" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                            <label for="field-loc" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Lokasi / Keterangan Tambahan</label>
+                            <input type="text" name="location" id="field-loc" placeholder="Contoh: Kantor Cabang / Alamat Penyaluran" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-600 focus:ring-4 focus:ring-primary-500/10 rounded-2xl px-5 py-3.5 text-xs font-bold text-slate-800 transition-colors">
                         </div>
 
                         <x-gps-detector latId="lat" lngId="lng" statusId="field-gps-status" locationId="field-loc" />
 
-                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4.5 rounded-2xl shadow-lg transition duration-300">
-                            Kirim Absensi <i class="fa-solid fa-stamp ml-2"></i>
+                        <button type="submit" class="w-full min-h-[48px] bg-primary-600 hover:bg-primary-700 text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl shadow-lg transition duration-300">
+                            Kirim Absensi <i class="fa-solid fa-stamp ml-2" aria-hidden="true"></i>
                         </button>
                     </form>
 
                     <!-- Today Attendance Logs -->
-                    <div class="pt-6 border-t border-slate-100 space-y-4">
-                        <h4 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider">Absen Hari Ini</h4>
+                    <div class="pt-6 border-t border-slate-200 space-y-4">
+                        <h3 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider">Absen Hari Ini</h3>
                         <div class="space-y-3">
                             @forelse($todayAttendance as $att)
-                                <div class="flex items-center justify-between text-xs font-bold text-slate-600 bg-slate-50 border border-slate-100/50 p-4 rounded-xl">
+                                <div class="flex items-center justify-between text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 p-4 rounded-xl">
                                     <span class="uppercase tracking-wider">
                                         @if($att->type === 'check_in') Check In @elseif($att->type === 'check_out') Check Out @else {{ $att->type }} @endif
                                     </span>
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{{ $att->created_at->format('H:i') }} WITA</span>
+                                    <span class="text-xs text-slate-600 font-bold uppercase tracking-wider">{{ $att->created_at->format('H:i') }} WITA</span>
                                 </div>
                             @empty
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-center py-2">Anda belum melakukan absen hari ini.</p>
+                                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider text-center py-2">Anda belum melakukan absen hari ini.</p>
                             @endforelse
                         </div>
                     </div>
                 </div>
 
                 <!-- Target sidebar -->
-                <div class="bg-white border border-slate-100 p-8 rounded-[2rem] shadow-sm space-y-6 flex flex-col justify-center">
-                    <h3 class="font-montserrat font-black uppercase text-sm text-slate-800 tracking-wider text-center">Target Bulan Ini</h3>
+                <div class="bg-white border border-slate-200 p-8 rounded-[2rem] shadow-sm space-y-6 flex flex-col justify-center">
+                    <h2 class="font-montserrat font-black uppercase text-sm text-slate-800 tracking-wider text-center">Target Bulan Ini</h2>
                     <div class="space-y-4 text-center py-6">
                         @if($target)
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Target Alokasi Donasi</span>
-                            <h2 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 leading-none mt-1">
+                            <span class="text-xs font-bold text-slate-600 uppercase tracking-widest">Target Alokasi Donasi</span>
+                            <p class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 leading-none mt-1">
                                 Rp {{ number_format($target->target_amount, 0, ',', '.') }}
-                            </h2>
-                            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider mt-2">Periode: {{ $target->month_period->format('F Y') }}</p>
+                            </p>
+                            <p class="text-xs text-slate-600 font-bold uppercase tracking-wider mt-2">Periode: {{ $target->month_period->format('F Y') }}</p>
                         @else
-                            <i class="fa-solid fa-circle-nodes text-slate-200 text-4xl block mb-2 mx-auto"></i>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Belum ada target bulanan dari admin.</p>
+                            <i class="fa-solid fa-circle-nodes text-slate-500 text-4xl block mb-2 mx-auto" aria-hidden="true"></i>
+                            <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Belum ada target bulanan dari admin.</p>
                         @endif
                     </div>
                 </div>
@@ -323,25 +323,25 @@
             <!-- 6. STATISTICS TAB -->
             <div x-show="activeTab === 'stats'" style="display: none;" class="space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm text-center space-y-1">
-                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest block">Proyek Kampanye</span>
-                        <h3 class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['totalCampaigns'] }}</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center space-y-1">
+                        <span class="text-xs font-black text-slate-600 uppercase tracking-widest block">Proyek Kampanye</span>
+                        <p class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['totalCampaigns'] }}</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm text-center space-y-1">
-                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest block">Berita Diterbit</span>
-                        <h3 class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['totalContent'] }}</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center space-y-1">
+                        <span class="text-xs font-black text-slate-600 uppercase tracking-widest block">Berita Diterbit</span>
+                        <p class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['totalContent'] }}</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm text-center space-y-1">
-                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest block">Donasi Terkumpul</span>
-                        <h3 class="text-xl font-montserrat font-black text-primary-650 leading-none pt-1">Rp {{ number_format($stats['totalFunds'], 0, ',', '.') }}</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center space-y-1">
+                        <span class="text-xs font-black text-slate-600 uppercase tracking-widest block">Donasi Terkumpul</span>
+                        <p class="text-xl font-montserrat font-black text-primary-700 leading-none pt-1">Rp {{ number_format($stats['totalFunds'], 0, ',', '.') }}</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm text-center space-y-1">
-                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest block">Kehadiran (Check-In)</span>
-                        <h3 class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['presentDays'] }} Hari</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center space-y-1">
+                        <span class="text-xs font-black text-slate-600 uppercase tracking-widest block">Kehadiran (Check-In)</span>
+                        <p class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['presentDays'] }} Hari</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm text-center space-y-1">
-                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest block">Efektivitas Tugas</span>
-                        <h3 class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['effectiveness'] }}%</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center space-y-1">
+                        <span class="text-xs font-black text-slate-600 uppercase tracking-widest block">Efektivitas Tugas</span>
+                        <p class="text-xl font-montserrat font-black text-slate-800 leading-none pt-1">{{ $stats['effectiveness'] }}%</p>
                     </div>
                 </div>
             </div>

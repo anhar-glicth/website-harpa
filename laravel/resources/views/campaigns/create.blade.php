@@ -7,20 +7,20 @@
             <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
                 Buat <span class="text-primary-600">Kampanye Baru</span>
             </h1>
-            <p class="text-slate-400 font-bold text-xs tracking-widest uppercase">Ajukan program donasi kemanusiaan Anda sendiri</p>
+            <p class="text-slate-600 font-bold text-xs tracking-widest uppercase">Ajukan program donasi kemanusiaan Anda sendiri</p>
         </div>
 
         <form action="{{ route('campaigns.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div>
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Judul Kampanye</label>
-                <input type="text" name="title" required placeholder="Contoh: Bantuan Sembako Gempa Cianjur" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                <label for="camp_title" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Judul Kampanye</label>
+                <input id="camp_title" type="text" name="title" required placeholder="Contoh: Bantuan Sembako Gempa Cianjur" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 transition-colors">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Kategori</label>
-                    <select name="category" required class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                    <label for="camp_category" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Kategori</label>
+                    <select id="camp_category" name="category" required class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 transition-colors">
                         @if(isset($groups) && $groups->count() > 0)
                             @foreach($groups as $grp)
                                 <option value="{{ $grp->name }}">{{ $grp->name }}</option>
@@ -34,23 +34,23 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Target Jumlah Donasi (Rupiah)</label>
-                    <input type="number" name="target_amount" required min="1000" placeholder="Contoh: 50000000" class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                    <label for="camp_target" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Target Jumlah Donasi (Rupiah)</label>
+                    <input id="camp_target" type="number" name="target_amount" required min="1000" placeholder="Contoh: 50000000" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 transition-colors">
                 </div>
             </div>
 
             <div>
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Foto Sampul Kampanye</label>
-                <input type="file" name="foto" required class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all">
+                <label for="camp_foto" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Foto Sampul Kampanye</label>
+                <input id="camp_foto" type="file" name="foto" required class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 transition-colors">
             </div>
 
             <div>
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Deskripsi / Penjelasan Lengkap Program</label>
-                <textarea name="description" required rows="6" placeholder="Tulis rincian program donasi, latar belakang, serta pembagian alokasi dana..." class="w-full bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all"></textarea>
+                <label for="camp_desc" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Deskripsi / Penjelasan Lengkap Program</label>
+                <textarea id="camp_desc" name="description" required rows="6" placeholder="Tulis rincian program donasi, latar belakang, serta pembagian alokasi dana..." class="w-full bg-slate-50 border border-slate-300 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 transition-colors"></textarea>
             </div>
 
             <div class="pt-2">
-                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest py-4.5 rounded-2xl shadow-lg shadow-primary-600/10 hover:shadow-primary-600/20 transition-all duration-300">
+                <button type="submit" class="w-full min-h-[48px] bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-primary-600/10 hover:shadow-primary-600/20 transition-all duration-300">
                     Ajukan Kampanye <i class="fa-solid fa-paper-plane ml-2"></i>
                 </button>
             </div>

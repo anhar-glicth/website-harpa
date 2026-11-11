@@ -53,37 +53,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#edf5f9',
-                            100: '#d5e7f1',
-                            200: '#b0cfe1',
-                            300: '#81b1cd',
-                            400: '#4d8cb5',
-                            500: '#0e567d',
-                            600: '#063f5c',
-                            700: '#04324a',
-                            800: '#032537',
-                            900: '#021a28',
-                        },
-                        secondary: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            500: '#f7ad1a',
-                            600: '#df9408',
-                            700: '#b97307',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="{{ asset('css/harpa.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -355,7 +325,7 @@
 
             {{-- Top Right Decorative Corner Badge --}}
             <div class="absolute top-0 right-0 w-24 h-24 overflow-hidden pointer-events-none z-10">
-                <div class="absolute -top-10 -right-10 w-28 h-28 rounded-3xl bg-gradient-to-br from-[#021a28] via-[#063f5c] to-[#063f5c] shadow-md transform rotate-12"></div>
+                <div class="absolute -top-10 -right-10 w-28 h-28 rounded-3xl bg-[#063f5c] shadow-md transform rotate-12"></div>
             </div>
 
             <div class="relative z-10 p-8 sm:p-10 space-y-6">
@@ -490,7 +460,7 @@
                     {{-- Left: IDR Box / Amount Badge --}}
                     <div class="md:col-span-4 flex items-center gap-3">
                         <span class="font-montserrat font-black text-xl text-[#063f5c] tracking-tight">IDR</span>
-                        <div class="bg-gradient-to-r from-[#063f5c] via-[#063f5c] to-[#032537] text-white px-6 py-2.5 rounded-2xl shadow-lg shadow-sky-100 flex items-center justify-center">
+                        <div class="bg-[#063f5c] text-white px-6 py-2.5 rounded-2xl shadow-lg shadow-sky-100 flex items-center justify-center">
                             <span class="font-montserrat font-black text-xl sm:text-2xl tracking-wide whitespace-nowrap">
                                 Rp.{{ number_format($amount, 0, ',', '.') }},-
                             </span>
@@ -588,7 +558,7 @@
             </div>
 
             {{-- 4. BOTTOM BANNER (Full Width Bar) --}}
-            <div class="w-full bg-gradient-to-r from-[#063f5c] via-[#063f5c] to-[#063f5c] py-2.5 px-8 sm:px-10 flex flex-wrap items-center justify-between text-white text-xs font-montserrat font-bold tracking-wide">
+            <div class="w-full bg-[#063f5c] py-2.5 px-8 sm:px-10 flex flex-wrap items-center justify-between text-white text-xs font-montserrat font-bold tracking-wide">
                 <div class="flex items-center gap-2">
                     <span>www.amalabadi.org</span>
                 </div>
@@ -697,51 +667,54 @@
                                             <img :src="receiverSigImage" class="max-h-full max-w-full object-contain" alt="TTD">
                                         </div>
                                     </template>
-                                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs">
-                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <label class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-800 text-xs font-bold cursor-pointer transition-colors shadow-xs">
+                                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
                                         <span x-text="receiverSigImage ? 'Ganti Foto TTD' : 'Pilih Foto Tanda Tangan'"></span>
                                         <input type="file" @change="handleReceiverSigUpload" accept="image/*" class="hidden">
                                     </label>
                                 </div>
-                                <p class="text-[9px] text-slate-400 font-medium">Unggah foto atau scan tanda tangan penerima (PNG transparan disarankan).</p>
+                                <p class="text-xs text-slate-600 font-medium">Unggah foto atau scan tanda tangan penerima (PNG transparan disarankan).</p>
                             </div>
                         </template>
                     </div>
                 </div>
 
                 <!-- 3. PENGATURAN AUTHORIZED SIGNATURE (PIMPINAN / PEJABAT) & STEMPEL -->
-                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/70 space-y-3">
+                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
                     <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-stamp text-indigo-600"></i> Pimpinan (Authorized Signature) & Stempel
+                        <i class="fa-solid fa-stamp text-indigo-700" aria-hidden="true"></i> Pimpinan (Authorized Signature) &amp; Stempel
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Nama Pimpinan / Pejabat</label>
-                            <input type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                            <label for="batch_auth_name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nama Pimpinan / Pejabat</label>
+                            <input id="batch_auth_name" type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-colors">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Label Jabatan</label>
-                            <input type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                            <label for="batch_auth_title" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Label Jabatan</label>
+                            <input id="batch_auth_title" type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-colors">
                         </div>
                     </div>
 
                     <div class="pt-2">
-                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Model Tanda Tangan Pimpinan</label>
+                        <span class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Model Tanda Tangan Pimpinan</span>
                         <div class="grid grid-cols-3 gap-2">
                             <button type="button" @click="authorizedSigType = 'digital'" 
-                                    :class="authorizedSigType === 'digital' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
-                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
-                                <i class="fa-solid fa-signature mr-1"></i> TTD Digital
+                                    :aria-pressed="authorizedSigType === 'digital'"
+                                    :class="authorizedSigType === 'digital' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
+                                    class="min-h-[44px] p-2.5 rounded-xl border text-xs uppercase text-center transition-colors">
+                                <i class="fa-solid fa-signature mr-1" aria-hidden="true"></i> TTD Digital
                             </button>
                             <button type="button" @click="authorizedSigType = 'image'" 
-                                    :class="authorizedSigType === 'image' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
-                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
-                                <i class="fa-solid fa-upload mr-1"></i> Upload TTD
+                                    :aria-pressed="authorizedSigType === 'image'"
+                                    :class="authorizedSigType === 'image' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
+                                    class="min-h-[44px] p-2.5 rounded-xl border text-xs uppercase text-center transition-colors">
+                                <i class="fa-solid fa-upload mr-1" aria-hidden="true"></i> Upload TTD
                             </button>
                             <button type="button" @click="authorizedSigType = 'blank'" 
-                                    :class="authorizedSigType === 'blank' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-bold'" 
-                                    class="p-2.5 rounded-xl border text-[10px] uppercase text-center transition-all focus:outline-none">
-                                <i class="fa-solid fa-pen-nib mr-1"></i> TTD Basah
+                                    :aria-pressed="authorizedSigType === 'blank'"
+                                    :class="authorizedSigType === 'blank' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
+                                    class="min-h-[44px] p-2.5 rounded-xl border text-xs uppercase text-center transition-colors">
+                                <i class="fa-solid fa-pen-nib mr-1" aria-hidden="true"></i> TTD Basah
                             </button>
                         </div>
                         <template x-if="authorizedSigType === 'image'">
@@ -752,20 +725,20 @@
                                             <img :src="authorizedSigImage" class="max-h-full max-w-full object-contain" alt="TTD">
                                         </div>
                                     </template>
-                                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs">
-                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <label class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-xs font-bold cursor-pointer transition-colors shadow-xs">
+                                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
                                         <span x-text="authorizedSigImage ? 'Ganti Foto TTD' : 'Pilih Foto Tanda Tangan'"></span>
                                         <input type="file" @change="handleAuthorizedSigUpload" accept="image/*" class="hidden">
                                     </label>
                                 </div>
-                                <p class="text-[9px] text-slate-400 font-medium">Unggah foto atau scan tanda tangan pimpinan (PNG transparan disarankan).</p>
+                                <p class="text-xs text-slate-600 font-medium">Unggah foto atau scan tanda tangan pimpinan (PNG transparan disarankan).</p>
                             </div>
                         </template>
                     </div>
 
                     <!-- Stempel Settings -->
-                    <div class="pt-3 border-t border-slate-200/80 space-y-2">
-                        <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                    <div class="pt-3 border-t border-slate-200 space-y-2">
+                        <label class="inline-flex items-center gap-2.5 min-h-[44px] cursor-pointer select-none">
                             <input type="checkbox" x-model="showStamp" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
                             <span class="text-xs font-bold text-slate-800">Tampilkan Stempel Resmi Yayasan</span>
                         </label>
@@ -777,34 +750,34 @@
                                             <img :src="customStampImage" class="max-h-full max-w-full object-contain" alt="Stempel Custom">
                                         </div>
                                     </template>
-                                    <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold cursor-pointer transition-all active:scale-95 shadow-xs">
-                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <label class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-xs font-bold cursor-pointer transition-colors shadow-xs">
+                                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
                                         <span x-text="customStampImage ? 'Ganti Stempel Custom' : 'Upload Stempel Custom (Opsional)'"></span>
                                         <input type="file" @change="handleStampUpload" accept="image/*" class="hidden">
                                     </label>
                                     <template x-if="customStampImage">
-                                        <button type="button" @click="customStampImage = ''; localStorage.removeItem('receipt_custom_stamp');" class="text-[10px] font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 transition-colors">
-                                            <i class="fa-solid fa-trash-can"></i> Hapus Stempel Custom
+                                        <button type="button" @click="customStampImage = ''; localStorage.removeItem('receipt_custom_stamp');" class="min-h-[44px] px-2 text-xs font-bold text-rose-700 hover:text-rose-800 flex items-center gap-1 transition-colors">
+                                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i> Hapus Stempel Custom
                                         </button>
                                     </template>
                                 </div>
-                                <p class="text-[9px] text-slate-400 font-medium">Jika tidak diupload, sistem otomatis menampilkan Stempel Digital Resmi Amal Abadi.</p>
+                                <p class="text-xs text-slate-600 font-medium">Jika tidak diupload, sistem otomatis menampilkan Stempel Digital Resmi Amal Abadi.</p>
                             </div>
                         </template>
                     </div>
 
                     <!-- Slider Ukuran Stempel & Tanda Tangan -->
-                    <div class="pt-3 border-t border-slate-200/80">
+                    <div class="pt-3 border-t border-slate-200">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
-                                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                                        <i class="fa-solid fa-stamp text-indigo-600"></i> Ukuran Stempel
+                                    <label for="batch_stamp_size" class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-stamp text-indigo-700" aria-hidden="true"></i> Ukuran Stempel
                                     </label>
-                                    <span class="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[11px] font-black" x-text="stampSize + ' px'"></span>
+                                    <span class="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-black" x-text="stampSize + ' px'"></span>
                                 </div>
-                                <input type="range" min="65" max="140" step="5" x-model="stampSize" class="w-full accent-indigo-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
-                                <div class="flex justify-between text-[9px] text-slate-400 font-bold">
+                                <input id="batch_stamp_size" type="range" min="65" max="140" step="5" x-model="stampSize" class="w-full accent-indigo-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
+                                <div class="flex justify-between text-xs text-slate-600 font-bold">
                                     <span>Kecil (65px)</span>
                                     <span>Standar (105px)</span>
                                     <span>Besar (140px)</span>
@@ -813,13 +786,13 @@
 
                             <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
-                                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                                        <i class="fa-solid fa-signature text-sky-600"></i> Ukuran TTD
+                                    <label for="batch_sig_size" class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-signature text-sky-700" aria-hidden="true"></i> Ukuran TTD
                                     </label>
-                                    <span class="px-2 py-0.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-[11px] font-black" x-text="sigSize + ' px'"></span>
+                                    <span class="px-2 py-0.5 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-black" x-text="sigSize + ' px'"></span>
                                 </div>
-                                <input type="range" min="50" max="115" step="5" x-model="sigSize" class="w-full accent-sky-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
-                                <div class="flex justify-between text-[9px] text-slate-400 font-bold">
+                                <input id="batch_sig_size" type="range" min="50" max="115" step="5" x-model="sigSize" class="w-full accent-sky-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
+                                <div class="flex justify-between text-xs text-slate-600 font-bold">
                                     <span>Kecil (50px)</span>
                                     <span>Standar (75px)</span>
                                     <span>Besar (115px)</span>

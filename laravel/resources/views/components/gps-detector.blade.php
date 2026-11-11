@@ -114,7 +114,7 @@
             statusEl.innerHTML = `<span class="${badgeClass} flex items-center gap-1.5">
                 <i class="fa-solid fa-location-dot"></i>
                 <span>${sourceLabel}: <b class="font-mono">${Number(lat).toFixed(5)}, ${Number(lng).toFixed(5)}</b>
-                <span class="text-slate-400 font-normal ml-1 animate-pulse">· mencari nama lokasi...</span></span>
+                <span class="text-slate-600 font-medium ml-1">· mencari nama lokasi...</span></span>
             </span>`;
         } else if (statusEl && skipGeocode) {
             statusEl.innerHTML = `<span class="${badgeClass} flex items-center gap-1.5">

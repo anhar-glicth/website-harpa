@@ -459,8 +459,8 @@
                                         <td class="py-3 px-4 text-center font-bold text-rose-700">{{ $tDnc['rfm_alltime'] }}</td>
                                         <td class="py-3 px-4 font-bold text-slate-800">{{ $tDnc['pic'] }}</td>
                                         <td class="py-3 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($tDnc['trx']) }}</td>
-                                        <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ number_format($tDnc['donation'], 0, ',', '.') }}</td>
-                                        <td class="py-3 px-4 text-right font-mono font-black text-sky-600">{{ $tDnc['percent'] }}</td>
+                                        <td class="py-3 px-4 text-right font-mono font-black text-emerald-700">{{ number_format($tDnc['donation'], 0, ',', '.') }}</td>
+                                        <td class="py-3 px-4 text-right font-mono font-black text-sky-700">{{ $tDnc['percent'] }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -98,47 +98,48 @@
                         </button>
                         
                         <button type="button" @click="showAdvanceSearch = !showAdvanceSearch" 
-                                class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                            🔍 Advance Search
+                                :aria-expanded="showAdvanceSearch"
+                                class="min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-sliders" aria-hidden="true"></i> Advance Search
                         </button>
                     </div>
 
                     {{-- Advance Search Drawer (4 Rows of 2 Columns) --}}
-                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50/90 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700 shadow-inner">
+                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700 shadow-inner">
                         
                         {{-- Row 1 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Tgl Awal Prospek</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <input type="date" name="start_prospect_date" value="{{ request('start_prospect_date') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
-                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
-                                <input type="date" name="end_prospect_date" value="{{ request('end_prospect_date') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Tgl Awal Prospek</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <input aria-label="Tanggal awal prospek mulai" type="date" name="start_prospect_date" value="{{ request('start_prospect_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
+                                <input aria-label="Tanggal awal prospek akhir" type="date" name="end_prospect_date" value="{{ request('end_prospect_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                             </div>
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Last Prospek</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <input type="date" name="start_last_prospect" value="{{ request('start_last_prospect') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
-                                <span class="shrink-0 text-slate-400 font-medium text-[11px]">s/d</span>
-                                <input type="date" name="end_last_prospect" value="{{ request('end_last_prospect') }}" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Last Prospek</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <input aria-label="Tanggal prospek terakhir mulai" type="date" name="start_last_prospect" value="{{ request('start_last_prospect') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
+                                <input aria-label="Tanggal prospek terakhir akhir" type="date" name="end_last_prospect" value="{{ request('end_last_prospect') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                             </div>
                         </div>
 
                         {{-- Row 2 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Pernah Diprospek</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <select name="ever_prospected" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Pernah Diprospek</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <select aria-label="Filter pernah diprospek" name="ever_prospected" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
                             </div>
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Last Respon</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <select name="last_response" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Last Respon</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <select aria-label="Filter respon prospek terakhir" name="last_response" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                                     <option value="">Last Respon Prospek</option>
                                     @foreach($prospectResponses as $pr)
                                         <option value="{{ $pr->id }}">{{ $pr->name }}</option>
@@ -150,9 +151,9 @@
                         {{-- Row 3 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Last Media Prospek</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <select name="last_media" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Last Media Prospek</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <select aria-label="Filter media prospek terakhir" name="last_media" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                                     <option value="">Last Media Prospek</option>
                                     @foreach($prospectMedia as $pm)
                                         <option value="{{ $pm->id }}">{{ $pm->name }}</option>
@@ -160,9 +161,9 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Ada No HP</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <select name="has_phone" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Ada No HP</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <select aria-label="Filter kepemilikan nomor HP" name="has_phone" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
@@ -173,18 +174,18 @@
                         {{-- Row 4 --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Ada Email</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <select name="has_email" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Ada Email</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <select aria-label="Filter kepemilikan email" name="has_email" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
                             </div>
                             <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-28 shrink-0 text-[11px] font-semibold whitespace-nowrap">Aktif</span>
-                                <span class="shrink-0 text-slate-400 font-bold">:</span>
-                                <select name="is_active" class="flex-1 min-w-0 bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600">
+                                <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Aktif</span>
+                                <span class="shrink-0 text-slate-600 font-bold">:</span>
+                                <select aria-label="Filter status aktif" name="is_active" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
@@ -275,30 +276,31 @@
                                 <tr @click="selectedItem = {{ json_encode($pd) }}; selectedId = {{ $pd->id }}; selectedName = '{{ addslashes($pd->name) }}'" 
                                     :class="selectedId === {{ $pd->id }} ? 'bg-emerald-50 border-l-4 border-emerald-600' : 'hover:bg-slate-50/80'"
                                     class="cursor-pointer transition-colors">
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-400">{{ $potentialDonors->firstItem() + $index }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $potentialDonors->firstItem() + $index }}</td>
                                     <td class="py-3.5 px-4 font-mono font-bold text-emerald-700">{{ $pd->id }}</td>
                                     <td class="py-3.5 px-4 font-bold text-slate-900">{{ $pd->name ?: '-' }}</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $pd->created_at ? $pd->created_at->format('Y-m-d H:i:s') : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $pd->created_at ? $pd->created_at->format('Y-m-d H:i:s') : '-' }}</td>
                                     <td class="py-3.5 px-4 font-mono text-slate-600">{{ $pd->phone ?: '-' }}</td>
                                     <td class="py-3.5 px-4 text-slate-600">{{ $pd->email ?: '-' }}</td>
                                     <td class="py-3.5 px-4 text-slate-800">{{ Auth::user()->name }}</td>
-                                    <td class="py-3.5 px-4 text-slate-400">-</td>
-                                    <td class="py-3.5 px-4 text-slate-400">-</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $pd->created_at ? $pd->created_at->format('Y-m-d') : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600">-</td>
+                                    <td class="py-3.5 px-4 text-slate-600">-</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $pd->created_at ? $pd->created_at->format('Y-m-d') : '-' }}</td>
                                     
                                     {{-- ACTION COLUMN WITH WHATSAPP & EDIT ICONS --}}
-                                    <td class="py-3.5 px-4 text-center bg-slate-50/80">
+                                    <td class="py-3.5 px-4 text-center bg-slate-50">
                                         <div class="flex items-center justify-center gap-2" @click.stop>
                                             {{-- WhatsApp Direct Chat Icon --}}
                                             @if($phoneClean)
-                                            <a href="{{ $waUrl }}" target="_blank" 
-                                               class="inline-flex items-center justify-center w-7 h-7 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-sm hover:scale-110 transition-transform" 
+                                            <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer"
+                                               aria-label="Kirim pesan WhatsApp ke {{ $pd->name }}"
+                                               class="inline-flex items-center justify-center w-11 h-11 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full shadow-sm transition-colors" 
                                                title="Kirim Pesan WhatsApp">
-                                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                                                <i class="fa-brands fa-whatsapp text-sm" aria-hidden="true"></i>
                                             </a>
                                             @else
-                                            <span class="inline-flex items-center justify-center w-9 h-9 bg-slate-200 text-slate-600 rounded-full cursor-not-allowed" title="Nomor WhatsApp tidak tersedia">
-                                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                                            <span class="inline-flex items-center justify-center w-11 h-11 bg-slate-200 text-slate-600 rounded-full cursor-not-allowed" title="Nomor WhatsApp tidak tersedia">
+                                                <i class="fa-brands fa-whatsapp text-sm" aria-hidden="true"></i>
                                             </span>
                                             @endif
 

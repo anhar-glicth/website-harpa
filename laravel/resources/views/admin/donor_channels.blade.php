@@ -92,17 +92,18 @@
                         
                         <!-- Keyword Input -->
                         <div class="relative min-w-[180px]">
-                            <input type="text" 
+                            <label for="channel_search_keyword" class="sr-only">Cari kata kunci channel</label>
+                            <input id="channel_search_keyword" type="text" 
                                    name="keyword" 
                                    value="{{ request('keyword') }}" 
                                    placeholder="Keyword..." 
-                                   class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400 transition-all">
+                                   class="w-full min-h-[44px] px-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-600 placeholder:text-slate-500 transition-colors">
                         </div>
 
                         <!-- Status Filter -->
                         <div class="flex items-center gap-2">
-                            <span class="text-slate-500 font-bold whitespace-nowrap text-xs">Status :</span>
-                            <select name="status" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                            <label for="channel_filter_status" class="text-slate-600 font-bold whitespace-nowrap text-xs">Status :</label>
+                            <select id="channel_filter_status" name="status" class="min-h-[44px] px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-600">
                                 <option value="">Semua</option>
                                 <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
                                 <option value="Non-Aktif" {{ request('status') == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
@@ -111,11 +112,11 @@
 
                         <!-- Action Buttons -->
                         <div class="flex items-center gap-2">
-                            <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
-                                <i class="fa-solid fa-magnifying-glass text-xs"></i> Search
+                            <button type="submit" class="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-colors shadow-sm">
+                                <i class="fa-solid fa-magnifying-glass text-xs" aria-hidden="true"></i> Search
                             </button>
-                            <a href="{{ route('admin.donor_channels') }}" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all" title="Reset Filter">
-                                <i class="fa-solid fa-rotate text-xs"></i>
+                            <a href="{{ route('admin.donor_channels') }}" aria-label="Reset filter" class="w-11 h-11 inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl transition-colors" title="Reset Filter">
+                                <i class="fa-solid fa-rotate text-xs" aria-hidden="true"></i>
                             </a>
                         </div>
                     </div>
@@ -126,7 +127,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="pb-4 w-12 text-center">#</th>
                                 <th class="pb-4">Channel Donasi</th>
                                 <th class="pb-4">Kode Channel</th>
@@ -134,46 +135,46 @@
                                 <th class="pb-4 text-right w-28">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="text-xs font-semibold text-slate-600">
+                        <tbody class="text-xs font-semibold text-slate-700">
                             @forelse($channels as $index => $item)
-                                <tr class="border-b border-slate-50 hover:bg-slate-50/80 transition-colors">
-                                    <td class="py-4 text-center text-slate-400 font-mono text-[11px]">
+                                <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                    <td class="py-4 text-center text-slate-600 font-mono text-xs">
                                         {{ $channels->firstItem() + $index }}
                                     </td>
                                     <td class="py-4 font-bold text-slate-900">
                                         {{ $item->name }}
                                     </td>
-                                    <td class="py-4 font-mono text-[11px] text-slate-500">
-                                        <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase">
+                                    <td class="py-4 font-mono text-xs text-slate-600">
+                                        <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold uppercase">
                                             {{ $item->code ?? '-' }}
                                         </span>
                                     </td>
                                     <td class="py-4 text-center">
                                         @if($item->status === 'Aktif')
-                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> y (Aktif)
+                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-700"></span> y (Aktif)
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> n (Non-Aktif)
+                                            <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-700"></span> n (Non-Aktif)
                                             </span>
                                         @endif
                                     </td>
                                     <td class="py-4 text-right">
                                         <div class="flex items-center justify-end gap-1.5">
-                                            <button @click="openEdit({{ json_encode($item) }})" class="p-2 text-amber-600 hover:bg-amber-50 rounded-xl transition-all" title="Edit Channel">
-                                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                            <button type="button" @click="openEdit({{ json_encode($item) }})" aria-label="Edit channel {{ $item->name }}" class="w-11 h-11 inline-flex items-center justify-center text-amber-700 hover:bg-amber-50 rounded-xl transition-colors" title="Edit Channel">
+                                                <i class="fa-solid fa-pen-to-square text-sm" aria-hidden="true"></i>
                                             </button>
-                                            <button @click="openDelete({{ $item->id }}, '{{ $item->name }}')" class="p-2 text-rose-600 hover:bg-rose-50 rounded-xl transition-all" title="Hapus Channel">
-                                                <i class="fa-solid fa-trash-can text-sm"></i>
+                                            <button type="button" @click="openDelete({{ $item->id }}, '{{ $item->name }}')" aria-label="Hapus channel {{ $item->name }}" class="w-11 h-11 inline-flex items-center justify-center text-rose-700 hover:bg-rose-50 rounded-xl transition-colors" title="Hapus Channel">
+                                                <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="py-12 text-center text-slate-400 font-bold uppercase tracking-wider space-y-2">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-300 mb-2"></i>
+                                    <td colspan="5" class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider space-y-2">
+                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-500 mb-2" aria-hidden="true"></i>
                                         <span>Belum ada channel donasi yang sesuai filter.</span>
                                     </td>
                                 </tr>

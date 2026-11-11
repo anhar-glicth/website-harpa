@@ -56,13 +56,13 @@
             <!-- Header section -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div class="space-y-2">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-md">
-                        <i class="fa-brands fa-meta"></i> Form Input Iklan Marketing
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#063f5c] text-white rounded-full text-xs font-black uppercase tracking-widest shadow-sm">
+                        <i class="fa-brands fa-meta" aria-hidden="true"></i> Form Input Iklan Marketing
                     </div>
                     <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                        Input Data <span class="text-primary-600">Meta Ads & Performance</span>
+                        Input Data <span class="text-primary-600">Meta Ads &amp; Performance</span>
                     </h1>
-                    <p class="text-slate-400 font-bold text-[10px] tracking-widest uppercase">
+                    <p class="text-slate-600 font-bold text-xs tracking-widest uppercase">
                         Catat metrik harian iklan dan evaluasi otomatis return on investment
                     </p>
                     <div class="w-12 h-1 bg-primary-500 rounded-full mt-2"></div>
@@ -70,17 +70,17 @@
 
                 <div class="flex items-center gap-3">
                     <a href="{{ route('admin.marketing.index') }}" 
-                       class="px-4 py-2.5 bg-slate-100 text-slate-700 rounded-2xl text-[10px] font-black uppercase tracking-wider hover:bg-slate-200 transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar
+                       class="min-h-[44px] px-4 py-2.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-slate-200 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kembali ke Daftar
                     </a>
                 </div>
             </div>
 
             <!-- Errors Alert -->
             @if($errors->any())
-            <div class="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 text-xs font-bold space-y-1">
+            <div role="alert" class="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 text-xs font-bold space-y-1">
                 <div class="flex items-center gap-2 font-black text-rose-900 mb-1">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Terdapat kesalahan pada input:
+                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Terdapat kesalahan pada input:
                 </div>
                 <ul class="list-disc list-inside">
                     @foreach($errors->all() as $err)
@@ -91,13 +91,13 @@
             @endif
 
             <!-- Live Calculation Metrics Preview Widget -->
-            <div class="bg-gradient-to-br from-slate-900 via-[#063f5c] to-indigo-950 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4 mb-4">
+            <div class="bg-[#063f5c] rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/15 pb-4 mb-4">
                     <div>
-                        <div class="text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-1.5">
-                            <i class="fa-solid fa-calculator"></i> Live Metric Calculation Preview
+                        <div class="text-xs font-bold text-[#f7ad1a] uppercase tracking-widest flex items-center gap-1.5">
+                            <i class="fa-solid fa-calculator" aria-hidden="true"></i> Live Metric Calculation Preview
                         </div>
-                        <h3 class="text-lg font-black text-white">Estimasi Performa & Rekomendasi Otomatis</h3>
+                        <h2 class="text-lg font-black text-white">Estimasi Performa &amp; Rekomendasi Otomatis</h2>
                     </div>
                     <div>
                         <span class="px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-lg"
@@ -307,37 +307,37 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                            <label for="mkt_create_decision" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
                                 Keputusan Strategis
                             </label>
-                            <select name="decision" x-model="decisionManual"
-                                    class="w-full text-xs font-bold text-slate-800 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500 py-3">
+                            <select id="mkt_create_decision" name="decision" x-model="decisionManual"
+                                    class="w-full min-h-[44px] text-xs font-bold text-slate-800 rounded-xl border-slate-300 focus:ring-primary-600 focus:border-primary-600 py-2.5">
                                 <option value="AUTO">AUTO (Dihitung Otomatis oleh Sistem)</option>
                                 <option value="SCALE">SCALE (Naikkan Anggaran)</option>
-                                <option value="MAINTAIN">MAINTAIN (Pertahankan & Optimasi)</option>
+                                <option value="MAINTAIN">MAINTAIN (Pertahankan &amp; Optimasi)</option>
                                 <option value="STOP">STOP (Matikan Iklan / Ganti Materi)</option>
                             </select>
-                            <p class="text-[10px] text-slate-400 mt-1">Pilih AUTO agar dihitung berdasarkan ROAS dan CPA</p>
+                            <p class="text-xs text-slate-600 mt-1">Pilih AUTO agar dihitung berdasarkan ROAS dan CPA</p>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                            <label for="mkt_create_notes" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
                                 Catatan / Evaluasi Marketing
                             </label>
-                            <textarea name="notes" rows="2" placeholder="Catatan analisa performa, target audience, atau rencana optimasi..."
-                                      class="w-full text-xs font-bold text-slate-800 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500">{{ old('notes') }}</textarea>
+                            <textarea id="mkt_create_notes" name="notes" rows="2" placeholder="Catatan analisa performa, target audience, atau rencana optimasi..."
+                                      class="w-full text-xs font-bold text-slate-800 rounded-xl border-slate-300 focus:ring-primary-600 focus:border-primary-600">{{ old('notes') }}</textarea>
                         </div>
                     </div>
 
                     <!-- Tombol Submit -->
-                    <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
+                    <div class="pt-6 border-t border-slate-200 flex items-center justify-end gap-3">
                         <a href="{{ route('admin.marketing.index') }}" 
-                           class="px-6 py-3 bg-slate-100 text-slate-600 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-200 transition-all">
+                           class="min-h-[44px] inline-flex items-center px-6 py-2.5 bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-200 transition-colors">
                             Batal
                         </a>
                         <button type="submit" 
-                                class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-500/20 hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i> Simpan Data Iklan
+                                class="min-h-[44px] px-8 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-600/20 transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Simpan Data Iklan
                         </button>
                     </div>
 

@@ -283,21 +283,23 @@
                                     </td>
                                     <td class="py-4">
                                         <div class="flex items-center justify-end gap-1.5">
-                                            <button @click="openEdit({{ json_encode($item) }})"
-                                                    class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-all" title="Edit">
-                                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                            <button type="button" @click="openEdit({{ json_encode($item) }})"
+                                                    aria-label="Edit penyaluran"
+                                                    class="w-11 h-11 inline-flex items-center justify-center text-amber-700 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
+                                                <i class="fa-solid fa-pen-to-square text-sm" aria-hidden="true"></i>
                                             </button>
-                                            <button @click="openDelete({{ $item->id }}, '{{ addslashes($item->distribution_code ?: ('DIS-' . $item->id)) }}')"
-                                                    class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Hapus">
-                                                <i class="fa-solid fa-trash-can text-sm"></i>
+                                            <button type="button" @click="openDelete({{ $item->id }}, '{{ addslashes($item->distribution_code ?: ('DIS-' . $item->id)) }}')"
+                                                    aria-label="Hapus penyaluran"
+                                                    class="w-11 h-11 inline-flex items-center justify-center text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
+                                                <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" class="py-14 text-center text-slate-400 font-bold uppercase tracking-wider">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-300 mb-3"></i>
+                                    <td colspan="10" class="py-14 text-center text-slate-600 font-bold uppercase tracking-wider">
+                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-500 mb-3" aria-hidden="true"></i>
                                         Belum ada data penyaluran.
                                     </td>
                                 </tr>
@@ -368,29 +370,29 @@
                                class="w-full px-3.5 py-2.5 min-h-[44px] bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 placeholder:text-slate-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kontak PIC (No. HP/WA)</label>
-                        <input type="text" name="pic_phone" placeholder="08xxxxxxxxxx"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none placeholder:text-slate-400">
+                        <label for="add_dist_pic_phone" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Kontak PIC (No. HP/WA)</label>
+                        <input id="add_dist_pic_phone" type="text" name="pic_phone" placeholder="08xxxxxxxxxx"
+                               class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 placeholder:text-slate-500">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Rilis Nominal (Rp) <span class="text-rose-500">*</span></label>
-                        <input type="number" name="amount" required min="1000" step="1000" placeholder="Contoh: 1000000"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none placeholder:text-slate-400">
+                        <label for="add_dist_amount" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Rilis Nominal (Rp) <span class="text-rose-700">*</span></label>
+                        <input id="add_dist_amount" type="number" name="amount" required min="1000" step="1000" placeholder="Contoh: 1000000"
+                               class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 placeholder:text-slate-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Tgl Penyaluran <span class="text-rose-500">*</span></label>
-                        <input type="date" name="distribution_date" required value="{{ date('Y-m-d') }}"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label for="add_dist_date" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Tgl Penyaluran <span class="text-rose-700">*</span></label>
+                        <input id="add_dist_date" type="date" name="distribution_date" required value="{{ date('Y-m-d') }}"
+                               class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kategori Asnaf</label>
-                        <select name="asnaf" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label for="add_dist_asnaf" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Kategori Asnaf</label>
+                        <select id="add_dist_asnaf" name="asnaf" class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800">
                             <option value="Non Asnaf">Non Asnaf</option>
                             <option value="Fakir">Fakir</option>
                             <option value="Miskin">Miskin</option>
@@ -403,8 +405,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Sumber Dana</label>
-                        <select name="source_of_fund" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label for="add_dist_source" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Sumber Dana</label>
+                        <select id="add_dist_source" name="source_of_fund" class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800">
                             <option value="Infak/Shodaqoh">Infak/Shodaqoh</option>
                             <option value="Program">Program</option>
                             <option value="Zakat">Zakat</option>
@@ -412,26 +414,26 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Jumlah PM (Jiwa)</label>
-                        <input type="number" name="pm_count" value="1" min="1"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label for="add_dist_pm" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Jumlah PM (Jiwa)</label>
+                        <input id="add_dist_pm" type="number" name="pm_count" value="1" min="1"
+                               class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Kota / Kabupaten</label>
-                        <input type="text" name="city" placeholder="Contoh: Ende"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none placeholder:text-slate-400">
+                        <label for="add_dist_city" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Kota / Kabupaten</label>
+                        <input id="add_dist_city" type="text" name="city" placeholder="Contoh: Ende"
+                               class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 placeholder:text-slate-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Provinsi</label>
-                        <input type="text" name="province" placeholder="Nusa Tenggara Timur"
-                               class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none placeholder:text-slate-400">
+                        <label for="add_dist_province" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Provinsi</label>
+                        <input id="add_dist_province" type="text" name="province" placeholder="Nusa Tenggara Timur"
+                               class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 placeholder:text-slate-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Status</label>
-                        <select name="status" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none">
+                        <label for="add_dist_status" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Status</label>
+                        <select id="add_dist_status" name="status" class="w-full min-h-[44px] px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800">
                             <option value="Tersalur">Tersalur</option>
                             <option value="Proses">Proses</option>
                         </select>
@@ -439,14 +441,14 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1">Keterangan / Notes</label>
-                    <textarea name="notes" rows="2" placeholder="Catatan tambahan..."
-                              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none resize-none placeholder:text-slate-400"></textarea>
+                    <label for="add_dist_notes" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1">Keterangan / Notes</label>
+                    <textarea id="add_dist_notes" name="notes" rows="2" placeholder="Catatan tambahan..."
+                              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 resize-none placeholder:text-slate-500"></textarea>
                 </div>
 
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showAddModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-2xl text-xs font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"

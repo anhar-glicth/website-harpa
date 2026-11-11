@@ -63,31 +63,31 @@
             </div>
 
             {{-- Filter Bar Pengguna --}}
-            <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm space-y-3">
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">
                 <form action="{{ route('admin.users') }}" method="GET" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700">
                     
                     <div class="flex items-center gap-2">
-                        <span>Cari:</span>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / Email / Telp..." class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none w-48">
+                        <label for="filter_users_search">Cari:</label>
+                        <input id="filter_users_search" type="text" name="search" value="{{ request('search') }}" placeholder="Nama / Email / Telp..." class="min-h-[44px] border border-slate-300 rounded-xl px-3 py-2 text-xs focus:border-primary-600 w-48">
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <span>Hak Akses:</span>
-                        <select name="role" class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none w-44">
+                        <label for="filter_users_role">Hak Akses:</label>
+                        <select id="filter_users_role" name="role" class="min-h-[44px] border border-slate-300 rounded-xl px-3 py-2 text-xs focus:border-primary-600 w-44">
                             <option value="">Semua Peran</option>
                             <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Super Admin</option>
                             <option value="operator" {{ request('role') == 'operator' ? 'selected' : '' }}>Admin Data Entry</option>
                             <option value="finance" {{ request('role') == 'finance' ? 'selected' : '' }}>Staff Keuangan</option>
                             <option value="program_manager" {{ request('role') == 'program_manager' ? 'selected' : '' }}>Manager Program</option>
-                            <option value="crm_staff" {{ request('role') == 'crm_staff' ? 'selected' : '' }}>Staff CRM & Telemarketing</option>
+                            <option value="crm_staff" {{ request('role') == 'crm_staff' ? 'selected' : '' }}>Staff CRM &amp; Telemarketing</option>
                             <option value="field_worker" {{ request('role') == 'field_worker' ? 'selected' : '' }}>Petugas Lapangan</option>
                             <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>Donatur</option>
                         </select>
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <span>Kantor:</span>
-                        <select name="office_id" class="border border-slate-250 rounded-xl px-3 py-1.5 text-xs focus:border-primary-500 outline-none min-w-[140px]">
+                        <label for="filter_users_office">Kantor:</label>
+                        <select id="filter_users_office" name="office_id" class="min-h-[44px] border border-slate-300 rounded-xl px-3 py-2 text-xs focus:border-primary-600 min-w-[140px]">
                             <option value="">Semua Kantor</option>
                             @foreach($offices as $ofc)
                                 <option value="{{ $ofc->id }}" {{ request('office_id') == $ofc->id ? 'selected' : '' }}>{{ $ofc->name }}</option>
@@ -95,23 +95,23 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                        🔍 Filter
+                    <button type="submit" class="min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Filter
                     </button>
                     
                     @if(request()->anyFilled(['search', 'role', 'office_id']))
-                        <a href="{{ route('admin.users') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-xl text-xs">Reset</a>
+                        <a href="{{ route('admin.users') }}" class="min-h-[44px] inline-flex items-center bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-3 py-2 rounded-xl text-xs">Reset</a>
                     @endif
 
                 </form>
             </div>
 
             <!-- Users table -->
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="pb-4 w-12 text-center">#</th>
                                 <th class="pb-4">Nama Lengkap</th>
                                 <th class="pb-4">Email</th>
@@ -122,58 +122,58 @@
                                 <th class="pb-4 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="text-xs font-semibold text-slate-600 uppercase tracking-wide divide-y divide-slate-50">
+                        <tbody class="text-xs font-semibold text-slate-700 uppercase tracking-wide divide-y divide-slate-100">
                             @forelse($users as $index => $user)
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="py-4 text-center text-slate-400 font-mono">{{ $users->firstItem() + $index }}</td>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="py-4 text-center text-slate-600 font-mono">{{ $users->firstItem() + $index }}</td>
                                     <td class="py-4 font-bold text-slate-900">{{ $user->name }}</td>
-                                    <td class="py-4 text-slate-600 font-mono text-[11px] lower-case">{{ $user->email }}</td>
+                                    <td class="py-4 text-slate-600 font-mono text-xs lowercase">{{ $user->email }}</td>
                                     <td class="py-4">
                                         @if($user->role === 'admin')
-                                            <span class="bg-red-50 text-red-700 border border-red-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SUPER ADMIN</span>
+                                            <span class="bg-red-50 text-red-700 border border-red-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SUPER ADMIN</span>
                                         @elseif($user->role === 'operator')
-                                            <span class="bg-amber-50 text-amber-700 border border-amber-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">ADMIN DATA ENTRY</span>
+                                            <span class="bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">ADMIN DATA ENTRY</span>
                                         @elseif($user->role === 'finance')
-                                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF KEUANGAN</span>
+                                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF KEUANGAN</span>
                                         @elseif($user->role === 'program_manager')
-                                            <span class="bg-purple-50 text-purple-700 border border-purple-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">MANAGER PROGRAM</span>
+                                            <span class="bg-purple-50 text-purple-700 border border-purple-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">MANAGER PROGRAM</span>
                                         @elseif($user->role === 'crm_staff')
-                                            <span class="bg-rose-50 text-rose-700 border border-rose-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF CRM</span>
+                                            <span class="bg-rose-50 text-rose-700 border border-rose-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">STAFF CRM</span>
                                         @elseif($user->role === 'field_worker')
-                                            <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PETUGAS LAPANGAN</span>
+                                            <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PETUGAS LAPANGAN</span>
                                         @else
-                                            <span class="bg-slate-100 text-slate-700 border border-slate-200 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">DONATUR</span>
+                                            <span class="bg-slate-100 text-slate-700 border border-slate-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">DONATUR</span>
                                         @endif
                                     </td>
-                                    <td class="py-4 font-mono text-[11px]">{{ $user->phone ?? '-' }}</td>
+                                    <td class="py-4 font-mono text-xs">{{ $user->phone ?? '-' }}</td>
                                     <td class="py-4 text-slate-700">{{ $user->office ? $user->office->name : '-' }}</td>
-                                    <td class="py-4 text-slate-500 text-[11px]">{{ $user->created_at->format('d M Y') }}</td>
+                                    <td class="py-4 text-slate-600 text-xs">{{ $user->created_at->format('d M Y') }}</td>
                                     <td class="py-4 text-right">
                                         <div class="flex items-center justify-end gap-1.5">
                                             @if($user->role === 'field_worker')
-                                                <a href="{{ route('admin.users.monitoring', $user->id) }}" class="p-1.5 bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-lg text-xs transition-all border border-primary-100" title="Pantau Kinerja">
-                                                    <i class="fa-solid fa-gauge-high"></i>
+                                                <a href="{{ route('admin.users.monitoring', $user->id) }}" aria-label="Pantau kinerja {{ $user->name }}" class="w-11 h-11 inline-flex items-center justify-center bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-lg text-xs transition-colors border border-primary-200" title="Pantau Kinerja">
+                                                    <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
                                                 </a>
                                             @endif
-                                            <button type="button" @click="selectedUser = {{ json_encode($user) }}; showEditModal = true" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-all" title="Edit Pengguna">
-                                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                                            <button type="button" @click="selectedUser = {{ json_encode($user) }}; showEditModal = true" aria-label="Edit pengguna {{ $user->name }}" class="w-11 h-11 inline-flex items-center justify-center text-amber-700 hover:bg-amber-50 rounded-lg transition-colors" title="Edit Pengguna">
+                                                <i class="fa-solid fa-pen-to-square text-sm" aria-hidden="true"></i>
                                             </button>
-                                            <button type="button" @click="selectedUser = {{ json_encode($user) }}; showDeleteModal = true" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Hapus Pengguna">
-                                                <i class="fa-solid fa-trash-can text-sm"></i>
+                                            <button type="button" @click="selectedUser = {{ json_encode($user) }}; showDeleteModal = true" aria-label="Hapus pengguna {{ $user->name }}" class="w-11 h-11 inline-flex items-center justify-center text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Pengguna">
+                                                <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="py-12 text-center text-slate-400 font-bold uppercase tracking-wider">Belum ada pengguna terdaftar yang sesuai filter.</td>
+                                    <td colspan="8" class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider">Belum ada pengguna terdaftar yang sesuai filter.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
-                <div class="pt-4 border-t border-slate-100">
+                <div class="pt-4 border-t border-slate-200">
                     {{ $users->links() }}
                 </div>
             </div>

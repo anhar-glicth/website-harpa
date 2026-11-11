@@ -230,7 +230,7 @@
                             @empty
                                 <tr>
                                     <td colspan="10" class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider space-y-2">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-400 mb-2"></i>
+                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-500 mb-2" aria-hidden="true"></i>
                                         <span>Belum ada data karyawan yang sesuai filter.</span>
                                     </td>
                                 </tr>

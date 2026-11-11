@@ -48,22 +48,22 @@
                         }
                         this.showResult = true;
                     }
-                }" class="bg-white border border-slate-100 shadow-sm rounded-3xl p-6 sm:p-8 space-y-6">
+                }" class="bg-white border border-slate-200 shadow-sm rounded-3xl p-6 sm:p-8 space-y-6">
                     
                     <div class="space-y-1">
-                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-primary-600 block">Kalkulator Zakat</span>
-                        <h3 class="text-base sm:text-lg font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                            Hitung <span class="text-primary-600">Zakat Maal & Pendapatan</span>
-                        </h3>
+                        <span class="text-xs font-black uppercase tracking-[0.2em] text-primary-700 block">Kalkulator Zakat</span>
+                        <h2 class="text-base sm:text-lg font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                            Hitung <span class="text-primary-700">Zakat Maal &amp; Pendapatan</span>
+                        </h2>
                     </div>
-                    <hr class="border-slate-100">
+                    <hr class="border-slate-200">
 
                     <!-- Select Zakat Type -->
                     <div class="grid grid-cols-2 gap-3">
-                        <button @click="zakatType = 'zakat_pendapatan'; showResult = false" :class="zakatType === 'zakat_pendapatan' ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/10' : 'bg-slate-50 text-slate-550 border border-slate-100 hover:bg-slate-100'" class="py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all">
+                        <button type="button" @click="zakatType = 'zakat_pendapatan'; showResult = false" :aria-pressed="zakatType === 'zakat_pendapatan'" :class="zakatType === 'zakat_pendapatan' ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/10' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'" class="min-h-[44px] py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all">
                             Zakat Pendapatan
                         </button>
-                        <button @click="zakatType = 'zakat_maal'; showResult = false" :class="zakatType === 'zakat_maal' ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/10' : 'bg-slate-50 text-slate-550 border border-slate-100 hover:bg-slate-100'" class="py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all">
+                        <button type="button" @click="zakatType = 'zakat_maal'; showResult = false" :aria-pressed="zakatType === 'zakat_maal'" :class="zakatType === 'zakat_maal' ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/10' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'" class="min-h-[44px] py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-all">
                             Zakat Maal
                         </button>
                     </div>
@@ -73,41 +73,41 @@
                         <template x-if="zakatType === 'zakat_pendapatan'">
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Pendapatan Bulanan (Rupiah)</label>
-                                    <input type="number" x-model="income" placeholder="Masukkan gaji bulanan" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                    <label for="zakat_income" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 ml-1">Pendapatan Bulanan (Rupiah)</label>
+                                    <input id="zakat_income" type="number" x-model="income" placeholder="Masukkan gaji bulanan" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-2xl px-5 py-3.5 text-sm font-semibold text-slate-800 transition-all focus:ring-4 focus:ring-primary-500/10">
                                 </div>
                                 <div>
-                                    <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Pendapatan Lain-lain (Rupiah)</label>
-                                    <input type="number" x-model="otherIncome" placeholder="Masukkan pendapatan sampingan jika ada" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                    <label for="zakat_other_income" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 ml-1">Pendapatan Lain-lain (Rupiah)</label>
+                                    <input id="zakat_other_income" type="number" x-model="otherIncome" placeholder="Masukkan pendapatan sampingan jika ada" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-2xl px-5 py-3.5 text-sm font-semibold text-slate-800 transition-all focus:ring-4 focus:ring-primary-500/10">
                                 </div>
                             </div>
                         </template>
 
                         <template x-if="zakatType === 'zakat_maal'">
                             <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Total Nilai Tabungan/Aset Setahun (Rupiah)</label>
-                                <input type="number" x-model="wealth" placeholder="Masukkan total tabungan / nilai emas" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 rounded-2xl px-5 py-4 text-xs font-bold text-slate-800 outline-none transition-all focus:ring-4 focus:ring-primary-500/10">
+                                <label for="zakat_wealth" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5 ml-1">Total Nilai Tabungan/Aset Setahun (Rupiah)</label>
+                                <input id="zakat_wealth" type="number" x-model="wealth" placeholder="Masukkan total tabungan / nilai emas" class="w-full min-h-[44px] bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-2xl px-5 py-3.5 text-sm font-semibold text-slate-800 transition-all focus:ring-4 focus:ring-primary-500/10">
                             </div>
                         </template>
 
-                        <button @click="calculate()" class="w-full bg-slate-900 hover:bg-slate-850 text-white font-black text-xs uppercase tracking-wider py-4.5 rounded-2xl transition duration-300">
-                            Hitung Zakat <i class="fa-solid fa-calculator ml-2"></i>
+                        <button type="button" @click="calculate()" class="w-full min-h-[48px] bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider py-4 rounded-2xl transition duration-300">
+                            Hitung Zakat <i class="fa-solid fa-calculator ml-2" aria-hidden="true"></i>
                         </button>
                     </div>
 
                     <!-- Result Box -->
-                    <div x-show="showResult" class="bg-slate-50 border border-slate-100 rounded-3xl p-6 space-y-4">
-                        <h4 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider text-center">Hasil Perhitungan</h4>
+                    <div x-show="showResult" class="bg-slate-50 border border-slate-200 rounded-3xl p-6 space-y-4">
+                        <h3 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider text-center">Hasil Perhitungan</h3>
                         
                         <div class="text-center space-y-2">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Zakat Wajib Dikeluarkan</span>
-                            <h3 class="text-2xl sm:text-3xl font-montserrat font-black text-primary-600 leading-none">
+                            <span class="text-xs font-bold text-slate-600 uppercase tracking-widest">Zakat Wajib Dikeluarkan</span>
+                            <p class="text-2xl sm:text-3xl font-montserrat font-black text-primary-700 leading-none">
                                 Rp <span x-text="Math.round(calculatedAmount).toLocaleString('id-ID')"></span>
-                            </h3>
+                            </p>
                         </div>
 
                         <template x-if="calculatedAmount === 0">
-                            <p class="text-[9px] text-rose-500 font-bold uppercase tracking-wider text-center">
+                            <p class="text-xs text-rose-700 font-bold uppercase tracking-wider text-center">
                                 *Pendapatan/Harta belum mencapai batas nisab. Anda belum wajib zakat.
                             </p>
                         </template>
@@ -119,13 +119,13 @@
                                         @csrf
                                         <input type="hidden" name="zakat_type" :value="zakatType === 'zakat_pendapatan' ? 'Zakat Pendapatan' : 'Zakat Maal'">
                                         <input type="hidden" name="amount" :value="calculatedAmount">
-                                        <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">
-                                            Bayar Zakat Sekarang <i class="fa-solid fa-handshake ml-2"></i>
+                                        <button type="submit" class="w-full min-h-[48px] bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">
+                                            Bayar Zakat Sekarang <i class="fa-solid fa-handshake ml-2" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                 @else
-                                    <button @click="loginOpen = true" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-4.5 rounded-2xl shadow-lg shadow-primary-600/10 text-center block transition duration-300">
-                                        Login Untuk Bayar Zakat <i class="fa-solid fa-right-to-bracket ml-2"></i>
+                                    <button type="button" @click="loginOpen = true" class="w-full min-h-[48px] bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-4 rounded-2xl shadow-lg shadow-primary-600/10 text-center block transition duration-300">
+                                        Login Untuk Bayar Zakat <i class="fa-solid fa-right-to-bracket ml-2" aria-hidden="true"></i>
                                     </button>
                                 @endauth
                             </div>
@@ -137,45 +137,45 @@
                 <div class="space-y-8">
                     @auth
                         <!-- Zakat History -->
-                        <div class="bg-white border border-slate-100 p-6 sm:p-8 rounded-3xl space-y-6 shadow-sm">
-                            <h3 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 tracking-wider">Riwayat Pembayaran Zakat</h3>
-                            <hr class="border-slate-100">
+                        <div class="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl space-y-6 shadow-sm">
+                            <h2 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 tracking-wider">Riwayat Pembayaran Zakat</h2>
+                            <hr class="border-slate-200">
                             <div class="space-y-4 max-h-[400px] overflow-y-auto no-scrollbar">
                                 @forelse($zakats as $z)
-                                    <div class="flex items-center justify-between border-b border-slate-50 pb-4 last:border-0 last:pb-0">
+                                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 last:border-0 last:pb-0">
                                         <div>
-                                            <span class="text-[10px] font-black uppercase text-slate-800 tracking-wide block leading-none">{{ $z->zakat_type }}</span>
-                                            <span class="text-[8px] text-slate-400 font-bold uppercase tracking-wider block mt-2">{{ $z->created_at->format('d M Y') }}</span>
+                                            <span class="text-xs font-black uppercase text-slate-800 tracking-wide block leading-none">{{ $z->zakat_type }}</span>
+                                            <span class="text-xs text-slate-600 font-bold uppercase tracking-wider block mt-2">{{ $z->created_at->format('d M Y') }}</span>
                                         </div>
                                         <div class="text-right space-y-1.5">
                                             <span class="text-xs font-black text-slate-800 block leading-none">Rp {{ number_format($z->amount, 0, ',', '.') }}</span>
                                             @if($z->payment_status === 'Success')
-                                                <span class="bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">SUCCESS</span>
+                                                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">SUCCESS</span>
                                             @elseif($z->payment_status === 'Pending')
-                                                <span class="bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">PENDING</span>
+                                                <span class="bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">PENDING</span>
                                             @else
-                                                <span class="bg-rose-50 text-rose-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">FAILED</span>
+                                                <span class="bg-rose-50 text-rose-700 border border-rose-200 text-xs font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">FAILED</span>
                                             @endif
                                         </div>
                                     </div>
                                 @empty
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-center py-4">Belum ada riwayat pembayaran zakat.</p>
+                                    <p class="text-xs text-slate-600 font-bold uppercase tracking-wider text-center py-4">Belum ada riwayat pembayaran zakat.</p>
                                 @endforelse
                             </div>
                         </div>
                     @else
                         <!-- Zakat Guidelines -->
-                        <div class="bg-white border border-slate-100 p-6 sm:p-8 rounded-3xl space-y-6 shadow-sm">
-                            <h3 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 tracking-wider">Ketentuan Zakat</h3>
-                            <hr class="border-slate-100">
+                        <div class="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl space-y-6 shadow-sm">
+                            <h2 class="font-montserrat font-black uppercase text-xs sm:text-sm text-slate-800 tracking-wider">Ketentuan Zakat</h2>
+                            <hr class="border-slate-200">
                             <div class="space-y-4 text-xs font-semibold text-slate-600 leading-relaxed">
                                 <div>
-                                    <h4 class="font-montserrat font-black uppercase text-[10px] text-slate-800 tracking-wider">Zakat Pendapatan (Penghasilan)</h4>
-                                    <p class="text-[11px] mt-1 text-slate-500">Zakat penghasilan dikeluarkan setiap bulan jika total pendapatan bulanan mencapai nisab setara 85 gram emas pertahun (threshold sekitar Rp 6.859.394 per bulan).</p>
+                                    <h3 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider">Zakat Pendapatan (Penghasilan)</h3>
+                                    <p class="text-xs mt-1 text-slate-600">Zakat penghasilan dikeluarkan setiap bulan jika total pendapatan bulanan mencapai nisab setara 85 gram emas pertahun (threshold sekitar Rp 6.859.394 per bulan).</p>
                                 </div>
                                 <div>
-                                    <h4 class="font-montserrat font-black uppercase text-[10px] text-slate-800 tracking-wider">Zakat Maal (Harta)</h4>
-                                    <p class="text-[11px] mt-1 text-slate-500">Zakat maal dikeluarkan dari kepemilikan emas, perak, tabungan pribadi yang mengendap selama 1 tahun (haul) dan mencapai nisab senilai 85 gram emas.</p>
+                                    <h3 class="font-montserrat font-black uppercase text-xs text-slate-800 tracking-wider">Zakat Maal (Harta)</h3>
+                                    <p class="text-xs mt-1 text-slate-600">Zakat maal dikeluarkan dari kepemilikan emas, perak, tabungan pribadi yang mengendap selama 1 tahun (haul) dan mencapai nisab senilai 85 gram emas.</p>
                                 </div>
                             </div>
                         </div>

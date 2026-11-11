@@ -159,58 +159,58 @@
              @click.away="open = false" 
              style="display: none;" 
              class="md:hidden w-full bg-white border-b border-slate-200/90 px-5 sm:px-6 py-5 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto">
-            <div class="flex flex-col space-y-1.5 font-bold text-xs uppercase tracking-wider text-slate-600">
-                <a href="{{ route('home') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-house mr-2 text-slate-400"></i> Home
+            <div class="flex flex-col space-y-1.5 font-bold text-xs uppercase tracking-wider text-slate-700">
+                <a href="{{ route('home') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-house mr-2 text-slate-600"></i> Home
                 </a>
-                <a href="{{ route('campaigns.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-hand-holding-heart mr-2 text-slate-400"></i> Kampanye
+                <a href="{{ route('campaigns.index') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-hand-holding-heart mr-2 text-slate-600"></i> Kampanye
                 </a>
-                <a href="{{ route('zakat.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-calculator mr-2 text-slate-400"></i> Zakat
+                <a href="{{ route('zakat.index') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-calculator mr-2 text-slate-600"></i> Zakat
                 </a>
-                <a href="{{ route('prayers.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-hands-praying mr-2 text-slate-400"></i> Doa
+                <a href="{{ route('prayers.index') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-hands-praying mr-2 text-slate-600"></i> Doa
                 </a>
-                <a href="{{ route('news') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-newspaper mr-2 text-slate-400"></i> Berita
+                <a href="{{ route('news') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-newspaper mr-2 text-slate-600"></i> Berita
                 </a>
-                <a href="{{ route('volunteer') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('volunteer') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-users mr-2 text-slate-400"></i> Relawan
+                <a href="{{ route('volunteer') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('volunteer') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-users mr-2 text-slate-600"></i> Relawan
                 </a>
-                <a href="{{ route('about') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('about') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-circle-info mr-2 text-slate-400"></i> Tentang Kami
+                <a href="{{ route('about') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('about') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-circle-info mr-2 text-slate-600"></i> Tentang Kami
                 </a>
-                <a href="{{ route('contact') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('contact') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-envelope mr-2 text-slate-400"></i> Kontak
+                <a href="{{ route('contact') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('contact') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-envelope mr-2 text-slate-600"></i> Kontak
                 </a>
             </div>
             <hr class="border-slate-100">
             @auth
                 <div class="space-y-2 text-xs font-bold uppercase tracking-wider">
                     @if(Auth::user()->hasAdminAccess())
-                        <a href="{{ route('admin.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
-                            <i class="fa-solid fa-chart-line text-slate-400"></i>
+                        <a href="{{ route('admin.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-slate-600"></i>
                             <span>Dashboard Admin</span>
                         </a>
                     @elseif(Auth::user()->isFieldWorker())
-                        <a href="{{ route('field.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
-                            <i class="fa-solid fa-users-gear text-slate-400"></i>
+                        <a href="{{ route('field.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-users-gear text-slate-600"></i>
                             <span>Dashboard Petugas</span>
                         </a>
                     @endif
-                    <a href="{{ route('dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
-                        <i class="fa-solid fa-house-user text-slate-400"></i>
+                    <a href="{{ route('dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
+                        <i class="fa-solid fa-house-user text-slate-600"></i>
                         <span>Dashboard Donatur</span>
                     </a>
-                    <a href="{{ route('profile.custom') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
-                        <i class="fa-solid fa-user-pen text-slate-400"></i>
+                    <a href="{{ route('profile.custom') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
+                        <i class="fa-solid fa-user-pen text-slate-600"></i>
                         <span>Edit Profil</span>
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="pt-1">
                         @csrf
-                        <button type="submit" class="w-full flex items-center space-x-3 py-2.5 px-4 text-red-600 hover:bg-red-50 rounded-xl text-left transition-colors">
-                            <i class="fa-solid fa-right-from-bracket text-red-400"></i>
+                        <button type="submit" class="w-full flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-red-700 hover:bg-red-50 rounded-xl text-left transition-colors">
+                            <i class="fa-solid fa-right-from-bracket text-red-700"></i>
                             <span>Keluar Akun</span>
                         </button>
                     </form>
