@@ -15,13 +15,13 @@
             <!-- Header section -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div class="space-y-2">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-md">
-                        <i class="fa-brands fa-meta"></i> Marketing & Meta Ads Intelligence
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#063f5c] text-white rounded-full text-xs font-black uppercase tracking-widest shadow-md">
+                        <i class="fa-brands fa-meta"></i> Marketing &amp; Meta Ads Intelligence
                     </div>
                     <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                        Dashboard <span class="text-primary-600">Performa Iklan & Keputusan</span>
+                        Dashboard <span class="text-primary-600">Performa Iklan &amp; Keputusan</span>
                     </h1>
-                    <p class="text-slate-400 font-bold text-[10px] tracking-widest uppercase">
+                    <p class="text-slate-600 font-bold text-xs tracking-widest uppercase">
                         Analisa Biaya Iklan, Hasil Donasi, ROAS, dan Rekomendasi Keputusan (Scale / Maintain / Stop)
                     </p>
                     <div class="w-12 h-1 bg-primary-500 rounded-full mt-2"></div>
@@ -30,15 +30,15 @@
                 <!-- Quick Action Buttons -->
                 <div class="flex flex-wrap items-center gap-3">
                     <a href="{{ route('admin.marketing.create') }}" 
-                       class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-wider shadow-lg shadow-blue-500/20 hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2">
+                       class="px-5 py-2.5 min-h-[44px] bg-blue-700 hover:bg-blue-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-700/20 transition-colors inline-flex items-center gap-2">
                         <i class="fa-solid fa-plus"></i> Input Data Iklan
                     </a>
                     <a href="{{ route('admin.marketing.index') }}" 
-                       class="px-4 py-2.5 bg-slate-100 text-slate-700 rounded-2xl text-[10px] font-black uppercase tracking-wider hover:bg-slate-200 transition-all flex items-center gap-2">
+                       class="px-4 py-2.5 min-h-[44px] bg-slate-100 text-slate-700 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-slate-200 transition-colors inline-flex items-center gap-2">
                         <i class="fa-solid fa-table-list"></i> Semua Data
                     </a>
                     <a href="{{ route('admin.marketing.export', request()->query()) }}" 
-                       class="px-4 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-2xl text-[10px] font-black uppercase tracking-wider hover:bg-emerald-100 transition-all flex items-center gap-2">
+                       class="px-4 py-2.5 min-h-[44px] bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-emerald-100 transition-colors inline-flex items-center gap-2">
                         <i class="fa-solid fa-file-csv"></i> Unduh CSV
                     </a>
                 </div>
@@ -48,10 +48,10 @@
             <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm">
                 <form method="GET" action="{{ route('admin.marketing.dashboard') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Platform Iklan</label>
-                        <select name="platform" class="w-full text-xs font-bold text-slate-700 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500">
+                        <label for="mkt_dash_platform" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Platform Iklan</label>
+                        <select id="mkt_dash_platform" name="platform" class="w-full min-h-[44px] text-xs font-bold text-slate-700 rounded-xl border-slate-300 focus:ring-primary-500 focus:border-primary-500">
                             <option value="ALL">Semua Platform</option>
-                            <option value="Meta Ads" {{ $platform === 'Meta Ads' ? 'selected' : '' }}>Meta Ads (FB & IG)</option>
+                            <option value="Meta Ads" {{ $platform === 'Meta Ads' ? 'selected' : '' }}>Meta Ads (FB &amp; IG)</option>
                             <option value="Google Ads" {{ $platform === 'Google Ads' ? 'selected' : '' }}>Google Ads</option>
                             <option value="TikTok Ads" {{ $platform === 'TikTok Ads' ? 'selected' : '' }}>TikTok Ads</option>
                             <option value="YouTube Ads" {{ $platform === 'YouTube Ads' ? 'selected' : '' }}>YouTube Ads</option>
@@ -60,8 +60,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Kampanye Terkait</label>
-                        <select name="campaign_id" class="w-full text-xs font-bold text-slate-700 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500">
+                        <label for="mkt_dash_campaign" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Kampanye Terkait</label>
+                        <select id="mkt_dash_campaign" name="campaign_id" class="w-full min-h-[44px] text-xs font-bold text-slate-700 rounded-xl border-slate-300 focus:ring-primary-500 focus:border-primary-500">
                             <option value="">Semua Kampanye</option>
                             @foreach($allCampaigns as $c)
                                 <option value="{{ $c->id }}" {{ (string)$campaignId === (string)$c->id ? 'selected' : '' }}>{{ $c->title }}</option>
@@ -70,18 +70,18 @@
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Rentang Tanggal</label>
+                        <label for="mkt_dash_from" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Rentang Tanggal</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="date" name="date_from" value="{{ $dateFrom }}" class="w-full text-xs font-bold text-slate-700 rounded-xl border-slate-200">
-                            <input type="date" name="date_to" value="{{ $dateTo }}" class="w-full text-xs font-bold text-slate-700 rounded-xl border-slate-200">
+                            <input id="mkt_dash_from" type="date" name="date_from" value="{{ $dateFrom }}" class="w-full min-h-[44px] text-xs font-bold text-slate-700 rounded-xl border-slate-300">
+                            <input id="mkt_dash_to" type="date" name="date_to" aria-label="Tanggal akhir" value="{{ $dateTo }}" class="w-full min-h-[44px] text-xs font-bold text-slate-700 rounded-xl border-slate-300">
                         </div>
                     </div>
 
                     <div class="flex items-end gap-2">
-                        <button type="submit" class="flex-1 py-2.5 px-4 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                        <button type="submit" class="flex-1 py-2.5 px-4 min-h-[44px] bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-800 transition-colors inline-flex items-center justify-center gap-2">
                             <i class="fa-solid fa-filter"></i> Terapkan
                         </button>
-                        <a href="{{ route('admin.marketing.dashboard') }}" class="py-2.5 px-3 bg-slate-100 text-slate-500 rounded-xl text-xs font-black hover:bg-slate-200 transition-all" title="Reset Filter">
+                        <a href="{{ route('admin.marketing.dashboard') }}" aria-label="Reset Filter" class="w-11 h-11 bg-slate-100 text-slate-700 rounded-xl text-xs font-black hover:bg-slate-200 transition-colors inline-flex items-center justify-center" title="Reset Filter">
                             <i class="fa-solid fa-rotate-left"></i>
                         </a>
                     </div>
@@ -92,101 +92,97 @@
             <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- 1. Total Spend -->
                 <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 rounded-bl-[4rem] group-hover:scale-110 transition-transform"></div>
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Biaya Iklan</span>
-                        <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xs">
+                        <span class="text-xs font-black uppercase tracking-widest text-slate-600">Total Biaya Iklan</span>
+                        <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center text-xs">
                             <i class="fa-solid fa-wallet"></i>
                         </div>
                     </div>
                     <div class="text-xl sm:text-2xl font-black text-slate-800">
                         Rp {{ number_format($totalSpend, 0, ',', '.') }}
                     </div>
-                    <div class="mt-2 text-[10px] font-bold text-slate-400">
+                    <div class="mt-2 text-xs font-bold text-slate-600">
                         CPM: <span class="text-slate-700 font-black">Rp {{ number_format($avgCpm, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
                 <!-- 2. Total Donasi Didapat -->
                 <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-[4rem] group-hover:scale-110 transition-transform"></div>
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Hasil Donasi Didapat</span>
-                        <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
+                        <span class="text-xs font-black uppercase tracking-widest text-slate-600">Hasil Donasi Didapat</span>
+                        <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs">
                             <i class="fa-solid fa-hand-holding-dollar"></i>
                         </div>
                     </div>
-                    <div class="text-xl sm:text-2xl font-black text-emerald-600">
+                    <div class="text-xl sm:text-2xl font-black text-emerald-700">
                         Rp {{ number_format($totalDonations, 0, ',', '.') }}
                     </div>
-                    <div class="mt-2 text-[10px] font-bold text-slate-400">
+                    <div class="mt-2 text-xs font-bold text-slate-600">
                         Konversi Donatur: <span class="text-slate-700 font-black">{{ number_format($totalConversions) }}</span>
                     </div>
                 </div>
 
                 <!-- 3. Overall ROAS -->
                 <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-[4rem] group-hover:scale-110 transition-transform"></div>
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Return On Ad Spend</span>
-                        <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
+                        <span class="text-xs font-black uppercase tracking-widest text-slate-600">Return On Ad Spend</span>
+                        <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xs">
                             <i class="fa-solid fa-chart-line"></i>
                         </div>
                     </div>
-                    <div class="text-xl sm:text-2xl font-black {{ $overallRoas >= 2.0 ? 'text-emerald-600' : ($overallRoas >= 1.0 ? 'text-amber-600' : 'text-rose-600') }}">
+                    <div class="text-xl sm:text-2xl font-black {{ $overallRoas >= 2.0 ? 'text-emerald-700' : ($overallRoas >= 1.0 ? 'text-amber-800' : 'text-rose-700') }}">
                         {{ number_format($overallRoas, 2) }}x
                     </div>
-                    <div class="mt-2 text-[10px] font-bold text-slate-400">
+                    <div class="mt-2 text-xs font-bold text-slate-600">
                         CPA Rata-rata: <span class="text-slate-700 font-black">Rp {{ number_format($avgCpa, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
                 <!-- 4. Trafik Clicks & CTR -->
                 <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-bl-[4rem] group-hover:scale-110 transition-transform"></div>
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Trafik & CTR</span>
-                        <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs">
+                        <span class="text-xs font-black uppercase tracking-widest text-slate-600">Trafik &amp; CTR</span>
+                        <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs">
                             <i class="fa-solid fa-arrow-pointer"></i>
                         </div>
                     </div>
                     <div class="text-xl sm:text-2xl font-black text-slate-800">
-                        {{ number_format($totalClicks) }} <span class="text-xs font-bold text-indigo-600">({{ $overallCtr }}%)</span>
+                        {{ number_format($totalClicks) }} <span class="text-xs font-bold text-indigo-700">({{ $overallCtr }}%)</span>
                     </div>
-                    <div class="mt-2 text-[10px] font-bold text-slate-400">
+                    <div class="mt-2 text-xs font-bold text-slate-600">
                         CPC: <span class="text-slate-700 font-black">Rp {{ number_format($avgCpc, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- Decision Summary Banner -->
-            <div class="bg-gradient-to-r from-slate-900 to-[#063f5c] rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
+            <div class="bg-[#063f5c] rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 mb-1">
+                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#f7ad1a] mb-1">
                             <i class="fa-solid fa-microchip"></i> Engine Rekomendasi Keputusan
                         </div>
-                        <h3 class="text-xl font-black">Evaluasi Otomatis Berdasarkan ROAS, CPA & CTR</h3>
-                        <p class="text-xs text-slate-300 mt-1 max-w-xl">
+                        <h2 class="text-xl font-black">Evaluasi Otomatis Berdasarkan ROAS, CPA &amp; CTR</h2>
+                        <p class="text-xs text-slate-200 mt-1 max-w-xl">
                             Algoritma menganalisa performa iklan: <strong>SCALE</strong> jika ROAS &ge; 3.0x atau CPA murah, <strong>MAINTAIN</strong> jika performa stabil, dan <strong>STOP</strong> jika biaya tinggi tanpa hasil donasi memadai.
                         </p>
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <div class="bg-emerald-500/20 border border-emerald-400/30 px-4 py-3 rounded-2xl text-center min-w-[90px]">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="bg-emerald-950/60 border border-emerald-400/40 px-4 py-3 rounded-2xl text-center min-w-[90px]">
                             <div class="text-xs font-black uppercase tracking-wider text-emerald-300">SCALE</div>
                             <div class="text-2xl font-black text-white mt-0.5">{{ $scaleCount }}</div>
-                            <div class="text-[9px] text-emerald-200">Naikkan Budget</div>
+                            <div class="text-xs text-emerald-100">Naikkan Budget</div>
                         </div>
-                        <div class="bg-amber-500/20 border border-amber-400/30 px-4 py-3 rounded-2xl text-center min-w-[90px]">
+                        <div class="bg-amber-950/60 border border-amber-400/40 px-4 py-3 rounded-2xl text-center min-w-[90px]">
                             <div class="text-xs font-black uppercase tracking-wider text-amber-300">MAINTAIN</div>
                             <div class="text-2xl font-black text-white mt-0.5">{{ $maintainCount }}</div>
-                            <div class="text-[9px] text-amber-200">Optimasi Materi</div>
+                            <div class="text-xs text-amber-100">Optimasi Materi</div>
                         </div>
-                        <div class="bg-rose-500/20 border border-rose-400/30 px-4 py-3 rounded-2xl text-center min-w-[90px]">
+                        <div class="bg-rose-950/60 border border-rose-400/40 px-4 py-3 rounded-2xl text-center min-w-[90px]">
                             <div class="text-xs font-black uppercase tracking-wider text-rose-300">STOP</div>
                             <div class="text-2xl font-black text-white mt-0.5">{{ $stopCount }}</div>
-                            <div class="text-[9px] text-rose-200">Matikan Iklan</div>
+                            <div class="text-xs text-rose-100">Matikan Iklan</div>
                         </div>
                     </div>
                 </div>
@@ -202,9 +198,9 @@
                             <h2 class="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                                 <i class="fa-solid fa-chart-column text-primary-600"></i> Diagram Batang: Biaya Iklan vs Donasi
                             </h2>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Perbandingan harian biaya iklan yang dikeluarkan dengan donasi terkumpul</p>
+                            <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Perbandingan harian biaya iklan yang dikeluarkan dengan donasi terkumpul</p>
                         </div>
-                        <span class="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-[10px] font-black uppercase">
+                        <span class="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-black uppercase">
                             Harian
                         </span>
                     </div>
@@ -220,15 +216,15 @@
                     <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
                         <div>
                             <h2 class="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                                <i class="fa-solid fa-chart-pie text-amber-500"></i> Porsi Biaya per Kampanye
+                                <i class="fa-solid fa-chart-pie text-amber-600"></i> Porsi Biaya per Kampanye
                             </h2>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Distribusi alokasi anggaran iklan</p>
+                            <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Distribusi alokasi anggaran iklan</p>
                         </div>
                         <div class="relative h-56 w-full flex items-center justify-center">
                             @if(count($pieCampaignData) > 0)
                                 <canvas id="pieCampaignChart"></canvas>
                             @else
-                                <div class="text-center text-slate-400 text-xs py-8">Belum ada data iklan</div>
+                                <div class="text-center text-slate-600 text-xs py-8">Belum ada data iklan</div>
                             @endif
                         </div>
                     </div>
@@ -237,15 +233,15 @@
                     <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
                         <div>
                             <h2 class="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                                <i class="fa-brands fa-meta text-blue-600"></i> Porsi per Platform
+                                <i class="fa-brands fa-meta text-blue-700"></i> Porsi per Platform
                             </h2>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Meta Ads vs Google vs Platform Lain</p>
+                            <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Meta Ads vs Google vs Platform Lain</p>
                         </div>
                         <div class="relative h-56 w-full flex items-center justify-center">
                             @if(count($piePlatformData) > 0)
                                 <canvas id="piePlatformChart"></canvas>
                             @else
-                                <div class="text-center text-slate-400 text-xs py-8">Belum ada data iklan</div>
+                                <div class="text-center text-slate-600 text-xs py-8">Belum ada data iklan</div>
                             @endif
                         </div>
                     </div>
@@ -260,35 +256,35 @@
                 <div class="bg-white rounded-[2rem] p-6 border border-emerald-100 shadow-sm space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-emerald-50">
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xs">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-xs">
                                 <i class="fa-solid fa-arrow-trend-up"></i>
                             </div>
                             <div>
-                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight">Rekomendasi SCALE UP (Naikkan Budget)</h3>
-                                <p class="text-[10px] text-emerald-600 font-bold">Iklan dengan ROAS tinggi dan CPA murah</p>
+                                <h2 class="text-sm font-black text-slate-800 uppercase tracking-tight">Rekomendasi SCALE UP (Naikkan Budget)</h2>
+                                <p class="text-xs text-emerald-700 font-bold">Iklan dengan ROAS tinggi dan CPA murah</p>
                             </div>
                         </div>
-                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded-full">{{ $scaleHighlights->count() }} Iklan</span>
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-black rounded-full">{{ $scaleHighlights->count() }} Iklan</span>
                     </div>
 
                     <div class="space-y-3">
                         @forelse($scaleHighlights as $item)
-                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition-all flex items-center justify-between gap-3">
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition-colors flex items-center justify-between gap-3">
                             <div class="min-w-0">
                                 <div class="text-xs font-black text-slate-800 truncate">{{ $item->campaign_name }}</div>
-                                <div class="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
-                                    <span class="font-bold text-blue-600">{{ $item->platform }}</span>
-                                    <span>•</span>
+                                <div class="text-xs text-slate-600 flex items-center gap-2 mt-0.5">
+                                    <span class="font-bold text-blue-700">{{ $item->platform }}</span>
+                                    <span>-</span>
                                     <span>Spend: Rp {{ number_format($item->spend, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                             <div class="text-right shrink-0">
-                                <div class="text-xs font-black text-emerald-600">{{ $item->roas }}x ROAS</div>
-                                <div class="text-[10px] font-bold text-slate-500">Hasil: Rp {{ number_format($item->donation_amount, 0, ',', '.') }}</div>
+                                <div class="text-xs font-black text-emerald-700">{{ $item->roas }}x ROAS</div>
+                                <div class="text-xs font-bold text-slate-600">Hasil: Rp {{ number_format($item->donation_amount, 0, ',', '.') }}</div>
                             </div>
                         </div>
                         @empty
-                        <div class="py-6 text-center text-slate-400 text-xs">Belum ada iklan dengan status SCALE</div>
+                        <div class="py-6 text-center text-slate-600 text-xs">Belum ada iklan dengan status SCALE</div>
                         @endforelse
                     </div>
                 </div>
@@ -297,15 +293,15 @@
                 <div class="bg-white rounded-[2rem] p-6 border border-rose-100 shadow-sm space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-rose-50">
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center text-xs">
+                            <div class="w-8 h-8 rounded-xl bg-rose-700 text-white flex items-center justify-center text-xs">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
                             </div>
                             <div>
-                                <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight">Rekomendasi STOP (Evaluasi / Matikan)</h3>
-                                <p class="text-[10px] text-rose-600 font-bold">Biaya sudah keluar namun ROAS rendah (&lt; 1.0x)</p>
+                                <h2 class="text-sm font-black text-slate-800 uppercase tracking-tight">Rekomendasi STOP (Evaluasi / Matikan)</h2>
+                                <p class="text-xs text-rose-700 font-bold">Biaya sudah keluar namun ROAS rendah (&lt; 1.0x)</p>
                             </div>
                         </div>
-                        <span class="px-2.5 py-1 bg-rose-100 text-rose-800 text-[10px] font-black rounded-full">{{ $stopHighlights->count() }} Iklan</span>
+                        <span class="px-2.5 py-1 bg-rose-100 text-rose-800 text-xs font-black rounded-full">{{ $stopHighlights->count() }} Iklan</span>
                     </div>
 
                     <div class="space-y-3">

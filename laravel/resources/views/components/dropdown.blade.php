@@ -13,8 +13,8 @@ $width = match ($width) {
 };
 @endphp
 
-<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
-    <div @click="open = ! open">
+<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false" @keydown.escape.window="open = false">
+    <div role="button" tabindex="0" @click="open = ! open" @keydown.enter.prevent="open = ! open" @keydown.space.prevent="open = ! open" :aria-expanded="open.toString()">
         {{ $trigger }}
     </div>
 

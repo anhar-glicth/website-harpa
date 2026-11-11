@@ -428,13 +428,13 @@
 
                 {{-- Table 5: Top 20 Donatur Base On Kontribusi Donasi (All Time Donation) --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi (All Time Donation)</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Top 20 Donatur Kontribusi" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">Nama Donatur</th>
@@ -451,12 +451,12 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($topDonorsByContribution as $idx => $tDnc)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-3 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-3 px-4 font-bold text-slate-900">{{ $tDnc['name'] }}</td>
                                         <td class="py-3 px-4 font-mono text-emerald-700 font-bold">{{ $tDnc['id_donatur'] }}</td>
                                         <td class="py-3 px-4 text-slate-700">{{ $tDnc['office'] }}</td>
-                                        <td class="py-3 px-4 text-center font-bold text-rose-600">{{ $tDnc['rfm_90'] }}</td>
-                                        <td class="py-3 px-4 text-center font-bold text-rose-600">{{ $tDnc['rfm_alltime'] }}</td>
+                                        <td class="py-3 px-4 text-center font-bold text-rose-700">{{ $tDnc['rfm_90'] }}</td>
+                                        <td class="py-3 px-4 text-center font-bold text-rose-700">{{ $tDnc['rfm_alltime'] }}</td>
                                         <td class="py-3 px-4 font-bold text-slate-800">{{ $tDnc['pic'] }}</td>
                                         <td class="py-3 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($tDnc['trx']) }}</td>
                                         <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ number_format($tDnc['donation'], 0, ',', '.') }}</td>

@@ -8,33 +8,30 @@
 @endphp
 
 @if($variant === 'card')
-    <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-5 shadow-lg border border-slate-700/50 relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-primary-500/10 rounded-full blur-2xl pointer-events-none"></div>
+    <div class="bg-slate-900 text-white rounded-3xl p-5 shadow-lg border border-slate-700/50 relative overflow-hidden">
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="space-y-1">
                 <div class="flex items-center gap-2">
-                    <span class="relative flex h-2.5 w-2.5">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
                     </span>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-emerald-400">Waktu Real-Time WITA</span>
-                    <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-slate-300 font-bold">GMT+8</span>
+                    <span class="text-xs font-black uppercase tracking-widest text-emerald-300">Waktu Real-Time WITA</span>
+                    <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-white/10 text-slate-200 font-bold">GMT+8</span>
                 </div>
-                <p id="{{ $id }}_date" class="text-xs font-bold text-slate-300 capitalize">Memuat tanggal...</p>
+                <p id="{{ $id }}_date" class="text-xs font-bold text-slate-200 capitalize">Memuat tanggal...</p>
             </div>
             <div class="flex items-baseline gap-2">
-                <div id="{{ $id }}_time" class="text-3xl sm:text-4xl font-black font-mono tracking-tight text-white tabular-nums drop-shadow-md">
+                <div id="{{ $id }}_time" class="text-3xl sm:text-4xl font-black font-mono tracking-tight text-white tabular-nums">
                     --:--:--
                 </div>
-                <span class="text-xs font-black uppercase tracking-widest text-primary-400">WITA</span>
+                <span class="text-xs font-black uppercase tracking-widest text-sky-300">WITA</span>
             </div>
         </div>
     </div>
 @elseif($variant === 'compact')
     <div class="inline-flex items-center gap-3 px-4 py-2.5 bg-slate-900 text-white rounded-2xl shadow-sm border border-slate-700">
-        <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        <span class="relative flex h-2 w-2" aria-hidden="true">
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
         </span>
         <div class="flex items-baseline gap-1.5 font-mono">
             <span id="{{ $id }}_time" class="text-sm font-black text-white tabular-nums">--:--:--</span>

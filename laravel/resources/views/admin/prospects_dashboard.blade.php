@@ -398,17 +398,17 @@
                         <tbody class="divide-y divide-slate-100">
                             @forelse($topProspekCalonDonors as $idx => $tpcd)
                                 <tr class="hover:bg-slate-50">
-                                    <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                    <td class="py-3 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-900">{{ $tpcd['name'] }}</td>
                                     <td class="py-3 px-4 font-mono text-slate-600">{{ $tpcd['phone'] }}</td>
                                     <td class="py-3 px-4 text-slate-600">{{ $tpcd['email'] }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-800">{{ $tpcd['pic'] }}</td>
                                     <td class="py-3 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($tpcd['total']) }}</td>
-                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ number_format($tpcd['potensi'], 0, ',', '.') }}</td>
+                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-700">{{ number_format($tpcd['potensi'], 0, ',', '.') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="py-6 text-center text-slate-400 font-bold">Tidak ada data prospek calon donatur.</td>
+                                    <td colspan="7" class="py-6 text-center text-slate-600 font-bold">Tidak ada data prospek calon donatur.</td>
                                 </tr>
                             @endforelse
                         </tbody>
