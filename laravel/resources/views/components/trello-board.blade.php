@@ -176,7 +176,7 @@
                         @include('components.trello-card', ['todo' => $item])
                     @empty
                         <div class="empty-lane-placeholder py-12 text-center text-slate-600 text-xs font-bold space-y-1">
-                            <i class="fa-regular fa-clipboard text-slate-400 text-2xl block mb-1"></i>
+                            <i class="fa-regular fa-clipboard text-slate-500 text-2xl block mb-1" aria-hidden="true"></i>
                             <p>Tidak ada tugas pending</p>
                             <p class="text-xs font-normal text-slate-600">Tarik kartu ke sini atau buat baru</p>
                         </div>

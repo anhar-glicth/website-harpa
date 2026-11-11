@@ -117,7 +117,7 @@
 
             @if(empty($segments))
                 <div class="text-center py-12 text-slate-600">
-                    <i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-400" aria-hidden="true"></i>
+                    <i class="fa-regular fa-folder-open text-3xl mb-2 text-slate-500" aria-hidden="true"></i>
                     <p class="text-xs font-bold">Tidak ada data nomor yang cocok.</p>
                 </div>
             @else

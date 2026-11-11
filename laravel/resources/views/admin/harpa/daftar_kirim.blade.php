@@ -271,7 +271,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm">
                     <!-- Empty State -->
                     <div x-show="filteredItems.length === 0" class="text-center py-16 text-slate-600">
-                        <i class="fa-regular fa-clipboard text-4xl mb-3 text-slate-400" aria-hidden="true"></i>
+                        <i class="fa-regular fa-clipboard text-4xl mb-3 text-slate-500" aria-hidden="true"></i>
                         <p class="text-sm font-bold text-slate-700">Tidak ada data donatur yang cocok.</p>
                         <p class="text-xs text-slate-600 mt-1" x-show="searchQuery || statusFilter !== 'ALL'">
                             Coba sesuaikan kata kunci pencarian atau tab filter status Anda.

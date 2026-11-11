@@ -96,7 +96,7 @@
             </div>
         @empty
             <div class="col-span-full text-center py-20 bg-white rounded-3xl border border-slate-200">
-                <i class="fa-solid fa-circle-info text-slate-400 text-4xl mb-4" aria-hidden="true"></i>
+                <i class="fa-solid fa-circle-info text-slate-500 text-4xl mb-4" aria-hidden="true"></i>
                 <p class="text-sm font-bold text-slate-600 uppercase tracking-wider">Belum ada kampanye aktif di kategori ini.</p>
             </div>
         @endforelse

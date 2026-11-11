@@ -56,7 +56,7 @@
                             </div>
                         @empty
                             <div class="col-span-full py-16 text-center text-slate-600 font-bold uppercase tracking-wider text-xs bg-white border border-slate-200 rounded-3xl w-full">
-                                <i class="fa-solid fa-hands-praying text-slate-400 text-3xl mb-2 block" aria-hidden="true"></i>
+                                <i class="fa-solid fa-hands-praying text-slate-500 text-3xl mb-2 block" aria-hidden="true"></i>
                                 Belum ada doa kebaikan yang dikirimkan.
                             </div>
                         @endforelse
@@ -97,7 +97,7 @@
                             </form>
                         @else
                             <div class="text-center py-6 space-y-4">
-                                <i class="fa-solid fa-user-lock text-slate-400 text-3xl" aria-hidden="true"></i>
+                                <i class="fa-solid fa-user-lock text-slate-500 text-3xl" aria-hidden="true"></i>
                                 <p class="text-xs font-bold text-slate-600 uppercase tracking-wider leading-relaxed">Login terlebih dahulu untuk dapat mengirim doa kebaikan Anda.</p>
                                 <button type="button" @click="loginOpen = true" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white text-xs font-black uppercase tracking-wider py-3.5 rounded-2xl transition duration-300 shadow-md">
                                     Login Sekarang

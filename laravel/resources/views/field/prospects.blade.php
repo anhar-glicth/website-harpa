@@ -146,7 +146,7 @@
                         </div>
                     @empty
                         <div class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider text-xs">
-                            <i class="fa-solid fa-users text-slate-400 text-3xl mb-2 block" aria-hidden="true"></i>
+                            <i class="fa-solid fa-users text-slate-500 text-3xl mb-2 block" aria-hidden="true"></i>
                             Belum ada calon donatur terdaftar.
                         </div>
                     @endforelse

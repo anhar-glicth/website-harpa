@@ -558,7 +558,7 @@
 
                     @if($kontrolTarik->isEmpty())
                         <div class="text-center py-8 text-slate-600">
-                            <i class="fa-regular fa-folder-open text-2xl mb-2 text-slate-400" aria-hidden="true"></i>
+                            <i class="fa-regular fa-folder-open text-2xl mb-2 text-slate-500" aria-hidden="true"></i>
                             <p class="text-xs font-bold">Belum ada riwayat tarikan donasi.</p>
                         </div>
                     @else
@@ -573,7 +573,7 @@
                                     </div>
                                     <div class="text-xs text-slate-600 font-medium">
                                         <span>Ditarik: {{ $kt->ditarik_oleh ?: 'Sistem' }}</span>
-                                        <span class="text-slate-400 mx-1" aria-hidden="true">&bull;</span>
+                                        <span class="text-slate-600 mx-1" aria-hidden="true">&bull;</span>
                                         <span>{{ $kt->tgl_tarik->format('d M Y H:i') }}</span>
                                     </div>
                                     @if($kt->id_pertama && $kt->id_terakhir)

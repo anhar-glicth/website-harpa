@@ -63,7 +63,7 @@
 
                 @if(empty($hitungDonatur))
                     <div class="text-center py-12 text-slate-600">
-                        <i class="fa-regular fa-user text-3xl mb-2 text-slate-400" aria-hidden="true"></i>
+                        <i class="fa-regular fa-user text-3xl mb-2 text-slate-500" aria-hidden="true"></i>
                         <p class="text-xs font-bold">Belum ada data donatur di master_donatur.</p>
                     </div>
                 @else
@@ -139,7 +139,7 @@
 
                 @if(empty($kohort))
                     <div class="text-center py-12 text-slate-600">
-                        <i class="fa-regular fa-calendar-xmark text-3xl mb-2 text-slate-400" aria-hidden="true"></i>
+                        <i class="fa-regular fa-calendar-xmark text-3xl mb-2 text-slate-500" aria-hidden="true"></i>
                         <p class="text-xs font-bold">Data transaksi belum mencukupi untuk membentuk tabel kohort.</p>
                     </div>
                 @else
