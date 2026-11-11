@@ -119,8 +119,7 @@
                                         </span>
                                     </td>
                                     <td class="py-3 px-4">
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>
+                                        <span class="text-xs font-bold uppercase tracking-wider text-rose-700">
                                             0 (Mati)
                                         </span>
                                     </td>
@@ -154,17 +153,15 @@
         </div>
 
         <!-- Download Template Banner -->
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 border-l-4 border-l-[#063f5c] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg shrink-0">
-                    <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
-                </div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-file-csv text-[#063f5c] text-base mt-0.5 shrink-0" aria-hidden="true"></i>
                 <div>
                     <h3 class="text-xs font-bold text-slate-900">Format File Cek Nomor WBS (.CSV)</h3>
                     <p class="text-xs text-slate-600 font-medium">Gunakan template resmi untuk format kolom nomor HP dan status keaktifan.</p>
                 </div>
             </div>
-            <a href="{{ route('admin.harpa.template.download', 'wbs') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-xs transition whitespace-nowrap">
+            <a href="{{ route('admin.harpa.template.download', 'wbs') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider transition whitespace-nowrap">
                 <i class="fa-solid fa-download" aria-hidden="true"></i>
                 Unduh Template WBS
             </a>

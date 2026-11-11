@@ -90,21 +90,20 @@
                                         <td class="py-4 text-primary-700 font-bold">Rp {{ number_format($don->amount, 0, ',', '.') }}</td>
                                         <td class="py-4">
                                             @if($don->payment_status === 'Success')
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>SUCCESS</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">SUCCESS</span>
                                             @elseif($don->payment_status === 'Pending')
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>PENDING</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-amber-800">PENDING</span>
                                             @else
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>FAILED</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-rose-700">FAILED</span>
                                             @endif
                                         </td>
                                         <td class="py-4">
                                             @if($don->tracking_status === 'Disalurkan')
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>DISALURKAN</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">DISALURKAN</span>
                                             @elseif($don->tracking_status === 'Diproses')
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>DIPROSES</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-[#063f5c]">DIPROSES</span>
                                             @else
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-700 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-slate-200">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400" aria-hidden="true"></span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-slate-600">
                                                     {{ strtoupper($don->tracking_status ?? 'MENUNGGU') }}
                                                 </span>
                                             @endif

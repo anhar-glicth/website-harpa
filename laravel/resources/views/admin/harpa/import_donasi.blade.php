@@ -120,17 +120,15 @@
                                 </div>
 
                                 <!-- Download Template Callout Banner -->
-                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 border-l-4 border-l-[#063f5c] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg shrink-0">
-                                            <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
-                                        </div>
+                                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="flex items-start gap-2.5">
+                                        <i class="fa-solid fa-file-csv text-[#063f5c] text-base mt-0.5 shrink-0" aria-hidden="true"></i>
                                         <div>
                                             <h3 class="text-xs font-bold text-slate-900">Format File Donasi Standar (.CSV / .Excel)</h3>
                                             <p class="text-xs text-slate-600 font-medium">Unduh template acuan dengan 9 kolom standar agar data terbaca 100% tanpa error.</p>
                                         </div>
                                     </div>
-                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-xs transition whitespace-nowrap">
+                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider transition whitespace-nowrap">
                                         <i class="fa-solid fa-download" aria-hidden="true"></i>
                                         Unduh Template CSV
                                     </a>
@@ -226,7 +224,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">081234567890</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">100000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">125</td>
-                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
+                                                <td class="py-2.5 px-3.5 font-mono text-xs font-bold text-emerald-700">success</td>
                                                 <td class="py-2.5 px-3.5">BCA</td>
                                             </tr>
                                             <tr class="hover:bg-slate-50">
@@ -237,7 +235,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">6285712345678</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">250000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">340</td>
-                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
+                                                <td class="py-2.5 px-3.5 font-mono text-xs font-bold text-emerald-700">success</td>
                                                 <td class="py-2.5 px-3.5">Mandiri</td>
                                             </tr>
                                             <tr class="hover:bg-slate-50">
@@ -248,7 +246,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">081987654321</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">500000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">0</td>
-                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
+                                                <td class="py-2.5 px-3.5 font-mono text-xs font-bold text-emerald-700">success</td>
                                                 <td class="py-2.5 px-3.5">QRIS</td>
                                             </tr>
                                             <tr class="hover:bg-slate-50">
@@ -259,7 +257,7 @@
                                                 <td class="py-2.5 px-3.5 font-mono font-bold text-emerald-700">6281399887766</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono font-bold">1000000</td>
                                                 <td class="py-2.5 px-3.5 text-right font-mono text-slate-600">500</td>
-                                                <td class="py-2.5 px-3.5"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>success</span></td>
+                                                <td class="py-2.5 px-3.5 font-mono text-xs font-bold text-emerald-700">success</td>
                                                 <td class="py-2.5 px-3.5">BSI</td>
                                             </tr>
                                         </tbody>
@@ -566,8 +564,7 @@
                             @foreach($kontrolTarik as $kt)
                                 <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 hover:bg-slate-100 transition">
                                     <div class="flex items-center justify-between">
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-white text-xs font-bold uppercase tracking-wider text-slate-800">
-                                            <span class="w-1.5 h-1.5 rounded-full {{ $kt->sumber === 'IM' ? 'bg-[#063f5c]' : ($kt->sumber === 'FH' ? 'bg-[#f7ad1a]' : 'bg-emerald-700') }}" aria-hidden="true"></span>
+                                        <span class="text-xs font-black uppercase tracking-wider {{ $kt->sumber === 'IM' ? 'text-[#063f5c]' : ($kt->sumber === 'FH' ? 'text-amber-800' : 'text-emerald-700') }}">
                                             {{ $kt->sumber }} &bull; {{ $kt->periode }}
                                         </span>
                                         <span class="text-xs font-bold text-slate-700">{{ number_format($kt->jml_baris) }} baris</span>

@@ -12,11 +12,9 @@
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="space-y-1">
                 <div class="flex items-center gap-2">
-                    <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
-                    </span>
-                    <span class="text-xs font-black uppercase tracking-widest text-emerald-300">Waktu Real-Time WITA</span>
-                    <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-white/10 text-slate-200 font-bold">GMT+8</span>
+                    <i class="fa-regular fa-clock text-[#f7ad1a] text-xs" aria-hidden="true"></i>
+                    <span class="text-xs font-black uppercase tracking-widest text-slate-200">Waktu WITA</span>
+                    <span class="text-xs font-mono px-2 py-0.5 rounded bg-white/10 text-slate-200 font-bold">GMT+8</span>
                 </div>
                 <p id="{{ $id }}_date" class="text-xs font-bold text-slate-200 capitalize">Memuat tanggal...</p>
             </div>
@@ -30,12 +28,10 @@
     </div>
 @elseif($variant === 'compact')
     <div class="inline-flex items-center gap-3 px-4 py-2.5 bg-slate-900 text-white rounded-2xl shadow-sm border border-slate-700">
-        <span class="relative flex h-2 w-2" aria-hidden="true">
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-        </span>
+        <i class="fa-regular fa-clock text-[#f7ad1a] text-xs" aria-hidden="true"></i>
         <div class="flex items-baseline gap-1.5 font-mono">
             <span id="{{ $id }}_time" class="text-sm font-black text-white tabular-nums">--:--:--</span>
-            <span class="text-[9px] font-black text-primary-400">WITA</span>
+            <span class="text-xs font-black text-slate-300">WITA</span>
         </div>
         <span class="text-slate-500">|</span>
         <span id="{{ $id }}_date" class="text-xs font-bold text-slate-300">--</span>
@@ -43,7 +39,7 @@
 @else
     {{-- Inline minimal --}}
     <span class="inline-flex items-center gap-1.5 font-mono font-bold text-xs text-slate-700">
-        <span class="w-2 h-2 rounded-full bg-emerald-700"></span>
+        <i class="fa-regular fa-clock text-[#063f5c]" aria-hidden="true"></i>
         <span id="{{ $id }}_time" class="tabular-nums">--:--:--</span>
         <span class="text-primary-700 font-black text-xs">WITA</span>
     </span>

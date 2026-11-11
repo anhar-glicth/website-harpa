@@ -314,8 +314,8 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2.5 pt-1">
-                    <span class="inline-block rounded-full h-2.5 w-2.5 bg-emerald-700" aria-hidden="true"></span>
+                <div class="flex items-center gap-2 pt-1">
+                    <i class="fa-solid fa-location-dot text-[#063f5c] text-xs" aria-hidden="true"></i>
                     <span class="text-xs font-bold text-slate-600">Tercatat {{ number_format($distributions->count(), 0, ',', '.') }} titik lokasi penyaluran</span>
                 </div>
             </div>

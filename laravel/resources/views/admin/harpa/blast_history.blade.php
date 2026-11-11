@@ -66,10 +66,8 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($diagnosa as $key => $check)
-                    <div class="p-4 rounded-2xl bg-white border border-slate-200 border-l-4 {{ $check['passed'] ? 'border-l-emerald-700' : 'border-l-rose-700' }} flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 {{ $check['passed'] ? 'text-emerald-700' : 'text-rose-700' }} flex items-center justify-center text-sm shrink-0 mt-0.5">
-                            <i class="fa-solid {{ $check['passed'] ? 'fa-check' : 'fa-xmark' }}" aria-hidden="true"></i>
-                        </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+                        <i class="fa-solid {{ $check['passed'] ? 'fa-check text-emerald-700' : 'fa-xmark text-rose-700' }} text-sm mt-0.5 shrink-0" aria-hidden="true"></i>
                         <div class="space-y-1">
                             <h3 class="text-xs font-bold text-slate-800 leading-snug">{{ $check['name'] }}</h3>
                             <p class="text-xs font-mono font-bold {{ $check['passed'] ? 'text-emerald-700' : 'text-rose-700' }}">
@@ -132,14 +130,13 @@
                                     <td class="py-3 px-4 font-mono text-slate-600">{{ $b->broadcast_id }}</td>
                                     <td class="py-3 px-4 font-semibold text-slate-700">{{ $b->batch_tarik }}</td>
                                     <td class="py-3 px-4">
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                            <span class="w-1.5 h-1.5 rounded-full shrink-0
-                                                {{ $b->status === 'READ' ? 'bg-emerald-700' : '' }}
-                                                {{ $b->status === 'DELIVERED' ? 'bg-sky-700' : '' }}
-                                                {{ $b->status === 'SUCCESS' ? 'bg-[#063f5c]' : '' }}
-                                                {{ $b->status === 'FAILED' ? 'bg-rose-700' : '' }}
-                                                {{ $b->status === 'LAINNYA' ? 'bg-[#f7ad1a]' : '' }}
-                                            " aria-hidden="true"></span>
+                                        <span class="text-xs font-bold uppercase tracking-wider
+                                            {{ $b->status === 'READ' ? 'text-emerald-700' : '' }}
+                                            {{ $b->status === 'DELIVERED' ? 'text-sky-700' : '' }}
+                                            {{ $b->status === 'SUCCESS' ? 'text-[#063f5c]' : '' }}
+                                            {{ $b->status === 'FAILED' ? 'text-rose-700' : '' }}
+                                            {{ $b->status === 'LAINNYA' ? 'text-amber-800' : '' }}
+                                        ">
                                             {{ $b->status }}
                                         </span>
                                     </td>
@@ -173,17 +170,15 @@
         </div>
 
         <!-- Download Template Banner -->
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 border-l-4 border-l-[#063f5c] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg shrink-0">
-                    <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
-                </div>
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-file-csv text-[#063f5c] text-base mt-0.5 shrink-0" aria-hidden="true"></i>
                 <div>
                     <h3 class="text-xs font-bold text-slate-900">Format File Riwayat Blast (.CSV)</h3>
                     <p class="text-xs text-slate-600 font-medium">Gunakan template resmi acuan agar kolom dan status terbaca akurat.</p>
                 </div>
             </div>
-            <a href="{{ route('admin.harpa.template.download', 'blast') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-xs transition whitespace-nowrap">
+            <a href="{{ route('admin.harpa.template.download', 'blast') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider transition whitespace-nowrap">
                 <i class="fa-solid fa-download" aria-hidden="true"></i>
                 Unduh Template Blast
             </a>
