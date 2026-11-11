@@ -55,24 +55,24 @@
         {{-- Main Content Column (TerKunci min-w-0 agar tidak ikut ter-scroll ke samping) --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Emerald Header Banner (Sesuai Warna Web Utama) --}}
-            <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex items-center justify-between">
+            {{-- Top Emerald Header Banner --}}
+            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
                 <span class="flex items-center gap-2">
                     <i class="fa-solid fa-users text-white"></i> List Donatur
                 </span>
-                <span class="text-xs text-white/80 font-normal">Transaction Management → List Donatur</span>
+                <span class="text-xs text-emerald-100 font-normal">Transaction Management / List Donatur</span>
             </div>
 
             {{-- Flash Messages --}}
             @if(session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-center gap-3">
-                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                <div role="status" class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-emerald-700"></i>
                     {{ session('success') }}
                 </div>
             @endif
             @if($errors->any())
-                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-start gap-3">
-                    <i class="fa-solid fa-circle-exclamation text-rose-500 mt-0.5"></i>
+                <div role="alert" class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-start gap-3">
+                    <i class="fa-solid fa-circle-exclamation text-rose-700 mt-0.5"></i>
                     <ul class="list-disc list-inside space-y-1">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -81,20 +81,20 @@
                 </div>
             @endif
 
-            {{-- Filter Container & Search Bar (Tema Emerald Web Utama) --}}
+            {{-- Filter Container & Search Bar --}}
             <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm space-y-4">
                 
                 <form action="{{ route('admin.donors_list') }}" method="GET" class="space-y-4">
                     
                     {{-- Row 1: Search Bar & Toggle Advance Search --}}
                     <div class="flex flex-wrap items-center gap-3">
-                        <span class="text-xs font-bold text-slate-700">Search :</span>
-                        <input type="text" name="search" value="{{ request('search') }}" 
+                        <label for="donors_search" class="text-xs font-bold text-slate-700">Search :</label>
+                        <input id="donors_search" type="text" name="search" value="{{ request('search') }}" 
                                placeholder="Nama Lengkap/ID/No HP/Email" 
-                               class="flex-1 border border-slate-200 rounded-xl px-4 py-2 text-xs font-medium focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 min-w-[240px]">
+                               class="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] text-xs font-medium focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700 min-w-[240px]">
                         
-                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                            🔍 Search
+                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-magnifying-glass"></i> Search
                         </button>
                         
                         <button type="button" @click="showAdvanceSearch = !showAdvanceSearch" 
@@ -372,51 +372,51 @@
 
             {{-- Action Toolbar: Add, Edit, Delete, Export, Import, Detail Data --}}
             <div class="flex flex-wrap items-center gap-2 pt-1 pb-1">
-                <button type="button" @click="showAddModal = true" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+                <button type="button" @click="showAddModal = true" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
                     <i class="fa-solid fa-circle-plus"></i> Add
                 </button>
 
                 <button type="button" 
                         @click="if(selectedItem) { openEdit(selectedItem); } else { alert('Pilih donatur dari tabel terlebih dahulu.'); }" 
-                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+                        class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
                 </button>
 
                 <button type="button" 
                         @click="if(selectedId) { openDelete(selectedId, selectedName); } else { alert('Pilih donatur dari tabel terlebih dahulu.'); }" 
-                        class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+                        class="bg-rose-700 hover:bg-rose-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
                     <i class="fa-solid fa-trash-can"></i> Delete
                 </button>
 
-                <a href="{{ route('admin.donors.export', request()->query()) }}" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+                <a href="{{ route('admin.donors.export', request()->query()) }}" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
                     <i class="fa-solid fa-file-excel"></i> Export
                 </a>
 
                 <a href="{{ route('admin.donors.batch_receipt', request()->query()) }}" target="_blank" 
-                   class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                   class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
                    title="Download atau Cetak Semua Kwitansi Donatur Hasil Filter (atau Keseluruhan)">
                     <i class="fa-solid fa-file-invoice"></i> Download / Cetak Kwitansi Terfilter
                 </a>
 
-                <button type="button" @click="showImportModal = true" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+                <button type="button" @click="showImportModal = true" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
                     <i class="fa-solid fa-file-import"></i> Import
                 </button>
 
                 <button type="button" 
                         @click="if(selectedItem) { openDetail(selectedItem); } else { alert('Pilih donatur dari tabel terlebih dahulu.'); }" 
-                        class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all">
+                        class="bg-sky-700 hover:bg-sky-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
                     <i class="fa-solid fa-circle-info"></i> Detail Data
                 </button>
             </div>
 
-            {{-- Table Donatur Container (HANYA TABEL YANG DI-SCROLL KE SAMPIING - Tema Emerald Web Utama) --}}
+            {{-- Table Donatur Container --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm w-full">
                 
-                {{-- Horizontal Scrollable Wrapper (Khusus Tabel Saja) --}}
-                <div class="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-emerald-600 scrollbar-track-slate-100">
+                {{-- Horizontal Scrollable Wrapper --}}
+                <div class="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-slate-100">
                     <table class="w-full text-left border-collapse whitespace-nowrap min-w-[2400px]">
                         <thead>
-                            <tr class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase tracking-wider">
+                            <tr class="bg-emerald-700 text-white text-xs font-black uppercase tracking-wider">
                                 <th class="py-3.5 px-4 text-center">No</th>
                                 <th class="py-3.5 px-4">ID Donatur</th>
                                 <th class="py-3.5 px-4">Nama Lengkap</th>
@@ -568,29 +568,30 @@
         </div>
     </div>
 
-    {{-- ==================== MODAL ADD DONATUR ==================== --}}
-    <div x-show="showAddModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200">
+    {{-- Modal Add Donatur --}}
+    <div x-show="showAddModal" x-cloak @keydown.escape.window="showAddModal = false" role="dialog" aria-modal="true" aria-labelledby="add-donor-title" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showAddModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus text-emerald-600"></i> Tambah Data Donatur Baru
-                </h3>
-                <button @click="showAddModal = false" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h2 id="add-donor-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-emerald-700"></i> Tambah Data Donatur Baru
+                </h2>
+                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah donatur" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form action="{{ route('admin.donors.store') }}" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
                 @csrf
                 <div class="space-y-1">
-                    <label>Nama Lengkap Donatur <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    <label for="add_donor_name">Nama Lengkap Donatur <span class="text-rose-700">*</span></label>
+                    <input id="add_donor_name" type="text" name="name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
-                        <label>No HP / WA</label>
-                        <input type="text" name="phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="add_donor_phone">No HP / WA</label>
+                        <input id="add_donor_phone" type="text" name="phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                     </div>
                     <div class="space-y-1">
-                        <label>Jenis Kelamin</label>
-                        <select name="gender" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="add_donor_gender">Jenis Kelamin</label>
+                        <select id="add_donor_gender" name="gender" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                             <option value="">Pilih Jenis Kelamin</option>
                             <option value="L">Laki-Laki</option>
                             <option value="P">Perempuan</option>
@@ -598,13 +599,13 @@
                     </div>
                 </div>
                 <div class="space-y-1">
-                    <label>Email Donatur</label>
-                    <input type="email" name="email" placeholder="Kosongkan jika tidak ada" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    <label for="add_donor_email">Email Donatur</label>
+                    <input id="add_donor_email" type="email" name="email" placeholder="Kosongkan jika tidak ada" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
-                        <label>Kantor Layanan</label>
-                        <select name="office_id" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="add_donor_office">Kantor Layanan</label>
+                        <select id="add_donor_office" name="office_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                             <option value="">Pilih Kantor Layanan</option>
                             @foreach($offices as $ofc)
                                 <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -612,59 +613,60 @@
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label>Segmen</label>
-                        <input type="text" name="segment" placeholder="Digital/Web" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="add_donor_segment">Segmen</label>
+                        <input id="add_donor_segment" type="text" name="segment" placeholder="Digital/Web" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                     </div>
                 </div>
                 <div class="space-y-1">
-                    <label>Alamat Lengkap</label>
-                    <textarea name="address" rows="2" class="w-full border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-emerald-600"></textarea>
+                    <label for="add_donor_address">Alamat Lengkap</label>
+                    <textarea id="add_donor_address" name="address" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-emerald-700"></textarea>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
-                    <button type="button" @click="showAddModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md">Simpan Donatur</button>
+                    <button type="button" @click="showAddModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Simpan Donatur</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- ==================== MODAL EDIT DONATUR ==================== --}}
-    <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in zoom-in-95 duration-200">
+    {{-- Modal Edit Donatur --}}
+    <div x-show="showEditModal" x-cloak @keydown.escape.window="showEditModal = false" role="dialog" aria-modal="true" aria-labelledby="edit-donor-title" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showEditModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-emerald-600"></i> Edit Data Donatur
-                </h3>
-                <button @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h2 id="edit-donor-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-emerald-700"></i> Edit Data Donatur
+                </h2>
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit donatur" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form :action="'{{ url('admin/donors') }}/' + editData.id + '/update'" method="POST" class="space-y-4 text-xs font-semibold text-slate-700">
                 @csrf
                 @method('PUT')
                 <div class="space-y-1">
-                    <label>Nama Lengkap Donatur <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" x-model="editData.name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    <label for="edit_donor_name">Nama Lengkap Donatur <span class="text-rose-700">*</span></label>
+                    <input id="edit_donor_name" type="text" name="name" x-model="editData.name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
-                        <label>No HP / WA</label>
-                        <input type="text" name="phone" x-model="editData.phone" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="edit_donor_phone">No HP / WA</label>
+                        <input id="edit_donor_phone" type="text" name="phone" x-model="editData.phone" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                     </div>
                     <div class="space-y-1">
-                        <label>Jenis Kelamin</label>
-                        <select name="gender" x-model="editData.gender" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="edit_donor_gender">Jenis Kelamin</label>
+                        <select id="edit_donor_gender" name="gender" x-model="editData.gender" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                             <option value="L">Laki-Laki</option>
                             <option value="P">Perempuan</option>
                         </select>
                     </div>
                 </div>
                 <div class="space-y-1">
-                    <label>Email Donatur</label>
-                    <input type="email" name="email" x-model="editData.email" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                    <label for="edit_donor_email">Email Donatur</label>
+                    <input id="edit_donor_email" type="email" name="email" x-model="editData.email" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
-                        <label>Kantor Layanan</label>
-                        <select name="office_id" x-model="editData.office_id" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="edit_donor_office">Kantor Layanan</label>
+                        <select id="edit_donor_office" name="office_id" x-model="editData.office_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                             <option value="">Pilih Kantor Layanan</option>
                             @foreach($offices as $ofc)
                                 <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -672,88 +674,91 @@
                         </select>
                     </div>
                     <div class="space-y-1">
-                        <label>Segmen</label>
-                        <input type="text" name="segment" x-model="editData.segment" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-emerald-600">
+                        <label for="edit_donor_segment">Segmen</label>
+                        <input id="edit_donor_segment" type="text" name="segment" x-model="editData.segment" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
                     </div>
                 </div>
                 <div class="space-y-1">
-                    <label>Alamat Lengkap</label>
-                    <textarea name="address" x-model="editData.address" rows="2" class="w-full border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-emerald-600"></textarea>
+                    <label for="edit_donor_address">Alamat Lengkap</label>
+                    <textarea id="edit_donor_address" name="address" x-model="editData.address" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-emerald-700"></textarea>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
-                    <button type="button" @click="showEditModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md">Perbarui Donatur</button>
+                    <button type="button" @click="showEditModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Perbarui Donatur</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- ==================== MODAL DELETE DONATUR ==================== --}}
-    <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center animate-in zoom-in-95 duration-200">
-            <div class="w-14 h-14 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center text-2xl mx-auto">
+    {{-- Modal Delete Donatur --}}
+    <div x-show="showDeleteModal" x-cloak @keydown.escape.window="showDeleteModal = false" role="dialog" aria-modal="true" aria-labelledby="delete-donor-title" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showDeleteModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 text-center">
+            <div class="w-14 h-14 bg-rose-50 text-rose-700 rounded-full flex items-center justify-center text-2xl mx-auto">
                 <i class="fa-solid fa-trash-can"></i>
             </div>
             <div class="space-y-1">
-                <h3 class="text-base font-black text-slate-900">Konfirmasi Hapus</h3>
-                <p class="text-xs text-slate-500 font-medium">Apakah Anda yakin ingin menghapus data donatur <span class="font-bold text-slate-900" x-text="selectedName"></span>?</p>
+                <h2 id="delete-donor-title" class="text-base font-black text-slate-900">Konfirmasi Hapus</h2>
+                <p class="text-xs text-slate-600 font-medium">Apakah Anda yakin ingin menghapus data donatur <span class="font-bold text-slate-900" x-text="selectedName"></span>?</p>
             </div>
             <form :action="'{{ url('admin/donors') }}/' + selectedId + '/delete'" method="POST" class="flex justify-center gap-3 pt-2">
                 @csrf
                 @method('DELETE')
-                <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs">Batal</button>
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md">Ya, Hapus Data</button>
+                <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold text-xs">Batal</button>
+                <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-bold text-xs shadow-md">Ya, Hapus Data</button>
             </form>
         </div>
     </div>
 
-    {{-- ==================== MODAL IMPORT CSV ==================== --}}
-    <div x-show="showImportModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-200">
+    {{-- Modal Import CSV --}}
+    <div x-show="showImportModal" x-cloak @keydown.escape.window="showImportModal = false" role="dialog" aria-modal="true" aria-labelledby="import-donor-title" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showImportModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-file-import text-emerald-600"></i> Import Data Donatur (CSV)
-                </h3>
-                <button @click="showImportModal = false" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h2 id="import-donor-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-file-import text-emerald-700"></i> Import Data Donatur (CSV)
+                </h2>
+                <button type="button" @click="showImportModal = false" aria-label="Tutup modal import donatur" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form action="{{ route('admin.donors.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs font-semibold text-slate-700">
                 @csrf
                 <div class="space-y-1">
-                    <label>Pilih File Excel / CSV (.csv)</label>
-                    <input type="file" name="file" accept=".csv" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5">
+                    <label for="import_donor_file">Pilih File Excel / CSV (.csv)</label>
+                    <input id="import_donor_file" type="file" name="file" accept=".csv" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px]">
                 </div>
-                <p class="text-[10px] text-slate-400 italic">Format kolom CSV: No, ID Donatur, Nama Lengkap, Jenis Kelamin, No HP, Email, Kantor Layanan, Segmen</p>
+                <p class="text-xs text-slate-600 italic">Format kolom CSV: No, ID Donatur, Nama Lengkap, Jenis Kelamin, No HP, Email, Kantor Layanan, Segmen</p>
                 <div class="flex justify-end gap-3 pt-2">
-                    <button type="button" @click="showImportModal = false" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md">Upload & Import</button>
+                    <button type="button" @click="showImportModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Upload & Import</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- ==================== MODAL DETAIL DATA ==================== --}}
-    <div x-show="showDetailModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-200" x-if="selectedItem">
+    {{-- Modal Detail Data --}}
+    <div x-show="showDetailModal" x-cloak @keydown.escape.window="showDetailModal = false" role="dialog" aria-modal="true" aria-labelledby="detail-donor-title" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showDetailModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4" x-if="selectedItem">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-circle-info text-sky-600"></i> Detail Data Donatur
-                </h3>
-                <button @click="showDetailModal = false" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                <h2 id="detail-donor-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-sky-700"></i> Detail Data Donatur
+                </h2>
+                <button type="button" @click="showDetailModal = false" aria-label="Tutup modal detail donatur" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-2 text-xs font-semibold text-slate-700 divide-y divide-slate-100">
-                <div class="py-2 flex justify-between"><span class="text-slate-400">ID Donatur:</span><span class="font-bold font-mono text-emerald-700" x-text="'022607' + String(selectedItem.id).padStart(8, '0')"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">Nama Lengkap:</span><span class="font-bold text-slate-900" x-text="selectedItem.name"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">Jenis Kelamin:</span><span x-text="selectedItem.gender === 'L' ? 'Laki-Laki' : (selectedItem.gender === 'P' ? 'Perempuan' : '-')"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">No HP / WA:</span><span class="font-mono" x-text="selectedItem.phone || '-'"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">Email:</span><span x-text="selectedItem.email || '-'"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">Segmen:</span><span x-text="selectedItem.segment || '-'"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-400">RFM All Time:</span><span class="font-bold text-emerald-600" x-text="selectedItem.rfm_alltime || '-'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">ID Donatur:</span><span class="font-bold font-mono text-emerald-700" x-text="'022607' + String(selectedItem.id).padStart(8, '0')"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">Nama Lengkap:</span><span class="font-bold text-slate-900" x-text="selectedItem.name"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">Jenis Kelamin:</span><span x-text="selectedItem.gender === 'L' ? 'Laki-Laki' : (selectedItem.gender === 'P' ? 'Perempuan' : '-')"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">No HP / WA:</span><span class="font-mono" x-text="selectedItem.phone || '-'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">Email:</span><span x-text="selectedItem.email || '-'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">Segmen:</span><span x-text="selectedItem.segment || '-'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">RFM All Time:</span><span class="font-bold text-emerald-700" x-text="selectedItem.rfm_alltime || '-'"></span></div>
             </div>
             <div class="flex justify-end gap-3 pt-2">
-                <a :href="'/admin/donors/' + selectedItem.id + '/receipt'" target="_blank" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold flex items-center gap-2 text-xs">
+                <a :href="'/admin/donors/' + selectedItem.id + '/receipt'" target="_blank" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold inline-flex items-center gap-2 text-xs">
                     <i class="fa-solid fa-print"></i> Cetak Bukti Donasi
                 </a>
-                <button type="button" @click="showDetailModal = false" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs">Tutup</button>
+                <button type="button" @click="showDetailModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs">Tutup</button>
             </div>
         </div>
     </div>
