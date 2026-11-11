@@ -1,6 +1,6 @@
 @php
     $active = $active ?? '';
-    $groupBtnBase = 'w-full min-h-[48px] px-5 py-3.5 flex justify-between items-center cursor-pointer transition-colors text-left border-l-4';
+    $groupBtnBase = 'w-full min-h-[48px] px-5 py-3.5 flex justify-between items-center cursor-pointer transition-colors text-left';
     $menuLinkBase = 'w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors duration-200 group border text-left';
     $menuLinkActive = 'bg-primary-50 text-[#063f5c] border-primary-300 shadow-xs font-black';
     $menuLinkIdle = 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-primary-700 hover:border-slate-200';
@@ -57,7 +57,7 @@
     <!-- 1. MENU UTAMA GROUP -->
     @if(Auth::user()->canAccessMenu('dashboard') || Auth::user()->canAccessMenu('analytics') || Auth::user()->canAccessMenu('campaigns') || Auth::user()->canAccessMenu('donations'))
     <div x-data="{ isOpen: {{ in_array($active, ['dashboard', 'analytics', 'campaigns', 'donations']) ? 'true' : 'false' }} }">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white' : 'bg-white text-slate-800 hover:bg-slate-50 hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
             <span class="text-xs font-black uppercase tracking-wider">Menu Utama</span>
             <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''" aria-hidden="true"></i>
         </button>
@@ -104,7 +104,7 @@
     <!-- 2. MONITORING STAFF GROUP -->
     @if(Auth::user()->canAccessMenu('attendance') || Auth::user()->canAccessMenu('tasks') || Auth::user()->canAccessMenu('performance'))
     <div x-data="{ isOpen: {{ in_array($active, ['attendance', 'tasks', 'performance']) ? 'true' : 'false' }} }" class="border-t border-slate-200">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white' : 'bg-white text-slate-800 hover:bg-slate-50 hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
             <span class="text-xs font-black uppercase tracking-wider">Monitoring Staff</span>
             <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''" aria-hidden="true"></i>
         </button>
@@ -142,7 +142,7 @@
     <!-- 3. ADMIN MANAGEMENT GROUP -->
     @if(Auth::user()->canAccessMenu('users') || Auth::user()->canAccessMenu('offices') || Auth::user()->canAccessMenu('karyawan') || Auth::user()->canAccessMenu('donor_channels') || Auth::user()->canAccessMenu('program_groups') || Auth::user()->canAccessMenu('programs') || Auth::user()->canAccessMenu('payment_via') || Auth::user()->canAccessMenu('prospect_media') || Auth::user()->canAccessMenu('prospect_methods') || Auth::user()->canAccessMenu('prospect_types') || Auth::user()->canAccessMenu('fundraisers') || Auth::user()->canAccessMenu('prospect_responses') || Auth::user()->canAccessMenu('targets') || Auth::user()->canAccessMenu('settings'))
     <div x-data="{ isOpen: {{ in_array($active, ['users', 'offices', 'karyawan', 'donor_channels', 'program_groups', 'programs', 'payment_via', 'prospect_media', 'prospect_methods', 'prospect_types', 'fundraisers', 'prospect_responses', 'targets', 'settings']) ? 'true' : 'false' }} }" class="border-t border-slate-200">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white' : 'bg-white text-slate-800 hover:bg-slate-50 hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
             <span class="text-xs font-black uppercase tracking-wider">Admin Management</span>
             <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''" aria-hidden="true"></i>
         </button>
@@ -279,7 +279,7 @@
     <!-- 4. DISTRIBUSI MANAGEMENT GROUP -->
     @if(Auth::user()->canAccessMenu('distribution_dashboard') || Auth::user()->canAccessMenu('distributions'))
     <div x-data="{ isOpen: {{ in_array($active, ['distribution_dashboard', 'distributions']) ? 'true' : 'false' }} }" class="border-t border-slate-200">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white' : 'bg-white text-slate-800 hover:bg-slate-50 hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
             <span class="text-xs font-black uppercase tracking-wider">Distribusi Management</span>
             <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''" aria-hidden="true"></i>
         </button>
@@ -307,7 +307,7 @@
 
     <!-- 4.5. SISTEM DATA HARPA GROUP (Alur A - F) -->
     <div x-data="{ isOpen: {{ str_starts_with($active, 'harpa_') ? 'true' : 'false' }} }" class="border-t border-slate-200">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white' : 'bg-white text-slate-800 hover:bg-slate-50 hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
             <span class="text-xs font-black uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-solid fa-database" :class="isOpen ? 'text-[#f7ad1a]' : 'text-[#063f5c]'" aria-hidden="true"></i> Sistem Data Harpa
             </span>
@@ -375,7 +375,7 @@
     <!-- 4.6. MARKETING & META ADS GROUP -->
     @if(Auth::user()->canAccessMenu('marketing_dashboard') || Auth::user()->canAccessMenu('marketing_input'))
     <div x-data="{ isOpen: {{ str_starts_with($active, 'marketing_') ? 'true' : 'false' }} }" class="border-t border-slate-200">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white' : 'bg-white text-slate-800 hover:bg-slate-50 hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
             <span class="text-xs font-black uppercase tracking-wider flex items-center gap-2">
                 <i class="fa-brands fa-meta" :class="isOpen ? 'text-[#f7ad1a]' : 'text-[#063f5c]'" aria-hidden="true"></i> Marketing &amp; Meta Ads
             </span>
@@ -406,7 +406,7 @@
     <!-- 5. TRANSACTION MANAGEMENT GROUP -->
     @if(Auth::user()->canAccessMenu('donors_list') || Auth::user()->canAccessMenu('transactions_list') || Auth::user()->canAccessMenu('prospects_list') || Auth::user()->canAccessMenu('potential_donors') || Auth::user()->canAccessMenu('transactions_dashboard') || Auth::user()->canAccessMenu('donors_dashboard') || Auth::user()->canAccessMenu('prospects_dashboard') || Auth::user()->canAccessMenu('target_vs_achievement') || Auth::user()->canAccessMenu('rfm_dashboard'))
     <div x-data="{ isOpen: {{ in_array($active, ['donors_list', 'transactions_list', 'prospects_list', 'potential_donors', 'transactions_dashboard', 'donors_dashboard', 'prospects_dashboard', 'target_vs_achievement', 'rfm_dashboard']) ? 'true' : 'false' }} }" class="border-t border-slate-200">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white' : 'bg-white text-slate-800 hover:bg-slate-50 hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
             <span class="text-xs font-black uppercase tracking-wider">Transaction Management</span>
             <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''" aria-hidden="true"></i>
         </button>

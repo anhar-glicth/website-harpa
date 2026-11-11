@@ -161,7 +161,16 @@
 - **R-16 (No AI Buzzwords):** **PASS** (Bebas buzzword generik AI).
 - **R-20 (Brand Distinction):** **PASS** (Palet Navy `#063f5c` & Gold `#f7ad1a`, SK legalitas Kemenkumham resmi, peta titik GPS, dan terminologi dakwah/kemanusiaan spesifik Harapan Palestina).
 - **R-21 (Theme Appropriateness):** **PASS** (Tema terang bersih di publik, autentikasi, dan panel internal).
-- **R-29 (Palette Restraint):** **PASS** (2 warna utama Navy + Neutral canvas, 1 aksen Gold, serta warna semantik status data hijau/amber/rose).
+- **R-29 (Palette Restraint):** **PASS** (2 warna utama Navy `#063f5c` + Light neutral `#F8FAFC`/`#FFFFFF`, 1 aksen Gold `#f7ad1a`, akordeon sidebar konsisten satu sistem dua-status tanpa pelangi, kolom Kanban solid tanpa latar pastel transparan, kartu/badge/callout memakai permukaan netral `bg-slate-50`/`bg-white` dengan titik indikator semantik `6px` alih-alih kotak tint pastel generik).
 - **R-30 (Originality):** **PASS** (Mengikuti sistem visual institusi kemanusiaan Harapan Palestina, bukan tiruan SaaS generik).
 - **R-31 (Explainability):** **PASS** (Setiap keputusan visual serta komentar kode terdokumentasi ringkas; banner komentar berulang dihapus).
+
+---
+
+## Penyempurnaan Visual Lanjutan (Pasca Review Screenshot)
+
+Menindaklanjuti masukan visual pada `/admin/tasks` dan `/admin/harpa/import-donasi`:
+1. **Sidebar Akordeon Monokrom-Brand (`laravel/resources/views/admin/sidebar.blade.php`):** Seluruh 7 header grup menu disatukan ke satu pola konsisten: Navy `#063f5c` dengan garis kiri Gold `#f7ad1a` saat terbuka (`isOpen`), dan permukaan putih/slate bersih saat tertutup, menghapus kolase 5+ warna berbeda yang bertumpuk.
+2. **Kolom & Kartu Kanban (`laravel/resources/views/components/trello-board.blade.php`, `trello-card.blade.php`):** Menghapus latar kolom transparan pastel (`bg-amber-50/50`, `bg-emerald-50/50`, `bg-slate-100/80`) beserta ikon `fa-bolt` dan menggantinya dengan lane `bg-slate-100 border-slate-200` solid; mengganti badge hitungan pastel hijau/kuning dan pil `bg-indigo-50`/`bg-emerald-50` dengan badge netral `bg-white`/`bg-slate-50 border-slate-200` bertitik semantik `6px`; menghapus pemotongan nama staf/pemberi tugas ber-elipsis (`truncate max-w-[120px]`/`[100px]`) dan ikon hover-only `fa-ellipsis-vertical` agar nama staf tampil utuh dan terbaca.
+3. **Callout Template CSV, Banner Gerbang Berhenti, & Badge Tabel (`admin/harpa/*.blade.php`, `admin/users.blade.php`, `admin/monitoring.blade.php`, `admin/analytics.blade.php`, `admin/distribution_dashboard.blade.php`, `admin/rfm_dashboard.blade.php`, `admin/marketing/*.blade.php`, `admin/batch_receipt.blade.php`, `admin/donor_receipt.blade.php`, `admin/donors_*.blade.php`, `admin/transactions_*.blade.php`, `admin/karyawan.blade.php`, `admin/targets*.blade.php`, `home.blade.php`, `dashboard.blade.php`):** Mengubah kotak callout pastel mint CSV menjadi kontainer netral `bg-slate-50 border-slate-200` beraksen kiri Navy `#063f5c` dan tombol `#063f5c`/`outline`, mengganti tombol export pastel hijau & badge status/segmen/peran pastel dengan chip netral bertitik indikator semantik, serta menghapus `text-[8px]` pada riwayat donatur.
 

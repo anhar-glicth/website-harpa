@@ -15,29 +15,19 @@
      @keydown.space.prevent="openDetailModal({{ $todo->toJson() }})"
      class="trello-card bg-white rounded-2xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition-colors cursor-grab active:cursor-grabbing space-y-3 group select-none relative hover:border-primary-400">
     
-    <!-- Card Top Header: Status Badge & Indicators -->
+    <!-- Card Top Header: Status & Proof Indicators -->
     <div class="flex items-center justify-between gap-2">
         <div>
             @if($isCompleted)
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-700 shrink-0" aria-hidden="true"></span> Selesai
-                </span>
+                <span class="text-xs font-bold text-emerald-700">Selesai</span>
             @elseif($isOverdue)
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-rose-700 shrink-0" aria-hidden="true"></span> Terlambat
-                </span>
+                <span class="text-xs font-bold text-rose-700">Terlambat ({{ $todo->deadline->format('d M') }})</span>
             @elseif($isDueSoon)
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a] shrink-0" aria-hidden="true"></span> Hari Ini
-                </span>
+                <span class="text-xs font-bold text-amber-800">Hari ini ({{ $todo->deadline->format('d M') }})</span>
             @elseif($todo->deadline)
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200">
-                    <i class="fa-regular fa-calendar text-xs text-slate-500" aria-hidden="true"></i> {{ $todo->deadline->format('d M') }}
-                </span>
+                <span class="text-xs font-medium text-slate-600">{{ $todo->deadline->format('d M Y') }}</span>
             @else
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true"></span> Tugas
-                </span>
+                <span class="text-xs font-medium text-slate-500">Tugas</span>
             @endif
         </div>
 

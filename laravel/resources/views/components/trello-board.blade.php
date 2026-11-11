@@ -149,13 +149,12 @@
                 
                 <!-- Lane Header -->
                 <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-slate-500 inline-block" aria-hidden="true"></span>
+                    <div class="flex items-baseline gap-2">
                         <h3 class="font-montserrat font-black text-slate-800 text-xs sm:text-sm uppercase tracking-wider">
                             To Do
                         </h3>
                         <span id="badge-pending" 
-                              class="px-2 py-0.5 rounded-md text-xs font-black bg-white text-slate-800 border border-slate-200">
+                              class="text-xs font-bold text-slate-600 tabular-nums">
                             {{ $pendingTodos->count() }}
                         </span>
                     </div>
@@ -197,13 +196,12 @@
                 
                 <!-- Lane Header -->
                 <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#f7ad1a] inline-block" aria-hidden="true"></span>
-                        <h3 class="font-montserrat font-black text-slate-800 text-xs sm:text-sm uppercase tracking-wider">
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="font-montserrat font-black text-slate-900 text-xs sm:text-sm uppercase tracking-wider">
                             In Progress
                         </h3>
                         <span id="badge-in_progress" 
-                              class="px-2 py-0.5 rounded-md text-xs font-black bg-white text-slate-700 border border-slate-200">
+                              class="text-xs font-bold text-[#063f5c] tabular-nums">
                             {{ $inProgressTodos->count() }}
                         </span>
                     </div>
@@ -245,13 +243,12 @@
                 
                 <!-- Lane Header -->
                 <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-700 inline-block" aria-hidden="true"></span>
-                        <h3 class="font-montserrat font-black text-slate-800 text-xs sm:text-sm uppercase tracking-wider">
+                    <div class="flex items-baseline gap-2">
+                        <h3 class="font-montserrat font-black text-slate-900 text-xs sm:text-sm uppercase tracking-wider">
                             Selesai (Done)
                         </h3>
                         <span id="badge-completed" 
-                              class="px-2 py-0.5 rounded-md text-xs font-black bg-white text-slate-700 border border-slate-200">
+                              class="text-xs font-bold text-emerald-700 tabular-nums">
                             {{ $completedTodos->count() }}
                         </span>
                     </div>
@@ -335,17 +332,11 @@
                             </td>
                             <td class="py-3 px-4">
                                 @if($t->status === 'completed')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-700 shrink-0" aria-hidden="true"></span> Selesai
-                                    </span>
+                                    <span class="text-xs font-bold text-emerald-700">Selesai</span>
                                 @elseif($t->status === 'in_progress')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a] shrink-0" aria-hidden="true"></span> In Progress
-                                    </span>
+                                    <span class="text-xs font-bold text-[#063f5c]">In Progress</span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true"></span> To Do
-                                    </span>
+                                    <span class="text-xs font-semibold text-slate-600">To Do</span>
                                 @endif
                             </td>
                             <td class="py-3 px-4 text-xs font-mono">
@@ -403,13 +394,10 @@
             <!-- Modal Header -->
             <div class="space-y-2 pr-10">
                 <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
-                        <span class="w-1.5 h-1.5 rounded-full shrink-0"
-                              :class="detailModal.data.status === 'completed' ? 'bg-emerald-700' : (detailModal.data.status === 'in_progress' ? 'bg-[#f7ad1a]' : 'bg-slate-400')"
-                              aria-hidden="true"></span>
-                        <span x-text="detailModal.data.status === 'completed' ? 'Selesai (Done)' : (detailModal.data.status === 'in_progress' ? 'In Progress' : 'To Do')"></span>
-                    </span>
-                    <span class="text-xs text-slate-600 font-bold" x-text="'ID: #' + detailModal.data.id"></span>
+                    <span class="text-xs font-black uppercase tracking-wider"
+                          :class="detailModal.data.status === 'completed' ? 'text-emerald-700' : (detailModal.data.status === 'in_progress' ? 'text-[#063f5c]' : 'text-slate-600')"
+                          x-text="detailModal.data.status === 'completed' ? 'Selesai (Done)' : (detailModal.data.status === 'in_progress' ? 'In Progress' : 'To Do')"></span>
+                    <span class="text-xs text-slate-500 font-bold" x-text="'#' + detailModal.data.id"></span>
                 </div>
                 <h2 id="trello-detail-title" class="text-lg sm:text-xl font-montserrat font-black text-slate-900 tracking-tight" 
                     x-text="detailModal.data.task"></h2>
