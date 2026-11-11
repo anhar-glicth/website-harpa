@@ -25,6 +25,8 @@
 
     <!-- Toast Notification -->
     <div x-show="toast.show" 
+         role="status"
+         aria-live="polite"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform translate-y-4"
          x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -33,7 +35,7 @@
          x-transition:leave-end="opacity-0 transform translate-y-4"
          style="display: none;"
          class="fixed bottom-6 right-6 z-[300] max-w-sm px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 border text-xs font-bold"
-         :class="toast.type === 'success' ? 'bg-emerald-600 text-white border-emerald-500 shadow-emerald-500/20' : 'bg-rose-600 text-white border-rose-500 shadow-rose-500/20'">
+         :class="toast.type === 'success' ? 'bg-emerald-700 text-white border-emerald-600 shadow-emerald-700/20' : 'bg-rose-700 text-white border-rose-600 shadow-rose-700/20'">
         <i class="fa-solid" :class="toast.type === 'success' ? 'fa-circle-check text-base' : 'fa-circle-exclamation text-base'"></i>
         <span x-text="toast.message"></span>
     </div>
@@ -53,7 +55,7 @@
                         <h2 class="text-base sm:text-lg font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
                             Papan <span class="text-primary-600">Tugas (Trello Board)</span>
                         </h2>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                        <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">
                             <span x-text="counts.completed">{{ $completedCount }}</span> dari <span x-text="counts.total">{{ $totalCount }}</span> Selesai (<span x-text="progressPercent">{{ $progressPercent }}</span>%)
                         </p>
                     </div>
@@ -61,7 +63,7 @@
 
                 <!-- Mini Progress Bar -->
                 <div class="w-full sm:w-64 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                    <div class="h-full bg-emerald-700 rounded-full transition-all duration-500"
                          :style="'width: ' + progressPercent + '%'"></div>
                 </div>
             </div>
@@ -72,15 +74,17 @@
                 @if($showViewToggle)
                 <!-- View Toggle Buttons -->
                 <div class="bg-slate-100 p-1 rounded-2xl flex items-center text-xs font-bold text-slate-600">
-                    <button @click="currentView = 'kanban'" 
-                            :class="currentView === 'kanban' ? 'bg-white text-primary-600 shadow-xs' : 'text-slate-500 hover:text-slate-800'"
-                            class="px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider">
+                    <button type="button" @click="currentView = 'kanban'" 
+                            :aria-pressed="currentView === 'kanban'"
+                            :class="currentView === 'kanban' ? 'bg-white text-primary-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                            class="px-3.5 py-2 min-h-[44px] rounded-xl transition-colors inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider">
                         <i class="fa-solid fa-table-columns"></i>
                         <span>Papan Kanban</span>
                     </button>
-                    <button @click="currentView = 'table'" 
-                            :class="currentView === 'table' ? 'bg-white text-primary-600 shadow-xs' : 'text-slate-500 hover:text-slate-800'"
-                            class="px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider">
+                    <button type="button" @click="currentView = 'table'" 
+                            :aria-pressed="currentView === 'table'"
+                            :class="currentView === 'table' ? 'bg-white text-primary-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                            class="px-3.5 py-2 min-h-[44px] rounded-xl transition-colors inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider">
                         <i class="fa-solid fa-list-check"></i>
                         <span>Tabel List</span>
                     </button>
@@ -88,8 +92,8 @@
                 @endif
 
                 <!-- Button Buat Tugas Baru -->
-                <button @click="openCreateModal()" 
-                        class="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-sm shadow-primary-600/20 transition-all">
+                <button type="button" @click="openCreateModal()" 
+                        class="px-4 py-2.5 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-sm shadow-primary-600/20 transition-colors">
                     <i class="fa-solid fa-plus text-xs"></i>
                     <span>Tugas Baru</span>
                 </button>
@@ -101,21 +105,22 @@
             
             <!-- Real-time Search Box -->
             <div class="relative flex-1 min-w-[200px]">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
                 <input type="text" 
+                       aria-label="Cari kartu tugas atau staf"
                        x-model="searchQuery" 
                        @input="filterCards()" 
                        placeholder="Cari kartu tugas atau staf..." 
-                       class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-primary-500 focus:bg-white transition-all">
+                       class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-4 py-2.5 min-h-[44px] text-xs font-semibold text-slate-800 placeholder:text-slate-500 focus:border-primary-500 focus:bg-white transition-colors">
             </div>
 
             @if($workers->count() > 0)
             <!-- Assignee Filter -->
             <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider hidden sm:inline">Pegawai:</span>
-                <select x-model="selectedAssignee" 
+                <label for="trello_filter_assignee" class="text-xs font-bold text-slate-600 uppercase tracking-wider hidden sm:inline">Pegawai:</label>
+                <select id="trello_filter_assignee" x-model="selectedAssignee" 
                         @change="filterCards()" 
-                        class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:border-primary-500">
+                        class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs font-bold text-slate-700 focus:border-primary-500">
                     <option value="">Semua Pegawai</option>
                     @foreach($workers as $w)
                         <option value="{{ $w->id }}">{{ $w->name }}</option>
@@ -124,41 +129,40 @@
             </div>
             @endif
 
-            <button x-show="searchQuery || selectedAssignee" 
+            <button type="button" x-show="searchQuery || selectedAssignee" 
                     @click="resetFilters()" 
                     style="display: none;"
-                    class="text-[11px] font-bold text-rose-500 hover:text-rose-700 underline px-1">
+                    class="min-h-[44px] text-xs font-bold text-rose-700 hover:text-rose-800 underline px-2">
                 Reset Filter
             </button>
         </div>
     </div>
 
-    <!-- VIEW 1: TRELLO KANBAN BOARD -->
+    <!-- View 1: Trello Kanban Board -->
     <div x-show="currentView === 'kanban'" x-transition class="space-y-4">
         
         <!-- Kanban Columns Grid (3 Lanes) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
             
-            <!-- ========================================== -->
-            <!-- LANE 1: TO DO (Belum Dikerjakan) -->
-            <!-- ========================================== -->
+            <!-- Lane 1: To Do (Belum Dikerjakan) -->
             <div class="bg-slate-100/80 border border-slate-200/80 rounded-3xl p-4 flex flex-col shadow-xs">
                 
                 <!-- Lane Header -->
                 <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
                     <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-slate-400 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-slate-500 inline-block"></span>
                         <h3 class="font-montserrat font-black text-slate-800 text-xs sm:text-sm uppercase tracking-wider">
                             To Do
                         </h3>
                         <span id="badge-pending" 
-                              class="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-200 text-slate-700">
+                              class="px-2 py-0.5 rounded-full text-xs font-black bg-slate-200 text-slate-800">
                             {{ $pendingTodos->count() }}
                         </span>
                     </div>
 
-                    <button @click="openCreateModal('pending')" 
-                            class="w-6 h-6 rounded-lg bg-white hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all shadow-xs" 
+                    <button type="button" @click="openCreateModal('pending')" 
+                            aria-label="Tambah Kartu di Kolom To Do"
+                            class="w-11 h-11 rounded-lg bg-white hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors shadow-xs" 
                             title="Tambah Kartu di Kolom Ini">
                         <i class="fa-solid fa-plus text-xs"></i>
                     </button>
@@ -171,43 +175,42 @@
                     @forelse($pendingTodos as $item)
                         @include('components.trello-card', ['todo' => $item])
                     @empty
-                        <div class="empty-lane-placeholder py-12 text-center text-slate-400 text-xs font-bold space-y-1">
-                            <i class="fa-regular fa-clipboard text-slate-300 text-2xl block mb-1"></i>
+                        <div class="empty-lane-placeholder py-12 text-center text-slate-600 text-xs font-bold space-y-1">
+                            <i class="fa-regular fa-clipboard text-slate-400 text-2xl block mb-1"></i>
                             <p>Tidak ada tugas pending</p>
-                            <p class="text-[10px] font-normal text-slate-400">Tarik kartu ke sini atau buat baru</p>
+                            <p class="text-xs font-normal text-slate-600">Tarik kartu ke sini atau buat baru</p>
                         </div>
                     @endforelse
                 </div>
 
                 <!-- Quick Add Card at Lane Footer -->
                 <div class="mt-3 pt-2 border-t border-slate-200/60">
-                    <button @click="openCreateModal('pending')" 
-                            class="w-full py-2.5 px-3 rounded-2xl text-slate-500 hover:text-primary-700 hover:bg-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-primary-300">
-                        <i class="fa-solid fa-plus text-[10px]"></i> Tambah Kartu Baru
+                    <button type="button" @click="openCreateModal('pending')" 
+                            class="w-full py-2.5 px-3 min-h-[44px] rounded-2xl text-slate-700 hover:text-primary-700 hover:bg-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 border border-dashed border-slate-300 hover:border-primary-300">
+                        <i class="fa-solid fa-plus text-xs"></i> Tambah Kartu Baru
                     </button>
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- LANE 2: IN PROGRESS (Sedang Berjalan) -->
-            <!-- ========================================== -->
+            <!-- Lane 2: In Progress (Sedang Berjalan) -->
             <div class="bg-amber-50/50 border border-amber-200/70 rounded-3xl p-4 flex flex-col shadow-xs">
                 
                 <!-- Lane Header -->
                 <div class="flex items-center justify-between pb-3 mb-3 border-b border-amber-200/80">
                     <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-600 inline-block"></span>
                         <h3 class="font-montserrat font-black text-amber-900 text-xs sm:text-sm uppercase tracking-wider">
                             In Progress
                         </h3>
                         <span id="badge-in_progress" 
-                              class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-200 text-amber-900">
+                              class="px-2 py-0.5 rounded-full text-xs font-black bg-amber-200 text-amber-900">
                             {{ $inProgressTodos->count() }}
                         </span>
                     </div>
 
-                    <button @click="openCreateModal('in_progress')" 
-                            class="w-6 h-6 rounded-lg bg-white hover:bg-amber-200 text-amber-700 flex items-center justify-center transition-all shadow-xs" 
+                    <button type="button" @click="openCreateModal('in_progress')" 
+                            aria-label="Tambah Kartu di Kolom In Progress"
+                            class="w-11 h-11 rounded-lg bg-white hover:bg-amber-200 text-amber-800 flex items-center justify-center transition-colors shadow-xs" 
                             title="Tambah Kartu di Kolom Ini">
                         <i class="fa-solid fa-plus text-xs"></i>
                     </button>
@@ -220,43 +223,42 @@
                     @forelse($inProgressTodos as $item)
                         @include('components.trello-card', ['todo' => $item])
                     @empty
-                        <div class="empty-lane-placeholder py-12 text-center text-amber-600/60 text-xs font-bold space-y-1">
-                            <i class="fa-solid fa-bolt text-amber-300 text-2xl block mb-1"></i>
+                        <div class="empty-lane-placeholder py-12 text-center text-amber-800 text-xs font-bold space-y-1">
+                            <i class="fa-solid fa-bolt text-amber-600 text-2xl block mb-1"></i>
                             <p>Belum ada yang dikerjakan</p>
-                            <p class="text-[10px] font-normal text-amber-600/50">Tarik tugas ke sini untuk mulai pengerjaan</p>
+                            <p class="text-xs font-normal text-amber-800">Tarik tugas ke sini untuk mulai pengerjaan</p>
                         </div>
                     @endforelse
                 </div>
 
                 <!-- Quick Add Card at Lane Footer -->
                 <div class="mt-3 pt-2 border-t border-amber-200/60">
-                    <button @click="openCreateModal('in_progress')" 
-                            class="w-full py-2.5 px-3 rounded-2xl text-amber-700 hover:text-amber-900 hover:bg-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-dashed border-amber-300 hover:border-amber-400">
-                        <i class="fa-solid fa-plus text-[10px]"></i> Tambah Kartu Baru
+                    <button type="button" @click="openCreateModal('in_progress')" 
+                            class="w-full py-2.5 px-3 min-h-[44px] rounded-2xl text-amber-800 hover:text-amber-900 hover:bg-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 border border-dashed border-amber-300 hover:border-amber-400">
+                        <i class="fa-solid fa-plus text-xs"></i> Tambah Kartu Baru
                     </button>
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- LANE 3: DONE (Selesai) -->
-            <!-- ========================================== -->
+            <!-- Lane 3: Done (Selesai) -->
             <div class="bg-emerald-50/50 border border-emerald-200/70 rounded-3xl p-4 flex flex-col shadow-xs">
                 
                 <!-- Lane Header -->
                 <div class="flex items-center justify-between pb-3 mb-3 border-b border-emerald-200/80">
                     <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-700 inline-block"></span>
                         <h3 class="font-montserrat font-black text-emerald-900 text-xs sm:text-sm uppercase tracking-wider">
                             Selesai (Done)
                         </h3>
                         <span id="badge-completed" 
-                              class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-200 text-emerald-900">
+                              class="px-2 py-0.5 rounded-full text-xs font-black bg-emerald-200 text-emerald-900">
                             {{ $completedTodos->count() }}
                         </span>
                     </div>
 
-                    <button @click="openCreateModal('completed')" 
-                            class="w-6 h-6 rounded-lg bg-white hover:bg-emerald-200 text-emerald-700 flex items-center justify-center transition-all shadow-xs" 
+                    <button type="button" @click="openCreateModal('completed')" 
+                            aria-label="Tambah Kartu di Kolom Selesai"
+                            class="w-11 h-11 rounded-lg bg-white hover:bg-emerald-200 text-emerald-800 flex items-center justify-center transition-colors shadow-xs" 
                             title="Tambah Kartu di Kolom Ini">
                         <i class="fa-solid fa-plus text-xs"></i>
                     </button>
@@ -269,19 +271,19 @@
                     @forelse($completedTodos as $item)
                         @include('components.trello-card', ['todo' => $item])
                     @empty
-                        <div class="empty-lane-placeholder py-12 text-center text-emerald-600/60 text-xs font-bold space-y-1">
-                            <i class="fa-regular fa-circle-check text-emerald-300 text-2xl block mb-1"></i>
+                        <div class="empty-lane-placeholder py-12 text-center text-emerald-800 text-xs font-bold space-y-1">
+                            <i class="fa-regular fa-circle-check text-emerald-700 text-2xl block mb-1"></i>
                             <p>Belum ada tugas selesai</p>
-                            <p class="text-[10px] font-normal text-emerald-600/50">Tarik tugas yang sudah tuntas ke sini</p>
+                            <p class="text-xs font-normal text-emerald-800">Tarik tugas yang sudah tuntas ke sini</p>
                         </div>
                     @endforelse
                 </div>
 
                 <!-- Quick Add Card at Lane Footer -->
                 <div class="mt-3 pt-2 border-t border-emerald-200/60">
-                    <button @click="openCreateModal('completed')" 
-                            class="w-full py-2.5 px-3 rounded-2xl text-emerald-700 hover:text-emerald-900 hover:bg-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-dashed border-emerald-300 hover:border-emerald-400">
-                        <i class="fa-solid fa-plus text-[10px]"></i> Tambah Kartu Selesai
+                    <button type="button" @click="openCreateModal('completed')" 
+                            class="w-full py-2.5 px-3 min-h-[44px] rounded-2xl text-emerald-800 hover:text-emerald-900 hover:bg-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 border border-dashed border-emerald-300 hover:border-emerald-400">
+                        <i class="fa-solid fa-plus text-xs"></i> Tambah Kartu Selesai
                     </button>
                 </div>
             </div>
@@ -289,16 +291,16 @@
         </div>
     </div>
 
-    <!-- VIEW 2: CLASSIC TABLE VIEW -->
+    <!-- View 2: Classic Table View -->
     @if($showViewToggle)
     <div x-show="currentView === 'table'" x-transition style="display: none;" class="space-y-4">
         <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm overflow-hidden">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
                 <h3 class="font-montserrat font-black text-slate-800 text-sm uppercase tracking-wider">
                     Daftar Tabel Tugas Lengkap
                 </h3>
                 @if($tableRoute)
-                    <a href="{{ $tableRoute }}" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm transition-all">
+                    <a href="{{ $tableRoute }}" class="px-3.5 py-2 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-colors">
                         <i class="fa-solid fa-file-excel"></i> Export Data
                     </a>
                 @endif
@@ -306,7 +308,7 @@
 
             <div class="overflow-x-auto mt-4">
                 <table class="w-full text-left text-xs text-slate-700">
-                    <thead class="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100">
+                    <thead class="bg-slate-50 text-xs font-black uppercase tracking-wider text-slate-600 border-b border-slate-100">
                         <tr>
                             <th class="py-3 px-4">Tugas</th>
                             <th class="py-3 px-4">Pegawai (Untuk)</th>
@@ -322,37 +324,37 @@
                             <td class="py-3 px-4">
                                 <span class="font-bold text-slate-900">{{ $t->task }}</span>
                                 @if($t->description)
-                                    <p class="text-[10px] text-slate-400 truncate max-w-xs">{{ $t->description }}</p>
+                                    <p class="text-xs text-slate-600 truncate max-w-xs">{{ $t->description }}</p>
                                 @endif
                             </td>
                             <td class="py-3 px-4">
                                 <span class="text-indigo-700 font-bold">{{ $t->user->name ?? '-' }}</span>
                             </td>
-                            <td class="py-3 px-4 text-slate-500">
+                            <td class="py-3 px-4 text-slate-600">
                                 {{ $t->assigner->name ?? 'Sistem' }}
                             </td>
                             <td class="py-3 px-4">
                                 @if($t->status === 'completed')
-                                    <span class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">Selesai</span>
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">Selesai</span>
                                 @elseif($t->status === 'in_progress')
-                                    <span class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">In Progress</span>
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200">In Progress</span>
                                 @else
-                                    <span class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">To Do</span>
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">To Do</span>
                                 @endif
                             </td>
-                            <td class="py-3 px-4 text-[11px] font-mono">
+                            <td class="py-3 px-4 text-xs font-mono">
                                 {{ $t->deadline ? $t->deadline->format('d M Y H:i') : '-' }}
                             </td>
                             <td class="py-3 px-4 text-center">
-                                <button @click="openDetailModal({{ $t->toJson() }})" 
-                                        class="p-2 text-primary-600 hover:bg-primary-50 rounded-xl transition-all" title="Buka Detail">
+                                <button type="button" @click="openDetailModal({{ $t->toJson() }})" aria-label="Buka Detail"
+                                        class="w-11 h-11 inline-flex items-center justify-center text-primary-700 hover:bg-primary-50 rounded-xl transition-colors" title="Buka Detail">
                                     <i class="fa-solid fa-up-right-from-square"></i>
                                 </button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-8 text-slate-400 font-bold">Belum ada tugas yang tercatat.</td>
+                            <td colspan="6" class="text-center py-8 text-slate-600 font-bold">Belum ada tugas yang tercatat.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -368,10 +370,13 @@
     </div>
     @endif
 
-    <!-- ============================================================== -->
-    <!-- MODAL 1: TRELLO CARD DETAIL MODAL -->
-    <!-- ============================================================== -->
+    <!-- Modal 1: Trello Card Detail Modal -->
     <div x-show="detailModal.open" 
+         x-cloak
+         @keydown.escape.window="detailModal.open = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="trello-detail-title"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
@@ -379,48 +384,48 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          style="display: none;" 
-         class="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm overflow-y-auto">
+         class="fixed inset-0 z-[250] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="fixed inset-0 bg-slate-950/60" @click="detailModal.open = false"></div>
         
-        <div @click.away="detailModal.open = false" 
-             class="bg-white border border-slate-100 w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative my-8">
+        <div class="relative z-10 bg-white border border-slate-100 w-full max-w-xl rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-8">
             
-            <button @click="detailModal.open = false" 
-                    class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 transition-colors">
+            <button type="button" @click="detailModal.open = false" aria-label="Tutup modal detail tugas"
+                    class="w-11 h-11 inline-flex items-center justify-center rounded-xl absolute top-4 right-4 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
             <!-- Modal Header -->
-            <div class="space-y-2 pr-8">
+            <div class="space-y-2 pr-10">
                 <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider"
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider"
                           :class="detailModal.data.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : (detailModal.data.status === 'in_progress' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-800')"
                           x-text="detailModal.data.status === 'completed' ? 'SELESAI (DONE)' : (detailModal.data.status === 'in_progress' ? 'IN PROGRESS' : 'TO DO')">
                     </span>
-                    <span class="text-[10px] text-slate-400 font-bold" x-text="'ID: #' + detailModal.data.id"></span>
+                    <span class="text-xs text-slate-600 font-bold" x-text="'ID: #' + detailModal.data.id"></span>
                 </div>
-                <h3 class="text-lg sm:text-xl font-montserrat font-black text-slate-900 tracking-tight" 
-                    x-text="detailModal.data.task"></h3>
+                <h2 id="trello-detail-title" class="text-lg sm:text-xl font-montserrat font-black text-slate-900 tracking-tight" 
+                    x-text="detailModal.data.task"></h2>
             </div>
 
             <!-- Modal Metadata Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs">
                 <div>
-                    <span class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Pegawai (Untuk)</span>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-slate-600">Pegawai (Untuk)</span>
                     <span class="font-bold text-slate-800" x-text="detailModal.data.user ? detailModal.data.user.name : '-'"></span>
                 </div>
                 <div>
-                    <span class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Pemberi Tugas</span>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-slate-600">Pemberi Tugas</span>
                     <span class="font-bold text-slate-800" x-text="detailModal.data.assigner ? detailModal.data.assigner.name : 'Sistem'"></span>
                 </div>
                 <div>
-                    <span class="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Batas Waktu</span>
-                    <span class="font-bold text-red-600" x-text="formatDate(detailModal.data.deadline)"></span>
+                    <span class="block text-xs font-bold uppercase tracking-wider text-slate-600">Batas Waktu</span>
+                    <span class="font-bold text-red-700" x-text="formatDate(detailModal.data.deadline)"></span>
                 </div>
             </div>
 
             <!-- Deskripsi -->
             <div class="space-y-1.5">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Deskripsi / Rincian Penugasan</span>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-600">Deskripsi / Rincian Penugasan</span>
                 <div class="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs text-slate-700 leading-relaxed min-h-[60px]"
                      x-text="detailModal.data.description || 'Tidak ada catatan deskripsi tambahan.'">
                 </div>
@@ -428,21 +433,21 @@
 
             <!-- Ubah Status Cepat -->
             <div class="space-y-2">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Pindahkan Status Kartu:</span>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-600">Pindahkan Status Kartu:</span>
                 <div class="grid grid-cols-3 gap-2">
-                    <button @click="changeStatusInModal('pending')" 
-                            :class="detailModal.data.status === 'pending' ? 'bg-slate-800 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
-                            class="py-2.5 px-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5">
+                    <button type="button" @click="changeStatusInModal('pending')" 
+                            :class="detailModal.data.status === 'pending' ? 'bg-slate-800 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                            class="py-2.5 px-2 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-regular fa-clipboard"></i> To Do
                     </button>
-                    <button @click="changeStatusInModal('in_progress')" 
-                            :class="detailModal.data.status === 'in_progress' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'"
-                            class="py-2.5 px-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5">
+                    <button type="button" @click="changeStatusInModal('in_progress')" 
+                            :class="detailModal.data.status === 'in_progress' ? 'bg-amber-700 text-white shadow-xs' : 'bg-amber-50 text-amber-800 hover:bg-amber-100'"
+                            class="py-2.5 px-2 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-bolt"></i> In Progress
                     </button>
-                    <button @click="changeStatusInModal('completed')" 
-                            :class="detailModal.data.status === 'completed' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'"
-                            class="py-2.5 px-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5">
+                    <button type="button" @click="changeStatusInModal('completed')" 
+                            :class="detailModal.data.status === 'completed' ? 'bg-emerald-700 text-white shadow-xs' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'"
+                            class="py-2.5 px-2 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-check"></i> Selesai
                     </button>
                 </div>
@@ -450,14 +455,14 @@
 
             <!-- Bukti & Laporan Hasil (Upload / View) -->
             <div class="border-t border-slate-100 pt-4 space-y-4">
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Laporan & Bukti Hasil Kerja</span>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-600 block">Laporan &amp; Bukti Hasil Kerja</span>
                 
                 <!-- Existing Proof Image -->
                 <template x-if="detailModal.data.result_attachment">
-                    <div class="p-3 bg-slate-50 border border-slate-150 rounded-2xl space-y-2">
-                        <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Foto Bukti Terlampir:</span>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider block">Foto Bukti Terlampir:</span>
                         <a :href="detailModal.data.result_attachment" target="_blank" class="block group relative overflow-hidden rounded-xl border border-slate-200 max-h-48">
-                            <img :src="detailModal.data.result_attachment" class="w-full object-cover group-hover:scale-105 transition-transform" alt="Bukti Pelaksanaan">
+                            <img :src="detailModal.data.result_attachment" class="w-full object-cover" alt="Bukti Pelaksanaan">
                             <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-2">
                                 <i class="fa-solid fa-magnifying-glass-plus"></i> Lihat Ukuran Asli
                             </div>
@@ -471,28 +476,28 @@
                     <input type="hidden" name="status" :value="detailModal.data.status">
                     
                     <div>
-                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Catatan Hasil Pelaksanaan:</label>
-                        <textarea name="result_note" rows="2" 
+                        <label for="trello_detail_note" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Catatan Hasil Pelaksanaan:</label>
+                        <textarea id="trello_detail_note" name="result_note" rows="2" 
                                   x-model="detailModal.data.result_note"
                                   placeholder="Tuliskan keterangan penyelesaian tugas lapangan..." 
-                                  class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs font-semibold text-slate-800 outline-none focus:border-primary-500"></textarea>
+                                  class="w-full bg-slate-50 border border-slate-300 rounded-2xl p-3 text-xs font-semibold text-slate-800 focus:border-primary-500"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Unggah / Ganti Foto Bukti:</label>
-                        <input type="file" name="result_attachment" accept="image/*" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-2.5 text-xs text-slate-600">
+                        <label for="trello_detail_attachment" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Unggah / Ganti Foto Bukti:</label>
+                        <input id="trello_detail_attachment" type="file" name="result_attachment" accept="image/*" class="w-full bg-slate-50 border border-slate-300 rounded-2xl p-2.5 min-h-[44px] text-xs text-slate-700">
                     </div>
 
                     <div class="flex items-center justify-between gap-3 pt-2">
                         <!-- Delete Card Button -->
                         <button type="button" 
                                 @click="deleteCard(detailModal.data.id)"
-                                class="px-3.5 py-2.5 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                                class="px-3.5 py-2.5 min-h-[44px] text-rose-700 hover:bg-rose-50 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5">
                             <i class="fa-regular fa-trash-can"></i> Hapus
                         </button>
 
                         <button type="submit" 
-                                class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-sm">
+                                class="px-5 py-2.5 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-colors shadow-sm">
                             Simpan Laporan
                         </button>
                     </div>
@@ -502,10 +507,13 @@
         </div>
     </div>
 
-    <!-- ============================================================== -->
-    <!-- MODAL 2: CREATE NEW TASK MODAL -->
-    <!-- ============================================================== -->
+    <!-- Modal 2: Create New Task Modal -->
     <div x-show="createModal.open" 
+         x-cloak
+         @keydown.escape.window="createModal.open = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="trello-create-title"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
@@ -513,23 +521,23 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          style="display: none;" 
-         class="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm overflow-y-auto">
+         class="fixed inset-0 z-[250] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="fixed inset-0 bg-slate-950/60" @click="createModal.open = false"></div>
         
-        <div @click.away="createModal.open = false" 
-             class="bg-white border border-slate-100 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative my-8">
+        <div class="relative z-10 bg-white border border-slate-100 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 my-8">
             
-            <button @click="createModal.open = false" 
-                    class="absolute top-6 right-6 text-slate-400 hover:text-slate-700 transition-colors">
+            <button type="button" @click="createModal.open = false" aria-label="Tutup modal tambah tugas"
+                    class="w-11 h-11 inline-flex items-center justify-center rounded-xl absolute top-4 right-4 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
             <!-- Modal Header -->
-            <div class="space-y-1">
-                <h3 class="text-lg font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+            <div class="space-y-1 pr-10">
+                <h2 id="trello-create-title" class="text-lg font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
                     Tambah <span class="text-primary-600">Tugas Baru</span>
-                </h3>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                    Buat kartu tugas baru untuk kolom <span class="text-primary-600 uppercase" x-text="createModal.targetStatus"></span>
+                </h2>
+                <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">
+                    Buat kartu tugas baru untuk kolom <span class="text-primary-700 uppercase" x-text="createModal.targetStatus"></span>
                 </p>
             </div>
 
@@ -540,8 +548,8 @@
 
                 @if($canAssign && $workers->count() > 0)
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Pilih Pegawai / Staf Pelaksana:</label>
-                    <select name="user_id" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                    <label for="trello_create_user" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Pilih Pegawai / Staf Pelaksana:</label>
+                    <select id="trello_create_user" name="user_id" required class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 min-h-[44px] text-xs font-bold text-slate-800 focus:border-primary-500">
                         <option value="" disabled selected>Pilih salah satu staf...</option>
                         @foreach($workers as $w)
                             <option value="{{ $w->id }}">{{ $w->name }} ({{ $w->role_label }})</option>
@@ -553,27 +561,27 @@
                 @endif
 
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Judul Tugas:</label>
-                    <input type="text" name="task" required placeholder="Contoh: Distribusi sembako di Posko A..." 
-                           class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                    <label for="trello_create_task" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Judul Tugas:</label>
+                    <input id="trello_create_task" type="text" name="task" required placeholder="Contoh: Distribusi sembako di Posko A..." 
+                           class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 min-h-[44px] text-xs font-bold text-slate-800 focus:border-primary-500">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Deskripsi Detail:</label>
-                    <textarea name="description" rows="3" placeholder="Rincian arahan, PIC lapangan, atau catatan khusus..." 
-                              class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-semibold text-slate-800 outline-none focus:border-primary-500"></textarea>
+                    <label for="trello_create_desc" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Deskripsi Detail:</label>
+                    <textarea id="trello_create_desc" name="description" rows="3" placeholder="Rincian arahan, PIC lapangan, atau catatan khusus..." 
+                              class="w-full bg-slate-50 border border-slate-300 rounded-2xl p-3 text-xs font-semibold text-slate-800 focus:border-primary-500"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Batas Waktu (Deadline):</label>
-                    <input type="datetime-local" name="deadline" 
-                           class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 outline-none focus:border-primary-500">
+                    <label for="trello_create_deadline" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Batas Waktu (Deadline):</label>
+                    <input id="trello_create_deadline" type="datetime-local" name="deadline" 
+                           class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 min-h-[44px] text-xs font-bold text-slate-800 focus:border-primary-500">
                 </div>
 
                 <div class="pt-2">
                     <button type="submit" 
-                            class="w-full bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-2xl shadow-lg shadow-primary-600/10 transition-all">
-                        Simpan & Buat Kartu Tugas
+                            class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-2xl shadow-lg shadow-primary-600/10 transition-colors">
+                        Simpan &amp; Buat Kartu Tugas
                     </button>
                 </div>
             </form>

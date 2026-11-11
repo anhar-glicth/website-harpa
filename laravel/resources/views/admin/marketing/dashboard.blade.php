@@ -309,19 +309,19 @@
                         <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-rose-200 transition-all flex items-center justify-between gap-3">
                             <div class="min-w-0">
                                 <div class="text-xs font-black text-slate-800 truncate">{{ $item->campaign_name }}</div>
-                                <div class="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
-                                    <span class="font-bold text-blue-600">{{ $item->platform }}</span>
-                                    <span>•</span>
+                                <div class="text-xs text-slate-600 flex items-center gap-2 mt-0.5">
+                                    <span class="font-bold text-blue-700">{{ $item->platform }}</span>
+                                    <span>-</span>
                                     <span>Spend: Rp {{ number_format($item->spend, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                             <div class="text-right shrink-0">
-                                <div class="text-xs font-black text-rose-600">{{ $item->roas }}x ROAS</div>
-                                <div class="text-[10px] font-bold text-slate-500">CTR: {{ $item->ctr }}%</div>
+                                <div class="text-xs font-black text-rose-700">{{ $item->roas }}x ROAS</div>
+                                <div class="text-xs font-bold text-slate-600">CTR: {{ $item->ctr }}%</div>
                             </div>
                         </div>
                         @empty
-                        <div class="py-6 text-center text-slate-400 text-xs">Tidak ada iklan yang perlu di-stop</div>
+                        <div class="py-6 text-center text-slate-600 text-xs">Tidak ada iklan yang perlu di-stop</div>
                         @endforelse
                     </div>
                 </div>
@@ -335,9 +335,9 @@
                         <h2 class="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                             <i class="fa-solid fa-clock-rotate-left text-primary-600"></i> Catatan Iklan Terbaru
                         </h2>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Menampilkan 8 input data performa iklan terakhir</p>
+                        <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Menampilkan 8 input data performa iklan terakhir</p>
                     </div>
-                    <a href="{{ route('admin.marketing.index') }}" class="text-xs font-black text-primary-600 hover:text-primary-700 flex items-center gap-1">
+                    <a href="{{ route('admin.marketing.index') }}" class="min-h-[44px] inline-flex items-center text-xs font-black text-primary-700 hover:text-primary-800 gap-1">
                         Lihat Semua <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
@@ -345,7 +345,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="py-3 px-3">Tanggal</th>
                                 <th class="py-3 px-3">Platform</th>
                                 <th class="py-3 px-3">Nama Campaign</th>
@@ -362,36 +362,36 @@
                             <tr class="hover:bg-slate-50/70 transition-colors">
                                 <td class="py-3 px-3 font-bold text-slate-700">{{ $ad->date ? $ad->date->format('d M Y') : '-' }}</td>
                                 <td class="py-3 px-3">
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black 
-                                        {{ $ad->platform === 'Meta Ads' ? 'bg-blue-50 text-blue-700 border border-blue-200' : ($ad->platform === 'Google Ads' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700') }}">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black 
+                                        {{ $ad->platform === 'Meta Ads' ? 'bg-blue-50 text-blue-800 border border-blue-200' : ($ad->platform === 'Google Ads' ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-slate-100 text-slate-700') }}">
                                         {{ $ad->platform }}
                                     </span>
                                 </td>
                                 <td class="py-3 px-3 font-black text-slate-800 max-w-xs truncate">
                                     {{ $ad->campaign_name }}
                                     @if($ad->campaign)
-                                        <div class="text-[9px] text-slate-400 font-bold truncate">Web: {{ $ad->campaign->title }}</div>
+                                        <div class="text-xs text-slate-600 font-bold truncate">Web: {{ $ad->campaign->title }}</div>
                                     @endif
                                 </td>
                                 <td class="py-3 px-3 text-right font-black text-slate-800">Rp {{ number_format($ad->spend, 0, ',', '.') }}</td>
-                                <td class="py-3 px-3 text-right font-black text-emerald-600">Rp {{ number_format($ad->donation_amount, 0, ',', '.') }}</td>
+                                <td class="py-3 px-3 text-right font-black text-emerald-700">Rp {{ number_format($ad->donation_amount, 0, ',', '.') }}</td>
                                 <td class="py-3 px-3 text-center">
-                                    <span class="font-black {{ $ad->roas >= 2.0 ? 'text-emerald-600' : ($ad->roas >= 1.0 ? 'text-amber-600' : 'text-rose-600') }}">
+                                    <span class="font-black {{ $ad->roas >= 2.0 ? 'text-emerald-700' : ($ad->roas >= 1.0 ? 'text-amber-800' : 'text-rose-700') }}">
                                         {{ $ad->roas }}x
                                     </span>
                                 </td>
                                 <td class="py-3 px-3 text-center font-bold text-slate-600">{{ $ad->ctr }}%</td>
                                 <td class="py-3 px-3 text-center">
                                     @if($ad->decision === 'SCALE')
-                                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-[9px] font-black uppercase">SCALE</span>
+                                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black uppercase">SCALE</span>
                                     @elseif($ad->decision === 'STOP')
-                                        <span class="px-2.5 py-1 bg-rose-100 text-rose-800 rounded-full text-[9px] font-black uppercase">STOP</span>
+                                        <span class="px-2.5 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-black uppercase">STOP</span>
                                     @else
-                                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-[9px] font-black uppercase">MAINTAIN</span>
+                                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-black uppercase">MAINTAIN</span>
                                     @endif
                                 </td>
                                 <td class="py-3 px-3 text-center">
-                                    <a href="{{ route('admin.marketing.edit', $ad->id) }}" class="p-1.5 text-slate-400 hover:text-primary-600 transition-colors" title="Edit Data">
+                                    <a href="{{ route('admin.marketing.edit', $ad->id) }}" aria-label="Edit Data" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:text-primary-700 hover:bg-slate-100 transition-colors" title="Edit Data">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
                                 </td>
