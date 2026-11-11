@@ -37,15 +37,15 @@
             <span id="{{ $id }}_time" class="text-sm font-black text-white tabular-nums">--:--:--</span>
             <span class="text-[9px] font-black text-primary-400">WITA</span>
         </div>
-        <span class="text-slate-600">|</span>
-        <span id="{{ $id }}_date" class="text-[10px] font-bold text-slate-300">--</span>
+        <span class="text-slate-500">|</span>
+        <span id="{{ $id }}_date" class="text-xs font-bold text-slate-300">--</span>
     </div>
 @else
     {{-- Inline minimal --}}
     <span class="inline-flex items-center gap-1.5 font-mono font-bold text-xs text-slate-700">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-700"></span>
         <span id="{{ $id }}_time" class="tabular-nums">--:--:--</span>
-        <span class="text-primary-600 font-black text-[10px]">WITA</span>
+        <span class="text-primary-700 font-black text-xs">WITA</span>
     </span>
 @endif
 

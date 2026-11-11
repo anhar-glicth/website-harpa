@@ -42,26 +42,26 @@
         <div class="space-y-6">
 
             {{-- Page Header --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm flex items-center justify-between gap-4">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm flex items-center justify-between gap-4">
                 <div class="space-y-1">
                     <h1 class="text-2xl font-black text-slate-900 tracking-tight">Master Via Bayar</h1>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Admin Management → Data Via Bayar</p>
+                    <p class="text-xs font-semibold text-slate-600 uppercase tracking-widest">Admin Management &rarr; Data Via Bayar</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-sm">
-                    <i class="fa-solid fa-credit-card text-lg"></i>
+                <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-700 shadow-sm">
+                    <i class="fa-solid fa-credit-card text-lg" aria-hidden="true"></i>
                 </div>
             </div>
 
             {{-- Flash Messages --}}
             @if(session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-center gap-3">
-                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                <div role="status" class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-emerald-700" aria-hidden="true"></i>
                     {{ session('success') }}
                 </div>
             @endif
             @if($errors->any())
-                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-start gap-3">
-                    <i class="fa-solid fa-circle-exclamation text-rose-500 mt-0.5"></i>
+                <div role="alert" class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-start gap-3">
+                    <i class="fa-solid fa-circle-exclamation text-rose-700 mt-0.5" aria-hidden="true"></i>
                     <ul class="list-disc list-inside space-y-1">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -71,25 +71,25 @@
             @endif
 
             {{-- Filter & Toolbar Card --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
 
                 {{-- Filter Form --}}
-                <form method="GET" action="{{ route('admin.payment_via') }}" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700 pb-5 border-b border-slate-100">
+                <form method="GET" action="{{ route('admin.payment_via') }}" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700 pb-5 border-b border-slate-200">
 
                     {{-- Keyword --}}
                     <div class="flex items-center gap-1.5 min-w-[220px] flex-1 sm:flex-none">
-                        <span class="text-slate-500 font-bold whitespace-nowrap">Keyword :</span>
-                        <input type="text"
+                        <label for="pv_filter_keyword" class="text-slate-600 font-bold whitespace-nowrap">Keyword :</label>
+                        <input id="pv_filter_keyword" type="text"
                                name="keyword"
                                value="{{ request('keyword') }}"
                                placeholder="Keyword..."
-                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400">
+                               class="w-full min-h-[44px] px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-600 placeholder:text-slate-500">
                     </div>
 
                     {{-- Status --}}
                     <div class="flex items-center gap-1.5 min-w-[140px]">
-                        <span class="text-slate-500 font-bold whitespace-nowrap">Status :</span>
-                        <select name="status" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                        <label for="pv_filter_status" class="text-slate-600 font-bold whitespace-nowrap">Status :</label>
+                        <select id="pv_filter_status" name="status" class="w-full min-h-[44px] px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-600">
                             <option value="">Semua</option>
                             <option value="Aktif" {{ request('status') === 'Aktif' ? 'selected' : '' }}>Aktif</option>
                             <option value="Non-Aktif" {{ request('status') === 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
@@ -98,11 +98,11 @@
 
                     {{-- Actions --}}
                     <div class="flex items-center gap-2 ml-auto">
-                        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
-                            <i class="fa-solid fa-magnifying-glass text-xs"></i> Search
+                        <button type="submit" class="inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-colors shadow-sm">
+                            <i class="fa-solid fa-magnifying-glass text-xs" aria-hidden="true"></i> Search
                         </button>
-                        <a href="{{ route('admin.payment_via') }}" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all" title="Reset Filter">
-                            <i class="fa-solid fa-rotate text-xs"></i>
+                        <a href="{{ route('admin.payment_via') }}" aria-label="Reset filter" class="w-11 h-11 inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl transition-colors" title="Reset Filter">
+                            <i class="fa-solid fa-rotate text-xs" aria-hidden="true"></i>
                         </a>
                     </div>
 
@@ -110,11 +110,11 @@
 
                 {{-- Toolbar --}}
                 <div class="flex items-center justify-between gap-4">
-                    <button @click="showAddModal = true"
-                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-all duration-300">
-                        <i class="fa-solid fa-plus text-xs"></i> New Via Bayar
+                    <button type="button" @click="showAddModal = true"
+                            class="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-colors">
+                        <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i> New Via Bayar
                     </button>
-                    <div class="text-xs font-semibold text-slate-500">
+                    <div class="text-xs font-semibold text-slate-600">
                         Total: <span class="font-bold text-slate-900">{{ $paymentVias->total() }}</span> Via Bayar
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="pb-4 w-8">#</th>
                                 <th class="pb-4">Via Bayar</th>
                                 <th class="pb-4">Provider</th>
@@ -134,8 +134,8 @@
                         </thead>
                         <tbody class="text-sm">
                             @forelse($paymentVias as $index => $item)
-                                <tr class="border-b border-slate-50 hover:bg-slate-50/60 transition-colors group">
-                                    <td class="py-4 text-slate-400 text-xs font-bold">
+                                <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors group">
+                                    <td class="py-4 text-slate-600 text-xs font-bold">
                                         {{ $paymentVias->firstItem() + $index }}
                                     </td>
                                     <td class="py-4">
@@ -143,11 +143,11 @@
                                     </td>
                                     <td class="py-4">
                                         @if($item->provider)
-                                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-black uppercase tracking-wider">
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-black uppercase tracking-wider">
                                                 {{ $item->provider }}
                                             </span>
                                         @else
-                                            <span class="text-slate-500 text-xs">-</span>
+                                            <span class="text-slate-600 text-xs">-</span>
                                         @endif
                                     </td>
                                     <td class="py-4">
@@ -156,17 +156,17 @@
                                                 {{ $item->account_no }}
                                             </span>
                                         @else
-                                            <span class="text-slate-500 text-xs">-</span>
+                                            <span class="text-slate-600 text-xs">-</span>
                                         @endif
                                     </td>
                                     <td class="py-4 text-center">
                                         @if($item->status === 'Aktif')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-[11px] font-black">
-                                                <span class="w-1.5 h-1.5 bg-emerald-600 rounded-full" aria-hidden="true"></span> y
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black">
+                                                <span class="w-1.5 h-1.5 bg-emerald-700 rounded-full" aria-hidden="true"></span> y
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-[11px] font-black">
-                                                <span class="w-1.5 h-1.5 bg-slate-500 rounded-full" aria-hidden="true"></span> n
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 text-xs font-black">
+                                                <span class="w-1.5 h-1.5 bg-slate-600 rounded-full" aria-hidden="true"></span> n
                                             </span>
                                         @endif
                                     </td>
@@ -188,7 +188,7 @@
                             @empty
                                 <tr>
                                     <td colspan="6" class="py-14 text-center text-slate-600 font-bold uppercase tracking-wider">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-400 mb-3" aria-hidden="true"></i>
+                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-500 mb-3" aria-hidden="true"></i>
                                         Belum ada data via bayar.
                                     </td>
                                 </tr>

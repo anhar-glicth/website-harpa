@@ -360,7 +360,7 @@ class AdminController extends Controller
             $programNameValues = [];
         }
 
-        // ----------------- RESUME TABLES AGGREGATION -----------------
+        // Resume Tables Aggregation
         $denomDana = $sumDana > 0 ? $sumDana : 1;
 
         // 1. Resume Penyaluran By Asnaf
@@ -1444,9 +1444,7 @@ class AdminController extends Controller
         ));
     }
 
-    // ==========================================
-    // MASTER KARYAWAN MANAGEMENT
-    // ==========================================
+    // Master Karyawan Management
 
     public function karyawanList(Request $request)
     {
@@ -1595,9 +1593,7 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    // ==========================================
-    // MASTER CHANNEL DONASI MANAGEMENT
-    // ==========================================
+    // Master Channel Donasi Management
 
     public function donorChannelsList(Request $request)
     {
@@ -1657,7 +1653,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Channel Donasi berhasil dihapus.');
     }
 
-    // ===================== MASTER RUMPUN PROGRAM =====================
+    // Master Rumpun Program
 
     public function programGroupsList(Request $request)
     {
@@ -1726,7 +1722,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Rumpun Program berhasil dihapus.');
     }
 
-    // ===================== MASTER PROGRAM =====================
+    // Master Program
 
     public function programList(Request $request)
     {
@@ -1801,7 +1797,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Program berhasil dihapus.');
     }
 
-    // ===================== MASTER VIA BAYAR =====================
+    // Master Via Bayar
 
     public function paymentViaList(Request $request)
     {
@@ -1866,7 +1862,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Via Bayar berhasil dihapus.');
     }
 
-    // ===================== MASTER MEDIA PROSPEK =====================
+    // Master Media Prospek
 
     public function prospectMediaList(Request $request)
     {
@@ -1923,7 +1919,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Media Prospek berhasil dihapus.');
     }
 
-    // ===================== MASTER METODE PROSPEK =====================
+    // Master Metode Prospek
 
     public function prospectMethodsList(Request $request)
     {
@@ -1985,7 +1981,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Metode Prospek berhasil dihapus.');
     }
 
-    // ===================== MASTER JENIS PROSPEK =====================
+    // Master Jenis Prospek
 
     public function prospectTypesList(Request $request)
     {
@@ -2044,7 +2040,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Jenis Prospek berhasil dihapus.');
     }
 
-    // ===================== MASTER FUNDRAISER =====================
+    // Master Fundraiser
 
     public function fundraisersList(Request $request)
     {
@@ -2107,7 +2103,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Fundraiser berhasil dihapus.');
     }
 
-    // ===================== MASTER RESPON PROSPEK =====================
+    // Master Respon Prospek
 
     public function prospectResponsesList(Request $request)
     {
@@ -2170,7 +2166,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Respon Prospek berhasil dihapus.');
     }
 
-    // ===================== MASTER TARGET =====================
+    // Master Target
 
     public function targetsList(Request $request)
     {
@@ -2304,9 +2300,7 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    // ==========================================
-    // TRANSACTION MANAGEMENT MODULES
-    // ==========================================
+    // Transaction Management Modules
 
     private function buildDonorsQuery(Request $request)
     {

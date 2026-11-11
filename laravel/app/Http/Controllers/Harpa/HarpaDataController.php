@@ -532,9 +532,7 @@ class HarpaDataController extends Controller
     }
 
     /**
-     * =========================================================================
-     * ALUR C: REKAP PER NOMOR & WATERFALL KEPUTUSAN
-     * =========================================================================
+     * ALUR C: Rekap per nomor & waterfall keputusan.
      */
     public function rekapSegmen(Request $request)
     {
@@ -575,9 +573,7 @@ class HarpaDataController extends Controller
     }
 
     /**
-     * =========================================================================
-     * ALUR D: DAFTAR KIRIM UNTUK TIM CRM
-     * =========================================================================
+     * ALUR D: Daftar kirim untuk tim CRM.
      */
     public function daftarKirim(Request $request)
     {
@@ -1024,9 +1020,7 @@ class HarpaDataController extends Controller
     }
 
     /**
-     * =========================================================================
-     * ALUR F: LAPORAN ANALITIK DONATUR
-     * =========================================================================
+     * ALUR F: Laporan analitik donatur.
      */
     public function laporanAnalitik(Request $request)
     {

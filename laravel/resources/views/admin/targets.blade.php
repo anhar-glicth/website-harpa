@@ -42,26 +42,26 @@
         <div class="space-y-6">
 
             {{-- Page Header --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm flex items-center justify-between gap-4">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm flex items-center justify-between gap-4">
                 <div class="space-y-1">
                     <h1 class="text-2xl font-black text-slate-900 tracking-tight">Master Target</h1>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Admin Management → Data Target Bulanan</p>
+                    <p class="text-xs font-semibold text-slate-600 uppercase tracking-widest">Admin Management &rarr; Data Target Bulanan</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-600 shadow-sm">
-                    <i class="fa-solid fa-bullseye text-lg"></i>
+                <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-primary-700 shadow-sm">
+                    <i class="fa-solid fa-bullseye text-lg" aria-hidden="true"></i>
                 </div>
             </div>
 
             {{-- Flash Messages --}}
             @if(session('success'))
-                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-center gap-3">
-                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                <div role="status" class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-emerald-700" aria-hidden="true"></i>
                     {{ session('success') }}
                 </div>
             @endif
             @if($errors->any())
-                <div class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-start gap-3">
-                    <i class="fa-solid fa-circle-exclamation text-rose-500 mt-0.5"></i>
+                <div role="alert" class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-start gap-3">
+                    <i class="fa-solid fa-circle-exclamation text-rose-700 mt-0.5" aria-hidden="true"></i>
                     <ul class="list-disc list-inside space-y-1">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -71,42 +71,42 @@
             @endif
 
             {{-- Filter & Toolbar Card --}}
-            <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
 
                 {{-- Filter Form --}}
-                <form method="GET" action="{{ route('admin.targets') }}" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700 pb-5 border-b border-slate-100">
+                <form method="GET" action="{{ route('admin.targets') }}" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700 pb-5 border-b border-slate-200">
 
                     {{-- Search ID Target / Keyword --}}
                     <div class="flex items-center gap-1.5 min-w-[200px] flex-1 sm:flex-none">
-                        <span class="text-slate-500 font-bold whitespace-nowrap">Search :</span>
-                        <input type="text"
+                        <label for="tgt_filter_search" class="text-slate-600 font-bold whitespace-nowrap">Search :</label>
+                        <input id="tgt_filter_search" type="text"
                                name="search"
                                value="{{ request('search') }}"
                                placeholder="ID Target..."
-                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400">
+                               class="w-full min-h-[44px] px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-600 placeholder:text-slate-500">
                     </div>
 
                     {{-- Bulan Target Date Range --}}
                     <div class="flex items-center gap-1.5 flex-wrap">
-                        <span class="text-slate-500 font-bold whitespace-nowrap">Bulan Target :</span>
-                        <input type="date"
+                        <label for="tgt_filter_start" class="text-slate-600 font-bold whitespace-nowrap">Bulan Target :</label>
+                        <input id="tgt_filter_start" type="date"
                                name="start_date"
                                value="{{ request('start_date') }}"
-                               class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
-                        <span class="text-slate-400 font-bold">s/d</span>
-                        <input type="date"
+                               class="min-h-[44px] px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-600">
+                        <span class="text-slate-600 font-bold">s/d</span>
+                        <input aria-label="Tanggal akhir bulan target" type="date"
                                name="end_date"
                                value="{{ request('end_date') }}"
-                               class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                               class="min-h-[44px] px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-600">
                     </div>
 
                     {{-- Actions --}}
                     <div class="flex items-center gap-2 ml-auto">
-                        <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
-                            <i class="fa-solid fa-magnifying-glass text-xs"></i> Search
+                        <button type="submit" class="inline-flex items-center gap-1.5 min-h-[44px] px-4 py-2 bg-slate-900 hover:bg-slate-950 text-white rounded-xl text-xs font-bold transition-colors shadow-sm">
+                            <i class="fa-solid fa-magnifying-glass text-xs" aria-hidden="true"></i> Search
                         </button>
-                        <a href="{{ route('admin.targets') }}" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all" title="Reset Filter">
-                            <i class="fa-solid fa-rotate text-xs"></i>
+                        <a href="{{ route('admin.targets') }}" aria-label="Reset filter" class="w-11 h-11 inline-flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl transition-colors" title="Reset Filter">
+                            <i class="fa-solid fa-rotate text-xs" aria-hidden="true"></i>
                         </a>
                     </div>
 
@@ -166,12 +166,12 @@
                                         <div class="flex items-center justify-end gap-1.5">
                                             <button type="button" @click="openEdit({{ json_encode($item) }})"
                                                     aria-label="Edit target {{ $item->target_code }}"
-                                                    class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center p-1.5 text-amber-800 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
+                                                    class="w-11 h-11 inline-flex items-center justify-center text-amber-800 hover:bg-amber-50 rounded-lg transition-colors" title="Edit">
                                                 <i class="fa-solid fa-pen-to-square text-sm" aria-hidden="true"></i>
                                             </button>
                                             <button type="button" @click="openDelete({{ $item->id }}, '{{ addslashes($item->target_code) }}')"
                                                     aria-label="Hapus target {{ $item->target_code }}"
-                                                    class="min-w-[36px] min-h-[36px] inline-flex items-center justify-center p-1.5 text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
+                                                    class="w-11 h-11 inline-flex items-center justify-center text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
                                                 <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                                             </button>
                                         </div>
@@ -180,7 +180,7 @@
                             @empty
                                 <tr>
                                     <td colspan="6" class="py-14 text-center text-slate-600 font-bold uppercase tracking-wider">
-                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-400 mb-3" aria-hidden="true"></i>
+                                        <i class="fa-solid fa-folder-open text-3xl block text-slate-500 mb-3" aria-hidden="true"></i>
                                         Belum ada data target.
                                     </td>
                                 </tr>

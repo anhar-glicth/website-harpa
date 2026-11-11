@@ -514,7 +514,7 @@
                     labels: campLabels,
                     datasets: [{
                         data: campData,
-                        backgroundColor: ['#063f5c', '#f7ad1a', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'],
+                        backgroundColor: ['#063f5c', '#f7ad1a', '#047857', '#0284c7', '#be123c', '#0f766e'],
                         borderWidth: 2,
                         borderColor: '#ffffff'
                     }]
@@ -526,7 +526,7 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                font: { size: 9, weight: 'bold' },
+                                font: { size: 11, weight: 'bold' },
                                 boxWidth: 10
                             }
                         },
@@ -567,7 +567,7 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                font: { size: 9, weight: 'bold' },
+                                font: { size: 11, weight: 'bold' },
                                 boxWidth: 10
                             }
                         },

@@ -345,18 +345,18 @@
         const darkTheme = {
             chart: { 
                 backgroundColor: '#0f172a', 
-                style: { fontFamily: 'Segoe UI, sans-serif' },
+                style: { fontFamily: 'Plus Jakarta Sans, sans-serif' },
                 zoomType: 'x',
                 panning: { enabled: true, type: 'x' },
                 panKey: 'shift',
                 resetZoomButton: {
                     position: { align: 'right', x: -10, y: 10 },
-                    theme: { fill: '#1e293b', stroke: '#0e567d', r: 6, style: { color: '#0e567d', fontWeight: 'bold' } }
+                    theme: { fill: '#1e293b', stroke: '#38bdf8', r: 6, states: { hover: { fill: '#0e567d', style: { color: '#ffffff' } } }, style: { color: '#7dd3fc', fontWeight: 'bold', fontSize: '11px' } }
                 }
             },
             title: { style: { color: '#ffffff', fontWeight: 'bold', fontSize: '15px' } },
-            xAxis: { labels: { style: { color: '#94a3b8', fontSize: '10px' } }, lineColor: '#334155' },
-            yAxis: { labels: { style: { color: '#94a3b8' } }, gridLineColor: '#1e293b', title: { style: { color: '#94a3b8' } } },
+            xAxis: { labels: { style: { color: '#94a3b8', fontSize: '11px' } }, lineColor: '#334155' },
+            yAxis: { labels: { style: { color: '#94a3b8', fontSize: '11px' } }, gridLineColor: '#1e293b', title: { style: { color: '#94a3b8' } } },
             legend: { itemStyle: { color: '#cbd5e1' } },
             credits: { enabled: false }
         };

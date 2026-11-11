@@ -143,9 +143,7 @@ class HarpaDataEngineService
     }
 
     /**
-     * =========================================================================
-     * ALUR A: MASUK DATA DONASI (FH, IM, WA) & PAPAN KERJA (GERBANG BERHENTI)
-     * =========================================================================
+     * ALUR A: Masuk data donasi (FH, IM, WA) & papan kerja (gerbang berhenti).
      */
     public function processDonationImport(
         string $filePath,
@@ -439,9 +437,7 @@ class HarpaDataEngineService
     }
 
     /**
-     * =========================================================================
-     * ALUR B: MASUK DATA BLAST EVERPRO & DIAGNOSA INTEGRITAS
-     * =========================================================================
+     * ALUR B: Masuk data blast Everpro & diagnosa integritas.
      */
     public function processBlastImport(
         string $filePath,
@@ -613,9 +609,7 @@ class HarpaDataEngineService
     }
 
     /**
-     * =========================================================================
-     * ALUR E: CEK NOMOR WHATSAPP (WBS PRO) & NOMOR MATI
-     * =========================================================================
+     * ALUR E: Cek nomor WhatsApp (WBS Pro) & nomor mati.
      */
     public function processWbsDeadNumbersImport(
         string $filePath,
@@ -699,9 +693,7 @@ class HarpaDataEngineService
     }
 
     /**
-     * =========================================================================
-     * ALUR C: REKAP PER NOMOR & WATERFALL KEPUTUSAN (PUSAT SISTEM)
-     * =========================================================================
+     * ALUR C: Rekap per nomor & waterfall keputusan (pusat sistem).
      */
 
     /**
@@ -896,9 +888,7 @@ class HarpaDataEngineService
     }
 
     /**
-     * =========================================================================
-     * ALUR D: DAFTAR KIRIM UNTUK TIM CRM
-     * =========================================================================
+     * ALUR D: Daftar kirim untuk tim CRM.
      */
 
     /**
@@ -1059,9 +1049,7 @@ class HarpaDataEngineService
     }
 
     /**
-     * =========================================================================
-     * ALUR F: ANALITIK DONATUR & RFM HARPA
-     * =========================================================================
+     * ALUR F: Analitik donatur & RFM Harpa.
      */
 
     /**

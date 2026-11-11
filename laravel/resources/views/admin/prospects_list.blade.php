@@ -104,45 +104,46 @@
                     
                     {{-- Row 1: Search Bar, Tgl Prospek, Target Prospek --}}
                     <div class="flex flex-wrap items-center gap-3">
-                        <span class="text-xs font-bold text-slate-700">Search :</span>
-                        <input type="text" name="search" value="{{ request('search') }}" 
+                        <label for="pl_search" class="text-xs font-bold text-slate-700">Search :</label>
+                        <input id="pl_search" type="text" name="search" value="{{ request('search') }}" 
                                placeholder="Nama Lengkap/ID/No HP/Email" 
-                               class="flex-1 border border-slate-200 rounded-xl px-4 py-2 text-xs font-medium focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 min-w-[240px]">
+                               class="flex-1 min-h-[44px] border border-slate-300 rounded-xl px-4 py-2 text-xs font-medium focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700 min-w-[240px]">
                         
-                        <span class="text-xs font-bold text-slate-700">Tgl Prospek :</span>
-                        <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
-                        <span class="text-xs">s/d</span>
-                        <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                        <label for="pl_start_date" class="text-xs font-bold text-slate-700">Tgl Prospek :</label>
+                        <input id="pl_start_date" type="date" name="start_date" value="{{ request('start_date') }}" class="min-h-[44px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs">
+                        <span class="text-xs text-slate-600 font-semibold">s/d</span>
+                        <input aria-label="Tanggal prospek akhir" type="date" name="end_date" value="{{ request('end_date') }}" class="min-h-[44px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs">
 
-                        <span class="text-xs font-bold text-slate-700">Target Prospek :</span>
-                        <select name="target_prospect" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs">
+                        <label for="pl_target" class="text-xs font-bold text-slate-700">Target Prospek :</label>
+                        <select id="pl_target" name="target_prospect" class="min-h-[44px] border border-slate-300 rounded-xl px-3 py-1.5 text-xs">
                             <option value="All">All</option>
                         </select>
 
-                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                            🔍 Search
+                        <button type="submit" class="min-h-[44px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Search
                         </button>
                         
                         <button type="button" @click="showAdvanceSearch = !showAdvanceSearch" 
-                                class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                            🔍 Advance Search
+                                :aria-expanded="showAdvanceSearch"
+                                class="min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-sliders" aria-hidden="true"></i> Advance Search
                         </button>
                     </div>
 
                     {{-- Advance Search Drawer (3 Rows of 3 Columns) --}}
-                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50/80 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700">
+                    <div x-show="showAdvanceSearch" x-collapse class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 text-xs text-slate-700">
                         
                         {{-- Row 1 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
                             <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Fundraiser</span> :
-                                <select name="fundraiser" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                                <span class="w-28 text-xs font-semibold">Fundraiser</span> :
+                                <select aria-label="Filter fundraiser" name="fundraiser" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs">
                                     <option value="">Pilih Fundraiser</option>
                                 </select>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Media</span> :
-                                <select name="media_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                                <span class="w-28 text-xs font-semibold">Media</span> :
+                                <select aria-label="Filter media prospek" name="media_id" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs">
                                     <option value="">Pilih Media</option>
                                     @foreach($prospectMedia as $pm)
                                         <option value="{{ $pm->id }}">{{ $pm->name }}</option>
@@ -150,8 +151,8 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Metode</span> :
-                                <select name="method_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                                <span class="w-28 text-xs font-semibold">Metode</span> :
+                                <select aria-label="Filter metode prospek" name="method_id" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs">
                                     <option value="">Pilih Metode</option>
                                     @foreach($prospectMethods as $pmt)
                                         <option value="{{ $pmt->id }}">{{ $pmt->name }}</option>
@@ -163,8 +164,8 @@
                         {{-- Row 2 --}}
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
                             <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Jenis</span> :
-                                <select name="type_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                                <span class="w-28 text-xs font-semibold">Jenis</span> :
+                                <select aria-label="Filter jenis prospek" name="type_id" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs">
                                     <option value="">Pilih Jenis</option>
                                     @foreach($prospectTypes as $pt)
                                         <option value="{{ $pt->id }}">{{ $pt->name }}</option>
@@ -172,8 +173,8 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Rumpun Program</span> :
-                                <select name="program_group_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                                <span class="w-28 text-xs font-semibold">Rumpun Program</span> :
+                                <select aria-label="Filter rumpun program" name="program_group_id" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs">
                                     <option value="">Pilih Rumpun Program</option>
                                     @foreach($programGroups as $pg)
                                         <option value="{{ $pg->id }}">{{ $pg->name }}</option>
@@ -181,8 +182,8 @@
                                 </select>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-28 text-[11px] font-semibold">Campaign</span> :
-                                <select name="program_id" class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px]">
+                                <span class="w-28 text-xs font-semibold">Campaign</span> :
+                                <select aria-label="Filter campaign" name="program_id" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs">
                                     <option value="">Pilih Campaign</option>
                                     @foreach($programs as $prg)
                                         <option value="{{ $prg->id }}">{{ $prg->title }}</option>

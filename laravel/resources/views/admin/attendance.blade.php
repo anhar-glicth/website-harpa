@@ -225,7 +225,7 @@
                     </div>
                 @else
                     <div class="py-16 text-center text-slate-600 font-bold uppercase tracking-wider">
-                        <i class="fa-solid fa-user-clock text-slate-400 text-4xl mb-3 block" aria-hidden="true"></i>
+                        <i class="fa-solid fa-user-clock text-slate-500 text-4xl mb-3 block" aria-hidden="true"></i>
                         Belum ada data absensi pegawai lapangan yang tercatat.
                     </div>
                 @endif

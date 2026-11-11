@@ -123,7 +123,7 @@
                     </div>
                 @else
                     <div class="py-16 text-center text-slate-600 font-bold uppercase tracking-wider space-y-4">
-                        <i class="fa-solid fa-heart-crack text-slate-400 text-4xl block" aria-hidden="true"></i>
+                        <i class="fa-solid fa-heart-crack text-slate-500 text-4xl block" aria-hidden="true"></i>
                         <p>Anda belum pernah melakukan donasi kebaikan.</p>
                         <div>
                             <a href="{{ route('campaigns.index') }}" class="inline-flex items-center gap-2 px-6 py-3 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-colors shadow-lg shadow-primary-600/20">

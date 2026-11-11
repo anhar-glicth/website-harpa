@@ -10,21 +10,21 @@
     
     {{-- Alerts --}}
     @if(session('success'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-250 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
+        <div role="status" class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-circle-check text-emerald-700 text-base"></i>
+                <i class="fa-solid fa-circle-check text-emerald-700 text-base" aria-hidden="true"></i>
                 <span>{{ session('success') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-emerald-700 hover:bg-emerald-100">
-                <i class="fa-solid fa-xmark"></i>
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
+        <div role="alert" class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-triangle-exclamation text-rose-700 text-base"></i>
+                <i class="fa-solid fa-triangle-exclamation text-rose-700 text-base" aria-hidden="true"></i>
                 <span>{{ session('error') }}</span>
             </div>
             <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-rose-700 hover:bg-rose-100">
