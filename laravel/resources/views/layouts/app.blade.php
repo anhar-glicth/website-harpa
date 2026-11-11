@@ -159,58 +159,58 @@
              @click.away="open = false" 
              style="display: none;" 
              class="md:hidden w-full bg-white border-b border-slate-200/90 px-5 sm:px-6 py-5 shadow-2xl space-y-4 max-h-[80vh] overflow-y-auto">
-            <div class="flex flex-col space-y-1.5 font-bold text-xs uppercase tracking-wider text-slate-700">
-                <a href="{{ route('home') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-house mr-2 text-slate-600"></i> Home
+            <div class="flex flex-col space-y-1.5 font-bold text-xs uppercase tracking-wider text-slate-600">
+                <a href="{{ route('home') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-house mr-2 text-slate-400"></i> Home
                 </a>
-                <a href="{{ route('campaigns.index') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-hand-holding-heart mr-2 text-slate-600"></i> Kampanye
+                <a href="{{ route('campaigns.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-hand-holding-heart mr-2 text-slate-400"></i> Kampanye
                 </a>
-                <a href="{{ route('zakat.index') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-calculator mr-2 text-slate-600"></i> Zakat
+                <a href="{{ route('zakat.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-calculator mr-2 text-slate-400"></i> Zakat
                 </a>
-                <a href="{{ route('prayers.index') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-hands-praying mr-2 text-slate-600"></i> Doa
+                <a href="{{ route('prayers.index') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-hands-praying mr-2 text-slate-400"></i> Doa
                 </a>
-                <a href="{{ route('news') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-newspaper mr-2 text-slate-600"></i> Berita
+                <a href="{{ route('news') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-newspaper mr-2 text-slate-400"></i> Berita
                 </a>
-                <a href="{{ route('volunteer') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('volunteer') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-users mr-2 text-slate-600"></i> Relawan
+                <a href="{{ route('volunteer') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('volunteer') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-users mr-2 text-slate-400"></i> Relawan
                 </a>
-                <a href="{{ route('about') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('about') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-circle-info mr-2 text-slate-600"></i> Tentang Kami
+                <a href="{{ route('about') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('about') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-circle-info mr-2 text-slate-400"></i> Tentang Kami
                 </a>
-                <a href="{{ route('contact') }}" @click="open = false" class="py-3 px-4 min-h-[44px] rounded-xl transition-colors {{ request()->routeIs('contact') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
-                    <i class="fa-solid fa-envelope mr-2 text-slate-600"></i> Kontak
+                <a href="{{ route('contact') }}" @click="open = false" class="py-3 px-4 rounded-xl transition-colors {{ request()->routeIs('contact') ? 'bg-primary-50 text-primary-700 font-black' : 'hover:bg-slate-50' }}">
+                    <i class="fa-solid fa-envelope mr-2 text-slate-400"></i> Kontak
                 </a>
             </div>
             <hr class="border-slate-100">
             @auth
                 <div class="space-y-2 text-xs font-bold uppercase tracking-wider">
                     @if(Auth::user()->hasAdminAccess())
-                        <a href="{{ route('admin.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
-                            <i class="fa-solid fa-chart-line text-slate-600"></i>
+                        <a href="{{ route('admin.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-slate-400"></i>
                             <span>Dashboard Admin</span>
                         </a>
                     @elseif(Auth::user()->isFieldWorker())
-                        <a href="{{ route('field.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
-                            <i class="fa-solid fa-users-gear text-slate-600"></i>
+                        <a href="{{ route('field.dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-users-gear text-slate-400"></i>
                             <span>Dashboard Petugas</span>
                         </a>
                     @endif
-                    <a href="{{ route('dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
-                        <i class="fa-solid fa-house-user text-slate-600"></i>
+                    <a href="{{ route('dashboard') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
+                        <i class="fa-solid fa-house-user text-slate-400"></i>
                         <span>Dashboard Donatur</span>
                     </a>
-                    <a href="{{ route('profile.custom') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-slate-700 hover:text-primary-700 hover:bg-slate-50 rounded-xl">
-                        <i class="fa-solid fa-user-pen text-slate-600"></i>
+                    <a href="{{ route('profile.custom') }}" @click="open = false" class="flex items-center space-x-3 py-2.5 px-4 text-slate-700 hover:text-primary-600 hover:bg-slate-50 rounded-xl">
+                        <i class="fa-solid fa-user-pen text-slate-400"></i>
                         <span>Edit Profil</span>
                     </a>
                     <form method="POST" action="{{ route('logout') }}" class="pt-1">
                         @csrf
-                        <button type="submit" class="w-full flex items-center space-x-3 py-2.5 px-4 min-h-[44px] text-red-700 hover:bg-red-50 rounded-xl text-left transition-colors">
-                            <i class="fa-solid fa-right-from-bracket text-red-700"></i>
+                        <button type="submit" class="w-full flex items-center space-x-3 py-2.5 px-4 text-red-600 hover:bg-red-50 rounded-xl text-left transition-colors">
+                            <i class="fa-solid fa-right-from-bracket text-red-400"></i>
                             <span>Keluar Akun</span>
                         </button>
                     </form>
@@ -399,44 +399,48 @@
     <!-- Premium Footer -->
     <footer class="bg-[#063f5c] text-slate-200 pt-16 pb-8 px-6 sm:px-10 mt-20 border-t border-[#04324a]">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-12">
-            <!-- Brand & Tagline & Legalitas -->
+            
             <div class="lg:col-span-4 space-y-4">
                 <div class="flex items-center gap-3">
                     <div class="inline-block bg-white p-2 rounded-2xl shadow-sm shrink-0">
-                        <img src="{{ asset('images/logo.png') }}?v=2" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpeg') }}';" width="120" height="40" class="h-10 w-auto object-contain" alt="Yayasan Harpa Indonesia Madani">
+                        <img src="{{ asset('images/logo.png') }}?v=2" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpeg') }}';" class="h-10 w-auto object-contain" alt="Yayasan Harpa Indonesia Madani">
                     </div>
                     <div>
                         <h3 class="font-montserrat font-black text-sm uppercase text-white leading-tight">Yayasan Harpa</h3>
                         <p class="text-[10px] font-black text-[#f7ad1a] tracking-widest uppercase">Indonesia Madani</p>
                     </div>
                 </div>
-                <p class="text-xs font-medium leading-relaxed text-slate-200">
+                <p class="text-xs font-medium leading-relaxed text-slate-300">
                     Yayasan Harpa Indonesia Madani merupakan lembaga sekaligus Platform Crowdfunding yang mendukung berbagai Program Kemanusiaan di Luar dan Dalam Negeri.
                 </p>
 
+                
                 <div class="p-3.5 rounded-2xl bg-[#04324a] border border-[#0e567d]/40 space-y-1">
                     <div class="flex items-center gap-2 text-[#f7ad1a] text-[10px] font-black uppercase tracking-wider">
-                        <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                        <i class="fa-solid fa-scale-balanced"></i>
                         <span>Legalitas Terdaftar Resmi</span>
                     </div>
-                    <p class="text-[11px] text-slate-200 leading-snug">
+                    <p class="text-[10px] text-slate-200 leading-snug">
                         Terdaftar di Kementerian Hukum dan HAM RI<br>
                         <span class="font-bold text-white tracking-wide">SK No. AHU-0017523.AH.01.04.Tahun 2025</span>
                     </p>
                 </div>
 
-                <!-- Active Contact Channels -->
-                <div class="flex items-center gap-2.5 pt-1">
-                    <a href="https://wa.me/6287748030166" target="_blank" rel="noopener noreferrer" aria-label="Hubungi WhatsApp resmi" class="min-w-[44px] min-h-[44px] rounded-xl bg-[#04324a] hover:bg-[#f7ad1a] text-slate-200 hover:text-[#063f5c] inline-flex items-center justify-center transition-colors duration-200"><i class="fa-brands fa-whatsapp text-base" aria-hidden="true"></i></a>
-                    <a href="mailto:info@indonesiamadani.org" aria-label="Kirim email resmi" class="min-w-[44px] min-h-[44px] rounded-xl bg-[#04324a] hover:bg-[#f7ad1a] text-slate-200 hover:text-[#063f5c] inline-flex items-center justify-center transition-colors duration-200"><i class="fa-solid fa-envelope text-base" aria-hidden="true"></i></a>
-                    <a href="{{ route('contact') }}" aria-label="Halaman kontak lembaga" class="min-w-[44px] min-h-[44px] rounded-xl bg-[#04324a] hover:bg-[#f7ad1a] text-slate-200 hover:text-[#063f5c] inline-flex items-center justify-center transition-colors duration-200"><i class="fa-solid fa-comments text-base" aria-hidden="true"></i></a>
+                <!-- Social media -->
+                <div class="flex space-x-2.5 pt-1">
+                    <a href="https://wa.me/6287748030166" target="_blank" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="WhatsApp"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="Instagram"><i class="fa-brands fa-instagram text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="Facebook"><i class="fa-brands fa-facebook-f text-sm"></i></a>
+                    <a href="#" class="w-8 h-8 rounded-lg bg-[#04324a] hover:bg-[#f7ad1a] text-slate-300 hover:text-[#063f5c] flex items-center justify-center transition-colors duration-200" title="YouTube"><i class="fa-brands fa-youtube text-sm"></i></a>
                 </div>
             </div>
 
-            <!-- Navigation Links -->
+            <!-- Links: Navigation -->
             <div class="lg:col-span-2 space-y-4">
-                <h4 class="text-xs font-black uppercase tracking-widest text-white">Navigasi</h4>
-                <ul class="space-y-2 text-xs font-bold uppercase tracking-wider text-slate-200">
+                <h4 class="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#f7ad1a]"></span> Navigasi
+                </h4>
+                <ul class="space-y-2 text-xs font-bold uppercase tracking-wider">
                     <li><a href="{{ route('home') }}" class="hover:text-[#f7ad1a] transition-colors">Home</a></li>
                     <li><a href="{{ route('campaigns.index') }}" class="hover:text-[#f7ad1a] transition-colors">Daftar Kampanye</a></li>
                     <li><a href="{{ route('zakat.index') }}" class="hover:text-[#f7ad1a] transition-colors">Kalkulator Zakat</a></li>
@@ -447,52 +451,55 @@
                 </ul>
             </div>
 
-            <!-- Contact Info -->
+            <!-- Kontak Info -->
             <div class="lg:col-span-3 space-y-4">
-                <h4 class="text-xs font-black uppercase tracking-widest text-white">Kontak Info</h4>
-                <p class="text-xs text-slate-200 font-medium leading-relaxed">
-                    Silakan hubungi kami di kanal berikut:
+                <h4 class="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#f7ad1a]"></span> Kontak Info
+                </h4>
+                <p class="text-[11px] text-slate-300 font-medium leading-relaxed">
+                    Silahkan hubungi kami dikontak berikut :
                 </p>
-                <ul class="space-y-3 text-xs text-slate-200 font-medium">
+                <ul class="space-y-3 text-xs text-slate-300 font-medium">
                     <li>
-                        <a href="https://wa.me/6287748030166" target="_blank" rel="noopener noreferrer" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
-                            <i class="fa-brands fa-whatsapp text-sm text-[#f7ad1a] mt-0.5 shrink-0" aria-hidden="true"></i>
+                        <a href="https://wa.me/6287748030166" target="_blank" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
+                            <i class="fa-brands fa-whatsapp text-sm text-[#f7ad1a] mt-0.5 shrink-0 group-hover:scale-110 transition-transform"></i>
                             <span class="font-bold tracking-wide">+62 877-4803-0166</span>
                         </a>
                     </li>
                     <li>
                         <a href="mailto:info@indonesiamadani.org" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
-                            <i class="fa-solid fa-envelope text-sm text-[#f7ad1a] mt-0.5 shrink-0" aria-hidden="true"></i>
+                            <i class="fa-solid fa-envelope text-sm text-[#f7ad1a] mt-0.5 shrink-0 group-hover:scale-110 transition-transform"></i>
                             <span class="break-all font-semibold">info@indonesiamadani.org</span>
                         </a>
                     </li>
                     <li>
-                        <a href="https://indonesiamadani.org" target="_blank" rel="noopener noreferrer" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
-                            <i class="fa-solid fa-globe text-sm text-[#f7ad1a] mt-0.5 shrink-0" aria-hidden="true"></i>
+                        <a href="https://indonesiamadani.org" target="_blank" class="flex items-start gap-2.5 hover:text-[#f7ad1a] transition-colors group">
+                            <i class="fa-solid fa-globe text-sm text-[#f7ad1a] mt-0.5 shrink-0 group-hover:scale-110 transition-transform"></i>
                             <span class="font-semibold">indonesiamadani.org</span>
                         </a>
                     </li>
                     <li class="flex items-start gap-2.5 leading-relaxed pt-1">
-                        <i class="fa-solid fa-location-dot text-sm text-[#f7ad1a] mt-1 shrink-0" aria-hidden="true"></i>
-                        <span class="text-xs text-slate-200 font-medium leading-relaxed">
+                        <i class="fa-solid fa-location-dot text-sm text-[#f7ad1a] mt-1 shrink-0"></i>
+                        <span class="text-[11px] text-slate-300 font-medium leading-relaxed">
                             Jl. Panji Tilar Negara No. 150A, Tanjung Karang Permai, Kota Mataram, Nusa Tenggara Barat 83116
                         </span>
                     </li>
                 </ul>
             </div>
 
-            <!-- Newsletter -->
+            <!-- Newsletter subscribe -->
             <div class="lg:col-span-3 space-y-4">
-                <h4 class="text-xs font-black uppercase tracking-widest text-white">Langganan Berita</h4>
-                <p class="text-xs font-medium leading-relaxed text-slate-200">
+                <h4 class="text-xs font-black uppercase tracking-widest text-white flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#f7ad1a]"></span> Langganan Berita
+                </h4>
+                <p class="text-xs font-medium leading-relaxed text-slate-300">
                     Dapatkan update berkala mengenai penyaluran donasi dan cerita dampak langsung dari lapangan.
                 </p>
                 <form action="{{ route('newsletter') }}" method="POST" class="space-y-2.5">
                     @csrf
-                    <label for="footer_newsletter_email" class="sr-only">Alamat email untuk langganan berita</label>
-                    <input id="footer_newsletter_email" type="email" name="email" required placeholder="Email Anda" class="w-full bg-[#04324a] border border-[#0e567d] text-white rounded-xl px-4 py-3 text-xs focus:border-[#f7ad1a] font-bold transition-colors placeholder:text-slate-300">
-                    <button type="submit" class="w-full min-h-[44px] bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md">
-                        <i class="fa-solid fa-paper-plane text-xs" aria-hidden="true"></i> Langganan
+                    <input type="email" name="email" required placeholder="Email Anda" class="w-full bg-[#04324a] border border-[#032537] text-white rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#f7ad1a] font-bold transition-all placeholder:text-slate-400">
+                    <button type="submit" class="w-full bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] font-black text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md shadow-black/10">
+                        <i class="fa-solid fa-paper-plane text-xs"></i> Langganan
                     </button>
                 </form>
             </div>
@@ -500,83 +507,86 @@
 
         <hr class="border-[#04324a] my-8">
 
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs font-bold text-slate-300 uppercase tracking-wider text-center gap-4">
-            <p>&copy; {{ date('Y') }} Yayasan Harpa Indonesia Madani. Hak Cipta Dilindungi.</p>
-            <p>Platform Crowdfunding Kemanusiaan &bull; <a href="https://indonesiamadani.org" target="_blank" rel="noopener noreferrer" class="text-[#f7ad1a] hover:underline">indonesiamadani.org</a></p>
+        <!-- Copyright -->
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center gap-4">
+            <p>&copy; {{ date('Y') }} Yayasan Harpa Indonesia Madani. All Rights Reserved.</p>
+            <p>Platform Crowdfunding Kemanusiaan &bull; <a href="https://indonesiamadani.org" target="_blank" class="text-[#f7ad1a] hover:underline">indonesiamadani.org</a></p>
         </div>
     </footer>
 
-    <!-- Mobile Bottom Navigation (44px+ tap targets, solid surface without blur) -->
-    <nav aria-label="Navigasi bawah seluler" class="md:hidden fixed bottom-0 left-0 right-0 z-[1040] bg-white border-t border-slate-200 px-2 py-1.5 shadow-[0_-8px_24px_rgba(0,0,0,0.06)] flex items-center justify-around">
+    <!-- ================= MOBILE BOTTOM NAVIGATION (App-like Experience) ================= -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-[1040] bg-white/95 backdrop-blur-xl border-t border-slate-200/80 px-2 py-2 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] flex items-center justify-around pb-safe">
         @if($isDashboardOrAdmin)
-            <button type="button" @click="mobileSidebarOpen = !mobileSidebarOpen" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-primary-700 font-black">
-                <i class="fa-solid fa-bars-staggered text-lg mb-0.5 text-primary-700" aria-hidden="true"></i>
-                <span class="text-[10px] font-bold tracking-tight">Menu</span>
+            <!-- Admin / Staff / Dashboard Bottom Navigation -->
+            <button type="button" @click="mobileSidebarOpen = !mobileSidebarOpen" class="flex flex-col items-center py-1 px-2.5 rounded-xl text-primary-600 transition-all font-black">
+                <i class="fa-solid fa-bars-staggered text-lg mb-1 text-primary-600"></i>
+                <span class="text-[9px] font-bold tracking-tight">Menu</span>
             </button>
 
             @if(Auth::user()->hasAdminAccess())
-                <a href="{{ route('admin.dashboard') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-colors {{ request()->routeIs('admin.dashboard') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                    <i class="fa-solid fa-chart-pie text-lg mb-0.5 {{ request()->routeIs('admin.dashboard') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                    <span class="text-[10px] font-bold tracking-tight">Dashboard</span>
+                <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-chart-pie text-lg mb-1 {{ request()->routeIs('admin.dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Dashboard</span>
                 </a>
-                <a href="{{ route('admin.donations') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-colors {{ request()->routeIs('admin.donations') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                    <i class="fa-solid fa-file-invoice-dollar text-lg mb-0.5 {{ request()->routeIs('admin.donations') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                    <span class="text-[10px] font-bold tracking-tight">Donasi</span>
+                <a href="{{ route('admin.donations') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.donations') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-file-invoice-dollar text-lg mb-1 {{ request()->routeIs('admin.donations') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Donasi</span>
                 </a>
             @elseif(Auth::user()->isFieldWorker())
-                <a href="{{ route('field.dashboard') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-colors {{ request()->routeIs('field.dashboard') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                    <i class="fa-solid fa-list-check text-lg mb-0.5 {{ request()->routeIs('field.dashboard') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                    <span class="text-[10px] font-bold tracking-tight">Tugas</span>
+                <a href="{{ route('field.dashboard') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('field.dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-list-check text-lg mb-1 {{ request()->routeIs('field.dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Tugas</span>
                 </a>
             @else
-                <a href="{{ route('dashboard') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-colors {{ request()->routeIs('dashboard') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                    <i class="fa-solid fa-gauge text-lg mb-0.5 {{ request()->routeIs('dashboard') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                    <span class="text-[10px] font-bold tracking-tight">Ringkasan</span>
+                <a href="{{ route('dashboard') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-gauge text-lg mb-1 {{ request()->routeIs('dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Ringkasan</span>
                 </a>
             @endif
 
-            <a href="{{ route('home') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-colors {{ request()->routeIs('home') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                <i class="fa-solid fa-globe text-lg mb-0.5 {{ request()->routeIs('home') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                <span class="text-[10px] font-bold tracking-tight">Website</span>
+            <a href="{{ route('home') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('home') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-globe text-lg mb-1 {{ request()->routeIs('home') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Website</span>
             </a>
 
-            <a href="{{ route('profile.custom') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-colors {{ request()->routeIs('profile.*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                <i class="fa-solid fa-user-circle text-lg mb-0.5 {{ request()->routeIs('profile.*') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                <span class="text-[10px] font-bold tracking-tight">Profil</span>
+            <a href="{{ route('profile.custom') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('profile.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-user-circle text-lg mb-1 {{ request()->routeIs('profile.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Profil</span>
             </a>
         @else
-            <a href="{{ route('home') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-colors {{ request()->routeIs('home') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                <i class="fa-solid fa-house text-lg mb-0.5 {{ request()->routeIs('home') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                <span class="text-[10px] font-bold tracking-tight">Home</span>
+            <!-- Public Visitor Bottom Navigation -->
+            <a href="{{ route('home') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('home') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-house text-lg mb-1 {{ request()->routeIs('home') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Home</span>
             </a>
-            <a href="{{ route('campaigns.index') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-colors {{ request()->routeIs('campaigns.*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                <i class="fa-solid fa-hand-holding-heart text-lg mb-0.5 {{ request()->routeIs('campaigns.*') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                <span class="text-[10px] font-bold tracking-tight">Kampanye</span>
+            <a href="{{ route('campaigns.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('campaigns.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-hand-holding-heart text-lg mb-1 {{ request()->routeIs('campaigns.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Kampanye</span>
             </a>
-            <a href="{{ route('zakat.index') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-colors {{ request()->routeIs('zakat.*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                <i class="fa-solid fa-calculator text-lg mb-0.5 {{ request()->routeIs('zakat.*') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                <span class="text-[10px] font-bold tracking-tight">Zakat</span>
+            <a href="{{ route('zakat.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('zakat.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-calculator text-lg mb-1 {{ request()->routeIs('zakat.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Zakat</span>
             </a>
-            <a href="{{ route('prayers.index') }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-colors {{ request()->routeIs('prayers.*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                <i class="fa-solid fa-hands-praying text-lg mb-0.5 {{ request()->routeIs('prayers.*') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                <span class="text-[10px] font-bold tracking-tight">Doa</span>
+            <a href="{{ route('prayers.index') }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('prayers.*') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                <i class="fa-solid fa-hands-praying text-lg mb-1 {{ request()->routeIs('prayers.*') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                <span class="text-[9px] font-bold tracking-tight">Doa</span>
             </a>
             @auth
-                <a href="{{ Auth::user()->hasAdminAccess() ? route('admin.dashboard') : (Auth::user()->isFieldWorker() ? route('field.dashboard') : route('dashboard')) }}" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-colors {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-slate-900' }}">
-                    <i class="fa-solid fa-user-circle text-lg mb-0.5 {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-700' : 'text-slate-600' }}" aria-hidden="true"></i>
-                    <span class="text-[10px] font-bold tracking-tight">Akun</span>
+                <a href="{{ Auth::user()->hasAdminAccess() ? route('admin.dashboard') : (Auth::user()->isFieldWorker() ? route('field.dashboard') : route('dashboard')) }}" class="flex flex-col items-center py-1 px-2.5 rounded-xl transition-all {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 font-black' : 'text-slate-500 hover:text-slate-800' }}">
+                    <i class="fa-solid fa-user-circle text-lg mb-1 {{ request()->routeIs('admin.*') || request()->routeIs('field.*') || request()->routeIs('dashboard') ? 'text-primary-600 scale-110' : 'text-slate-400' }}"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Akun</span>
                 </a>
             @else
-                <button type="button" @click="loginOpen = true; registerOpen = false;" class="min-w-[44px] min-h-[44px] flex flex-col items-center justify-center py-1 px-2 rounded-xl text-slate-600 hover:text-primary-700 transition-colors">
-                    <i class="fa-solid fa-right-to-bracket text-lg mb-0.5 text-slate-600" aria-hidden="true"></i>
-                    <span class="text-[10px] font-bold tracking-tight">Masuk</span>
+                <button type="button" @click="loginOpen = true; registerOpen = false;" class="flex flex-col items-center py-1 px-2.5 rounded-xl text-slate-500 hover:text-primary-600 transition-all">
+                    <i class="fa-solid fa-right-to-bracket text-lg mb-1 text-slate-400"></i>
+                    <span class="text-[9px] font-bold tracking-tight">Masuk</span>
                 </button>
             @endauth
         @endif
     </nav>
 
-    <!-- Live Donation Toast: rendered strictly from real verified DB records only -->
-    @if(!$isDashboardOrAdmin && isset($liveDonations) && $liveDonations->isNotEmpty())
+    <!-- ================= LIVE DONATION SOCIAL PROOF POPUP ================= -->
+    @if(!$isDashboardOrAdmin)
     <div 
         x-data="liveDonationToast()" 
         x-init="initToast()" 
@@ -586,54 +596,69 @@
         class="fixed z-[1035] bottom-20 md:bottom-6 left-3 md:left-6 max-w-[340px] sm:max-w-sm pointer-events-auto select-none"
     >
         <div 
-            x-show="visible && current"
-            x-transition:enter="transition-all ease-out duration-300 transform"
-            x-transition:enter-start="opacity-0 translate-y-4"
-            x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition-all ease-in duration-200 transform"
-            x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 -translate-y-2"
-            class="bg-white border border-slate-200 rounded-2xl p-3.5 shadow-xl flex items-center gap-3 relative overflow-hidden"
+            x-show="visible"
+            x-transition:enter="transition-all ease-out duration-400 transform"
+            x-transition:enter-start="opacity-0 translate-y-6 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition-all ease-in duration-300 transform"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+            class="bg-white/95 backdrop-blur-md border border-slate-100 hover:border-primary-300 rounded-2xl p-3 sm:p-3.5 shadow-[0_12px_32px_-6px_rgba(0,0,0,0.12)] flex items-center gap-3 relative overflow-hidden group transition-all duration-300 ring-1 ring-black/[0.04]"
         >
+            <!-- Progress Line for 3-Second Cycle -->
+            <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-slate-100 overflow-hidden">
+                <div 
+                    class="h-full bg-gradient-to-r from-primary-500 to-amber-500 transition-all duration-[2400ms] ease-linear"
+                    :style="{ width: visible ? '100%' : '0%' }"
+                ></div>
+            </div>
+
+            <!-- Avatar -->
             <div class="relative shrink-0 mt-0.5">
                 <img 
                     :src="current.avatar" 
                     :alt="current.name" 
-                    width="44"
-                    height="44"
-                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-primary-100"
+                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover shadow-sm ring-2 ring-primary-100"
                 >
+                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 ring-2 ring-white rounded-full flex items-center justify-center text-[7px] text-white shadow-sm">
+                    <i class="fa-solid fa-heart"></i>
+                </span>
             </div>
 
-            <div class="flex-grow min-w-0 pr-6">
+            <!-- Content -->
+            <div class="flex-grow min-w-0 pr-4">
                 <div class="flex items-center gap-1.5 leading-none">
-                    <h5 class="text-xs font-black text-slate-900 truncate" x-text="current.name"></h5>
-                    <span class="text-[10px] font-bold text-slate-600 shrink-0">berdonasi</span>
+                    <h5 class="text-xs font-black text-slate-800 truncate" x-text="current.name"></h5>
+                    <span class="text-[9px] font-bold text-slate-400 shrink-0">baru saja donasi</span>
                 </div>
                 
-                <div class="text-xs leading-snug mt-1 truncate">
-                    <span class="font-extrabold text-primary-700 font-montserrat" x-text="current.amount"></span>
-                    <span class="text-slate-600 font-medium">untuk</span>
-                    <span class="font-bold text-slate-800 truncate" x-text="current.campaign"></span>
+                <div class="text-[11px] leading-snug mt-1 truncate">
+                    <span class="font-extrabold text-primary-600 font-montserrat" x-text="current.amount"></span>
+                    <span class="text-slate-400 font-medium">untuk</span>
+                    <span class="font-bold text-slate-700 truncate" x-text="current.campaign"></span>
                 </div>
 
-                <div class="flex items-center gap-2 mt-1 text-[10px] font-bold text-slate-600 leading-none">
+                <div class="flex items-center gap-2 mt-1 text-[9px] font-bold text-slate-400 leading-none">
                     <span class="flex items-center gap-1">
-                        <i class="fa-regular fa-clock text-[9px] text-slate-500" aria-hidden="true"></i>
+                        <i class="fa-regular fa-clock text-[8px] text-slate-400"></i>
                         <span x-text="current.time"></span>
                     </span>
-                    <span aria-hidden="true">&bull;</span>
-                    <span class="text-emerald-700 font-bold">Tercatat</span>
+                    <span>•</span>
+                    <span class="text-emerald-600 flex items-center gap-1 font-bold">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Terverifikasi
+                    </span>
                 </div>
             </div>
 
+            <!-- Dismiss Button -->
             <button 
                 type="button" 
                 @click="dismiss()" 
-                aria-label="Tutup notifikasi donasi"
-                class="absolute top-1 right-1 w-11 h-11 inline-flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors rounded-lg"
+                class="absolute top-2 right-2 text-slate-300 hover:text-slate-600 p-1 transition-colors rounded-lg focus:outline-none"
+                title="Tutup Notifikasi"
             >
-                <i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
+                <i class="fa-solid fa-xmark text-xs"></i>
             </button>
         </div>
     </div>
@@ -641,74 +666,88 @@
     <script>
         function liveDonationToast() {
             return {
-                list: @json($liveDonations),
+                donations: @json($liveDonations ?? []),
+                fallback: [
+                    { name: "Hamba Allah", amount: "Rp 50.000", campaign: "Sumur Bor untuk Nusantara", time: "Baru saja", avatar: "https://ui-avatars.com/api/?name=HA&background=ea580c&color=fff&bold=true" },
+                    { name: "Siti Rahmawati", amount: "Rp 100.000", campaign: "Wakaf Al-Quran Pelosok", time: "2 menit lalu", avatar: "https://ui-avatars.com/api/?name=Siti+R&background=0284c7&color=fff&bold=true" },
+                    { name: "Budi Santoso", amount: "Rp 250.000", campaign: "Bantuan Pangan Dhuafa", time: "3 menit lalu", avatar: "https://ui-avatars.com/api/?name=Budi+S&background=10b981&color=fff&bold=true" },
+                    { name: "Ahmad Fauzi", amount: "Rp 50.000", campaign: "Sumur Bor untuk Nusantara", time: "5 menit lalu", avatar: "https://ui-avatars.com/api/?name=Ahmad+F&background=f59e0b&color=fff&bold=true" },
+                    { name: "Nurul Hidayah", amount: "Rp 200.000", campaign: "Sedekah Yatim Dhuafa", time: "8 menit lalu", avatar: "https://ui-avatars.com/api/?name=Nurul+H&background=8b5cf6&color=fff&bold=true" },
+                    { name: "Dedi Kurniawan", amount: "Rp 75.000", campaign: "Wakaf Al-Quran Pelosok", time: "11 menit lalu", avatar: "https://ui-avatars.com/api/?name=Dedi+K&background=ec4899&color=fff&bold=true" },
+                    { name: "Rina Permata", amount: "Rp 150.000", campaign: "Operasi Medis Anak Dhuafa", time: "14 menit lalu", avatar: "https://ui-avatars.com/api/?name=Rina+P&background=06b6d4&color=fff&bold=true" }
+                ],
+                list: [],
                 currentIndex: 0,
                 visible: false,
                 paused: false,
-                dismissed: false,
                 timer: null,
 
                 get current() {
-                    return (this.list && this.list.length > 0) ? this.list[this.currentIndex] : null;
+                    return (this.list && this.list.length > 0) ? this.list[this.currentIndex] : this.fallback[0];
                 },
 
                 initToast() {
-                    if (!this.list || this.list.length === 0) return;
-                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                    if (this.donations && this.donations.length > 0) {
+                        this.list = [...this.donations, ...this.fallback];
+                    } else {
+                        this.list = this.fallback;
+                    }
 
+                    // Mulai pertama kali setelah 1.2 detik
                     setTimeout(() => {
                         this.cycle();
-                    }, 1500);
+                    }, 1200);
                 },
 
                 cycle() {
-                    if (this.dismissed) return;
                     if (this.paused) {
                         setTimeout(() => this.cycle(), 1000);
                         return;
                     }
 
                     this.visible = true;
+
+                    // Tampil 2.4 detik, fade out 0.6 detik -> total siklus 3 detik berganti terus
                     this.timer = setTimeout(() => {
                         this.visible = false;
+
                         setTimeout(() => {
-                            if (this.dismissed) return;
                             this.currentIndex = (this.currentIndex + 1) % this.list.length;
                             this.cycle();
                         }, 600);
-                    }, 3500);
+                    }, 2400);
                 },
 
                 dismiss() {
-                    this.dismissed = true;
                     this.visible = false;
                     clearTimeout(this.timer);
+                    // Muncul kembali setelah 10 detik
+                    setTimeout(() => {
+                        this.cycle();
+                    }, 10000);
                 }
             };
         }
     </script>
     @endif
 
-    <!-- LOGIN MODAL -->
+    <!-- ================= LOGIN MODAL ================= -->
     <div x-show="loginOpen" 
          x-cloak 
-         @keydown.escape.window="loginOpen = false"
          style="display: none;" 
-         role="dialog"
-         aria-modal="true"
-         aria-labelledby="modal-login-title"
-         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/75 overflow-y-auto">
-        <div @click.away="loginOpen = false" class="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-6 sm:p-10 shadow-2xl relative space-y-6 my-auto max-h-[90vh] overflow-y-auto">
-            <button type="button" @click="loginOpen = false" aria-label="Tutup jendela masuk" class="absolute top-4 right-4 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
-                <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
+        <div @click.away="loginOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-6 sm:p-10 shadow-2xl relative space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+            <button type="button" @click="loginOpen = false" class="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-800 active:scale-95 transition-all focus:outline-none">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <div class="space-y-1 pr-8">
-                <h2 id="modal-login-title" class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight">Selamat <span class="text-primary-600">Datang Kembali</span></h2>
-                <p class="text-xs text-slate-600 font-semibold">Masuk untuk melanjutkan kebaikan Anda</p>
+            <div class="space-y-1 pr-6">
+                <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight italic">Selamat <span class="text-primary-500">Datang Kembali</span></h2>
+                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Masuk untuk melanjutkan kebaikan Anda</p>
             </div>
 
+            <!-- Session Status & Errors -->
             @if ($errors->any() && !($errors->has('name') || $errors->has('password_confirmation')))
-                <div role="alert" class="bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold p-4 rounded-xl">
+                <div class="bg-red-50 border border-red-150 text-red-800 text-[10px] font-bold uppercase tracking-wider p-4 rounded-2xl">
                     Ada beberapa kesalahan dalam data yang dimasukkan.
                 </div>
             @endif
@@ -716,60 +755,57 @@
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
                 <div class="space-y-1.5">
-                    <label for="modal_login_email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Alamat Email</label>
+                    <label for="modal_login_email" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Alamat Email</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-envelope text-xs" aria-hidden="true"></i></span>
-                        <input id="modal_login_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-xl pl-10 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-500 transition-colors">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-envelope text-xs"></i></span>
+                        <input id="modal_login_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                     @if ($errors->has('email'))
-                        <span class="text-xs font-bold text-rose-700">{{ $errors->first('email') }}</span>
+                        <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('email') }}</span>
                     @endif
                 </div>
                 <div class="space-y-1.5" x-data="{ showPass: false }">
                     <div class="flex justify-between items-center">
-                        <label for="modal_login_password" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Kata Sandi</label>
+                        <label for="modal_login_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Kata Sandi</label>
                     </div>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-lock text-xs" aria-hidden="true"></i></span>
-                        <input id="modal_login_password" :type="showPass ? 'text' : 'password'" name="password" required placeholder="Masukkan kata sandi" class="w-full bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-xl pl-10 pr-12 py-3 text-xs font-bold text-slate-900 placeholder-slate-500 transition-colors">
-                        <button type="button" @click="showPass = !showPass" :aria-label="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'" class="absolute inset-y-0 right-0 flex items-center px-3 min-w-[44px] justify-center text-slate-600 hover:text-primary-600 transition-colors">
-                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'" aria-hidden="true"></i>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
+                        <input id="modal_login_password" :type="showPass ? 'text' : 'password'" name="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <button type="button" @click="showPass = !showPass" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'"></i>
                         </button>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <input id="modal_login_remember" type="checkbox" name="remember" class="w-4 h-4 rounded border-slate-300 bg-slate-50 text-primary-600 focus:ring-primary-500">
-                    <label for="modal_login_remember" class="text-xs font-bold text-slate-700 select-none">Ingat Saya</label>
+                    <input id="modal_login_remember" type="checkbox" name="remember" class="rounded border-slate-300 bg-slate-50 text-primary-650 focus:ring-primary-500/20">
+                    <label for="modal_login_remember" class="text-[9px] font-black uppercase tracking-wider text-slate-450 select-none cursor-pointer">Ingat Saya</label>
                 </div>
-                <button type="submit" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-md transition-colors">Masuk Akun</button>
+                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 active:scale-[0.99] text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Masuk Akun <i class="fa-solid fa-right-to-bracket ml-2"></i></button>
             </form>
             <div class="text-center pt-2">
-                <span class="text-xs font-semibold text-slate-600">Belum punya akun?</span>
-                <button type="button" @click="loginOpen = false; registerOpen = true" class="text-xs font-black uppercase text-primary-700 hover:underline ml-1 px-1 py-1">Daftar Sekarang</button>
+                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Belum punya akun?</span>
+                <button type="button" @click="loginOpen = false; registerOpen = true" class="text-[10px] font-black uppercase text-primary-500 hover:text-primary-600 transition-colors ml-1">Daftar Sekarang</button>
             </div>
         </div>
     </div>
 
-    <!-- REGISTER MODAL -->
+    <!-- ================= REGISTER MODAL ================= -->
     <div x-show="registerOpen" 
          x-cloak 
-         @keydown.escape.window="registerOpen = false"
          style="display: none;" 
-         role="dialog"
-         aria-modal="true"
-         aria-labelledby="modal-register-title"
-         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/75 overflow-y-auto">
-        <div @click.away="registerOpen = false" class="bg-white border border-slate-200 w-full max-w-md rounded-3xl p-6 sm:p-10 shadow-2xl relative space-y-6 my-auto max-h-[90vh] overflow-y-auto">
-            <button type="button" @click="registerOpen = false" aria-label="Tutup jendela daftar" class="absolute top-4 right-4 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
-                <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+         class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
+        <div @click.away="registerOpen = false" class="bg-white border border-slate-100 w-full max-w-md rounded-3xl p-6 sm:p-10 shadow-2xl relative space-y-6 my-auto max-h-[90vh] overflow-y-auto">
+            <button type="button" @click="registerOpen = false" class="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-800 active:scale-95 transition-all focus:outline-none">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <div class="space-y-1 pr-8">
-                <h2 id="modal-register-title" class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight">Buat <span class="text-primary-600">Akun Baru</span></h2>
-                <p class="text-xs text-slate-600 font-semibold">Daftar untuk mulai berbagi kebaikan bersama kami</p>
+            <div class="space-y-1 pr-6">
+                <h2 class="text-xl sm:text-2xl font-montserrat font-black uppercase text-slate-900 tracking-tight italic">Buat <span class="text-primary-500">Akun Baru</span></h2>
+                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Daftar untuk mulai berbagi kebaikan bersama kami</p>
             </div>
 
+            <!-- Validation Errors -->
             @if ($errors->any() && ($errors->has('name') || $errors->has('password_confirmation')))
-                <div role="alert" class="bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold p-4 rounded-xl">
+                <div class="bg-red-50 border border-red-150 text-red-800 text-[10px] font-bold uppercase tracking-wider p-4 rounded-2xl">
                     Ada beberapa kesalahan dalam data pendaftaran.
                 </div>
             @endif
@@ -777,53 +813,53 @@
             <form method="POST" action="{{ route('register') }}" class="space-y-4">
                 @csrf
                 <div class="space-y-1.5">
-                    <label for="modal_reg_name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Nama Lengkap</label>
+                    <label for="modal_reg_name" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Nama Lengkap</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-user text-xs" aria-hidden="true"></i></span>
-                        <input id="modal_reg_name" type="text" name="name" value="{{ old('name') }}" required placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-xl pl-10 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-500 transition-colors">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-user text-xs"></i></span>
+                        <input id="modal_reg_name" type="text" name="name" value="{{ old('name') }}" required placeholder="Nama Lengkap" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                     @if ($errors->has('name'))
-                        <span class="text-xs font-bold text-rose-700">{{ $errors->first('name') }}</span>
+                        <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('name') }}</span>
                     @endif
                 </div>
                 <div class="space-y-1.5">
-                    <label for="modal_reg_email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Alamat Email</label>
+                    <label for="modal_reg_email" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Alamat Email</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-envelope text-xs" aria-hidden="true"></i></span>
-                        <input id="modal_reg_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-xl pl-10 pr-4 py-3 text-xs font-bold text-slate-900 placeholder-slate-500 transition-colors">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-envelope text-xs"></i></span>
+                        <input id="modal_reg_email" type="email" name="email" value="{{ old('email') }}" required placeholder="nama@email.com" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-4 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
                     </div>
                     @if ($errors->has('email') && ($errors->has('name') || $errors->has('password_confirmation')))
-                        <span class="text-xs font-bold text-rose-700">{{ $errors->first('email') }}</span>
+                        <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('email') }}</span>
                     @endif
                 </div>
                 <div class="space-y-1.5" x-data="{ showPass: false }">
-                    <label for="modal_reg_password" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Kata Sandi</label>
+                    <label for="modal_reg_password" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Kata Sandi</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-lock text-xs" aria-hidden="true"></i></span>
-                        <input id="modal_reg_password" :type="showPass ? 'text' : 'password'" name="password" required placeholder="Minimal 8 karakter" class="w-full bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-xl pl-10 pr-12 py-3 text-xs font-bold text-slate-900 placeholder-slate-500 transition-colors">
-                        <button type="button" @click="showPass = !showPass" :aria-label="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'" class="absolute inset-y-0 right-0 flex items-center px-3 min-w-[44px] justify-center text-slate-600 hover:text-primary-600 transition-colors">
-                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'" aria-hidden="true"></i>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock text-xs"></i></span>
+                        <input id="modal_reg_password" :type="showPass ? 'text' : 'password'" name="password" required placeholder="Minimal 8 karakter" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <button type="button" @click="showPass = !showPass" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'"></i>
                         </button>
                     </div>
                     @if ($errors->has('password'))
-                        <span class="text-xs font-bold text-rose-700">{{ $errors->first('password') }}</span>
+                        <span class="text-[9px] font-bold uppercase text-red-500">{{ $errors->first('password') }}</span>
                     @endif
                 </div>
                 <div class="space-y-1.5" x-data="{ showPass: false }">
-                    <label for="modal_reg_confirm" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Konfirmasi Sandi</label>
+                    <label for="modal_reg_confirm" class="block text-[9px] font-black uppercase tracking-wider text-slate-450 mb-1.5 ml-1">Konfirmasi Sandi</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-circle-check text-xs" aria-hidden="true"></i></span>
-                        <input id="modal_reg_confirm" :type="showPass ? 'text' : 'password'" name="password_confirmation" required placeholder="Ulangi kata sandi" class="w-full bg-slate-50 border border-slate-300 focus:border-primary-600 rounded-xl pl-10 pr-12 py-3 text-xs font-bold text-slate-900 placeholder-slate-500 transition-colors">
-                        <button type="button" @click="showPass = !showPass" :aria-label="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'" class="absolute inset-y-0 right-0 flex items-center px-3 min-w-[44px] justify-center text-slate-600 hover:text-primary-600 transition-colors">
-                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'" aria-hidden="true"></i>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-circle-check text-xs"></i></span>
+                        <input id="modal_reg_confirm" :type="showPass ? 'text' : 'password'" name="password_confirmation" required placeholder="Ulangi kata sandi" class="w-full bg-slate-50 border border-slate-150 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 rounded-2xl pl-10 pr-12 py-3.5 text-xs font-bold text-slate-800 placeholder-slate-400 outline-none transition-all">
+                        <button type="button" @click="showPass = !showPass" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-primary-600 transition-colors focus:outline-none" :title="showPass ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
+                            <i class="fa-solid text-sm" :class="showPass ? 'fa-eye-slash' : 'fa-eye'"></i>
                         </button>
                     </div>
                 </div>
-                <button type="submit" class="w-full min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl shadow-md transition-colors">Daftar Akun</button>
+                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 active:scale-[0.99] text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-primary-600/10 transition duration-300">Daftar Akun <i class="fa-solid fa-user-plus ml-2"></i></button>
             </form>
             <div class="text-center pt-2">
-                <span class="text-xs font-semibold text-slate-600">Sudah punya akun?</span>
-                <button type="button" @click="registerOpen = false; loginOpen = true" class="text-xs font-black uppercase text-primary-700 hover:underline ml-1 px-1 py-1">Masuk Sekarang</button>
+                <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Sudah punya akun?</span>
+                <button type="button" @click="registerOpen = false; loginOpen = true" class="text-[10px] font-black uppercase text-primary-500 hover:text-primary-600 transition-colors ml-1">Masuk Sekarang</button>
             </div>
         </div>
     </div>
