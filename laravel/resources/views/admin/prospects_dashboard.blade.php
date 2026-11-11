@@ -13,31 +13,31 @@
         {{-- Main Content Column --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Tab Navigation Header (Presisi Screenshot User) --}}
+            {{-- Top Tab Navigation Header --}}
             <div class="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-0 overflow-x-auto">
-                <a href="{{ route('admin.donors_list') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.donors_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Donatur
                 </a>
-                <a href="{{ route('admin.transactions_list') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.transactions_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Transaksi
                 </a>
-                <a href="{{ route('admin.prospects_list') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.prospects_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Prospek
                 </a>
-                <a href="{{ route('admin.potential_donors') }}" class="px-4 py-2 rounded-t-xl text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                <a href="{{ route('admin.potential_donors') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
                     List Calon Donatur
                 </a>
-                <a href="{{ route('admin.prospects_dashboard') }}" class="px-4 py-2 rounded-t-xl text-xs font-black bg-emerald-700 text-white shadow-sm">
+                <a href="{{ route('admin.prospects_dashboard') }}" aria-current="page" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-black bg-emerald-700 text-white shadow-sm">
                     Dashboard Prospek
                 </a>
             </div>
 
-            {{-- Top Red Header Banner --}}
-            <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex items-center justify-between">
+            {{-- Top Header Banner --}}
+            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
                 <span class="flex items-center gap-2">
                     <i class="fa-solid fa-bullhorn text-white"></i> Dashboard Prospek
                 </span>
-                <span class="text-xs text-white/80 font-normal">Transaction Management → Dashboard Prospek</span>
+                <span class="text-xs text-emerald-100 font-normal">Transaction Management / Dashboard Prospek</span>
             </div>
 
             {{-- Filter Form Controls --}}
@@ -47,22 +47,22 @@
                     {{-- Row 1 --}}
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex items-center gap-2">
-                            <span>Tgl Prospek :</span>
-                            <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <label for="psp_dash_start">Tgl Prospek :</label>
+                            <input id="psp_dash_start" type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
                             <span>s/d</span>
-                            <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <input id="psp_dash_end" type="date" name="end_date" aria-label="Tanggal akhir prospek" value="{{ request('end_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Target :</span>
-                            <select name="target" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[120px]">
+                            <label for="psp_dash_target">Target :</label>
+                            <select id="psp_dash_target" name="target" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[120px]">
                                 <option value="All">All</option>
                                 <option value="Calon Donatur">Calon Donatur</option>
                                 <option value="Donatur Resmi">Donatur Resmi</option>
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Media :</span>
-                            <select name="media_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="psp_dash_media">Media :</label>
+                            <select id="psp_dash_media" name="media_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Media</option>
                                 @foreach($prospectMedia as $pm)
                                     <option value="{{ $pm->id }}">{{ $pm->name }}</option>
@@ -70,31 +70,31 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Respon :</span>
-                            <select name="response_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="psp_dash_response">Respon :</label>
+                            <select id="psp_dash_response" name="response_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Respon</option>
                                 @foreach($prospectResponses as $pr)
                                     <option value="{{ $pr->id }}">{{ $pr->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-4 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                            🔍 Show
+                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-4 py-2 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-magnifying-glass"></i> Show
                         </button>
                     </div>
 
                     {{-- Row 2 --}}
                     <div class="flex flex-wrap items-center gap-4 pt-1">
                         <div class="flex items-center gap-2">
-                            <span>Potensi Dana :</span>
-                            <select name="potensi_dana" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[100px]">
+                            <label for="psp_dash_potensi">Potensi Dana :</label>
+                            <select id="psp_dash_potensi" name="potensi_dana" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[100px]">
                                 <option value="All">All</option>
                                 <option value=">0">Ada Potensi</option>
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Metode :</span>
-                            <select name="method_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="psp_dash_method">Metode :</label>
+                            <select id="psp_dash_method" name="method_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Metode</option>
                                 @foreach($prospectMethods as $pmt)
                                     <option value="{{ $pmt->id }}">{{ $pmt->name }}</option>
@@ -102,8 +102,8 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Jenis :</span>
-                            <select name="type_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[120px]">
+                            <label for="psp_dash_type">Jenis :</label>
+                            <select id="psp_dash_type" name="type_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[120px]">
                                 <option value="">Semua Jenis</option>
                                 @foreach($prospectTypes as $pt)
                                     <option value="{{ $pt->id }}">{{ $pt->name }}</option>
@@ -111,8 +111,8 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Rumpun Program :</span>
-                            <select name="program_group_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="psp_dash_group">Rumpun Program :</label>
+                            <select id="psp_dash_group" name="program_group_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Rumpun</option>
                                 @foreach($programGroups as $pg)
                                     <option value="{{ $pg->id }}">{{ $pg->name }}</option>
@@ -120,8 +120,8 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Campaign :</span>
-                            <select name="program_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[140px]">
+                            <label for="psp_dash_campaign">Campaign :</label>
+                            <select id="psp_dash_campaign" name="program_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
                                 <option value="">Semua Campaign</option>
                                 @foreach($programs as $prg)
                                     <option value="{{ $prg->id }}">{{ $prg->title }}</option>
@@ -133,8 +133,8 @@
                     {{-- Row 3 --}}
                     <div class="flex flex-wrap items-center gap-4 pt-1">
                         <div class="flex items-center gap-2">
-                            <span>PIC Prospek :</span>
-                            <select name="pic_prospect" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[180px]">
+                            <label for="psp_dash_pic">PIC Prospek :</label>
+                            <select id="psp_dash_pic" name="pic_prospect" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[180px]">
                                 <option value="">Semua PIC</option>
                                 @foreach($picUsers as $pic)
                                     <option value="{{ $pic->name }}" {{ request('pic_prospect') == $pic->name ? 'selected' : '' }}>{{ $pic->name }}</option>
@@ -142,8 +142,8 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Kantor :</span>
-                            <select name="office_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[180px]">
+                            <label for="psp_dash_office">Kantor :</label>
+                            <select id="psp_dash_office" name="office_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[180px]">
                                 <option value="">Pilih Kantor</option>
                                 @foreach($offices as $ofc)
                                     <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -159,34 +159,34 @@
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
                     
-                    {{-- Σ All Prospek --}}
+                    {{-- All Prospek --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ All Prospek
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Total Prospek
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalAllProspects) }}</p>
                     </div>
 
-                    {{-- Σ Prospek Donatur --}}
+                    {{-- Prospek Donatur --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Prospek Donatur
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Prospek Donatur
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($prospectDonors) }}</p>
                     </div>
 
-                    {{-- Σ Prospek Calon Donatur --}}
+                    {{-- Prospek Calon Donatur --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Prospek Calon Donatur
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Prospek Calon Donatur
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($prospectCalonDonors) }}</p>
                     </div>
 
-                    {{-- Σ Potensi Dana --}}
+                    {{-- Potensi Dana --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Potensi Dana
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Total Potensi Dana
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalPotensiDana, 0, ',', '.') }}</p>
                     </div>
