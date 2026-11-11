@@ -142,12 +142,12 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-black uppercase tracking-widest text-slate-600">Trafik &amp; CTR</span>
-                        <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-arrow-pointer"></i>
+                        <div class="w-8 h-8 rounded-xl bg-primary-50 text-[#063f5c] flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="text-xl sm:text-2xl font-black text-slate-800">
-                        {{ number_format($totalClicks) }} <span class="text-xs font-bold text-indigo-700">({{ $overallCtr }}%)</span>
+                        {{ number_format($totalClicks) }} <span class="text-xs font-bold text-[#063f5c]">({{ $overallCtr }}%)</span>
                     </div>
                     <div class="mt-2 text-xs font-bold text-slate-600">
                         CPC: <span class="text-slate-700 font-black">Rp {{ number_format($avgCpc, 0, ',', '.') }}</span>
@@ -160,7 +160,7 @@
                 <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
                         <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#f7ad1a] mb-1">
-                            <i class="fa-solid fa-microchip"></i> Engine Rekomendasi Keputusan
+                            <i class="fa-solid fa-microchip" aria-hidden="true"></i> Engine Rekomendasi Keputusan
                         </div>
                         <h2 class="text-xl font-black">Evaluasi Otomatis Berdasarkan ROAS, CPA &amp; CTR</h2>
                         <p class="text-xs text-slate-200 mt-1 max-w-xl">
@@ -169,18 +169,18 @@
                     </div>
 
                     <div class="flex flex-wrap items-center gap-3">
-                        <div class="bg-emerald-950/60 border border-emerald-400/40 px-4 py-3 rounded-2xl text-center min-w-[90px]">
-                            <div class="text-xs font-black uppercase tracking-wider text-emerald-300">SCALE</div>
+                        <div class="bg-emerald-900 border border-emerald-700 px-4 py-3 rounded-2xl text-center min-w-[90px]">
+                            <div class="text-xs font-black uppercase tracking-wider text-emerald-200">SCALE</div>
                             <div class="text-2xl font-black text-white mt-0.5">{{ $scaleCount }}</div>
                             <div class="text-xs text-emerald-100">Naikkan Budget</div>
                         </div>
-                        <div class="bg-amber-950/60 border border-amber-400/40 px-4 py-3 rounded-2xl text-center min-w-[90px]">
-                            <div class="text-xs font-black uppercase tracking-wider text-amber-300">MAINTAIN</div>
+                        <div class="bg-amber-900 border border-amber-700 px-4 py-3 rounded-2xl text-center min-w-[90px]">
+                            <div class="text-xs font-black uppercase tracking-wider text-amber-200">MAINTAIN</div>
                             <div class="text-2xl font-black text-white mt-0.5">{{ $maintainCount }}</div>
                             <div class="text-xs text-amber-100">Optimasi Materi</div>
                         </div>
-                        <div class="bg-rose-950/60 border border-rose-400/40 px-4 py-3 rounded-2xl text-center min-w-[90px]">
-                            <div class="text-xs font-black uppercase tracking-wider text-rose-300">STOP</div>
+                        <div class="bg-rose-900 border border-rose-700 px-4 py-3 rounded-2xl text-center min-w-[90px]">
+                            <div class="text-xs font-black uppercase tracking-wider text-rose-200">STOP</div>
                             <div class="text-2xl font-black text-white mt-0.5">{{ $stopCount }}</div>
                             <div class="text-xs text-rose-100">Matikan Iklan</div>
                         </div>

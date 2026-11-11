@@ -183,7 +183,7 @@
                                 <!-- Clicks / CTR -->
                                 <td class="py-3.5 px-4 text-center">
                                     <div class="font-bold text-slate-800">{{ number_format($ad->clicks) }}</div>
-                                    <div class="text-xs font-black text-indigo-700">{{ $ad->ctr }}% (Rp {{ number_format($ad->cpc, 0, ',', '.') }})</div>
+                                    <div class="text-xs font-black text-[#063f5c]">{{ $ad->ctr }}% (Rp {{ number_format($ad->cpc, 0, ',', '.') }})</div>
                                 </td>
 
                                 <!-- Conversions / CPA -->

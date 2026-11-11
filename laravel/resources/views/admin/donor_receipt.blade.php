@@ -658,18 +658,18 @@
                 </div>
 
                 <!-- 3. PENGATURAN AUTHORIZED SIGNATURE (PIMPINAN / PEJABAT) & STEMPEL -->
-                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+                <div class="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
                     <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-stamp text-indigo-700" aria-hidden="true"></i> Pimpinan (Authorized Signature) &amp; Stempel
+                        <i class="fa-solid fa-stamp text-[#063f5c]" aria-hidden="true"></i> Pimpinan (Authorized Signature) &amp; Stempel
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label for="donor_auth_name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nama Pimpinan / Pejabat</label>
-                            <input id="donor_auth_name" type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-colors">
+                            <input id="donor_auth_name" type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors">
                         </div>
                         <div>
                             <label for="donor_auth_title" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Label Jabatan</label>
-                            <input id="donor_auth_title" type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-colors">
+                            <input id="donor_auth_title" type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors">
                         </div>
                     </div>
 
@@ -678,32 +678,32 @@
                         <div class="grid grid-cols-3 gap-2">
                             <button type="button" @click="authorizedSigType = 'digital'" 
                                     :aria-pressed="authorizedSigType === 'digital'"
-                                    :class="authorizedSigType === 'digital' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
+                                    :class="authorizedSigType === 'digital' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-sm font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
                                     class="min-h-[44px] p-2.5 rounded-xl border text-xs uppercase text-center transition-colors">
                                 <i class="fa-solid fa-signature mr-1" aria-hidden="true"></i> TTD Digital
                             </button>
                             <button type="button" @click="authorizedSigType = 'image'" 
                                     :aria-pressed="authorizedSigType === 'image'"
-                                    :class="authorizedSigType === 'image' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
+                                    :class="authorizedSigType === 'image' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-sm font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
                                     class="min-h-[44px] p-2.5 rounded-xl border text-xs uppercase text-center transition-colors">
                                 <i class="fa-solid fa-upload mr-1" aria-hidden="true"></i> Upload TTD
                             </button>
                             <button type="button" @click="authorizedSigType = 'blank'" 
                                     :aria-pressed="authorizedSigType === 'blank'"
-                                    :class="authorizedSigType === 'blank' ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
+                                    :class="authorizedSigType === 'blank' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-sm font-black' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 font-bold'" 
                                     class="min-h-[44px] p-2.5 rounded-xl border text-xs uppercase text-center transition-colors">
                                 <i class="fa-solid fa-pen-nib mr-1" aria-hidden="true"></i> TTD Basah
                             </button>
                         </div>
                         <template x-if="authorizedSigType === 'image'">
-                            <div class="pt-2 p-3 bg-white rounded-xl border border-indigo-100 space-y-2 mt-2">
+                            <div class="pt-2 p-3 bg-white rounded-xl border border-primary-200 space-y-2 mt-2">
                                 <div class="flex items-center gap-3">
                                     <template x-if="authorizedSigImage">
                                         <div class="h-10 w-24 border border-slate-200 rounded-lg p-1 bg-slate-50 flex items-center justify-center shrink-0">
                                             <img :src="authorizedSigImage" class="max-h-full max-w-full object-contain" alt="TTD">
                                         </div>
                                     </template>
-                                    <label class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-xs font-bold cursor-pointer transition-colors shadow-xs">
+                                    <label class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-xl border border-primary-200 bg-primary-50 hover:bg-primary-100 text-[#063f5c] text-xs font-bold cursor-pointer transition-colors shadow-xs">
                                         <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
                                         <span x-text="authorizedSigImage ? 'Ganti Foto TTD' : 'Pilih Foto Tanda Tangan'"></span>
                                         <input type="file" @change="handleAuthorizedSigUpload" accept="image/*" class="hidden">
@@ -717,18 +717,18 @@
                     <!-- Stempel Settings -->
                     <div class="pt-3 border-t border-slate-200 space-y-2">
                         <label class="inline-flex items-center gap-2.5 min-h-[44px] cursor-pointer select-none">
-                            <input type="checkbox" x-model="showStamp" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <input type="checkbox" x-model="showStamp" class="w-4 h-4 rounded border-slate-300 text-[#063f5c] focus:ring-primary-500">
                             <span class="text-xs font-bold text-slate-800">Tampilkan Stempel Resmi Yayasan</span>
                         </label>
                         <template x-if="showStamp">
-                            <div class="pt-1 p-3 bg-white rounded-xl border border-indigo-100 space-y-2 mt-1">
+                            <div class="pt-1 p-3 bg-white rounded-xl border border-primary-200 space-y-2 mt-1">
                                 <div class="flex items-center gap-3 flex-wrap">
                                     <template x-if="customStampImage">
                                         <div class="h-12 w-12 border border-slate-200 rounded-lg p-1 bg-slate-50 flex items-center justify-center shrink-0">
                                             <img :src="customStampImage" class="max-h-full max-w-full object-contain" alt="Stempel Custom">
                                         </div>
                                     </template>
-                                    <label class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-xs font-bold cursor-pointer transition-colors shadow-xs">
+                                    <label class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-xl border border-primary-200 bg-primary-50 hover:bg-primary-100 text-[#063f5c] text-xs font-bold cursor-pointer transition-colors shadow-xs">
                                         <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
                                         <span x-text="customStampImage ? 'Ganti Stempel Custom' : 'Upload Stempel Custom (Opsional)'"></span>
                                         <input type="file" @change="handleStampUpload" accept="image/*" class="hidden">
@@ -750,11 +750,11 @@
                             <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                                 <div class="flex items-center justify-between">
                                     <label for="donor_stamp_size" class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                                        <i class="fa-solid fa-stamp text-indigo-700" aria-hidden="true"></i> Ukuran Stempel
+                                        <i class="fa-solid fa-stamp text-[#063f5c]" aria-hidden="true"></i> Ukuran Stempel
                                     </label>
-                                    <span class="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-800 text-xs font-black" x-text="stampSize + ' px'"></span>
+                                    <span class="px-2 py-0.5 rounded-md bg-primary-50 border border-primary-200 text-[#063f5c] text-xs font-black" x-text="stampSize + ' px'"></span>
                                 </div>
-                                <input id="donor_stamp_size" type="range" min="65" max="140" step="5" x-model="stampSize" class="w-full accent-indigo-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
+                                <input id="donor_stamp_size" type="range" min="65" max="140" step="5" x-model="stampSize" class="w-full accent-[#063f5c] cursor-pointer h-2 bg-slate-100 rounded-lg">
                                 <div class="flex justify-between text-xs text-slate-600 font-bold">
                                     <span>Kecil (65px)</span>
                                     <span>Standar (105px)</span>

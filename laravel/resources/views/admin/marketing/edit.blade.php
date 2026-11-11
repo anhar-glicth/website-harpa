@@ -122,9 +122,9 @@
                         <div class="text-xl font-black text-amber-300" x-text="roas + 'x'">{{ $ad->roas }}x</div>
                         <div class="text-xs text-slate-300">Hasil / Biaya</div>
                     </div>
-                    <div class="bg-slate-900/55 p-3 rounded-xl border border-white/15">
-                        <div class="text-[11px] uppercase font-bold text-slate-200">CTR</div>
-                        <div class="text-xl font-black text-indigo-200" x-text="ctr + '%'">{{ $ad->ctr }}%</div>
+                    <div class="bg-[#04324a] p-3 rounded-xl border border-primary-500">
+                        <div class="text-xs uppercase font-bold text-slate-200">CTR</div>
+                        <div class="text-xl font-black text-sky-200" x-text="ctr + '%'">{{ $ad->ctr }}%</div>
                         <div class="text-xs text-slate-300">Klik / Tayangan</div>
                     </div>
                     <div class="bg-slate-900/55 p-3 rounded-xl border border-white/15">

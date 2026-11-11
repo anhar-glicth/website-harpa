@@ -155,17 +155,17 @@
                         </button>
 
                         <!-- Pending -->
-                        <button type="button" @click="statusFilter = 'PENDING'" :class="statusFilter === 'PENDING' ? 'ring-2 ring-amber-700 shadow-sm bg-amber-50' : 'bg-white hover:bg-amber-50/40'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'PENDING'" :class="statusFilter === 'PENDING' ? 'ring-2 ring-amber-900 shadow-sm bg-amber-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-black uppercase tracking-wider text-amber-800">Belum Kirim</span>
-                                <i class="fa-regular fa-clock text-amber-700 text-xs" aria-hidden="true"></i>
+                                <span class="text-xs font-black uppercase tracking-wider text-amber-900">Belum Kirim</span>
+                                <i class="fa-regular fa-clock text-amber-900 text-xs" aria-hidden="true"></i>
                             </div>
-                            <div class="text-xl font-montserrat font-black text-amber-800 mt-1" x-text="stats.pending"></div>
-                            <span class="text-xs text-amber-800 font-medium">Antrean Menunggu</span>
+                            <div class="text-xl font-montserrat font-black text-amber-900 mt-1" x-text="stats.pending"></div>
+                            <span class="text-xs text-amber-900 font-medium">Antrean Menunggu</span>
                         </button>
 
                         <!-- Delivered -->
-                        <button type="button" @click="statusFilter = 'DELIVERED'" :class="statusFilter === 'DELIVERED' ? 'ring-2 ring-blue-700 shadow-sm bg-blue-50' : 'bg-white hover:bg-blue-50/40'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'DELIVERED'" :class="statusFilter === 'DELIVERED' ? 'ring-2 ring-blue-700 shadow-sm bg-blue-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-black uppercase tracking-wider text-blue-800">Terkirim</span>
                                 <i class="fa-solid fa-check-double text-blue-700 text-xs" aria-hidden="true"></i>
@@ -175,7 +175,7 @@
                         </button>
 
                         <!-- Read -->
-                        <button type="button" @click="statusFilter = 'READ'" :class="statusFilter === 'READ' ? 'ring-2 ring-emerald-700 shadow-sm bg-emerald-50' : 'bg-white hover:bg-emerald-50/40'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'READ'" :class="statusFilter === 'READ' ? 'ring-2 ring-emerald-700 shadow-sm bg-emerald-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors min-h-[44px]">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-black uppercase tracking-wider text-emerald-800">Sudah Dibaca</span>
                                 <i class="fa-solid fa-check-double text-emerald-700 text-xs" aria-hidden="true"></i>
@@ -185,7 +185,7 @@
                         </button>
 
                         <!-- Failed -->
-                        <button type="button" @click="statusFilter = 'FAILED'" :class="statusFilter === 'FAILED' ? 'ring-2 ring-rose-700 shadow-sm bg-rose-50' : 'bg-white hover:bg-rose-50/40'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors col-span-2 sm:col-span-1 min-h-[44px]">
+                        <button type="button" @click="statusFilter = 'FAILED'" :class="statusFilter === 'FAILED' ? 'ring-2 ring-rose-700 shadow-sm bg-rose-50' : 'bg-white hover:bg-slate-50'" class="border border-slate-200 rounded-2xl p-3.5 text-left transition-colors col-span-2 sm:col-span-1 min-h-[44px]">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-black uppercase tracking-wider text-rose-800">Gagal Kirim</span>
                                 <i class="fa-solid fa-circle-xmark text-rose-700 text-xs" aria-hidden="true"></i>
