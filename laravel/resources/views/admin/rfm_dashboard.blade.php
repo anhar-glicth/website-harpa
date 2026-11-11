@@ -14,11 +14,11 @@
         <div class="space-y-6 min-w-0 overflow-hidden">
 
             {{-- Top Emerald Header Banner --}}
-            <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex items-center justify-between">
+            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
                 <span class="flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-white"></i> Dashboard RFM Segmentation
                 </span>
-                <span class="text-xs text-white/80 font-normal">Dashboard → RFM Segmentation</span>
+                <span class="text-xs text-emerald-100 font-normal">Dashboard / RFM Segmentation</span>
             </div>
 
             {{-- Filter Form Controls --}}
@@ -28,30 +28,30 @@
                     {{-- Row 1 --}}
                     <div class="flex flex-wrap items-center justify-center gap-4">
                         <div class="flex items-center gap-2">
-                            <span>Tgl Registrasi :</span>
-                            <input type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <label for="rfm_start">Tgl Registrasi :</label>
+                            <input id="rfm_start" type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
                             <span>s/d</span>
-                            <input type="date" name="end_date" value="{{ request('end_date') }}" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600">
+                            <input id="rfm_end" type="date" name="end_date" aria-label="Tanggal akhir registrasi" value="{{ request('end_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Segmen :</span>
-                            <select name="segment" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[120px]">
+                            <label for="rfm_segment">Segmen :</label>
+                            <select id="rfm_segment" name="segment" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[120px]">
                                 <option value="All">All</option>
                                 <option value="Retail">Retail</option>
                                 <option value="Corporate">Corporate</option>
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Jenis Kelamin :</span>
-                            <select name="gender" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[100px]">
+                            <label for="rfm_gender">Jenis Kelamin :</label>
+                            <select id="rfm_gender" name="gender" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[100px]">
                                 <option value="All">All</option>
                                 <option value="Laki-laki">Laki-laki</option>
                                 <option value="Perempuan">Perempuan</option>
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>RFM 90 Days :</span>
-                            <select name="rfm_90" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[110px]">
+                            <label for="rfm_90">RFM 90 Days :</label>
+                            <select id="rfm_90" name="rfm_90" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[110px]">
                                 <option value="All">All</option>
                                 <option value="CHAMPION">CHAMPION</option>
                                 <option value="LOYAL">LOYAL</option>
@@ -60,8 +60,8 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>RFM All Time :</span>
-                            <select name="rfm_alltime" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[110px]">
+                            <label for="rfm_alltime">RFM All Time :</label>
+                            <select id="rfm_alltime" name="rfm_alltime" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[110px]">
                                 <option value="All">All</option>
                                 <option value="NEW">NEW</option>
                                 <option value="CHAMPION">CHAMPION</option>
@@ -75,8 +75,8 @@
                     {{-- Row 2 --}}
                     <div class="flex flex-wrap items-center justify-center gap-4 pt-1">
                         <div class="flex items-center gap-2">
-                            <span>PIC Prospek :</span>
-                            <select name="pic_prospect" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[180px]">
+                            <label for="rfm_pic">PIC Prospek :</label>
+                            <select id="rfm_pic" name="pic_prospect" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[180px]">
                                 <option value="">Semua PIC</option>
                                 @foreach($picUsers as $pic)
                                     <option value="{{ $pic->name }}" {{ request('pic_prospect') == $pic->name ? 'selected' : '' }}>{{ $pic->name }}</option>
@@ -84,16 +84,16 @@
                             </select>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span>Kantor :</span>
-                            <select name="office_id" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs focus:border-emerald-600 min-w-[180px]">
+                            <label for="rfm_office">Kantor :</label>
+                            <select id="rfm_office" name="office_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[180px]">
                                 <option value="">Pilih Kantor</option>
                                 @foreach($offices as $ofc)
                                     <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold px-5 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all">
-                            🔍 Show
+                        <button type="submit" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-5 py-2 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-magnifying-glass"></i> Show
                         </button>
                     </div>
 
@@ -104,34 +104,34 @@
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
                     
-                    {{-- Σ Donatur All --}}
+                    {{-- Donatur All --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Donatur All
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Total Donatur All
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalDonors) }}</p>
                     </div>
 
-                    {{-- Σ Donatur Laki-laki --}}
+                    {{-- Donatur Laki-laki --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Donatur Laki-laki
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Donatur Laki-laki
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($maleDonors) }}</p>
                     </div>
 
-                    {{-- Σ Donatur Perempuan --}}
+                    {{-- Donatur Perempuan --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Donatur Perempuan
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Donatur Perempuan
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($femaleDonors) }}</p>
                     </div>
 
-                    {{-- Σ Jenis Kelamin Tidak Diketahui --}}
+                    {{-- Jenis Kelamin Tidak Diketahui --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white py-1.5 px-2 text-[10px] font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Σ Jenis Kelamin Tidak Diketahui
+                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
+                            Gender Tidak Diketahui
                         </div>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($unknownSexDonors) }}</p>
                     </div>
@@ -141,45 +141,43 @@
 
             {{-- Panduan Singkat RFM --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-slate-900 text-white px-6 py-3.5 flex items-center justify-between cursor-pointer" @click="showGuide = !showGuide">
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 font-bold text-lg">📊</span>
-                        <div>
-                            <h3 class="text-xs font-black tracking-wide uppercase">RFM Segmentation – Panduan Singkat</h3>
-                        </div>
-                    </div>
-                    <button type="button" class="text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded-lg border border-slate-700 flex items-center gap-1.5 transition-all">
+                <button type="button" @click="showGuide = !showGuide" :aria-expanded="showGuide.toString()" class="w-full text-left bg-slate-900 hover:bg-slate-800 text-white px-6 py-3.5 min-h-[44px] flex items-center justify-between transition-colors">
+                    <span class="flex items-center gap-3">
+                        <i class="fa-solid fa-chart-simple text-emerald-400 text-lg"></i>
+                        <span class="text-xs font-black tracking-wide uppercase">RFM Segmentation - Panduan Singkat</span>
+                    </span>
+                    <span class="text-xs font-bold bg-slate-800 text-slate-200 px-3 py-1 rounded-lg border border-slate-700 inline-flex items-center gap-1.5">
                         <span x-text="showGuide ? 'Sembunyikan' : 'Tampilkan'"></span>
                         <i class="fa-solid" :class="showGuide ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-                    </button>
-                </div>
+                    </span>
+                </button>
 
                 <div x-show="showGuide" x-collapse class="p-5 space-y-5 text-xs text-slate-700 border-t border-slate-100">
                     <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-4 space-y-2">
-                        <h4 class="font-black text-emerald-900 text-xs">Apa itu RFM?</h4>
-                        <p class="text-slate-600">RFM adalah metode segmentasi donatur berdasarkan: <strong>Recency</strong> (waktu donasi terakhir), <strong>Frequency</strong> (frekuensi donasi), & <strong>Monetary</strong> (total nilai donasi).</p>
+                        <h2 class="font-black text-emerald-900 text-xs">Apa itu RFM?</h2>
+                        <p class="text-slate-700">RFM adalah metode segmentasi donatur berdasarkan: <strong>Recency</strong> (waktu donasi terakhir), <strong>Frequency</strong> (frekuensi donasi), &amp; <strong>Monetary</strong> (total nilai donasi).</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="border border-slate-200 rounded-xl p-3">
-                            <h5 class="font-bold text-slate-900 mb-2 border-b pb-1">RFM Rolling 90 Days</h5>
-                            <p class="text-[11px] text-slate-500 mb-2">Fokus pada aktivitas terkini untuk operasional & follow-up cepat.</p>
-                            <ul class="space-y-1 text-[11px]">
-                                <li><strong class="text-emerald-600">CHAMPION:</strong> ≥ 3 transaksi & total ≥ 500.000</li>
-                                <li><strong class="text-sky-600">LOYAL:</strong> 2 transaksi</li>
-                                <li><strong class="text-indigo-600">POTENTIAL:</strong> 1 transaksi</li>
-                                <li><strong class="text-rose-600">DORMANT:</strong> Tidak ada transaksi</li>
+                            <h3 class="font-bold text-slate-900 mb-2 border-b pb-1">RFM Rolling 90 Days</h3>
+                            <p class="text-xs text-slate-600 mb-2">Fokus pada aktivitas terkini untuk operasional &amp; follow-up cepat.</p>
+                            <ul class="space-y-1 text-xs">
+                                <li><strong class="text-emerald-700">CHAMPION:</strong> >= 3 transaksi &amp; total >= 500.000</li>
+                                <li><strong class="text-sky-700">LOYAL:</strong> 2 transaksi</li>
+                                <li><strong class="text-indigo-700">POTENTIAL:</strong> 1 transaksi</li>
+                                <li><strong class="text-rose-700">DORMANT:</strong> Tidak ada transaksi</li>
                             </ul>
                         </div>
                         <div class="border border-slate-200 rounded-xl p-3">
-                            <h5 class="font-bold text-slate-900 mb-2 border-b pb-1">RFM All Time</h5>
-                            <p class="text-[11px] text-slate-500 mb-2">Fokus pada nilai historis & potensi jangka panjang.</p>
-                            <ul class="space-y-1 text-[11px]">
-                                <li><strong class="text-teal-600">NEW:</strong> Belum pernah donasi</li>
-                                <li><strong class="text-emerald-600">CHAMPION:</strong> ≤ 90 hari, ≥ 3 transaksi, total ≥ 500.000</li>
-                                <li><strong class="text-sky-600">LOYAL:</strong> ≤ 120 hari, ≥ 2 transaksi</li>
-                                <li><strong class="text-indigo-600">POTENTIAL:</strong> ≤ 180 hari</li>
-                                <li><strong class="text-rose-600">DORMANT:</strong> &gt; 180 hari tidak donasi</li>
+                            <h3 class="font-bold text-slate-900 mb-2 border-b pb-1">RFM All Time</h3>
+                            <p class="text-xs text-slate-600 mb-2">Fokus pada nilai historis &amp; potensi jangka panjang.</p>
+                            <ul class="space-y-1 text-xs">
+                                <li><strong class="text-teal-700">NEW:</strong> Belum pernah donasi</li>
+                                <li><strong class="text-emerald-700">CHAMPION:</strong> &lt;= 90 hari, >= 3 transaksi, total >= 500.000</li>
+                                <li><strong class="text-sky-700">LOYAL:</strong> &lt;= 120 hari, >= 2 transaksi</li>
+                                <li><strong class="text-indigo-700">POTENTIAL:</strong> &lt;= 180 hari</li>
+                                <li><strong class="text-rose-700">DORMANT:</strong> &gt; 180 hari tidak donasi</li>
                             </ul>
                         </div>
                     </div>
@@ -224,13 +222,13 @@
 
                 {{-- Table 1: Resume RFM 90 Days By PIC Prospek --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM 90 Days By PIC Prospek</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume RFM 90 Days" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">PIC Prospek</th>
@@ -245,7 +243,7 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($resumeRfmByPic as $idx => $rPic)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-2.5 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2.5 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rPic['name'] }}</td>
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['champion']) }}</td>
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['loyal']) }}</td>
@@ -255,7 +253,7 @@
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['dormant']) }}</td>
                                     </tr>
                                 @endforeach
-                                {{-- TOTAL Row Highlighted Amber/Orange --}}
+                                {{-- TOTAL Row Highlighted Amber --}}
                                 @php $totPic90 = collect($resumeRfmByPic); @endphp
                                 <tr class="bg-amber-400 text-slate-900 font-black">
                                     <td class="py-3 px-4 text-center font-mono">{{ $totPic90->count() ?: '-' }}</td>
@@ -274,13 +272,13 @@
 
                 {{-- Table 2: Resume RFM All Time By PIC Prospek --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM All Time By PIC Prospek</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume RFM All Time" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">PIC Prospek</th>
@@ -296,7 +294,7 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($resumeRfmAllTimeByPic as $idx => $rPicAt)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-2.5 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2.5 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2.5 px-4 font-bold text-slate-900">{{ $rPicAt['name'] }}</td>
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['champion']) }}</td>
                                         <td class="py-2.5 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($rPicAt['loyal']) }}</td>

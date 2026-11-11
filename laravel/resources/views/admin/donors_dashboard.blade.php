@@ -309,20 +309,20 @@
                         <tbody class="divide-y divide-slate-100">
                             @foreach($topDonorsAllTime as $idx => $td)
                                 <tr class="hover:bg-slate-50">
-                                    <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                    <td class="py-3 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-900">{{ $td['name'] }}</td>
                                     <td class="py-3 px-4 font-mono text-emerald-700 font-bold">{{ $td['id_donatur'] }}</td>
                                     <td class="py-3 px-4 text-slate-700">{{ $td['office'] }}</td>
                                     <td class="py-3 px-4 text-slate-800">{{ $td['segment'] }}</td>
-                                    <td class="py-3 px-4 font-bold text-emerald-600">{{ $td['category'] }}</td>
+                                    <td class="py-3 px-4 font-bold text-emerald-700">{{ $td['category'] }}</td>
                                     <td class="py-3 px-4">
-                                        <span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-[10px] font-bold border border-amber-200">
+                                        <span class="px-2.5 py-1 bg-amber-50 text-amber-800 rounded-full text-xs font-bold border border-amber-200">
                                             {{ $td['badge'] }}
                                         </span>
                                     </td>
                                     <td class="py-3 px-4 font-bold text-slate-800">{{ $td['pic'] }}</td>
                                     <td class="py-3 px-4 text-right font-mono font-black text-slate-900">{{ number_format($td['amount'], 0, ',', '.') }}</td>
-                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ $td['percent'] }}</td>
+                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-700">{{ $td['percent'] }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

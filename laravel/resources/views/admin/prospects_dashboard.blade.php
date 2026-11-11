@@ -272,13 +272,13 @@
 
                 {{-- Table 1: Resume Prospek PIC Prospek (Col 6) --}}
                 <div class="lg:col-span-6 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Prospek PIC Prospek</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume Prospek PIC" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
-                            <thead class="bg-slate-50 text-[11px] font-bold text-slate-900 border-b border-slate-200">
+                            <thead class="bg-slate-50 text-xs font-bold text-slate-900 border-b border-slate-200">
                                 <tr>
                                     <th class="py-2.5 px-3 text-center">No</th>
                                     <th class="py-2.5 px-3">PIC Prospek</th>
@@ -289,10 +289,10 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($resumeProspekPic as $idx => $rPic)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-2 px-3 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2 px-3 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2 px-3 font-semibold text-slate-900">{{ $rPic['name'] }}</td>
                                         <td class="py-2 px-3 text-center font-mono font-bold text-slate-800">{{ number_format($rPic['total']) }}</td>
-                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">{{ number_format($rPic['potensi'], 0, ',', '.') }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700">{{ number_format($rPic['potensi'], 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -302,13 +302,13 @@
 
                 {{-- Table 2: Resume Prospek Per Kantor (Col 6) --}}
                 <div class="lg:col-span-6 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Prospek Per Kantor</span>
-                        <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                        <button type="button" aria-label="Export Resume Prospek Per Kantor" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
-                            <thead class="bg-slate-50 text-[11px] font-bold text-slate-900 border-b border-slate-200">
+                            <thead class="bg-slate-50 text-xs font-bold text-slate-900 border-b border-slate-200">
                                 <tr>
                                     <th class="py-2.5 px-3 text-center">No</th>
                                     <th class="py-2.5 px-3">Kantor</th>
@@ -319,10 +319,10 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($resumeProspekOffice as $idx => $rOfc)
                                     <tr class="hover:bg-slate-50">
-                                        <td class="py-2 px-3 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                        <td class="py-2 px-3 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2 px-3 font-semibold text-slate-900">{{ $rOfc['name'] }}</td>
                                         <td class="py-2 px-3 text-center font-mono font-bold text-slate-800">{{ number_format($rOfc['total']) }}</td>
-                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600">{{ number_format($rOfc['potensi'], 0, ',', '.') }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700">{{ number_format($rOfc['potensi'], 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -334,13 +334,13 @@
 
             {{-- Table 3: Top 20 Prospek Donatur Base On Potensi Dana --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
                     <span class="font-black text-xs uppercase tracking-wider">Top 20 Prospek Donatur Base On Potensi Dana</span>
-                    <button type="button" class="text-white/80 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                    <button type="button" aria-label="Export Top 20 Prospek" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-[11px] font-black uppercase">
+                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Nama Donatur</th>
@@ -356,7 +356,7 @@
                         <tbody class="divide-y divide-slate-100">
                             @forelse($topProspekDonors as $idx => $tpd)
                                 <tr class="hover:bg-slate-50">
-                                    <td class="py-3 px-4 text-center text-slate-400 font-mono">{{ $idx + 1 }}</td>
+                                    <td class="py-3 px-4 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-900">{{ $tpd['name'] }}</td>
                                     <td class="py-3 px-4 font-mono text-emerald-700 font-bold">{{ $tpd['id_donatur'] }}</td>
                                     <td class="py-3 px-4 text-slate-700">{{ $tpd['office'] }}</td>
@@ -364,7 +364,7 @@
                                     <td class="py-3 px-4 text-slate-700">{{ $tpd['profile'] }}</td>
                                     <td class="py-3 px-4 font-bold text-slate-800">{{ $tpd['pic'] }}</td>
                                     <td class="py-3 px-4 text-center font-mono font-bold text-slate-800">{{ number_format($tpd['total']) }}</td>
-                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-600">{{ number_format($tpd['potensi'], 0, ',', '.') }}</td>
+                                    <td class="py-3 px-4 text-right font-mono font-black text-emerald-700">{{ number_format($tpd['potensi'], 0, ',', '.') }}</td>
                                 </tr>
                             @empty
                                 <tr>
