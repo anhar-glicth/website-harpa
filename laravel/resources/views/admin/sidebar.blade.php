@@ -1,10 +1,11 @@
 @php
     $active = $active ?? '';
-    $menuLinkBase = 'w-full min-h-[44px] flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-xs font-bold uppercase tracking-wider transition-colors duration-200 group border text-left';
-    $menuLinkActive = 'bg-primary-600 text-white border-primary-600 shadow-sm';
+    $groupBtnBase = 'w-full min-h-[48px] px-5 py-3.5 flex justify-between items-center cursor-pointer transition-colors text-left border-l-4';
+    $menuLinkBase = 'w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors duration-200 group border text-left';
+    $menuLinkActive = 'bg-primary-50 text-[#063f5c] border-primary-300 shadow-xs font-black';
     $menuLinkIdle = 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-primary-700 hover:border-slate-200';
-    $iconBoxBase = 'w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-200';
-    $iconBoxActive = 'bg-white/20 text-white';
+    $iconBoxBase = 'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-200';
+    $iconBoxActive = 'bg-[#063f5c] text-white';
     $iconBoxIdle = 'bg-slate-100 text-slate-600 group-hover:bg-primary-50 group-hover:text-primary-700';
 @endphp
 <!-- Info Admin Card -->
@@ -56,8 +57,8 @@
     <!-- 1. MENU UTAMA GROUP -->
     @if(Auth::user()->canAccessMenu('dashboard') || Auth::user()->canAccessMenu('analytics') || Auth::user()->canAccessMenu('campaigns') || Auth::user()->canAccessMenu('donations'))
     <div x-data="{ isOpen: {{ in_array($active, ['dashboard', 'analytics', 'campaigns', 'donations']) ? 'true' : 'false' }} }">
-        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" class="w-full min-h-[48px] bg-slate-900 px-6 py-4 flex justify-between items-center text-white cursor-pointer hover:bg-slate-950 transition-colors text-left">
-            <span class="text-xs font-bold uppercase tracking-wider">Menu Utama</span>
+        <button type="button" @click="isOpen = !isOpen" :aria-expanded="isOpen ? 'true' : 'false'" :class="isOpen ? 'bg-[#063f5c] text-white border-[#f7ad1a]' : 'bg-white text-slate-800 hover:bg-slate-50 border-transparent hover:text-[#063f5c]'" class="{{ $groupBtnBase }}">
+            <span class="text-xs font-black uppercase tracking-wider">Menu Utama</span>
             <i class="fa-solid fa-chevron-up text-xs transition-transform duration-300" :class="!isOpen ? 'rotate-180' : ''" aria-hidden="true"></i>
         </button>
         <div x-show="isOpen" x-collapse class="p-3 space-y-1.5">
