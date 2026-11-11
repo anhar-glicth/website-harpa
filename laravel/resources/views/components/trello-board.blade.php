@@ -203,7 +203,7 @@
                             In Progress
                         </h3>
                         <span id="badge-in_progress" 
-                              class="px-2 py-0.5 rounded-md text-xs font-black bg-amber-100 text-amber-900 border border-amber-200">
+                              class="px-2 py-0.5 rounded-md text-xs font-black bg-white text-slate-700 border border-slate-200">
                             {{ $inProgressTodos->count() }}
                         </span>
                     </div>
@@ -251,7 +251,7 @@
                             Selesai (Done)
                         </h3>
                         <span id="badge-completed" 
-                              class="px-2 py-0.5 rounded-md text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                              class="px-2 py-0.5 rounded-md text-xs font-black bg-white text-slate-700 border border-slate-200">
                             {{ $completedTodos->count() }}
                         </span>
                     </div>
@@ -335,11 +335,17 @@
                             </td>
                             <td class="py-3 px-4">
                                 @if($t->status === 'completed')
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">Selesai</span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-700 shrink-0" aria-hidden="true"></span> Selesai
+                                    </span>
                                 @elseif($t->status === 'in_progress')
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200">In Progress</span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a] shrink-0" aria-hidden="true"></span> In Progress
+                                    </span>
                                 @else
-                                    <span class="px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">To Do</span>
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true"></span> To Do
+                                    </span>
                                 @endif
                             </td>
                             <td class="py-3 px-4 text-xs font-mono">
@@ -397,9 +403,11 @@
             <!-- Modal Header -->
             <div class="space-y-2 pr-10">
                 <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-0.5 rounded-md text-xs font-black uppercase tracking-wider"
-                          :class="detailModal.data.status === 'completed' ? 'bg-emerald-100 text-emerald-800' : (detailModal.data.status === 'in_progress' ? 'bg-amber-100 text-amber-900' : 'bg-slate-100 text-slate-800')"
-                          x-text="detailModal.data.status === 'completed' ? 'SELESAI (DONE)' : (detailModal.data.status === 'in_progress' ? 'IN PROGRESS' : 'TO DO')">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0"
+                              :class="detailModal.data.status === 'completed' ? 'bg-emerald-700' : (detailModal.data.status === 'in_progress' ? 'bg-[#f7ad1a]' : 'bg-slate-400')"
+                              aria-hidden="true"></span>
+                        <span x-text="detailModal.data.status === 'completed' ? 'Selesai (Done)' : (detailModal.data.status === 'in_progress' ? 'In Progress' : 'To Do')"></span>
                     </span>
                     <span class="text-xs text-slate-600 font-bold" x-text="'ID: #' + detailModal.data.id"></span>
                 </div>
@@ -436,18 +444,18 @@
                 <span class="text-xs font-black uppercase tracking-wider text-slate-600">Pindahkan Status Kartu:</span>
                 <div class="grid grid-cols-3 gap-2">
                     <button type="button" @click="changeStatusInModal('pending')" 
-                            :class="detailModal.data.status === 'pending' ? 'bg-slate-800 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'"
-                            class="py-2.5 px-2 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
+                            :class="detailModal.data.status === 'pending' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                            class="py-2.5 px-2 min-h-[44px] border rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-regular fa-clipboard" aria-hidden="true"></i> To Do
                     </button>
                     <button type="button" @click="changeStatusInModal('in_progress')" 
-                            :class="detailModal.data.status === 'in_progress' ? 'bg-amber-900 text-white shadow-xs' : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200'"
-                            class="py-2.5 px-2 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
+                            :class="detailModal.data.status === 'in_progress' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                            class="py-2.5 px-2 min-h-[44px] border rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> In Progress
                     </button>
                     <button type="button" @click="changeStatusInModal('completed')" 
-                            :class="detailModal.data.status === 'completed' ? 'bg-emerald-700 text-white shadow-xs' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'"
-                            class="py-2.5 px-2 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
+                            :class="detailModal.data.status === 'completed' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                            class="py-2.5 px-2 min-h-[44px] border rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-check" aria-hidden="true"></i> Selesai
                     </button>
                 </div>

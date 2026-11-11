@@ -19,24 +19,24 @@
     <div class="flex items-center justify-between gap-2">
         <div>
             @if($isCompleted)
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                    <i class="fa-solid fa-check text-xs" aria-hidden="true"></i> Selesai
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-700 shrink-0" aria-hidden="true"></span> Selesai
                 </span>
             @elseif($isOverdue)
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-black uppercase tracking-wider bg-rose-50 text-rose-800 border border-rose-200">
-                    <i class="fa-solid fa-clock text-xs" aria-hidden="true"></i> Terlambat
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-700 shrink-0" aria-hidden="true"></span> Terlambat
                 </span>
             @elseif($isDueSoon)
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-black uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200">
-                    <i class="fa-solid fa-hourglass-half text-xs" aria-hidden="true"></i> Hari Ini
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a] shrink-0" aria-hidden="true"></span> Hari Ini
                 </span>
             @elseif($todo->deadline)
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200">
-                    <i class="fa-regular fa-calendar text-xs" aria-hidden="true"></i> {{ $todo->deadline->format('d M') }}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200">
+                    <i class="fa-regular fa-calendar text-xs text-slate-500" aria-hidden="true"></i> {{ $todo->deadline->format('d M') }}
                 </span>
             @else
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200">
-                    Tugas
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true"></span> Tugas
                 </span>
             @endif
         </div>

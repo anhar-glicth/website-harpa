@@ -28,7 +28,7 @@
                             <i class="fa-solid fa-file-arrow-down text-sm" aria-hidden="true"></i>
                             Unduh Template (.CSV)
                         </a>
-                        <a href="{{ route('admin.harpa.papan_kerja') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-800 hover:bg-amber-100 font-bold text-xs uppercase tracking-wider transition-colors">
+                        <a href="{{ route('admin.harpa.papan_kerja') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-800 hover:border-[#063f5c] hover:text-[#063f5c] font-bold text-xs uppercase tracking-wider transition-colors">
                             <i class="fa-solid fa-clipboard-check text-sm" aria-hidden="true"></i>
                             Buka Papan Kerja
                         </a>
@@ -120,17 +120,17 @@
                                 </div>
 
                                 <!-- Download Template Callout Banner -->
-                                <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 border-l-4 border-l-[#063f5c] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">
+                                        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 text-[#063f5c] flex items-center justify-center text-lg shrink-0">
                                             <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
                                         </div>
                                         <div>
-                                            <h3 class="text-xs font-bold text-slate-800">Format File Donasi Standar (.CSV / .Excel)</h3>
-                                            <p class="text-xs text-slate-700 font-medium">Unduh template acuan dengan 9 kolom standar agar data terbaca 100% tanpa error.</p>
+                                            <h3 class="text-xs font-bold text-slate-900">Format File Donasi Standar (.CSV / .Excel)</h3>
+                                            <p class="text-xs text-slate-600 font-medium">Unduh template acuan dengan 9 kolom standar agar data terbaca 100% tanpa error.</p>
                                         </div>
                                     </div>
-                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider shadow-sm transition whitespace-nowrap">
+                                    <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center justify-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-[#063f5c] hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-xs transition whitespace-nowrap">
                                         <i class="fa-solid fa-download" aria-hidden="true"></i>
                                         Unduh Template CSV
                                     </a>
@@ -142,7 +142,7 @@
                                         Pilih File (.xlsx / .csv) <span class="text-rose-700">*</span>
                                     </label>
                                     <div class="border-2 border-dashed border-slate-300 hover:border-primary-600 rounded-2xl p-6 text-center transition-colors bg-slate-50">
-                                        <i class="fa-solid fa-file-excel text-3xl text-emerald-700 mb-2" aria-hidden="true"></i>
+                                        <i class="fa-solid fa-file-excel text-3xl text-[#063f5c] mb-2" aria-hidden="true"></i>
                                         <input id="import_file" type="file" name="file" accept=".xlsx,.xls,.csv,.txt" required class="block w-full text-xs text-slate-700 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-primary-600 file:text-white hover:file:bg-primary-700 cursor-pointer">
                                         <p class="text-xs text-slate-600 mt-2">Maksimal ukuran file: 20 MB. Data mentah akan disimpan apa adanya di database.</p>
                                     </div>
