@@ -71,7 +71,7 @@
                                 <span class="text-xs font-black uppercase tracking-wider text-[#063f5c]">
                                     Tracker Progres Kirim
                                 </span>
-                                <span class="text-slate-400" aria-hidden="true">&bull;</span>
+                                <span class="text-slate-500" aria-hidden="true">&bull;</span>
                                 <span class="text-xs text-slate-600 font-medium">Batch: <strong class="text-slate-800">{{ $batchLabel }}</strong></span>
                             </div>
                             <h2 class="text-lg font-montserrat font-black text-slate-900 mt-1">
