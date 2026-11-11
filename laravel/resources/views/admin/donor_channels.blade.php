@@ -151,13 +151,9 @@
                                     </td>
                                     <td class="py-4 text-center">
                                         @if($item->status === 'Aktif')
-                                            <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-700"></span> y (Aktif)
-                                            </span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">y (Aktif)</span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-lg">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-700"></span> n (Non-Aktif)
-                                            </span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-rose-700">n (Non-Aktif)</span>
                                         @endif
                                     </td>
                                     <td class="py-4 text-right">
