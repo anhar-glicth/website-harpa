@@ -578,26 +578,28 @@
 
     </div>
 
-    <!-- ================= MODAL KUSTOMISASI KWITANSI (No Print) ================= -->
+    <!-- Modal: Kustomisasi Kwitansi (No Print) -->
     <div x-show="showCustomModal" 
          x-cloak 
-         class="no-print fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto">
+         @keydown.escape.window="showCustomModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-donor-custom-title"
+         class="no-print fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/75 overflow-y-auto">
         
-        <div @click.away="showCustomModal = false" class="bg-white border border-slate-100 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 my-auto max-h-[92vh] overflow-y-auto">
+        <div @click.away="showCustomModal = false" class="bg-white border border-slate-200 w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative space-y-6 my-auto max-h-[92vh] overflow-y-auto">
             
             {{-- Modal Header --}}
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm">
-                        <i class="fa-solid fa-pen-ruler"></i>
+                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 flex items-center justify-center text-lg shadow-sm">
+                        <i class="fa-solid fa-pen-ruler" aria-hidden="true"></i>
                     </div>
                     <div>
-                        <h3 class="text-base sm:text-lg font-black text-slate-900">Kustomisasi Kwitansi (Money Receipt)</h3>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sesuaikan Logo, TTD, Stempel, & Identitas Kwitansi</p>
+                        <h2 id="modal-donor-custom-title" class="text-base sm:text-lg font-black text-slate-900">Kustomisasi Kwitansi (Money Receipt)</h2>
+                        <p class="text-xs font-bold text-slate-600 uppercase tracking-widest">Sesuaikan Logo, TTD, Stempel, &amp; Identitas Kwitansi</p>
                     </div>
                 </div>
-                <button type="button" @click="showCustomModal = false" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark text-sm"></i>
+                <button type="button" @click="showCustomModal = false" aria-label="Tutup modal kustomisasi kwitansi" class="min-w-[44px] min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm" aria-hidden="true"></i>
                 </button>
             </div>
 

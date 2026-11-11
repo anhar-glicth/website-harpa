@@ -182,8 +182,10 @@
 
     </div>{{-- end grid --}}
 
-    {{-- ============ MODAL: ADD RESPON PROSPEK ============ --}}
+    {{-- Modal: Tambah Respon Prospek --}}
     <div x-show="showAddModal"
+         @keydown.escape.window="showAddModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-add-pr-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -192,39 +194,39 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showAddModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showAddModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-5 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Tambah Respon Prospek</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Isi data respon prospek baru</p>
+                    <h2 id="modal-add-pr-title" class="text-lg font-black text-slate-900">Tambah Respon Prospek</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Isi data respon prospek baru</p>
                 </div>
-                <button @click="showAddModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah respon prospek" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <form method="POST" action="{{ route('admin.prospect_responses.store') }}" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Nama Respon Prospek <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" required placeholder="Contoh: Read, Centang 2, Donasi / Closing"
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 placeholder:text-slate-400">
+                    <label for="add_pr_name" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Nama Respon Prospek <span class="text-rose-700">*</span></label>
+                    <input id="add_pr_name" type="text" name="name" required placeholder="Contoh: Read, Centang 2, Donasi / Closing"
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600 placeholder:text-slate-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" required
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="add_pr_status" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Status <span class="text-rose-700">*</span></label>
+                    <select id="add_pr_status" name="status" required
+                            class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                         <option value="Aktif">Aktif</option>
                         <option value="Non-Aktif">Non-Aktif</option>
                     </select>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showAddModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan
                     </button>
                 </div>
@@ -232,8 +234,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: EDIT RESPON PROSPEK ============ --}}
+    {{-- Modal: Edit Respon Prospek --}}
     <div x-show="showEditModal"
+         @keydown.escape.window="showEditModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-edit-pr-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -242,40 +246,40 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showEditModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showEditModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-5 z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-black text-slate-900">Edit Respon Prospek</h3>
-                    <p class="text-xs text-slate-400 font-semibold mt-0.5">Perbarui data respon prospek</p>
+                    <h2 id="modal-edit-pr-title" class="text-lg font-black text-slate-900">Edit Respon Prospek</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-0.5">Perbarui data respon prospek</p>
                 </div>
-                <button @click="showEditModal = false" class="p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-all">
-                    <i class="fa-solid fa-xmark"></i>
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit respon prospek" class="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <form method="POST" :action="`{{ url('admin/prospect-responses') }}/${editData.id}/update`" class="space-y-4">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Nama Respon Prospek <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" x-model="editData.name" required
-                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_pr_name" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Nama Respon Prospek <span class="text-rose-700">*</span></label>
+                    <input id="edit_pr_name" type="text" name="name" x-model="editData.name" required
+                           class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" x-model="editData.status" required
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500">
+                    <label for="edit_pr_status" class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-1.5">Status <span class="text-rose-700">*</span></label>
+                    <select id="edit_pr_status" name="status" x-model="editData.status" required
+                            class="w-full min-h-[44px] px-4 py-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-600/20 focus:border-primary-600">
                         <option value="Aktif">Aktif</option>
                         <option value="Non-Aktif">Non-Aktif</option>
                     </select>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" @click="showEditModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-primary-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -283,8 +287,10 @@
         </div>
     </div>
 
-    {{-- ============ MODAL: DELETE ============ --}}
+    {{-- Modal: Hapus Respon Prospek --}}
     <div x-show="showDeleteModal"
+         @keydown.escape.window="showDeleteModal = false"
+         role="dialog" aria-modal="true" aria-labelledby="modal-delete-pr-title"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
@@ -293,15 +299,15 @@
          x-transition:leave-end="opacity-0 scale-95"
          class="fixed inset-0 z-50 flex items-center justify-center p-4"
          style="display: none;">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="showDeleteModal = false"></div>
+        <div class="absolute inset-0 bg-slate-900/65" @click="showDeleteModal = false"></div>
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center space-y-5 z-10">
-            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 text-2xl mx-auto">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-700 text-2xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
             </div>
             <div>
-                <h3 class="text-lg font-black text-slate-900">Hapus Respon Prospek?</h3>
-                <p class="text-sm text-slate-500 font-semibold mt-1">
-                    Data "<span class="text-slate-800 font-black" x-text="selectedName"></span>" akan dihapus permanen.
+                <h2 id="modal-delete-pr-title" class="text-lg font-black text-slate-900">Hapus Respon Prospek?</h2>
+                <p class="text-sm text-slate-600 font-semibold mt-1">
+                    Data "<span class="text-slate-900 font-black" x-text="selectedName"></span>" akan dihapus permanen.
                 </p>
             </div>
             <form method="POST" :action="`{{ url('admin/prospect-responses') }}/${selectedId}/delete`">
@@ -309,11 +315,11 @@
                 @method('DELETE')
                 <div class="flex gap-3">
                     <button type="button" @click="showDeleteModal = false"
-                            class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-sm font-bold transition-colors">
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-sm font-black shadow-lg shadow-rose-500/20 transition-all">
+                            class="flex-1 min-h-[44px] py-3 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-sm font-black shadow-sm transition-colors">
                         Ya, Hapus
                     </button>
                 </div>

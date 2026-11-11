@@ -117,30 +117,30 @@
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                    <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                        <div class="text-[9px] uppercase font-bold text-slate-300">ROAS</div>
+                    <div class="bg-slate-900/55 p-3 rounded-xl border border-white/15">
+                        <div class="text-[11px] uppercase font-bold text-slate-200">ROAS</div>
                         <div class="text-xl font-black text-amber-300" x-text="roas + 'x'">0.00x</div>
-                        <div class="text-[9px] text-slate-400">Hasil / Biaya</div>
+                        <div class="text-xs text-slate-300">Hasil / Biaya</div>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                        <div class="text-[9px] uppercase font-bold text-slate-300">CTR</div>
-                        <div class="text-xl font-black text-indigo-300" x-text="ctr + '%'">0.00%</div>
-                        <div class="text-[9px] text-slate-400">Klik / Tayangan</div>
+                    <div class="bg-slate-900/55 p-3 rounded-xl border border-white/15">
+                        <div class="text-[11px] uppercase font-bold text-slate-200">CTR</div>
+                        <div class="text-xl font-black text-indigo-200" x-text="ctr + '%'">0.00%</div>
+                        <div class="text-xs text-slate-300">Klik / Tayangan</div>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                        <div class="text-[9px] uppercase font-bold text-slate-300">Cost Per Click (CPC)</div>
+                    <div class="bg-slate-900/55 p-3 rounded-xl border border-white/15">
+                        <div class="text-[11px] uppercase font-bold text-slate-200">Cost Per Click (CPC)</div>
                         <div class="text-xl font-black text-white" x-text="'Rp ' + Number(cpc).toLocaleString('id-ID')">Rp 0</div>
-                        <div class="text-[9px] text-slate-400">Biaya per Klik</div>
+                        <div class="text-xs text-slate-300">Biaya per Klik</div>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                        <div class="text-[9px] uppercase font-bold text-slate-300">Cost Per Lead (CPA)</div>
+                    <div class="bg-slate-900/55 p-3 rounded-xl border border-white/15">
+                        <div class="text-[11px] uppercase font-bold text-slate-200">Cost Per Lead (CPA)</div>
                         <div class="text-xl font-black text-white" x-text="'Rp ' + Number(cpa).toLocaleString('id-ID')">Rp 0</div>
-                        <div class="text-[9px] text-slate-400">Biaya per Donasi</div>
+                        <div class="text-xs text-slate-300">Biaya per Donasi</div>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10">
-                        <div class="text-[9px] uppercase font-bold text-slate-300">CPM (per 1K Impr)</div>
+                    <div class="bg-slate-900/55 p-3 rounded-xl border border-white/15">
+                        <div class="text-[11px] uppercase font-bold text-slate-200">CPM (per 1K Impr)</div>
                         <div class="text-xl font-black text-white" x-text="'Rp ' + Number(cpm).toLocaleString('id-ID')">Rp 0</div>
-                        <div class="text-[9px] text-slate-400">Biaya 1.000 Tayangan</div>
+                        <div class="text-xs text-slate-300">Biaya 1.000 Tayangan</div>
                     </div>
                 </div>
             </div>
