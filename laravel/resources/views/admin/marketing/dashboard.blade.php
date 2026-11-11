@@ -264,7 +264,7 @@
                                 <p class="text-xs text-emerald-700 font-bold">Iklan dengan ROAS tinggi dan CPA murah</p>
                             </div>
                         </div>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>{{ $scaleHighlights->count() }} Iklan</span>
+                        <span class="text-xs font-bold text-slate-600 tabular-nums">{{ $scaleHighlights->count() }} Iklan</span>
                     </div>
 
                     <div class="space-y-3">
@@ -301,7 +301,7 @@
                                 <p class="text-xs text-rose-700 font-bold">Biaya sudah keluar namun ROAS rendah (&lt; 1.0x)</p>
                             </div>
                         </div>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>{{ $stopHighlights->count() }} Iklan</span>
+                        <span class="text-xs font-bold text-slate-600 tabular-nums">{{ $stopHighlights->count() }} Iklan</span>
                     </div>
 
                     <div class="space-y-3">
@@ -362,8 +362,7 @@
                             <tr class="hover:bg-slate-50/70 transition-colors">
                                 <td class="py-3 px-3 font-bold text-slate-700">{{ $ad->date ? $ad->date->format('d M Y') : '-' }}</td>
                                 <td class="py-3 px-3">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $ad->platform === 'Meta Ads' ? 'bg-[#063f5c]' : ($ad->platform === 'Google Ads' ? 'bg-rose-700' : 'bg-slate-400') }}" aria-hidden="true"></span>
+                                    <span class="text-xs font-bold {{ $ad->platform === 'Meta Ads' ? 'text-[#063f5c]' : ($ad->platform === 'Google Ads' ? 'text-rose-700' : 'text-slate-600') }}">
                                         {{ $ad->platform }}
                                     </span>
                                 </td>
@@ -383,11 +382,11 @@
                                 <td class="py-3 px-3 text-center font-bold text-slate-600">{{ $ad->ctr }}%</td>
                                 <td class="py-3 px-3 text-center">
                                     @if($ad->decision === 'SCALE')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>SCALE</span>
+                                        <span class="text-xs font-black uppercase text-emerald-700">SCALE</span>
                                     @elseif($ad->decision === 'STOP')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>STOP</span>
+                                        <span class="text-xs font-black uppercase text-rose-700">STOP</span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>MAINTAIN</span>
+                                        <span class="text-xs font-black uppercase text-amber-800">MAINTAIN</span>
                                     @endif
                                 </td>
                                 <td class="py-3 px-3 text-center">

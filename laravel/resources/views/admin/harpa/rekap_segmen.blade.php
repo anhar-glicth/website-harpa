@@ -144,14 +144,13 @@
                                         <span class="text-slate-800 font-semibold break-words block">{{ $s['nama'] }}</span>
                                     </td>
                                     <td class="py-3 px-4">
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                            <span class="w-1.5 h-1.5 rounded-full shrink-0
-                                                {{ $s['segmen'] === 'AKTIF Donatur' ? 'bg-emerald-700' : '' }}
-                                                {{ $s['segmen'] === 'AKTIF Pembaca' ? 'bg-[#063f5c]' : '' }}
-                                                {{ $s['segmen'] === 'PANTAU Data Belum Cukup' ? 'bg-[#f7ad1a]' : '' }}
-                                                {{ $s['segmen'] === 'ARSIP Nomor Bermasalah' ? 'bg-rose-700' : '' }}
-                                                {{ in_array($s['segmen'], ['ARSIP Tidak Pernah Baca', 'ARSIP Berhenti Baca', 'ARSIP Nomor Tidak Valid']) ? 'bg-slate-400' : '' }}
-                                            " aria-hidden="true"></span>
+                                        <span class="text-xs font-bold uppercase tracking-wider
+                                            {{ $s['segmen'] === 'AKTIF Donatur' ? 'text-emerald-700' : '' }}
+                                            {{ $s['segmen'] === 'AKTIF Pembaca' ? 'text-[#063f5c]' : '' }}
+                                            {{ $s['segmen'] === 'PANTAU Data Belum Cukup' ? 'text-amber-800' : '' }}
+                                            {{ $s['segmen'] === 'ARSIP Nomor Bermasalah' ? 'text-rose-700' : '' }}
+                                            {{ in_array($s['segmen'], ['ARSIP Tidak Pernah Baca', 'ARSIP Berhenti Baca', 'ARSIP Nomor Tidak Valid']) ? 'text-slate-600' : '' }}
+                                        ">
                                             {{ $s['segmen'] }}
                                         </span>
                                     </td>
@@ -171,8 +170,7 @@
                                         @endif
                                     </td>
                                     <td class="py-3 px-4">
-                                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                            <span class="w-1.5 h-1.5 rounded-full {{ $s['wa_aktif'] ? 'bg-emerald-700' : 'bg-rose-700' }}" aria-hidden="true"></span>
+                                        <span class="text-xs font-bold uppercase tracking-wider {{ $s['wa_aktif'] ? 'text-emerald-700' : 'text-rose-700' }}">
                                             {{ $s['wa_aktif'] ? 'Aktif' : 'Mati' }}
                                         </span>
                                     </td>

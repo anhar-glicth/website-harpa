@@ -199,33 +199,25 @@
 
                                 <!-- ROAS -->
                                 <td class="py-3.5 px-4 text-center">
-                                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 font-black text-xs text-slate-800">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $ad->roas >= 2.0 ? 'bg-emerald-700' : ($ad->roas >= 1.0 ? 'bg-[#f7ad1a]' : 'bg-rose-700') }}" aria-hidden="true"></span>
+                                    <span class="font-black text-xs {{ $ad->roas >= 2.0 ? 'text-emerald-700' : ($ad->roas >= 1.0 ? 'text-amber-800' : 'text-rose-700') }}">
                                         {{ $ad->roas }}x
-                                    </div>
+                                    </span>
                                 </td>
 
                                 <!-- Decision -->
                                 <td class="py-3.5 px-4 text-center">
                                     @if($ad->decision === 'SCALE')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span> SCALE
-                                        </span>
+                                        <span class="text-xs font-black uppercase text-emerald-700">SCALE</span>
                                     @elseif($ad->decision === 'STOP')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span> STOP
-                                        </span>
+                                        <span class="text-xs font-black uppercase text-rose-700">STOP</span>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span> MAINTAIN
-                                        </span>
+                                        <span class="text-xs font-black uppercase text-amber-800">MAINTAIN</span>
                                     @endif
                                 </td>
 
                                 <!-- Status -->
                                 <td class="py-3.5 px-4 text-center">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
-                                        <span class="w-1.5 h-1.5 rounded-full {{ $ad->status === 'ACTIVE' ? 'bg-emerald-700' : ($ad->status === 'PAUSED' ? 'bg-[#f7ad1a]' : 'bg-slate-400') }}" aria-hidden="true"></span>
+                                    <span class="text-xs font-bold uppercase {{ $ad->status === 'ACTIVE' ? 'text-emerald-700' : ($ad->status === 'PAUSED' ? 'text-amber-800' : 'text-slate-600') }}">
                                         {{ $ad->status }}
                                     </span>
                                 </td>

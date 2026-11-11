@@ -89,35 +89,28 @@
                                         <td class="py-3 px-4 font-semibold text-slate-800">{{ $d['nama_lengkap'] }}</td>
                                         <td class="py-3 px-4 font-mono text-slate-700">{{ $d['no_hp'] ?: '-' }}</td>
                                         <td class="py-3 px-4">
-                                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                                @if($d['kategori'] === 'LOYAL')
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>
-                                                @endif
+                                            <span class="text-xs font-bold uppercase tracking-wider {{ $d['kategori'] === 'LOYAL' ? 'text-[#063f5c]' : 'text-slate-600' }}">
                                                 {{ $d['kategori'] }}
                                             </span>
                                         </td>
                                         <td class="py-3 px-4">
-                                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                                @if($d['badge'] === 'PLATINUM')
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>
-                                                @elseif($d['badge'] === 'GOLD')
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>
-                                                @elseif($d['badge'] === 'SILVER')
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400" aria-hidden="true"></span>
-                                                @endif
+                                            <span class="text-xs font-bold uppercase tracking-wider
+                                                {{ $d['badge'] === 'PLATINUM' ? 'text-[#063f5c]' : '' }}
+                                                {{ $d['badge'] === 'GOLD' ? 'text-amber-800' : '' }}
+                                                {{ in_array($d['badge'], ['SILVER', 'NONE']) ? 'text-slate-600' : '' }}
+                                            ">
                                                 {{ $d['badge'] }}
                                             </span>
                                         </td>
                                         <td class="py-3 px-4">
-                                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                                <span class="w-1.5 h-1.5 rounded-full shrink-0
-                                                    {{ $d['segmen_rfm'] === 'CHAMPION' ? 'bg-emerald-700' : '' }}
-                                                    {{ $d['segmen_rfm'] === 'HIGH VALUE AT RISK' ? 'bg-rose-700' : '' }}
-                                                    {{ $d['segmen_rfm'] === 'LOYAL' ? 'bg-[#063f5c]' : '' }}
-                                                    {{ $d['segmen_rfm'] === 'FRESH' ? 'bg-sky-700' : '' }}
-                                                    {{ $d['segmen_rfm'] === 'POTENTIAL' ? 'bg-[#f7ad1a]' : '' }}
-                                                    {{ in_array($d['segmen_rfm'], ['DORMANT', 'PROSPEK']) ? 'bg-slate-400' : '' }}
-                                                " aria-hidden="true"></span>
+                                            <span class="text-xs font-bold uppercase tracking-wider
+                                                {{ $d['segmen_rfm'] === 'CHAMPION' ? 'text-emerald-700' : '' }}
+                                                {{ $d['segmen_rfm'] === 'HIGH VALUE AT RISK' ? 'text-rose-700' : '' }}
+                                                {{ $d['segmen_rfm'] === 'LOYAL' ? 'text-[#063f5c]' : '' }}
+                                                {{ $d['segmen_rfm'] === 'FRESH' ? 'text-sky-700' : '' }}
+                                                {{ $d['segmen_rfm'] === 'POTENTIAL' ? 'text-amber-800' : '' }}
+                                                {{ in_array($d['segmen_rfm'], ['DORMANT', 'PROSPEK']) ? 'text-slate-600' : '' }}
+                                            ">
                                                 {{ $d['segmen_rfm'] }}
                                             </span>
                                         </td>

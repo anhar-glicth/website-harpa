@@ -337,18 +337,18 @@
                                         <!-- Status Tracker Selector (Dropdown) -->
                                         <td class="py-3 px-4 relative" @click.outside="row.dropdownOpen = false">
                                             <!-- Status Button Badge -->
-                                            <button type="button" @click="row.dropdownOpen = !row.dropdownOpen" :aria-expanded="row.dropdownOpen ? 'true' : 'false'" class="inline-flex items-center gap-1.5 min-h-[36px] px-2.5 py-1 rounded-md text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200 hover:bg-slate-100 transition">
+                                            <button type="button" @click="row.dropdownOpen = !row.dropdownOpen" :aria-expanded="row.dropdownOpen ? 'true' : 'false'" class="inline-flex items-center gap-1.5 min-h-[36px] px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 transition">
                                                 <template x-if="row.status === 'PENDING'">
-                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>Belum Kirim</span>
+                                                    <span class="inline-flex items-center gap-1.5 text-amber-800"><i class="fa-regular fa-clock" aria-hidden="true"></i>Belum Kirim</span>
                                                 </template>
                                                 <template x-if="row.status === 'DELIVERED'">
-                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-700" aria-hidden="true"></span>Terkirim</span>
+                                                    <span class="inline-flex items-center gap-1.5 text-blue-700"><i class="fa-solid fa-check-double" aria-hidden="true"></i>Terkirim</span>
                                                 </template>
                                                 <template x-if="row.status === 'READ'">
-                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>Dibaca</span>
+                                                    <span class="inline-flex items-center gap-1.5 text-emerald-700"><i class="fa-solid fa-check-double" aria-hidden="true"></i>Dibaca</span>
                                                 </template>
                                                 <template x-if="row.status === 'FAILED'">
-                                                    <span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>Gagal</span>
+                                                    <span class="inline-flex items-center gap-1.5 text-rose-700"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>Gagal</span>
                                                 </template>
                                                 <i class="fa-solid fa-chevron-down text-[10px] text-slate-600 ml-1" aria-hidden="true"></i>
                                             </button>
@@ -409,8 +409,7 @@
                                                 <span class="text-slate-800 font-semibold break-words">{{ $tab === 'perkenalan' ? '' : '' }}<span class="font-mono text-xs text-primary-700 font-bold block" x-text="row.donatur_id"></span><span x-text="row.nama"></span></span>
                                             </td>
                                             <td class="py-3 px-4">
-                                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800">
-                                                    <span class="w-1.5 h-1.5 rounded-full" :class="row.sumber === 'IM' ? 'bg-[#063f5c]' : 'bg-[#f7ad1a]'" aria-hidden="true"></span>
+                                                <span class="text-xs font-bold uppercase tracking-wider" :class="row.sumber === 'IM' ? 'text-[#063f5c]' : 'text-amber-800'">
                                                     <span x-text="row.sumber"></span> &bull; <span x-text="row.bulan_donasi"></span>
                                                 </span>
                                             </td>
@@ -423,8 +422,7 @@
                                             <td class="py-3 px-4 font-semibold text-slate-800" x-text="row.nama"></td>
                                             <td class="py-3 px-4 text-slate-700" x-text="row.tgl_dikenalkan"></td>
                                             <td class="py-3 px-4">
-                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>
+                                                <span class="text-xs font-bold text-amber-800">
                                                     <span x-text="row.sisa_hari_baru"></span> Hari Lagi
                                                 </span>
                                             </td>
@@ -438,7 +436,7 @@
                                                 <span class="text-slate-800 font-semibold break-words block" x-text="row.nama"></span>
                                             </td>
                                             <td class="py-3 px-4">
-                                                <span class="px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-800" x-text="row.segmen"></span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-slate-700" x-text="row.segmen"></span>
                                             </td>
                                             <td class="py-3 px-4 font-bold text-xs" :class="row.jadwal && row.jadwal.includes('CEK') ? 'text-amber-800' : 'text-emerald-700'" x-text="row.jadwal"></td>
                                             <td class="py-3 px-4 font-bold text-emerald-700 text-xs" x-text="formatRupiah(row.total_donasi)"></td>

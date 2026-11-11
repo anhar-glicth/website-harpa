@@ -130,19 +130,19 @@
                                     <td class="py-4 text-slate-600 font-mono text-xs lowercase">{{ $user->email }}</td>
                                     <td class="py-4">
                                         @if($user->role === 'admin')
-                                            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>SUPER ADMIN</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-rose-700">SUPER ADMIN</span>
                                         @elseif($user->role === 'operator')
-                                            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>ADMIN DATA ENTRY</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-amber-800">ADMIN DATA ENTRY</span>
                                         @elseif($user->role === 'finance')
-                                            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>STAFF KEUANGAN</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">STAFF KEUANGAN</span>
                                         @elseif($user->role === 'program_manager')
-                                            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>MANAGER PROGRAM</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-[#063f5c]">MANAGER PROGRAM</span>
                                         @elseif($user->role === 'crm_staff')
-                                            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>STAFF CRM</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-rose-700">STAFF CRM</span>
                                         @elseif($user->role === 'field_worker')
-                                            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-sky-700" aria-hidden="true"></span>PETUGAS LAPANGAN</span>
+                                            <span class="text-xs font-bold uppercase tracking-wider text-sky-700">PETUGAS LAPANGAN</span>
                                         @else
-                                            <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-slate-400" aria-hidden="true"></span>DONATUR</span>
+                                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">DONATUR</span>
                                         @endif
                                     </td>
                                     <td class="py-4 font-mono text-xs">{{ $user->phone ?? '-' }}</td>

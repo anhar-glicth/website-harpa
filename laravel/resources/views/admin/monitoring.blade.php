@@ -40,8 +40,7 @@
                     </div>
                     <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 bg-emerald-700 rounded-full" aria-hidden="true"></span>
+                <div>
                     <span class="text-xs font-black text-slate-600 uppercase tracking-widest">Live Worker Analytics</span>
                 </div>
             </div>
@@ -180,8 +179,7 @@
                                                     <p class="text-xs text-slate-600 font-semibold mt-1 leading-relaxed">{{ $t->description }}</p>
                                                 @endif
                                             </div>
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider shrink-0 border border-slate-200 bg-slate-50 text-slate-800">
-                                                <span class="w-1.5 h-1.5 rounded-full {{ $t->status === 'completed' ? 'bg-emerald-700' : 'bg-[#f7ad1a]' }}" aria-hidden="true"></span>
+                                            <span class="text-xs font-bold uppercase tracking-wider shrink-0 {{ $t->status === 'completed' ? 'text-emerald-700' : 'text-amber-800' }}">
                                                 {{ $t->status === 'completed' ? 'SELESAI' : 'PENDING' }}
                                             </span>
                                         </div>
@@ -256,13 +254,13 @@
                                     <tr class="border-b border-slate-100 last:border-0">
                                         <td class="py-4">
                                             @if($att->type === 'check_in')
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>CHECK IN</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">CHECK IN</span>
                                             @elseif($att->type === 'check_out')
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>CHECK OUT</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-[#063f5c]">CHECK OUT</span>
                                             @elseif($att->type === 'sakit')
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>SAKIT</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-amber-800">SAKIT</span>
                                             @else
-                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>IZIN</span>
+                                                <span class="text-xs font-bold uppercase tracking-wider text-rose-700">IZIN</span>
                                             @endif
                                         </td>
                                         <td class="py-4 text-slate-800">{{ $att->created_at->format('d M Y, H:i') }}</td>
