@@ -172,7 +172,7 @@
                                             <td class="py-3 px-2 font-mono text-xs">
                                                 @if($activeCount > 0)
                                                     <span class="inline-block px-2 py-0.5 rounded text-xs font-bold 
-                                                        {{ $pct >= 50 ? 'bg-emerald-700 text-white' : ($pct >= 25 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700') }}">
+                                                        {{ $pct >= 50 ? 'bg-[#063f5c] text-white' : ($pct >= 25 ? 'bg-slate-200 text-slate-900' : 'bg-slate-50 border border-slate-200 text-slate-700') }}">
                                                         {{ $pct }}%
                                                     </span>
                                                 @else

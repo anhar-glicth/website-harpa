@@ -199,8 +199,8 @@
 
                                 <!-- ROAS -->
                                 <td class="py-3.5 px-4 text-center">
-                                    <div class="inline-block px-2.5 py-1 rounded-xl font-black text-xs
-                                        {{ $ad->roas >= 2.0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : ($ad->roas >= 1.0 ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-rose-50 text-rose-800 border border-rose-200') }}">
+                                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 font-black text-xs text-slate-800">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $ad->roas >= 2.0 ? 'bg-emerald-700' : ($ad->roas >= 1.0 ? 'bg-[#f7ad1a]' : 'bg-rose-700') }}" aria-hidden="true"></span>
                                         {{ $ad->roas }}x
                                     </div>
                                 </td>
@@ -208,24 +208,24 @@
                                 <!-- Decision -->
                                 <td class="py-3.5 px-4 text-center">
                                     @if($ad->decision === 'SCALE')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black uppercase">
-                                            <i class="fa-solid fa-arrow-trend-up"></i> SCALE
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span> SCALE
                                         </span>
                                     @elseif($ad->decision === 'STOP')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-black uppercase">
-                                            <i class="fa-solid fa-ban"></i> STOP
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span> STOP
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-black uppercase">
-                                            <i class="fa-solid fa-wrench"></i> MAINTAIN
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span> MAINTAIN
                                         </span>
                                     @endif
                                 </td>
 
                                 <!-- Status -->
                                 <td class="py-3.5 px-4 text-center">
-                                    <span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase
-                                        {{ $ad->status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-800' : ($ad->status === 'PAUSED' ? 'bg-amber-50 text-amber-800' : 'bg-slate-100 text-slate-700') }}">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $ad->status === 'ACTIVE' ? 'bg-emerald-700' : ($ad->status === 'PAUSED' ? 'bg-[#f7ad1a]' : 'bg-slate-400') }}" aria-hidden="true"></span>
                                         {{ $ad->status }}
                                     </span>
                                 </td>

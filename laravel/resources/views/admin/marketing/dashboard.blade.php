@@ -264,7 +264,7 @@
                                 <p class="text-xs text-emerald-700 font-bold">Iklan dengan ROAS tinggi dan CPA murah</p>
                             </div>
                         </div>
-                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-black rounded-full">{{ $scaleHighlights->count() }} Iklan</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>{{ $scaleHighlights->count() }} Iklan</span>
                     </div>
 
                     <div class="space-y-3">
@@ -301,7 +301,7 @@
                                 <p class="text-xs text-rose-700 font-bold">Biaya sudah keluar namun ROAS rendah (&lt; 1.0x)</p>
                             </div>
                         </div>
-                        <span class="px-2.5 py-1 bg-rose-100 text-rose-800 text-xs font-black rounded-full">{{ $stopHighlights->count() }} Iklan</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>{{ $stopHighlights->count() }} Iklan</span>
                     </div>
 
                     <div class="space-y-3">
@@ -362,8 +362,8 @@
                             <tr class="hover:bg-slate-50/70 transition-colors">
                                 <td class="py-3 px-3 font-bold text-slate-700">{{ $ad->date ? $ad->date->format('d M Y') : '-' }}</td>
                                 <td class="py-3 px-3">
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black 
-                                        {{ $ad->platform === 'Meta Ads' ? 'bg-blue-50 text-blue-800 border border-blue-200' : ($ad->platform === 'Google Ads' ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-slate-100 text-slate-700') }}">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold">
+                                        <span class="w-1.5 h-1.5 rounded-full {{ $ad->platform === 'Meta Ads' ? 'bg-[#063f5c]' : ($ad->platform === 'Google Ads' ? 'bg-rose-700' : 'bg-slate-400') }}" aria-hidden="true"></span>
                                         {{ $ad->platform }}
                                     </span>
                                 </td>
@@ -383,11 +383,11 @@
                                 <td class="py-3 px-3 text-center font-bold text-slate-600">{{ $ad->ctr }}%</td>
                                 <td class="py-3 px-3 text-center">
                                     @if($ad->decision === 'SCALE')
-                                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black uppercase">SCALE</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>SCALE</span>
                                     @elseif($ad->decision === 'STOP')
-                                        <span class="px-2.5 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-black uppercase">STOP</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>STOP</span>
                                     @else
-                                        <span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-black uppercase">MAINTAIN</span>
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>MAINTAIN</span>
                                     @endif
                                 </td>
                                 <td class="py-3 px-3 text-center">

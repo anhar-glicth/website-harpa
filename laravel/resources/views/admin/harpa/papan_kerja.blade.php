@@ -193,7 +193,7 @@
         @else
             <!-- KONDISI TENANG: TIDAK ADA ANTREAN AKTIF -->
             <div class="bg-white rounded-3xl border border-slate-200 p-8 text-center space-y-4 shadow-sm">
-                <div class="w-16 h-16 rounded-3xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center text-2xl mx-auto">
+                <div class="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 text-[#063f5c] flex items-center justify-center text-2xl mx-auto">
                     <i class="fa-solid fa-check-double" aria-hidden="true"></i>
                 </div>
                 <div class="max-w-md mx-auto space-y-1">
@@ -246,7 +246,7 @@
                                     <td class="py-3 px-4 text-slate-700 truncate max-w-xs">{{ $tx->campaign_title_raw ?: '-' }}</td>
                                     <td class="py-3 px-4 font-mono text-rose-700 font-semibold">{{ $tx->no_hp_input ?: '(kosong)' }}</td>
                                     <td class="py-3 px-4 text-right">
-                                        <button type="button" onclick="promptFixNumber('{{ $tx->donasi_id }}', '{{ $tx->no_hp_input }}')" class="min-h-[36px] px-3 py-1.5 bg-amber-50 border border-amber-300 hover:bg-amber-100 text-amber-800 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors">
+                                        <button type="button" onclick="promptFixNumber('{{ $tx->donasi_id }}', '{{ $tx->no_hp_input }}')" class="min-h-[36px] px-3 py-1.5 bg-white border border-slate-300 hover:border-[#063f5c] text-slate-800 hover:text-[#063f5c] rounded-lg text-xs font-bold uppercase tracking-wider transition-colors">
                                             Perbaiki Nomor
                                         </button>
                                     </td>
