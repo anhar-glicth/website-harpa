@@ -150,7 +150,7 @@
                                 <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
                                     <input type="checkbox" id="commit_directly" name="commit_directly" value="1" checked class="w-4 h-4 mt-0.5 rounded border-slate-400 text-primary-600 focus:ring-primary-600">
                                     <label for="commit_directly" class="text-xs text-slate-700 font-semibold cursor-pointer">
-                                        <strong>Proses &amp; Daftarkan Donatur Otomatis:</strong> Jika nomor belum pernah terdaftar, otomatis daftarkan ke <code class="text-primary-700 font-bold">master_donatur</code> (DNRxxxxxx) dan <code class="text-primary-700 font-bold">master_nomor</code> dalam satu transaksi database.
+                                        <strong>Proses &amp; Daftarkan Donatur Otomatis:</strong> Jika nomor belum pernah terdaftar, otomatis daftarkan ke data induk donatur (DNRxxxxxx) dan daftar nomor dalam satu transaksi.
                                     </label>
                                 </div>
 
@@ -353,7 +353,7 @@
                                 Aturan Data Harpa (SOP-DA-001)
                             </div>
                             <ul class="text-xs text-slate-200 space-y-2 list-disc list-inside leading-relaxed font-medium">
-                                <li><strong>Identitas adalah <code class="text-[#f7ad1a]">donatur_id</code></strong>, bukan nomor HP. Satu orang boleh memiliki lebih dari satu nomor.</li>
+                                <li><strong>Identitas utama adalah ID Donatur (DNRxxxxxx)</strong>, bukan nomor HP. Satu donatur boleh memiliki lebih dari satu nomor.</li>
                                 <li><strong>Nomor HP selalu teks</strong> format <code class="text-[#f7ad1a]">628...</code> (11–14 digit). Kolom nomor dilarang bertipe angka.</li>
                                 <li><strong>Data mentah tidak pernah diubah</strong> atau dihapus. Transaksi yang nomornya tidak valid disimpan dengan ID <code class="text-[#f7ad1a]">TANPA-NOMOR</code>.</li>
                                 <li><strong>Gerbang Berhenti (Papan Kerja)</strong> akan menahan data jika ada judul campaign belum dipetakan atau tanggal gagal dibaca.</li>
@@ -520,7 +520,7 @@
                             <h2 class="text-xs font-montserrat font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
                                 <i class="fa-solid fa-clock-rotate-left text-emerald-700" aria-hidden="true"></i> Donasi Terbaru Masuk
                             </h2>
-                            <span class="text-xs font-bold text-slate-600">transaksi_donasi</span>
+                            <span class="text-xs font-bold text-slate-600">Riwayat Terbaru</span>
                         </div>
                         <div class="space-y-3">
                             @foreach($latestManual as $lm)
@@ -551,7 +551,7 @@
                         <h2 class="text-xs font-montserrat font-black uppercase tracking-wider text-slate-800">
                             Log Tarikan Terakhir
                         </h2>
-                        <span class="text-xs font-bold text-slate-600">Tabel kontrol_tarik</span>
+                        <span class="text-xs font-bold text-slate-600">Riwayat Impor</span>
                     </div>
 
                     @if($kontrolTarik->isEmpty())

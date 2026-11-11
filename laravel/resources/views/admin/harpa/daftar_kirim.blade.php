@@ -37,29 +37,29 @@
 
                 <!-- TABS NAVIGASI 5 DAFTAR KIRIM -->
                 <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200">
-                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'jumat', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'jumat' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
+                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'jumat', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'jumat' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
                         <i class="fa-solid fa-calendar-week mr-1.5 {{ $tab === 'jumat' ? 'text-[#f7ad1a]' : 'text-slate-600' }}" aria-hidden="true"></i>
-                        1. KIRIM_JUMAT (Donatur)
+                        1. Kirim Jumat (Donatur)
                     </a>
 
-                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'payday', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'payday' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
+                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'payday', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'payday' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
                         <i class="fa-solid fa-money-check-dollar mr-1.5 {{ $tab === 'payday' ? 'text-[#f7ad1a]' : 'text-slate-600' }}" aria-hidden="true"></i>
-                        2. KIRIM_PAYDAY (Tgl 1–5)
+                        2. Kirim Payday (Tgl 1-5)
                     </a>
 
-                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'perkenalan', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'perkenalan' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
+                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'perkenalan', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'perkenalan' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
                         <i class="fa-solid fa-handshake mr-1.5 {{ $tab === 'perkenalan' ? 'text-[#f7ad1a]' : 'text-slate-600' }}" aria-hidden="true"></i>
-                        3. KIRIM_PERKENALAN (Web Baru)
+                        3. Kirim Perkenalan (Web Baru)
                     </a>
 
-                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'jumat_baru', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'jumat_baru' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
+                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'jumat_baru', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'jumat_baru' ? 'bg-[#063f5c] text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
                         <i class="fa-solid fa-user-tag mr-1.5 {{ $tab === 'jumat_baru' ? 'text-[#f7ad1a]' : 'text-slate-600' }}" aria-hidden="true"></i>
-                        4. KIRIM_JUMAT_BARU (28 Hari)
+                        4. Kirim Jumat Baru (28 Hari)
                     </a>
 
-                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'nomor_mati', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'nomor_mati' ? 'bg-rose-700 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
+                    <a href="{{ route('admin.harpa.daftar_kirim', ['tab' => 'nomor_mati', 'batch_date' => $batchDate]) }}" class="inline-flex items-center min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap {{ $tab === 'nomor_mati' ? 'bg-rose-700 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
                         <i class="fa-solid fa-triangle-exclamation mr-1.5 {{ $tab === 'nomor_mati' ? 'text-white' : 'text-rose-700' }}" aria-hidden="true"></i>
-                        5. ALERT Nomor Mati
+                        5. Alert Nomor Mati
                     </a>
                 </div>
 
@@ -68,22 +68,23 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider bg-primary-100 text-primary-800">
+                                <span class="text-xs font-black uppercase tracking-wider text-[#063f5c]">
                                     Tracker Progres Kirim
                                 </span>
+                                <span class="text-slate-400" aria-hidden="true">&bull;</span>
                                 <span class="text-xs text-slate-600 font-medium">Batch: <strong class="text-slate-800">{{ $batchLabel }}</strong></span>
                             </div>
                             <h2 class="text-lg font-montserrat font-black text-slate-900 mt-1">
                                 @if($tab === 'jumat')
-                                    KIRIM_JUMAT &bull; Segmen AKTIF Donatur (Nomor Hidup)
+                                    Kirim Jumat: Segmen Aktif Donatur (Nomor Hidup)
                                 @elseif($tab === 'payday')
-                                    KIRIM_PAYDAY &bull; Segmen AKTIF Pembaca & PANTAU (Tanggal 1–5)
+                                    Kirim Payday: Segmen Aktif Pembaca &amp; Pantau (Tanggal 1-5)
                                 @elseif($tab === 'perkenalan')
-                                    KIRIM_PERKENALAN &bull; Donatur Web Baru yang Belum Pernah Di-Blast
+                                    Kirim Perkenalan: Donatur Web Baru Belum Dibroadcast
                                 @elseif($tab === 'jumat_baru')
-                                    KIRIM_JUMAT_BARU &bull; Nomor Dikenalkan dalam 28 Hari Terakhir
+                                    Kirim Jumat Baru: Nomor Dikenalkan dalam 28 Hari Terakhir
                                 @else
-                                    ALERT NOMOR DONATUR MATI &bull; Tindak Lanjut Pembaruan Nomor Donatur
+                                    Alert Nomor Donatur Mati: Tindak Lanjut Pembaruan Nomor
                                 @endif
                             </h2>
                         </div>
@@ -126,7 +127,7 @@
                                 Progres Pengiriman Batch Hari Ini
                             </span>
                             <div class="flex items-center gap-3">
-                                <span x-show="isUpdating" x-cloak class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-primary-50 text-primary-700 text-xs font-bold">
+                                <span x-show="isUpdating" x-cloak class="inline-flex items-center gap-1.5 text-xs font-bold text-[#063f5c]">
                                     <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Menyimpan status...
                                 </span>
                                 <span class="font-mono text-slate-900 font-black">
@@ -212,7 +213,7 @@
                         <button type="button" @click="statusFilter = 'ALL'" :class="statusFilter === 'ALL' ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">
                             Semua (<span x-text="stats.total"></span>)
                         </button>
-                        <button type="button" @click="statusFilter = 'PENDING'" :class="statusFilter === 'PENDING' ? 'bg-amber-700 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">
+                        <button type="button" @click="statusFilter = 'PENDING'" :class="statusFilter === 'PENDING' ? 'bg-amber-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">
                             Belum (<span x-text="stats.pending"></span>)
                         </button>
                         <button type="button" @click="statusFilter = 'DELIVERED'" :class="statusFilter === 'DELIVERED' ? 'bg-blue-700 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap">
@@ -328,7 +329,7 @@
                             </thead>
                             <tbody class="divide-y divide-slate-200">
                                 <template x-for="(row, index) in filteredItems" :key="row.no_hp">
-                                    <tr class="hover:bg-slate-50 transition-colors" :class="row.selected ? 'bg-primary-50/40' : (row.status === 'READ' ? 'bg-emerald-50/20' : '')">
+                                    <tr class="hover:bg-slate-50 transition-colors" :class="row.selected ? 'bg-slate-50' : ''">
                                         <!-- Row Checkbox -->
                                         <td class="py-3 px-3 text-center">
                                             <input type="checkbox" x-model="row.selected" :aria-label="'Pilih kontak ' + (row.nama || row.no_hp)" class="w-4 h-4 rounded text-primary-600 focus:ring-primary-600 border-slate-400 cursor-pointer">

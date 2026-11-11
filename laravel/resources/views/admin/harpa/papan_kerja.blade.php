@@ -64,7 +64,7 @@
                                 Tarikan {{ $pendingData['sumber'] }} Periode {{ $pendingData['periode'] }} ({{ number_format($pendingData['total_rows']) }} Baris)
                             </h2>
                             <p class="text-xs text-slate-600 font-medium mt-0.5">
-                                {{ $pendingData['status'] === 'STOP' ? 'Pemeriksaan menemukan kendala yang harus diselesaikan sebelum data masuk ke transaksi_donasi.' : 'Semua pemeriksaan lolos! Data siap disimpan permanen.' }}
+                                {{ $pendingData['status'] === 'STOP' ? 'Pemeriksaan menemukan kendala yang harus diselesaikan sebelum data masuk ke daftar transaksi.' : 'Semua pemeriksaan lolos! Data siap disimpan permanen.' }}
                             </p>
                         </div>
                     </div>
