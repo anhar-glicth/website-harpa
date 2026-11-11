@@ -90,20 +90,21 @@
                                         <td class="py-4 text-primary-700 font-bold">Rp {{ number_format($don->amount, 0, ',', '.') }}</td>
                                         <td class="py-4">
                                             @if($don->payment_status === 'Success')
-                                                <span class="bg-emerald-50 text-emerald-700 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SUCCESS</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>SUCCESS</span>
                                             @elseif($don->payment_status === 'Pending')
-                                                <span class="bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PENDING</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>PENDING</span>
                                             @else
-                                                <span class="bg-rose-50 text-rose-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">FAILED</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>FAILED</span>
                                             @endif
                                         </td>
                                         <td class="py-4">
                                             @if($don->tracking_status === 'Disalurkan')
-                                                <span class="bg-emerald-50 text-emerald-700 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md border border-emerald-200">DISALURKAN</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>DISALURKAN</span>
                                             @elseif($don->tracking_status === 'Diproses')
-                                                <span class="bg-blue-50 text-blue-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border border-blue-100">DIPROSES</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-slate-200"><span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>DIPROSES</span>
                                             @else
-                                                <span class="bg-slate-100 text-slate-600 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md border border-slate-200/50">
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-700 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-slate-200">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400" aria-hidden="true"></span>
                                                     {{ strtoupper($don->tracking_status ?? 'MENUNGGU') }}
                                                 </span>
                                             @endif

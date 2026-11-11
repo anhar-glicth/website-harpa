@@ -155,39 +155,39 @@
 <!-- Real impact counters from site settings or database records -->
 <section class="max-w-7xl mx-auto px-3 sm:px-4 -mt-10 sm:-mt-20 relative z-20">
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
-        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200/80">
-            <div class="bg-emerald-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-emerald-700 text-lg sm:text-xl shrink-0 border border-emerald-200">
+        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200">
+            <div class="bg-slate-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-[#063f5c] text-lg sm:text-xl shrink-0 border border-slate-200">
                 <i class="fa-solid fa-users" aria-hidden="true"></i>
             </div>
             <div>
                 <h2 class="text-lg sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
                     {{ $statFirstValue }}
                 </h2>
-                <p class="text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-1.5 leading-tight">{{ $statFirstLabel }}</p>
+                <p class="text-slate-600 font-bold text-xs uppercase tracking-wider mt-1.5 leading-tight">{{ $statFirstLabel }}</p>
             </div>
         </div>
 
-        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200/80">
-            <div class="bg-primary-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-primary-700 text-lg sm:text-xl shrink-0 border border-primary-100">
+        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200">
+            <div class="bg-slate-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-[#063f5c] text-lg sm:text-xl shrink-0 border border-slate-200">
                 <i class="fa-solid fa-gift" aria-hidden="true"></i>
             </div>
             <div>
                 <h2 class="text-lg sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
                     {{ $statProjectsValue }}
                 </h2>
-                <p class="text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-1.5 leading-tight">Project Kebaikan</p>
+                <p class="text-slate-600 font-bold text-xs uppercase tracking-wider mt-1.5 leading-tight">Project Kebaikan</p>
             </div>
         </div>
 
-        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200/80">
-            <div class="bg-amber-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-amber-800 text-lg sm:text-xl shrink-0 border border-amber-200">
+        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-lg flex items-center gap-4 border border-slate-200">
+            <div class="bg-slate-50 w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-[#063f5c] text-lg sm:text-xl shrink-0 border border-slate-200">
                 <i class="fa-solid fa-hands-holding-child" aria-hidden="true"></i>
             </div>
             <div>
                 <h2 class="text-lg sm:text-2xl font-montserrat font-black tracking-tight text-slate-900 leading-none">
                     {{ $statVolunteersValue }}
                 </h2>
-                <p class="text-slate-600 font-bold text-[11px] uppercase tracking-wider mt-1.5 leading-tight">Perwakilan Relawan</p>
+                <p class="text-slate-600 font-bold text-xs uppercase tracking-wider mt-1.5 leading-tight">Perwakilan Relawan</p>
             </div>
         </div>
     </div>

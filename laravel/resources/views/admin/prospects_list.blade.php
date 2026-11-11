@@ -119,7 +119,7 @@
                             <option value="All">All</option>
                         </select>
 
-                        <button type="submit" class="min-h-[44px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                        <button type="submit" class="min-h-[44px] bg-white hover:border-[#063f5c] text-slate-800 hover:text-[#063f5c] border border-slate-300 font-bold px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                             <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Search
                         </button>
                         

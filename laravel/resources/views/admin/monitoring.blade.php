@@ -82,7 +82,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 <!-- Total Tasks -->
                 <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-blue-50 text-blue-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                    <div class="bg-slate-100 border border-slate-200 text-[#063f5c] w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
                         <i class="fa-solid fa-list-check" aria-hidden="true"></i>
                     </div>
                     <div>
@@ -93,7 +93,7 @@
 
                 <!-- Completed Tasks -->
                 <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-emerald-50 text-emerald-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                    <div class="bg-slate-100 border border-slate-200 text-emerald-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
                         <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
                     </div>
                     <div>
@@ -104,7 +104,7 @@
 
                 <!-- Present Days -->
                 <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-primary-50 text-[#063f5c] w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                    <div class="bg-slate-100 border border-slate-200 text-[#063f5c] w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
                         <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
                     </div>
                     <div>
@@ -115,12 +115,12 @@
 
                 <!-- Total Campaigns -->
                 <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div class="bg-amber-50 text-amber-700 w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
+                    <div class="bg-slate-100 border border-slate-200 text-[#063f5c] w-11 h-11 rounded-xl flex items-center justify-center text-lg shrink-0">
                         <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
                     </div>
                     <div>
                         <span class="text-xs font-bold text-slate-600 uppercase tracking-widest block leading-none">Proyek</span>
-                        <p class="text-lg font-montserrat font-black text-amber-800 mt-1">{{ $stats['totalCampaigns'] }}</p>
+                        <p class="text-lg font-montserrat font-black text-slate-900 mt-1">{{ $stats['totalCampaigns'] }}</p>
                     </div>
                 </div>
             </div>
@@ -180,7 +180,8 @@
                                                     <p class="text-xs text-slate-600 font-semibold mt-1 leading-relaxed">{{ $t->description }}</p>
                                                 @endif
                                             </div>
-                                            <span class="px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest text-center shrink-0 border {{ $t->status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200' }}">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider shrink-0 border border-slate-200 bg-slate-50 text-slate-800">
+                                                <span class="w-1.5 h-1.5 rounded-full {{ $t->status === 'completed' ? 'bg-emerald-700' : 'bg-[#f7ad1a]' }}" aria-hidden="true"></span>
                                                 {{ $t->status === 'completed' ? 'SELESAI' : 'PENDING' }}
                                             </span>
                                         </div>
@@ -255,13 +256,13 @@
                                     <tr class="border-b border-slate-100 last:border-0">
                                         <td class="py-4">
                                             @if($att->type === 'check_in')
-                                                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK IN</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-emerald-700" aria-hidden="true"></span>CHECK IN</span>
                                             @elseif($att->type === 'check_out')
-                                                <span class="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK OUT</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#063f5c]" aria-hidden="true"></span>CHECK OUT</span>
                                             @elseif($att->type === 'sakit')
-                                                <span class="bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SAKIT</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-[#f7ad1a]" aria-hidden="true"></span>SAKIT</span>
                                             @else
-                                                <span class="bg-red-50 text-red-700 border border-red-200 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">IZIN</span>
+                                                <span class="inline-flex items-center gap-1.5 bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"><span class="w-1.5 h-1.5 rounded-full bg-rose-700" aria-hidden="true"></span>IZIN</span>
                                             @endif
                                         </td>
                                         <td class="py-4 text-slate-800">{{ $att->created_at->format('d M Y, H:i') }}</td>

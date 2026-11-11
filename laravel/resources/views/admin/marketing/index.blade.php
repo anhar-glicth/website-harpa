@@ -38,8 +38,8 @@
                         <i class="fa-solid fa-chart-line"></i> Dashboard Analisa
                     </a>
                     <a href="{{ route('admin.marketing.export', request()->query()) }}" 
-                       class="px-4 py-2.5 min-h-[44px] bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-emerald-100 transition-colors inline-flex items-center gap-2">
-                        <i class="fa-solid fa-file-csv"></i> Unduh CSV
+                       class="px-4 py-2.5 min-h-[44px] bg-white text-slate-800 border border-slate-300 rounded-xl text-xs font-black uppercase tracking-wider hover:border-[#063f5c] hover:text-[#063f5c] transition-colors inline-flex items-center gap-2">
+                        <i class="fa-solid fa-file-csv" aria-hidden="true"></i> Unduh CSV
                     </a>
                 </div>
             </div>

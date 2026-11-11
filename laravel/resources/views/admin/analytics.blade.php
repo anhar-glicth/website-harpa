@@ -104,12 +104,13 @@
                                     @forelse($rfmSegmentCounts as $seg)
                                         <tr class="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
                                             <td class="py-3">
-                                                <span class="px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-wider 
-                                                    @if(in_array($seg->rfm_alltime, ['CHAMPION', 'Champion'])) bg-emerald-50 text-emerald-800
-                                                    @elseif(in_array($seg->rfm_alltime, ['LOYAL', 'Loyal'])) bg-blue-50 text-blue-800
-                                                    @elseif(in_array($seg->rfm_alltime, ['POTENTIAL', 'Potential'])) bg-amber-50 text-amber-800
-                                                    @elseif(in_array($seg->rfm_alltime, ['DORMANT', 'Dormant'])) bg-red-50 text-red-800
-                                                    @else bg-slate-100 text-slate-700 @endif">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase tracking-wider">
+                                                    <span class="w-1.5 h-1.5 rounded-full
+                                                        @if(in_array($seg->rfm_alltime, ['CHAMPION', 'Champion'])) bg-emerald-700
+                                                        @elseif(in_array($seg->rfm_alltime, ['LOYAL', 'Loyal'])) bg-[#063f5c]
+                                                        @elseif(in_array($seg->rfm_alltime, ['POTENTIAL', 'Potential'])) bg-[#f7ad1a]
+                                                        @elseif(in_array($seg->rfm_alltime, ['DORMANT', 'Dormant'])) bg-rose-700
+                                                        @else bg-slate-400 @endif" aria-hidden="true"></span>
                                                     {{ $seg->rfm_alltime }}
                                                 </span>
                                             </td>
@@ -157,12 +158,13 @@
                                         <td class="py-4 font-bold text-slate-800">{{ $donor->name }}</td>
                                         <td class="py-4 lowercase">{{ $donor->email }}</td>
                                         <td class="py-4">
-                                            <span class="px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-wider 
-                                                @if(in_array($donor->rfm_alltime, ['CHAMPION', 'Champion'])) bg-emerald-50 text-emerald-800
-                                                @elseif(in_array($donor->rfm_alltime, ['LOYAL', 'Loyal'])) bg-blue-50 text-blue-800
-                                                @elseif(in_array($donor->rfm_alltime, ['POTENTIAL', 'Potential'])) bg-amber-50 text-amber-800
-                                                @elseif(in_array($donor->rfm_alltime, ['DORMANT', 'Dormant'])) bg-red-50 text-red-800
-                                                @else bg-slate-100 text-slate-700 @endif">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-slate-200 bg-slate-50 text-slate-800 text-xs font-bold uppercase tracking-wider">
+                                                <span class="w-1.5 h-1.5 rounded-full
+                                                    @if(in_array($donor->rfm_alltime, ['CHAMPION', 'Champion'])) bg-emerald-700
+                                                    @elseif(in_array($donor->rfm_alltime, ['LOYAL', 'Loyal'])) bg-[#063f5c]
+                                                    @elseif(in_array($donor->rfm_alltime, ['POTENTIAL', 'Potential'])) bg-[#f7ad1a]
+                                                    @elseif(in_array($donor->rfm_alltime, ['DORMANT', 'Dormant'])) bg-rose-700
+                                                    @else bg-slate-400 @endif" aria-hidden="true"></span>
                                                 {{ $donor->rfm_alltime ?: 'NEW' }}
                                             </span>
                                         </td>
