@@ -19,7 +19,7 @@
                     <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
                 </div>
                 <a href="{{ route('campaigns.create') }}" 
-                   class="inline-flex items-center gap-2 px-5 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-all">
+                   class="inline-flex items-center gap-2 px-5 py-3 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-primary-500/20 transition-colors">
                     <i class="fa-solid fa-plus text-xs"></i> Tambah Kampanye Baru
                 </a>
             </div>
@@ -29,7 +29,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="pb-4">Kampanye</th>
                                 <th class="pb-4">Pembuat</th>
                                 <th class="pb-4">Target</th>
@@ -49,11 +49,11 @@
                                     <td class="py-4">Rp {{ number_format($c->current_amount, 0, ',', '.') }}</td>
                                     <td class="py-4 font-bold">
                                         @if($c->status === 'approved')
-                                            <span class="bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Approved</span>
+                                            <span class="bg-emerald-50 text-emerald-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Approved</span>
                                         @elseif($c->status === 'pending')
-                                            <span class="bg-amber-50 text-amber-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Pending</span>
+                                            <span class="bg-amber-50 text-amber-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Pending</span>
                                         @else
-                                            <span class="bg-rose-50 text-rose-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Rejected</span>
+                                            <span class="bg-rose-50 text-rose-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Rejected</span>
                                         @endif
                                     </td>
                                     <td class="py-4 text-center">
@@ -61,25 +61,25 @@
                                             <div class="flex items-center justify-center gap-2">
                                                 <form action="{{ route('admin.campaigns.approve', $c->id) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-2 rounded-lg">
+                                                    <button type="submit" class="bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider px-3 py-2 min-h-[44px] rounded-lg">
                                                         Setujui
                                                     </button>
                                                 </form>
                                                 <form action="{{ route('admin.campaigns.reject', $c->id) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-2 rounded-lg">
+                                                    <button type="submit" class="bg-rose-700 hover:bg-rose-800 text-white font-black text-xs uppercase tracking-wider px-3 py-2 min-h-[44px] rounded-lg">
                                                         Tolak
                                                     </button>
                                                 </form>
                                             </div>
                                         @else
-                                            <span class="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Sudah Diproses</span>
+                                            <span class="text-slate-600 text-xs font-bold uppercase tracking-wider">Sudah Diproses</span>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="py-8 text-center text-slate-400 font-bold uppercase tracking-wider">Belum ada kampanye.</td>
+                                    <td colspan="6" class="py-8 text-center text-slate-600 font-bold uppercase tracking-wider">Belum ada kampanye.</td>
                                 </tr>
                             @endforelse
                         </tbody>

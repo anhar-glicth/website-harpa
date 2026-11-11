@@ -49,12 +49,12 @@
 
             <!-- Flash Alerts -->
             @if(session('success'))
-                <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center justify-between text-xs font-bold shadow-sm">
+                <div role="status" class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center justify-between text-xs font-bold shadow-sm">
                     <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                        <i class="fa-solid fa-circle-check text-emerald-700 text-base"></i>
                         <span>{{ session('success') }}</span>
                     </div>
-                    <button @click="$el.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">
+                    <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-emerald-700 hover:bg-emerald-100">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -198,22 +198,27 @@
 
     </div>
 
-    <!-- MODAL ADD CHANNEL -->
+    <!-- Modal Add Channel -->
     <div x-show="showAddModal" 
          x-cloak 
-         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-        <div @click.away="showAddModal = false" class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+         @keydown.escape.window="showAddModal = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="add-channel-title"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showAddModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl overflow-hidden">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center text-lg shadow-sm">
                         <i class="fa-solid fa-plus"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-black text-slate-900 uppercase tracking-tight">Tambah Channel Donasi</h3>
-                        <p class="text-xs text-slate-400 font-medium">Buat channel donasi baru</p>
+                        <h2 id="add-channel-title" class="text-base font-black text-slate-900 uppercase tracking-tight">Tambah Channel Donasi</h2>
+                        <p class="text-xs text-slate-600 font-medium">Buat channel donasi baru</p>
                     </div>
                 </div>
-                <button @click="showAddModal = false" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl">
+                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah channel" class="w-11 h-11 inline-flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-xl">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -221,28 +226,28 @@
             <form method="POST" action="{{ route('admin.donor_channels.store') }}" class="space-y-4 text-xs font-semibold">
                 @csrf
                 <div>
-                    <label class="block text-slate-700 mb-1">Nama Channel Donasi <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" placeholder="e.g. WEB, Retail, Sekolah" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    <label for="add_channel_name" class="block text-slate-700 mb-1">Nama Channel Donasi <span class="text-rose-700">*</span></label>
+                    <input id="add_channel_name" type="text" name="name" placeholder="e.g. WEB, Retail, Sekolah" required class="w-full px-3.5 py-2.5 min-h-[44px] border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500">
                 </div>
 
                 <div>
-                    <label class="block text-slate-700 mb-1">Kode Channel</label>
-                    <input type="text" name="code" placeholder="e.g. WEB, RTL, SKL" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    <label for="add_channel_code" class="block text-slate-700 mb-1">Kode Channel</label>
+                    <input id="add_channel_code" type="text" name="code" placeholder="e.g. WEB, RTL, SKL" class="w-full px-3.5 py-2.5 min-h-[44px] border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500">
                 </div>
 
                 <div>
-                    <label class="block text-slate-700 mb-1">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none bg-white">
+                    <label for="add_channel_status" class="block text-slate-700 mb-1">Status <span class="text-rose-700">*</span></label>
+                    <select id="add_channel_status" name="status" required class="w-full px-3.5 py-2.5 min-h-[44px] border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500 bg-white">
                         <option value="Aktif">Aktif (y)</option>
                         <option value="Non-Aktif">Non-Aktif (n)</option>
                     </select>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                    <button type="button" @click="showAddModal = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-all">
+                    <button type="button" @click="showAddModal = false" class="px-5 py-2.5 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors">
                         Batal
                     </button>
-                    <button type="submit" class="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg shadow-primary-500/20 transition-all">
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold shadow-lg shadow-primary-500/20 transition-colors">
                         Simpan Channel
                     </button>
                 </div>
@@ -250,22 +255,27 @@
         </div>
     </div>
 
-    <!-- MODAL EDIT CHANNEL -->
+    <!-- Modal Edit Channel -->
     <div x-show="showEditModal" 
          x-cloak 
-         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-        <div @click.away="showEditModal = false" class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+         @keydown.escape.window="showEditModal = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="edit-channel-title"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showEditModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 shadow-2xl overflow-hidden">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg shadow-sm">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-black text-slate-900 uppercase tracking-tight">Edit Channel Donasi</h3>
-                        <p class="text-xs text-slate-400 font-medium">Perbarui informasi channel donasi</p>
+                        <h2 id="edit-channel-title" class="text-base font-black text-slate-900 uppercase tracking-tight">Edit Channel Donasi</h2>
+                        <p class="text-xs text-slate-600 font-medium">Perbarui informasi channel donasi</p>
                     </div>
                 </div>
-                <button @click="showEditModal = false" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl">
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit channel" class="w-11 h-11 inline-flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-xl">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -274,28 +284,28 @@
                 @csrf
                 @method('PUT')
                 <div>
-                    <label class="block text-slate-700 mb-1">Nama Channel Donasi <span class="text-rose-500">*</span></label>
-                    <input type="text" name="name" x-model="editData.name" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    <label for="edit_channel_name" class="block text-slate-700 mb-1">Nama Channel Donasi <span class="text-rose-700">*</span></label>
+                    <input id="edit_channel_name" type="text" name="name" x-model="editData.name" required class="w-full px-3.5 py-2.5 min-h-[44px] border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500">
                 </div>
 
                 <div>
-                    <label class="block text-slate-700 mb-1">Kode Channel</label>
-                    <input type="text" name="code" x-model="editData.code" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                    <label for="edit_channel_code" class="block text-slate-700 mb-1">Kode Channel</label>
+                    <input id="edit_channel_code" type="text" name="code" x-model="editData.code" class="w-full px-3.5 py-2.5 min-h-[44px] border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500">
                 </div>
 
                 <div>
-                    <label class="block text-slate-700 mb-1">Status <span class="text-rose-500">*</span></label>
-                    <select name="status" x-model="editData.status" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none bg-white">
+                    <label for="edit_channel_status" class="block text-slate-700 mb-1">Status <span class="text-rose-700">*</span></label>
+                    <select id="edit_channel_status" name="status" x-model="editData.status" required class="w-full px-3.5 py-2.5 min-h-[44px] border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary-500 bg-white">
                         <option value="Aktif">Aktif (y)</option>
                         <option value="Non-Aktif">Non-Aktif (n)</option>
                     </select>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                    <button type="button" @click="showEditModal = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-all">
+                    <button type="button" @click="showEditModal = false" class="px-5 py-2.5 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors">
                         Batal
                     </button>
-                    <button type="submit" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold shadow-lg shadow-amber-500/20 transition-all">
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] bg-amber-700 hover:bg-amber-800 text-white rounded-xl font-bold shadow-lg shadow-amber-500/20 transition-colors">
                         Update Channel
                     </button>
                 </div>
@@ -303,18 +313,23 @@
         </div>
     </div>
 
-    <!-- MODAL DELETE CHANNEL -->
+    <!-- Modal Delete Channel -->
     <div x-show="showDeleteModal" 
          x-cloak 
-         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-        <div @click.away="showDeleteModal = false" class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-6 shadow-2xl relative">
-            <div class="w-16 h-16 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+         @keydown.escape.window="showDeleteModal = false"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="delete-channel-title"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60" @click="showDeleteModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-6 shadow-2xl">
+            <div class="w-16 h-16 bg-rose-50 text-rose-700 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
                 <i class="fa-solid fa-trash-can"></i>
             </div>
             
             <div class="space-y-2">
-                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Hapus Channel Donasi?</h3>
-                <p class="text-xs text-slate-500 font-medium">
+                <h2 id="delete-channel-title" class="text-lg font-black text-slate-900 uppercase tracking-tight">Hapus Channel Donasi?</h2>
+                <p class="text-xs text-slate-600 font-medium">
                     Apakah Anda yakin ingin menghapus channel <span class="font-bold text-slate-900" x-text="selectedName"></span>? Tindakan ini tidak dapat dibatalkan.
                 </p>
             </div>
@@ -322,10 +337,10 @@
             <form method="POST" :action="'{{ url('admin/donor-channels') }}/' + selectedId + '/delete'" class="flex items-center justify-center gap-3 pt-2">
                 @csrf
                 @method('DELETE')
-                <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all">
+                <button type="button" @click="showDeleteModal = false" class="px-5 py-2.5 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors">
                     Batal
                 </button>
-                <button type="submit" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-100 transition-all">
+                <button type="submit" class="px-5 py-2.5 min-h-[44px] bg-rose-700 hover:bg-rose-800 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-100 transition-colors">
                     Ya, Hapus Channel
                 </button>
             </form>

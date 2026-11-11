@@ -23,7 +23,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse font-bold text-xs">
                         <thead>
-                            <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="pb-4">ID</th>
                                 <th class="pb-4">Donatur</th>
                                 <th class="pb-4">Kampanye</th>
@@ -41,34 +41,34 @@
                                     <td class="py-4 text-primary-600">Rp {{ number_format($d->amount, 0, ',', '.') }}</td>
                                     <td class="py-4">
                                         @if($d->proof_image)
-                                            <a href="{{ asset($d->proof_image) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200/50 flex items-center justify-center space-x-1.5 w-max">
+                                            <a href="{{ asset($d->proof_image) }}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 min-h-[44px] rounded-lg border border-slate-200 flex items-center justify-center space-x-1.5 w-max">
                                                 <i class="fa-solid fa-image"></i>
-                                                <span class="text-[9px] font-black">Lihat Foto</span>
+                                                <span class="text-xs font-black">Lihat Foto</span>
                                             </a>
                                         @else
-                                            <span class="text-slate-400 text-[9px] font-black">Belum Upload</span>
+                                            <span class="text-slate-600 text-xs font-black">Belum Upload</span>
                                         @endif
                                     </td>
                                      <td class="py-4 text-center">
                                         @if($d->payment_status === 'Pending')
                                             <form action="{{ route('admin.donations.verify', $d->id) }}" method="POST" class="flex items-center justify-center gap-2">
                                                 @csrf
-                                                <input type="text" name="admin_note" placeholder="Catatan..." class="bg-slate-50 border border-slate-100 focus:border-primary-500 rounded-lg px-3 py-1.5 text-[9px] font-bold text-slate-800 outline-none w-24">
-                                                <button type="submit" name="status" value="Success" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg" title="Verifikasi & Terima Donasi">
+                                                <input type="text" name="admin_note" aria-label="Catatan admin" placeholder="Catatan..." class="bg-slate-50 border border-slate-300 focus:border-primary-500 rounded-lg px-3 py-2 min-h-[44px] text-xs font-bold text-slate-800 w-28">
+                                                <button type="submit" name="status" value="Success" class="bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider px-3 py-2 min-h-[44px] rounded-lg" title="Verifikasi & Terima Donasi">
                                                     <i class="fa-solid fa-check mr-1"></i> Terima
                                                 </button>
-                                                <button type="submit" name="status" value="Failed" class="bg-rose-600 hover:bg-rose-700 text-white font-black text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-lg" title="Tolak Donasi">
+                                                <button type="submit" name="status" value="Failed" class="bg-rose-700 hover:bg-rose-800 text-white font-black text-xs uppercase tracking-wider px-3 py-2 min-h-[44px] rounded-lg" title="Tolak Donasi">
                                                     <i class="fa-solid fa-xmark mr-1"></i> Tolak
                                                 </button>
                                             </form>
                                         @else
                                             <div class="text-center space-y-1">
                                                 @if($d->payment_status === 'Success')
-                                                    <span class="bg-emerald-50 text-emerald-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">VERIFIED</span>
+                                                    <span class="bg-emerald-50 text-emerald-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">VERIFIED</span>
                                                 @elseif($d->payment_status === 'Failed')
-                                                    <span class="bg-rose-50 text-rose-700 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">REJECTED</span>
+                                                    <span class="bg-rose-50 text-rose-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">REJECTED</span>
                                                 @else
-                                                    <span class="bg-slate-50 text-slate-500 text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PENDING TRANSFER</span>
+                                                    <span class="bg-slate-100 text-slate-700 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PENDING TRANSFER</span>
                                                 @endif
                                             </div>
                                         @endif
@@ -76,7 +76,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="py-8 text-center text-slate-400 font-bold uppercase tracking-wider">Belum ada donasi terdaftar.</td>
+                                    <td colspan="6" class="py-8 text-center text-slate-600 font-bold uppercase tracking-wider">Belum ada donasi terdaftar.</td>
                                 </tr>
                             @endforelse
                         </tbody>

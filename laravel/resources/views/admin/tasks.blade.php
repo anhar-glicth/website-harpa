@@ -5,24 +5,24 @@
     
     <!-- Alerts -->
     @if(session('success'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-250 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
+        <div role="status" class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                <i class="fa-solid fa-circle-check text-emerald-700 text-base"></i>
                 <span>{{ session('success') }}</span>
             </div>
-            <button @click="$el.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">
+            <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-emerald-700 hover:bg-emerald-100">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="mb-6 p-4 bg-rose-50 border border-rose-250 text-rose-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
+        <div role="alert" class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl font-semibold text-xs flex items-center justify-between shadow-xs">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-triangle-exclamation text-rose-600 text-base"></i>
+                <i class="fa-solid fa-triangle-exclamation text-rose-700 text-base"></i>
                 <span>{{ session('error') }}</span>
             </div>
-            <button @click="$el.parentElement.remove()" class="text-rose-500 hover:text-rose-700">
+            <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-rose-700 hover:bg-rose-100">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -48,7 +48,7 @@
                 </div>
 
                 {{-- Export Button (Excel/CSV) --}}
-                <a href="{{ route('admin.tasks.export', request()->all()) }}" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all">
+                <a href="{{ route('admin.tasks.export', request()->all()) }}" class="px-5 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-sm transition-colors">
                     <i class="fa-solid fa-file-excel text-sm"></i> Export Excel
                 </a>
             </div>

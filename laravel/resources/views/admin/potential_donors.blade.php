@@ -297,14 +297,15 @@
                                                 <i class="fa-brands fa-whatsapp text-sm"></i>
                                             </a>
                                             @else
-                                            <span class="inline-flex items-center justify-center w-7 h-7 bg-slate-200 text-slate-400 rounded-full cursor-not-allowed" title="Nomor WhatsApp tidak tersedia">
+                                            <span class="inline-flex items-center justify-center w-9 h-9 bg-slate-200 text-slate-600 rounded-full cursor-not-allowed" title="Nomor WhatsApp tidak tersedia">
                                                 <i class="fa-brands fa-whatsapp text-sm"></i>
                                             </span>
                                             @endif
 
                                             {{-- Edit Icon --}}
                                             <button type="button" @click="openEdit({{ json_encode($pd) }})" 
-                                                    class="inline-flex items-center justify-center w-7 h-7 bg-sky-50 hover:bg-sky-100 text-sky-600 border border-slate-700 rounded-lg shadow-sm hover:scale-110 transition-transform" 
+                                                    aria-label="Edit Data Calon Donatur"
+                                                    class="inline-flex items-center justify-center w-9 h-9 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-slate-300 rounded-lg shadow-sm transition-colors" 
                                                     title="Edit Data Calon Donatur">
                                                 <i class="fa-solid fa-pen-to-square text-xs"></i>
                                             </button>
@@ -312,24 +313,24 @@
                                     </td>
 
                                     <td class="py-3.5 px-4 font-bold text-slate-800">{{ Auth::user()->name }}</td>
-                                    <td class="py-3.5 px-4 text-center font-bold text-slate-400">-</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">-</td>
-                                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">{{ $lastResp ? $lastResp->created_at->format('Y-m-d H:i:s') : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-center font-bold text-slate-600">-</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">-</td>
+                                    <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $lastResp ? $lastResp->created_at->format('Y-m-d H:i:s') : '-' }}</td>
                                     <td class="py-3.5 px-4 font-bold text-slate-600">{{ $lastResp ? 'WhatsApp' : '-' }}</td>
                                     <td class="py-3.5 px-4">
-                                        <span class="px-2.5 py-1 {{ $lastResp ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }} rounded-full text-[10px] font-bold">
+                                        <span class="px-2.5 py-1 {{ $lastResp ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800' }} rounded-full text-xs font-bold">
                                             {{ $lastResp ? $lastResp->status : 'Belum Diprospek' }}
                                         </span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-right font-black text-slate-400">-</td>
+                                    <td class="py-3.5 px-4 text-right font-black text-slate-600">-</td>
                                     <td class="py-3.5 px-4 text-slate-700">-</td>
                                     <td class="py-3.5 px-4 text-slate-800">-</td>
                                     <td class="py-3.5 px-4 text-slate-900 font-medium">-</td>
-                                    <td class="py-3.5 px-4 text-slate-500 italic max-w-xs truncate">{{ $lastResp ? $lastResp->response : '-' }}</td>
+                                    <td class="py-3.5 px-4 text-slate-600 italic max-w-xs truncate">{{ $lastResp ? $lastResp->response : '-' }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="22" class="py-12 text-center text-slate-400 font-bold">Belum ada data calon donatur. Silakan klik + Add untuk menambah calon donatur baru.</td>
+                                    <td colspan="22" class="py-12 text-center text-slate-600 font-bold">Belum ada data calon donatur. Silakan klik + Add untuk menambah calon donatur baru.</td>
                                 </tr>
                             @endforelse
                         </tbody>
