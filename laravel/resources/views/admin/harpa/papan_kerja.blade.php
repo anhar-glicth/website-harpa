@@ -52,20 +52,21 @@
 
         @if(!empty($pendingData))
             <!-- STATUS BANNER GERBANG BERHENTI -->
-            <div class="p-6 sm:p-8 rounded-3xl border {{ $pendingData['status'] === 'STOP' ? 'bg-rose-50 border-rose-300' : 'bg-emerald-50 border-emerald-300' }} shadow-sm">
+            <div class="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 border-l-4 {{ $pendingData['status'] === 'STOP' ? 'border-l-rose-700' : 'border-l-emerald-700' }} shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-2xl {{ $pendingData['status'] === 'STOP' ? 'bg-rose-700' : 'bg-emerald-700' }} text-white flex items-center justify-center text-xl shrink-0">
+                        <div class="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 {{ $pendingData['status'] === 'STOP' ? 'text-rose-700' : 'text-emerald-700' }} flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid {{ $pendingData['status'] === 'STOP' ? 'fa-hand' : 'fa-circle-check' }}" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <span class="inline-block px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest {{ $pendingData['status'] === 'STOP' ? 'bg-rose-100 text-rose-900' : 'bg-emerald-100 text-emerald-900' }}">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-slate-200 bg-slate-50 text-xs font-black uppercase tracking-widest text-slate-800">
+                                <span class="w-2 h-2 rounded-full {{ $pendingData['status'] === 'STOP' ? 'bg-rose-700' : 'bg-emerald-700' }}" aria-hidden="true"></span>
                                 STATUS: {{ $pendingData['status'] }}
                             </span>
-                            <h2 class="text-base sm:text-lg font-montserrat font-black text-slate-900 mt-1">
+                            <h2 class="text-base sm:text-lg font-montserrat font-black text-slate-900 mt-1.5">
                                 Tarikan {{ $pendingData['sumber'] }} Periode {{ $pendingData['periode'] }} ({{ number_format($pendingData['total_rows']) }} Baris)
                             </h2>
-                            <p class="text-xs text-slate-700 font-medium mt-0.5">
+                            <p class="text-xs text-slate-600 font-medium mt-0.5">
                                 {{ $pendingData['status'] === 'STOP' ? 'Pemeriksaan menemukan kendala yang harus diselesaikan sebelum data masuk ke transaksi_donasi.' : 'Semua pemeriksaan lolos! Data siap disimpan permanen.' }}
                             </p>
                         </div>
@@ -79,7 +80,8 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Nomor Belum Terdaftar</span>
-                        <span class="px-2 py-0.5 rounded-md text-xs font-black {{ count($pendingData['unregistered_numbers'] ?? []) > 0 ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900' }}">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-black text-slate-800">
+                            <span class="w-1.5 h-1.5 rounded-full {{ count($pendingData['unregistered_numbers'] ?? []) > 0 ? 'bg-[#f7ad1a]' : 'bg-emerald-700' }}" aria-hidden="true"></span>
                             {{ count($pendingData['unregistered_numbers'] ?? []) }}
                         </span>
                     </div>
@@ -90,7 +92,8 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Campaign Belum Dipetakan</span>
-                        <span class="px-2 py-0.5 rounded-md text-xs font-black {{ count($pendingData['unmapped_campaigns'] ?? []) > 0 ? 'bg-rose-100 text-rose-900' : 'bg-emerald-100 text-emerald-900' }}">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-black text-slate-800">
+                            <span class="w-1.5 h-1.5 rounded-full {{ count($pendingData['unmapped_campaigns'] ?? []) > 0 ? 'bg-rose-700' : 'bg-emerald-700' }}" aria-hidden="true"></span>
                             {{ count($pendingData['unmapped_campaigns'] ?? []) }}
                         </span>
                     </div>
@@ -101,7 +104,8 @@
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Gagal Dibaca</span>
-                        <span class="px-2 py-0.5 rounded-md text-xs font-black {{ count($pendingData['date_errors'] ?? []) > 0 ? 'bg-rose-100 text-rose-900' : 'bg-emerald-100 text-emerald-900' }}">
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-black text-slate-800">
+                            <span class="w-1.5 h-1.5 rounded-full {{ count($pendingData['date_errors'] ?? []) > 0 ? 'bg-rose-700' : 'bg-emerald-700' }}" aria-hidden="true"></span>
                             {{ count($pendingData['date_errors'] ?? []) }}
                         </span>
                     </div>

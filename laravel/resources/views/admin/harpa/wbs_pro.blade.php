@@ -211,16 +211,16 @@
                                 <tr>
                                     <td class="py-1.5 px-3 font-mono font-bold text-primary-700">no_hp</td>
                                     <td class="py-1.5 px-3 text-slate-600 font-mono text-xs">phone, nomor, whatsapp</td>
-                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                    <td class="py-1.5 px-3 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                     <td class="py-1.5 px-3 text-slate-700 text-xs">Format 628 atau 08 (11–14 digit)</td>
                                     <td class="py-1.5 px-3 font-mono font-bold text-slate-800">081234567890</td>
                                 </tr>
                                 <tr>
                                     <td class="py-1.5 px-3 font-mono font-bold text-primary-700">status</td>
                                     <td class="py-1.5 px-3 text-slate-600 font-mono text-xs">wa_status, status_wa</td>
-                                    <td class="py-1.5 px-3 text-center"><span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Wajib</span></td>
+                                    <td class="py-1.5 px-3 text-center"><span class="text-xs font-bold text-rose-700">Wajib</span></td>
                                     <td class="py-1.5 px-3 text-slate-700 text-xs">Kata kunci "mati", "invalid", "tidak aktif", "bukan wa", atau "aktif"</td>
-                                    <td class="py-1.5 px-3"><span class="px-1.5 py-0.5 rounded text-[11px] font-black bg-rose-100 text-rose-800">Mati / Invalid</span></td>
+                                    <td class="py-1.5 px-3"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border border-slate-200 bg-slate-50 text-xs font-bold text-rose-700">Mati / Invalid</span></td>
                                 </tr>
                             </tbody>
                         </table>
