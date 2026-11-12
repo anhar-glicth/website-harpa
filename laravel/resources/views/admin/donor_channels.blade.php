@@ -144,8 +144,8 @@
                                     <td class="py-4 font-bold text-slate-900">
                                         {{ $item->name }}
                                     </td>
-                                    <td class="py-4 font-mono text-xs text-slate-600">
-                                        <span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs font-bold uppercase">
+                                    <td class="py-4 font-mono text-xs text-slate-700 whitespace-nowrap">
+                                        <span class="inline-block whitespace-nowrap text-slate-700 text-xs font-bold uppercase">
                                             {{ $item->code ?? '-' }}
                                         </span>
                                     </td>

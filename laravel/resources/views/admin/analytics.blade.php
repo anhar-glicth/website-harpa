@@ -168,8 +168,8 @@
                                         </td>
                                         <td class="py-4 text-right font-bold text-slate-900">{{ $donor->donations_count }}x</td>
                                         <td class="py-4 text-right font-black text-slate-900">Rp {{ number_format($donor->donations_sum_amount ?: 0, 0, ',', '.') }}</td>
-                                        <td class="py-4 text-right">
-                                            <span class="bg-primary-50 text-primary-700 font-bold px-2.5 py-1 rounded-md text-xs">
+                                        <td class="py-4 text-right whitespace-nowrap">
+                                            <span class="inline-block whitespace-nowrap text-primary-700 font-bold text-xs tabular-nums">
                                                 {{ $totalGlobalDonations > 0 ? number_format(($donor->donations_sum_amount / $totalGlobalDonations) * 100, 2) : '0' }}%
                                             </span>
                                         </td>
