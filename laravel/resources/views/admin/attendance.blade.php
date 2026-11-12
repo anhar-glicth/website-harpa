@@ -22,7 +22,7 @@
                         <h2 class="font-montserrat font-black text-slate-900 uppercase tracking-tight italic text-sm">
                             Absensi <span class="text-primary-600">GPS Saya Hari Ini</span>
                         </h2>
-                        <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">{{ now()->translatedFormat('l, d F Y') }}</p>
+                        <p class="text-xs text-slate-600 font-bold uppercase tracking-widest mt-0.5">{{ now(\App\Models\Attendance::WITA_TIMEZONE)->locale('id')->translatedFormat('l, d F Y') }}</p>
                     </div>
                     <button type="button" @click="showAbsenForm = !showAbsenForm" :aria-expanded="showAbsenForm ? 'true' : 'false'"
                         class="min-h-[44px] px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 shadow-sm transition-colors">
@@ -42,14 +42,14 @@
                         <i class="fa-solid fa-right-to-bracket text-sm {{ $hasCheckIn ? 'text-emerald-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                         <div>
                             <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCheckIn ? 'text-emerald-800' : 'text-slate-600' }}">Check In</p>
-                            <p class="text-xs font-bold text-slate-600">{{ $hasCheckIn ? $todayAttendance->where('type','check_in')->first()->created_at->format('H:i') . ' WITA' : '-' }}</p>
+                            <p class="text-xs font-bold text-slate-600">{{ $hasCheckIn ? $todayAttendance->where('type','check_in')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasCheckOut ? 'bg-blue-50 border-blue-300' : 'bg-slate-50 border-slate-200' }}">
                         <i class="fa-solid fa-right-from-bracket text-sm {{ $hasCheckOut ? 'text-blue-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                         <div>
                             <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCheckOut ? 'text-blue-800' : 'text-slate-600' }}">Check Out</p>
-                            <p class="text-xs font-bold text-slate-600">{{ $hasCheckOut ? $todayAttendance->where('type','check_out')->first()->created_at->format('H:i') . ' WITA' : '-' }}</p>
+                            <p class="text-xs font-bold text-slate-600">{{ $hasCheckOut ? $todayAttendance->where('type','check_out')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasSakit ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200' }}">
@@ -195,7 +195,7 @@
                                                 <span class="bg-red-50 text-red-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">IZIN</span>
                                             @endif
                                         </td>
-                                        <td class="py-4 text-slate-800 font-mono">{{ $att->created_at->format('d M Y, H:i') }} <span class="text-xs font-sans font-bold text-primary-700">WITA</span></td>
+                                        <td class="py-4 text-slate-800 font-mono">{{ $att->formatWita('d M Y, H:i') }} <span class="text-xs font-sans font-bold text-primary-700">WITA</span></td>
                                         <td class="py-4 text-slate-700">{{ $att->location ?? '-' }}</td>
                                         <td class="py-4 text-slate-600 font-mono text-xs">
                                             @if($att->latitude && $att->longitude)

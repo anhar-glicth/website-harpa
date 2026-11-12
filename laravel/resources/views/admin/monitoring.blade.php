@@ -263,7 +263,7 @@
                                                 <span class="text-xs font-bold uppercase tracking-wider text-rose-700">IZIN</span>
                                             @endif
                                         </td>
-                                        <td class="py-4 text-slate-800">{{ $att->created_at->format('d M Y, H:i') }}</td>
+                                        <td class="py-4 text-slate-800">{{ $att->formatWita('d M Y, H:i') }} <span class="text-xs font-bold text-primary-700">WITA</span></td>
                                         <td class="py-4 text-slate-700">{{ $att->location ?? '-' }}</td>
                                         <td class="py-4 text-slate-600 font-mono text-xs">
                                             @if($att->latitude && $att->longitude)

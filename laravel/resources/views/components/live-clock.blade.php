@@ -49,9 +49,10 @@
 (function() {
     const timeEl = document.getElementById("{{ $id }}_time");
     const dateEl = document.getElementById("{{ $id }}_date");
+    const serverOffsetMs = {{ now()->getTimestampMs() }} - Date.now();
 
     function updateClock() {
-        const now = new Date();
+        const now = new Date(Date.now() + serverOffsetMs);
 
         // Format waktu WITA (Asia/Makassar)
         if (timeEl) {

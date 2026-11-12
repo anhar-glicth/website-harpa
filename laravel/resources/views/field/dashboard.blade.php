@@ -293,7 +293,7 @@
                                     <span class="uppercase tracking-wider">
                                         @if($att->type === 'check_in') Check In @elseif($att->type === 'check_out') Check Out @else {{ $att->type }} @endif
                                     </span>
-                                    <span class="text-xs text-slate-600 font-bold uppercase tracking-wider">{{ $att->created_at->format('H:i') }} WITA</span>
+                                    <span class="text-xs text-slate-600 font-bold uppercase tracking-wider">{{ $att->formatWita('H:i') }} WITA</span>
                                 </div>
                             @empty
                                 <p class="text-xs text-slate-600 font-bold uppercase tracking-wider text-center py-2">Anda belum melakukan absen hari ini.</p>

@@ -22,7 +22,7 @@ class FieldController extends Controller
         
         // 1. Attendance status
         $todayAttendance = Attendance::where('user_id', $userId)
-            ->whereDate('created_at', now()->toDateString())
+            ->forTodayWita()
             ->get();
 
         // 2. Todos

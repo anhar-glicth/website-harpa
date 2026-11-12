@@ -35,7 +35,7 @@ class DonorDashboardController extends Controller
         // Absensi hanya untuk staff internal (bukan donatur)
         if (!Auth::user()->isUser()) {
             $todayAttendance = Attendance::where('user_id', $userId)
-                ->whereDate('created_at', now()->toDateString())
+                ->forTodayWita()
                 ->get();
         }
 

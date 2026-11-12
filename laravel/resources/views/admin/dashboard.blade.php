@@ -48,14 +48,14 @@
                             <i class="fa-solid fa-right-to-bracket text-xs {{ $hasCI ? 'text-emerald-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                             <div>
                                 <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCI ? 'text-emerald-800' : 'text-slate-600' }}">Check In</p>
-                                <p class="text-xs font-bold text-slate-600">{{ $hasCI ? $todayAttendance->where('type','check_in')->first()->created_at->format('H:i') . ' WITA' : '-' }}</p>
+                                <p class="text-xs font-bold text-slate-600">{{ $hasCI ? $todayAttendance->where('type','check_in')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasCO ? 'bg-blue-50 border-blue-300' : 'bg-slate-50 border-slate-200' }}">
                             <i class="fa-solid fa-right-from-bracket text-xs {{ $hasCO ? 'text-blue-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                             <div>
                                 <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCO ? 'text-blue-800' : 'text-slate-600' }}">Check Out</p>
-                                <p class="text-xs font-bold text-slate-600">{{ $hasCO ? $todayAttendance->where('type','check_out')->first()->created_at->format('H:i') . ' WITA' : '-' }}</p>
+                                <p class="text-xs font-bold text-slate-600">{{ $hasCO ? $todayAttendance->where('type','check_out')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasSK ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200' }}">

@@ -68,7 +68,7 @@ class AdminController extends Controller
         $totalTasks = \App\Models\TodoList::count();
         $completedTasks = \App\Models\TodoList::where('status', 'completed')->count();
         $presentToday = \App\Models\Attendance::where('type', 'check_in')
-            ->whereDate('created_at', today())
+            ->forTodayWita()
             ->distinct('user_id')
             ->count('user_id');
 
@@ -95,7 +95,7 @@ class AdminController extends Controller
         // 5. Personal Attendance & Todos for logged in user
         $userId = auth()->id();
         $todayAttendance = \App\Models\Attendance::where('user_id', $userId)
-            ->whereDate('created_at', now()->toDateString())
+            ->forTodayWita()
             ->get();
         $todos = \App\Models\TodoList::where('user_id', $userId)->latest()->get();
 
@@ -1085,7 +1085,7 @@ class AdminController extends Controller
             ->orderBy('name')
             ->get();
         $todayAttendance = \App\Models\Attendance::where('user_id', auth()->id())
-            ->whereDate('created_at', now()->toDateString())
+            ->forTodayWita()
             ->get();
 
         return view('admin.attendance', compact('attendances', 'workers', 'todayAttendance'));
@@ -1116,7 +1116,7 @@ class AdminController extends Controller
         }
 
         $attendances = $query->latest()->get();
-        $filename = "log_absensi_pegawai_" . date('Y-m-d_H-i-s') . ".csv";
+        $filename = "log_absensi_pegawai_" . now(\App\Models\Attendance::WITA_TIMEZONE)->format('Y-m-d_H-i-s') . ".csv";
 
         $headers = [
             "Content-type"        => "text/csv",
@@ -1137,7 +1137,7 @@ class AdminController extends Controller
                     $att->user->name ?? 'Unknown User',
                     $att->user->email ?? '-',
                     strtoupper(str_replace('_', ' ', $att->type)),
-                    $att->created_at->format('Y-m-d H:i:s') . ' WITA',
+                    $att->formatWita('Y-m-d H:i:s') . ' WITA',
                     $att->location ?? '-',
                     $coords,
                     $att->attachment ? url($att->attachment) : '-',
