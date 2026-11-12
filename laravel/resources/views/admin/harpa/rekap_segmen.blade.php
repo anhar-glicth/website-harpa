@@ -89,8 +89,8 @@
                     <h2 class="text-sm font-montserrat font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
                         <span>Hasil Waterfall Keputusan</span>
                         @if($filterSegmen)
-                            <span class="px-2 py-0.5 rounded-lg text-xs font-bold bg-primary-100 text-primary-800">
-                                Filter: {{ $filterSegmen }}
+                            <span class="text-xs font-bold text-[#063f5c]">
+                                (Filter: {{ $filterSegmen }})
                             </span>
                         @endif
                     </h2>

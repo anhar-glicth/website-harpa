@@ -156,7 +156,7 @@
                                     </td>
                                     <td class="py-4">
                                         @if($item->programGroup)
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary-50 text-primary-700 text-xs font-black">
+                                            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#063f5c]">
                                                 <i class="fa-solid fa-sitemap text-xs" aria-hidden="true"></i>
                                                 {{ $item->programGroup->name }}
                                             </span>

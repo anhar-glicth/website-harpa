@@ -200,7 +200,7 @@
                             </h2>
                             <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">Perbandingan harian biaya iklan yang dikeluarkan dengan donasi terkumpul</p>
                         </div>
-                        <span class="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-black uppercase">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-600">
                             Harian
                         </span>
                     </div>

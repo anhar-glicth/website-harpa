@@ -91,9 +91,8 @@
             <!-- HEADER PANEL STAFF -->
             <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden">
                 <div class="space-y-1.5 relative z-10">
-                    <div class="flex items-center gap-3">
+                    <div>
                         <h1 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 tracking-tight leading-none uppercase italic">Panel <span class="text-primary-600">Staff Lapangan</span></h1>
-                        <span class="bg-primary-600 text-white text-xs font-black uppercase px-3 py-1 rounded-full shadow-sm">Live</span>
                     </div>
                     <p class="text-xs text-slate-600 font-bold uppercase tracking-widest">Halo, {{ Auth::user()->name }} | Manajemen Aktivitas Lapangan</p>
                 </div>

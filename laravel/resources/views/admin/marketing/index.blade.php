@@ -143,10 +143,9 @@
                             @forelse($ads as $ad)
                             <tr class="hover:bg-slate-50/70 transition-colors">
                                 <!-- Tanggal & Platform -->
-                                <td class="py-3.5 px-4">
-                                    <div class="font-bold text-slate-800 whitespace-nowrap">{{ $ad->date ? $ad->date->format('d M Y') : '-' }}</div>
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black mt-1
-                                        {{ $ad->platform === 'Meta Ads' ? 'bg-blue-50 text-blue-800 border border-blue-200' : ($ad->platform === 'Google Ads' ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-slate-100 text-slate-700') }}">
+                                <td class="py-3.5 px-4 whitespace-nowrap">
+                                    <div class="font-bold text-slate-800">{{ $ad->date ? $ad->date->format('d M Y') : '-' }}</div>
+                                    <span class="inline-block text-xs font-bold mt-0.5 {{ $ad->platform === 'Meta Ads' ? 'text-[#063f5c]' : ($ad->platform === 'Google Ads' ? 'text-rose-700' : 'text-slate-600') }}">
                                         {{ $ad->platform }}
                                     </span>
                                 </td>

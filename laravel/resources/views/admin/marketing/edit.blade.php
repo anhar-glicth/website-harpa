@@ -100,11 +100,11 @@
                         <h2 class="text-lg font-black text-white">Estimasi Performa &amp; Rekomendasi Otomatis</h2>
                     </div>
                     <div>
-                        <span class="px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-lg"
+                        <span class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-sm"
                               :class="{
-                                  'bg-emerald-500 text-white': calculatedDecision === 'SCALE',
-                                  'bg-amber-500 text-white': calculatedDecision === 'MAINTAIN',
-                                  'bg-rose-500 text-white': calculatedDecision === 'STOP'
+                                  'bg-emerald-700 text-white': calculatedDecision === 'SCALE',
+                                  'bg-[#f7ad1a] text-slate-950': calculatedDecision === 'MAINTAIN',
+                                  'bg-rose-700 text-white': calculatedDecision === 'STOP'
                               }">
                             <i class="fa-solid" :class="{
                                 'fa-arrow-trend-up': calculatedDecision === 'SCALE',
