@@ -335,8 +335,8 @@
                                         <td class="py-4">{{ \Carbon\Carbon::parse($dist->distribution_date)->format('d M Y') }}</td>
                                         <td class="py-4">{{ $dist->city ?: '-' }}, {{ $dist->province ?: '-' }}</td>
                                         <td class="py-4 text-right font-black text-slate-900">Rp {{ number_format($dist->amount, 0, ',', '.') }}</td>
-                                        <td class="py-4 text-right">
-                                            <span class="bg-emerald-50 text-emerald-800 font-black px-2.5 py-1 rounded-md text-xs uppercase tracking-wider">
+                                        <td class="py-4 text-right whitespace-nowrap">
+                                            <span class="inline-block whitespace-nowrap font-bold text-xs uppercase tracking-wider text-emerald-700">
                                                 Success
                                             </span>
                                         </td>

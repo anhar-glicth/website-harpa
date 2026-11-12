@@ -125,9 +125,9 @@
                                         <div class="space-y-1">
                                             <p class="text-xs font-black text-slate-600 uppercase tracking-widest">Status</p>
                                             @if($c->status === 'approved')
-                                                <span class="text-xs font-black uppercase px-2.5 py-1 rounded bg-emerald-50 text-emerald-800 tracking-wider">AKTIF</span>
+                                                <span class="inline-block whitespace-nowrap text-xs font-black uppercase text-emerald-700 tracking-wider">AKTIF</span>
                                             @else
-                                                <span class="text-xs font-black uppercase px-2.5 py-1 rounded bg-amber-50 text-amber-800 tracking-wider">PROSES VERIFIKASI</span>
+                                                <span class="inline-block whitespace-nowrap text-xs font-black uppercase text-amber-800 tracking-wider">PROSES VERIFIKASI</span>
                                             @endif
                                         </div>
                                         <div class="text-right">

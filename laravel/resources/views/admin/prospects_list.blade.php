@@ -305,11 +305,11 @@
                                     <td class="py-3.5 px-4 font-bold text-sky-700">-</td>
                                     <td class="py-3.5 px-4 text-slate-800">-</td>
                                     <td class="py-3.5 px-4 text-slate-900 font-medium">-</td>
-                                    <td class="py-3.5 px-4">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
                                         @php
                                             $lastResp = $psp->responses->last();
                                         @endphp
-                                        <span class="px-2.5 py-1 {{ $lastResp ? 'bg-emerald-50 text-emerald-800' : 'bg-slate-100 text-slate-700' }} rounded-full text-xs font-bold">
+                                        <span class="inline-block whitespace-nowrap {{ $lastResp ? 'text-emerald-700' : 'text-slate-600' }} text-xs font-bold">
                                             {{ $lastResp ? $lastResp->status : 'Belum Diprospek' }}
                                         </span>
                                     </td>

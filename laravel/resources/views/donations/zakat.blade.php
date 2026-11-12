@@ -150,11 +150,11 @@
                                         <div class="text-right space-y-1.5">
                                             <span class="text-xs font-black text-slate-800 block leading-none">Rp {{ number_format($z->amount, 0, ',', '.') }}</span>
                                             @if($z->payment_status === 'Success')
-                                                <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">SUCCESS</span>
+                                                <span class="inline-block whitespace-nowrap text-emerald-700 text-xs font-black uppercase tracking-wider">SUCCESS</span>
                                             @elseif($z->payment_status === 'Pending')
-                                                <span class="bg-amber-50 text-amber-800 border border-amber-200 text-xs font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">PENDING</span>
+                                                <span class="inline-block whitespace-nowrap text-amber-800 text-xs font-black uppercase tracking-wider">PENDING</span>
                                             @else
-                                                <span class="bg-rose-50 text-rose-700 border border-rose-200 text-xs font-black uppercase tracking-widest px-2.5 py-0.5 rounded-md">FAILED</span>
+                                                <span class="inline-block whitespace-nowrap text-rose-700 text-xs font-black uppercase tracking-wider">FAILED</span>
                                             @endif
                                         </div>
                                     </div>

@@ -767,7 +767,7 @@
                                     <label for="donor_sig_size" class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                                         <i class="fa-solid fa-signature text-sky-700" aria-hidden="true"></i> Ukuran TTD
                                     </label>
-                                    <span class="px-2 py-0.5 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-black" x-text="sigSize + ' px'"></span>
+                                    <span class="text-xs font-black text-[#063f5c] tabular-nums" x-text="sigSize + ' px'"></span>
                                 </div>
                                 <input id="donor_sig_size" type="range" min="50" max="115" step="5" x-model="sigSize" class="w-full accent-sky-600 cursor-pointer h-2 bg-slate-100 rounded-lg">
                                 <div class="flex justify-between text-xs text-slate-600 font-bold">

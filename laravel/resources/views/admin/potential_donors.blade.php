@@ -319,8 +319,8 @@
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-600">-</td>
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $lastResp ? $lastResp->created_at->format('Y-m-d H:i:s') : '-' }}</td>
                                     <td class="py-3.5 px-4 font-bold text-slate-600">{{ $lastResp ? 'WhatsApp' : '-' }}</td>
-                                    <td class="py-3.5 px-4">
-                                        <span class="px-2.5 py-1 {{ $lastResp ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800' }} rounded-full text-xs font-bold">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        <span class="inline-block whitespace-nowrap {{ $lastResp ? 'text-emerald-700' : 'text-amber-800' }} text-xs font-bold">
                                             {{ $lastResp ? $lastResp->status : 'Belum Diprospek' }}
                                         </span>
                                     </td>

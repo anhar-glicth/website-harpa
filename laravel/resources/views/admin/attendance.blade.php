@@ -38,32 +38,32 @@
                         $hasSakit    = $todayAttendance->where('type', 'sakit')->isNotEmpty();
                         $hasIzin     = $todayAttendance->where('type', 'izin')->isNotEmpty();
                     @endphp
-                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasCheckIn ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200' }}">
+                    <div class="flex items-center gap-2.5 p-3 rounded-2xl border {{ $hasCheckIn ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
                         <i class="fa-solid fa-right-to-bracket text-sm {{ $hasCheckIn ? 'text-emerald-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                         <div>
-                            <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCheckIn ? 'text-emerald-800' : 'text-slate-600' }}">Check In</p>
-                            <p class="text-xs font-bold text-slate-600">{{ $hasCheckIn ? $todayAttendance->where('type','check_in')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
+                            <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCheckIn ? 'text-emerald-700' : 'text-slate-600' }}">Check In</p>
+                            <p class="text-xs font-bold text-slate-800">{{ $hasCheckIn ? $todayAttendance->where('type','check_in')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasCheckOut ? 'bg-blue-50 border-blue-300' : 'bg-slate-50 border-slate-200' }}">
-                        <i class="fa-solid fa-right-from-bracket text-sm {{ $hasCheckOut ? 'text-blue-700' : 'text-slate-500' }}" aria-hidden="true"></i>
+                    <div class="flex items-center gap-2.5 p-3 rounded-2xl border {{ $hasCheckOut ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
+                        <i class="fa-solid fa-right-from-bracket text-sm {{ $hasCheckOut ? 'text-[#063f5c]' : 'text-slate-500' }}" aria-hidden="true"></i>
                         <div>
-                            <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCheckOut ? 'text-blue-800' : 'text-slate-600' }}">Check Out</p>
-                            <p class="text-xs font-bold text-slate-600">{{ $hasCheckOut ? $todayAttendance->where('type','check_out')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
+                            <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCheckOut ? 'text-[#063f5c]' : 'text-slate-600' }}">Check Out</p>
+                            <p class="text-xs font-bold text-slate-800">{{ $hasCheckOut ? $todayAttendance->where('type','check_out')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasSakit ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200' }}">
+                    <div class="flex items-center gap-2.5 p-3 rounded-2xl border {{ $hasSakit ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
                         <i class="fa-solid fa-kit-medical text-sm {{ $hasSakit ? 'text-amber-800' : 'text-slate-500' }}" aria-hidden="true"></i>
                         <div>
                             <p class="text-[11px] font-black uppercase tracking-wider {{ $hasSakit ? 'text-amber-800' : 'text-slate-600' }}">Sakit</p>
-                            <p class="text-xs font-bold text-slate-600">{{ $hasSakit ? 'Tercatat' : '-' }}</p>
+                            <p class="text-xs font-bold text-slate-800">{{ $hasSakit ? 'Tercatat' : '-' }}</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 p-3 rounded-2xl border {{ $hasIzin ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200' }}">
-                        <i class="fa-solid fa-file-circle-exclamation text-sm {{ $hasIzin ? 'text-red-700' : 'text-slate-500' }}" aria-hidden="true"></i>
+                    <div class="flex items-center gap-2.5 p-3 rounded-2xl border {{ $hasIzin ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
+                        <i class="fa-solid fa-file-circle-exclamation text-sm {{ $hasIzin ? 'text-rose-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                         <div>
-                            <p class="text-[11px] font-black uppercase tracking-wider {{ $hasIzin ? 'text-red-700' : 'text-slate-600' }}">Izin</p>
-                            <p class="text-xs font-bold text-slate-600">{{ $hasIzin ? 'Tercatat' : '-' }}</p>
+                            <p class="text-[11px] font-black uppercase tracking-wider {{ $hasIzin ? 'text-rose-700' : 'text-slate-600' }}">Izin</p>
+                            <p class="text-xs font-bold text-slate-800">{{ $hasIzin ? 'Tercatat' : '-' }}</p>
                         </div>
                     </div>
                 </div>
@@ -184,18 +184,18 @@
                                             <span class="block text-slate-800 font-bold">{{ $att->user->name ?? 'Unknown User' }}</span>
                                             <span class="block text-xs text-slate-600 font-bold uppercase tracking-wider mt-0.5">{{ $att->user->email ?? '-' }}</span>
                                         </td>
-                                        <td class="py-4">
+                                        <td class="py-4 pr-4 whitespace-nowrap">
                                             @if($att->type === 'check_in')
-                                                <span class="bg-emerald-50 text-emerald-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK IN</span>
+                                                <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-emerald-700">Check In</span>
                                             @elseif($att->type === 'check_out')
-                                                <span class="bg-blue-50 text-blue-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">CHECK OUT</span>
+                                                <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-[#063f5c]">Check Out</span>
                                             @elseif($att->type === 'sakit')
-                                                <span class="bg-amber-50 text-amber-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">SAKIT</span>
+                                                <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-amber-800">Sakit</span>
                                             @else
-                                                <span class="bg-red-50 text-red-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">IZIN</span>
+                                                <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-rose-700">Izin</span>
                                             @endif
                                         </td>
-                                        <td class="py-4 text-slate-800 font-mono">{{ $att->formatWita('d M Y, H:i') }} <span class="text-xs font-sans font-bold text-primary-700">WITA</span></td>
+                                        <td class="py-4 pr-4 whitespace-nowrap text-slate-800 font-mono">{{ $att->formatWita('d M Y, H:i') }} <span class="text-xs font-sans font-bold text-primary-700">WITA</span></td>
                                         <td class="py-4 text-slate-700">{{ $att->location ?? '-' }}</td>
                                         <td class="py-4 text-slate-600 font-mono text-xs">
                                             @if($att->latitude && $att->longitude)

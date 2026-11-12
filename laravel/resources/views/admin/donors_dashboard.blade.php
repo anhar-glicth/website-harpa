@@ -315,8 +315,8 @@
                                     <td class="py-3 px-4 text-slate-700">{{ $td['office'] }}</td>
                                     <td class="py-3 px-4 text-slate-800">{{ $td['segment'] }}</td>
                                     <td class="py-3 px-4 font-bold text-emerald-700">{{ $td['category'] }}</td>
-                                    <td class="py-3 px-4">
-                                        <span class="px-2.5 py-1 bg-amber-50 text-amber-800 rounded-full text-xs font-bold border border-amber-200">
+                                    <td class="py-3 px-4 whitespace-nowrap">
+                                        <span class="inline-block whitespace-nowrap text-xs font-bold text-amber-800">
                                             {{ $td['badge'] }}
                                         </span>
                                     </td>

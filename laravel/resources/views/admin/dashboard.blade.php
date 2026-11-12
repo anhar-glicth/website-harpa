@@ -44,32 +44,32 @@
                         $hasIZ = $todayAttendance->where('type','izin')->isNotEmpty();
                     @endphp
                     <div class="grid grid-cols-2 gap-2">
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasCI ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200' }}">
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl border {{ $hasCI ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
                             <i class="fa-solid fa-right-to-bracket text-xs {{ $hasCI ? 'text-emerald-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                             <div>
-                                <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCI ? 'text-emerald-800' : 'text-slate-600' }}">Check In</p>
-                                <p class="text-xs font-bold text-slate-600">{{ $hasCI ? $todayAttendance->where('type','check_in')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
+                                <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCI ? 'text-emerald-700' : 'text-slate-600' }}">Check In</p>
+                                <p class="text-xs font-bold text-slate-800">{{ $hasCI ? $todayAttendance->where('type','check_in')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasCO ? 'bg-blue-50 border-blue-300' : 'bg-slate-50 border-slate-200' }}">
-                            <i class="fa-solid fa-right-from-bracket text-xs {{ $hasCO ? 'text-blue-700' : 'text-slate-500' }}" aria-hidden="true"></i>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl border {{ $hasCO ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
+                            <i class="fa-solid fa-right-from-bracket text-xs {{ $hasCO ? 'text-[#063f5c]' : 'text-slate-500' }}" aria-hidden="true"></i>
                             <div>
-                                <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCO ? 'text-blue-800' : 'text-slate-600' }}">Check Out</p>
-                                <p class="text-xs font-bold text-slate-600">{{ $hasCO ? $todayAttendance->where('type','check_out')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
+                                <p class="text-[11px] font-black uppercase tracking-wider {{ $hasCO ? 'text-[#063f5c]' : 'text-slate-600' }}">Check Out</p>
+                                <p class="text-xs font-bold text-slate-800">{{ $hasCO ? $todayAttendance->where('type','check_out')->first()->formatWita('H:i') . ' WITA' : '-' }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasSK ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200' }}">
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl border {{ $hasSK ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
                             <i class="fa-solid fa-kit-medical text-xs {{ $hasSK ? 'text-amber-800' : 'text-slate-500' }}" aria-hidden="true"></i>
                             <div>
                                 <p class="text-[11px] font-black uppercase tracking-wider {{ $hasSK ? 'text-amber-800' : 'text-slate-600' }}">Sakit</p>
-                                <p class="text-xs font-bold text-slate-600">{{ $hasSK ? 'Tercatat' : '-' }}</p>
+                                <p class="text-xs font-bold text-slate-800">{{ $hasSK ? 'Tercatat' : '-' }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 p-2.5 rounded-xl border {{ $hasIZ ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200' }}">
-                            <i class="fa-solid fa-file-circle-exclamation text-xs {{ $hasIZ ? 'text-red-700' : 'text-slate-500' }}" aria-hidden="true"></i>
+                        <div class="flex items-center gap-2.5 p-2.5 rounded-xl border {{ $hasIZ ? 'bg-white border-slate-300 shadow-xs' : 'bg-slate-50 border-slate-200' }}">
+                            <i class="fa-solid fa-file-circle-exclamation text-xs {{ $hasIZ ? 'text-rose-700' : 'text-slate-500' }}" aria-hidden="true"></i>
                             <div>
-                                <p class="text-[11px] font-black uppercase tracking-wider {{ $hasIZ ? 'text-red-700' : 'text-slate-600' }}">Izin</p>
-                                <p class="text-xs font-bold text-slate-600">{{ $hasIZ ? 'Tercatat' : '-' }}</p>
+                                <p class="text-[11px] font-black uppercase tracking-wider {{ $hasIZ ? 'text-rose-700' : 'text-slate-600' }}">Izin</p>
+                                <p class="text-xs font-bold text-slate-800">{{ $hasIZ ? 'Tercatat' : '-' }}</p>
                             </div>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
                     <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-black text-slate-600 uppercase tracking-wider block">Analisa Pegawai</span>
-                            <span class="w-8 h-8 rounded-xl bg-orange-50 text-orange-700 flex items-center justify-center"><i class="fa-solid fa-users-gear text-sm" aria-hidden="true"></i></span>
+                            <span class="w-8 h-8 rounded-xl bg-slate-100 text-[#063f5c] flex items-center justify-center"><i class="fa-solid fa-users-gear text-sm" aria-hidden="true"></i></span>
                         </div>
                         <div class="space-y-1">
                             <span class="text-2xl font-montserrat font-black text-slate-800">{{ $totalStaff }} Orang</span>
@@ -277,7 +277,7 @@
                         </div>
                         <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-600">
                             <span>Hadir Hari Ini:</span>
-                            <span class="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded">{{ $presentToday }} Orang</span>
+                            <span class="text-[#063f5c] font-bold tabular-nums">{{ $presentToday }} Orang</span>
                         </div>
                     </div>
 
@@ -285,7 +285,7 @@
                     <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-black text-slate-600 uppercase tracking-wider block">Analisa Kegiatan</span>
-                            <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center"><i class="fa-solid fa-clipboard-check text-sm" aria-hidden="true"></i></span>
+                            <span class="w-8 h-8 rounded-xl bg-slate-100 text-[#063f5c] flex items-center justify-center"><i class="fa-solid fa-clipboard-check text-sm" aria-hidden="true"></i></span>
                         </div>
                         <div class="space-y-1">
                             <span class="text-2xl font-montserrat font-black text-slate-800">{{ $totalTasks }} Tugas</span>
@@ -293,7 +293,7 @@
                         </div>
                         <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-600">
                             <span>Selesai Kerja:</span>
-                            <span class="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded">{{ $completedTasks }} Selesai</span>
+                            <span class="text-emerald-700 font-bold tabular-nums">{{ $completedTasks }} Selesai</span>
                         </div>
                     </div>
 
@@ -301,7 +301,7 @@
                     <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-black text-slate-600 uppercase tracking-wider block">Analisa Berita</span>
-                            <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center"><i class="fa-solid fa-newspaper text-sm" aria-hidden="true"></i></span>
+                            <span class="w-8 h-8 rounded-xl bg-slate-100 text-[#063f5c] flex items-center justify-center"><i class="fa-solid fa-newspaper text-sm" aria-hidden="true"></i></span>
                         </div>
                         <div class="space-y-1">
                             <span class="text-2xl font-montserrat font-black text-slate-800">{{ $totalNews }} Post</span>
@@ -309,7 +309,7 @@
                         </div>
                         <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-600">
                             <span>Kabar Terbit:</span>
-                            <span class="text-[#063f5c] font-bold bg-primary-50 border border-primary-200 px-2 py-0.5 rounded-md">Berita Dampak</span>
+                            <span class="text-[#063f5c] font-bold">Berita Dampak</span>
                         </div>
                     </div>
 
@@ -317,7 +317,7 @@
                     <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm space-y-4">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-black text-slate-600 uppercase tracking-wider block">Analisa Penyaluran</span>
-                            <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center"><i class="fa-solid fa-truck-ramp-box text-sm" aria-hidden="true"></i></span>
+                            <span class="w-8 h-8 rounded-xl bg-slate-100 text-[#063f5c] flex items-center justify-center"><i class="fa-solid fa-truck-ramp-box text-sm" aria-hidden="true"></i></span>
                         </div>
                         <div class="space-y-1">
                             <span class="text-base font-montserrat font-black text-slate-800 block truncate">Rp {{ number_format($totalFundsDistributed, 0, ',', '.') }}</span>
@@ -325,7 +325,7 @@
                         </div>
                         <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-xs font-black uppercase tracking-wider text-slate-600">
                             <span>Frekuensi Alokasi:</span>
-                            <span class="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded">{{ $totalDistributionsCount }} Kali</span>
+                            <span class="text-[#063f5c] font-bold tabular-nums">{{ $totalDistributionsCount }} Kali</span>
                         </div>
                     </div>
                 </div>
@@ -350,13 +350,13 @@
                                     <td class="py-4">{{ $r->donor_name }}</td>
                                     <td class="py-4 pr-4 max-w-[200px] line-clamp-1 mt-3">{{ $r->campaign->title }}</td>
                                     <td class="py-4">Rp {{ number_format($r->amount, 0, ',', '.') }}</td>
-                                    <td class="py-4">
+                                    <td class="py-4 whitespace-nowrap">
                                         @if($r->payment_status === 'Success')
-                                            <span class="bg-emerald-50 text-emerald-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Success</span>
+                                            <span class="inline-block whitespace-nowrap text-xs font-bold uppercase tracking-wider text-emerald-700">Success</span>
                                         @elseif($r->payment_status === 'Pending')
-                                            <span class="bg-amber-50 text-amber-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Pending</span>
+                                            <span class="inline-block whitespace-nowrap text-xs font-bold uppercase tracking-wider text-amber-800">Pending</span>
                                         @else
-                                            <span class="bg-rose-50 text-rose-800 text-[11px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Failed</span>
+                                            <span class="inline-block whitespace-nowrap text-xs font-bold uppercase tracking-wider text-rose-700">Failed</span>
                                         @endif
                                     </td>
                                 </tr>

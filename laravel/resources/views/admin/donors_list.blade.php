@@ -459,16 +459,16 @@
                                     $donorCode = '022607' . str_pad($donor->id, 8, '0', STR_PAD_LEFT);
                                 @endphp
                                 <tr @click="selectedItem = {{ json_encode($donor) }}; selectedId = {{ $donor->id }}; selectedName = '{{ addslashes($donor->name) }}'" 
-                                    :class="selectedId === {{ $donor->id }} ? 'bg-emerald-50 border-l-4 border-emerald-600' : 'hover:bg-slate-50/80'"
+                                    :class="selectedId === {{ $donor->id }} ? 'bg-primary-50 ring-1 ring-inset ring-primary-200' : 'hover:bg-slate-50/80'"
                                     class="cursor-pointer transition-colors">
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $donors->firstItem() + $index }}</td>
                                     <td class="py-3.5 px-4 font-mono font-bold text-emerald-700">{{ $donorCode }}</td>
                                     <td class="py-3.5 px-4 font-bold text-slate-900">{{ $donor->name }}</td>
-                                    <td class="py-3.5 px-4 text-center font-bold">
+                                    <td class="py-3.5 px-4 text-center font-bold whitespace-nowrap">
                                         @if($donor->gender === 'L')
-                                            <span class="px-2 py-0.5 bg-sky-50 text-sky-700 rounded-md text-xs">L</span>
+                                            <span class="text-[#063f5c] font-black text-xs">L</span>
                                         @elseif($donor->gender === 'P')
-                                            <span class="px-2 py-0.5 bg-rose-50 text-rose-700 rounded-md text-xs">P</span>
+                                            <span class="text-rose-700 font-black text-xs">P</span>
                                         @else
                                             <span class="text-slate-600">-</span>
                                         @endif
@@ -478,13 +478,13 @@
                                     <td class="py-3.5 px-4 text-slate-800">{{ $donor->office ? $donor->office->name : '-' }}</td>
                                     <td class="py-3.5 px-4 text-slate-600">{{ $donor->segment ?: '-' }}</td>
                                     <td class="py-3.5 px-4 text-slate-600">{{ $donor->donations_count > 0 ? 'Aktif' : 'Baru' }}</td>
-                                    <td class="py-3.5 px-4">
-                                        <span class="px-2.5 py-1 bg-amber-50 text-amber-800 rounded-full text-xs font-bold">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        <span class="inline-block whitespace-nowrap text-amber-800 text-xs font-bold">
                                             {{ $donor->rfm_alltime ?: 'POTENTIAL' }}
                                         </span>
                                     </td>
-                                    <td class="py-3.5 px-4">
-                                        <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold">
+                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                        <span class="inline-block whitespace-nowrap text-emerald-700 text-xs font-bold">
                                             {{ $donor->rfm_alltime ?: 'POTENTIAL' }}
                                         </span>
                                     </td>

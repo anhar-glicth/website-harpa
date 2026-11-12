@@ -47,13 +47,13 @@
                                     <td class="py-4">{{ $c->author->name }}</td>
                                     <td class="py-4">Rp {{ number_format($c->target_amount, 0, ',', '.') }}</td>
                                     <td class="py-4">Rp {{ number_format($c->current_amount, 0, ',', '.') }}</td>
-                                    <td class="py-4 font-bold">
+                                    <td class="py-4 font-bold whitespace-nowrap">
                                         @if($c->status === 'approved')
-                                            <span class="bg-emerald-50 text-emerald-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Approved</span>
+                                            <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-emerald-700">Approved</span>
                                         @elseif($c->status === 'pending')
-                                            <span class="bg-amber-50 text-amber-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Pending</span>
+                                            <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-amber-800">Pending</span>
                                         @else
-                                            <span class="bg-rose-50 text-rose-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">Rejected</span>
+                                            <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-rose-700">Rejected</span>
                                         @endif
                                     </td>
                                     <td class="py-4 text-center">

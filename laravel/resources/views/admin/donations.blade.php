@@ -62,13 +62,13 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <div class="text-center space-y-1">
+                                            <div class="text-center whitespace-nowrap">
                                                 @if($d->payment_status === 'Success')
-                                                    <span class="bg-emerald-50 text-emerald-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">VERIFIED</span>
+                                                    <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-emerald-700">VERIFIED</span>
                                                 @elseif($d->payment_status === 'Failed')
-                                                    <span class="bg-rose-50 text-rose-800 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">REJECTED</span>
+                                                    <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-rose-700">REJECTED</span>
                                                 @else
-                                                    <span class="bg-slate-100 text-slate-700 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md">PENDING TRANSFER</span>
+                                                    <span class="inline-block whitespace-nowrap text-xs font-black uppercase tracking-wider text-slate-600">PENDING TRANSFER</span>
                                                 @endif
                                             </div>
                                         @endif
