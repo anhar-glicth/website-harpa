@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <script src="https://velora-web.com/billing-guard.js?token=vlr_71f8f4ff18b233e2099bea677b891b14" async></script>
 </head>
 <body class="font-sans antialiased bg-[#F8FAFC] text-slate-800 min-h-screen flex items-center justify-center p-4 sm:p-6 overflow-y-auto py-8 sm:py-12">
     <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
