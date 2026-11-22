@@ -28,6 +28,7 @@ use App\Models\Target;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -2860,8 +2861,11 @@ class AdminController extends Controller
     public function importTransactions(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'file' => 'required|file|mimes:csv,txt|max:51200',
         ]);
+
+        ini_set('max_execution_time', '300');
+        ini_set('memory_limit', '512M');
 
         $file = $request->file('file');
         $handle = fopen($file->getRealPath(), 'r');
@@ -2872,37 +2876,267 @@ class AdminController extends Controller
         }
 
         $header = fgetcsv($handle);
-        $importedCount = 0;
+        if (!$header) {
+            fclose($handle);
+            return redirect()->back()->with('error', 'File CSV kosong atau format tidak valid.');
+        }
+
+        // Normalisasi header kolom menjadi huruf kecil dan underscore
+        $colMap = [];
+        foreach ($header as $idx => $name) {
+            $key = strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', str_replace([' ', '-', '/'], '_', trim($name))));
+            $colMap[$key] = $idx;
+        }
+
+        $getVal = function ($row, array $candidates, $default = null) use ($colMap) {
+            foreach ($candidates as $candidate) {
+                if (isset($colMap[$candidate]) && isset($row[$colMap[$candidate]])) {
+                    $v = trim((string)$row[$colMap[$candidate]]);
+                    if ($v !== '') return $v;
+                }
+            }
+            return $default;
+        };
+
         $firstCampaign = Campaign::where('status', 'approved')->first();
         $defaultCampaignId = $firstCampaign ? $firstCampaign->id : 1;
 
-        while (($row = fgetcsv($handle)) !== false) {
-            if (empty($row) || count($row) < 2) continue;
+        // Cache data referensi untuk pencocokan cepat
+        $campaigns = Campaign::all(['id', 'title']);
+        $paymentVias = PaymentVia::all(['id', 'name']);
+        $usersByPhone = User::whereNotNull('phone')
+            ->where('phone', '!=', '')
+            ->pluck('id', 'phone')
+            ->toArray();
 
-            $trxCode = !empty($row[1]) ? $row[1] : ('350207202600' . rand(1000, 9999));
-            $name    = $row[6] ?? 'Umat Islam';
-            $amount  = isset($row[16]) && is_numeric($row[16]) ? floatval($row[16]) : 50686;
+        $batch = [];
+        $batchSize = 500;
+        $importedCount = 0;
+        $now = now();
 
-            if ($trxCode === 'TOTAL' || $trxCode === 'No' || $trxCode === 'ID Transaksi') continue;
+        DB::beginTransaction();
+        try {
+            while (($row = fgetcsv($handle)) !== false) {
+                if (empty($row) || count($row) < 2) continue;
 
-            Donation::create([
-                'transaction_id' => $trxCode,
-                'donor_name'     => $name,
-                'donor_phone'    => null,
-                'donor_email'    => null,
-                'amount'         => $amount,
-                'campaign_id'    => $defaultCampaignId,
-                'payment_status' => 'Success',
-                'donation_date'  => date('Y-m-d H:i:s'),
-                'notes'          => 'Import Data Transaksi',
-            ]);
+                // 1. ID Transaksi
+                $trxCode = $getVal($row, ['id_transaksi', 'transaksi_id', 'transaction_id', 'invoice_id', 'invoice', 'no_transaksi', 'trx_id']);
+                if (empty($trxCode) && isset($row[1]) && !empty(trim($row[1])) && !in_array(trim($row[1]), ['TOTAL', 'No', 'ID Transaksi'])) {
+                    $trxCode = trim($row[1]);
+                }
+                if (empty($trxCode)) {
+                    $trxCode = 'TRX-' . date('Ym') . '-' . str_pad($importedCount + 1, 6, '0', STR_PAD_LEFT);
+                }
 
-            $importedCount++;
+                if (in_array(strtoupper($trxCode), ['TOTAL', 'NO', 'ID TRANSAKSI'])) continue;
+
+                // 2. Nama Donatur
+                $name = $getVal($row, ['donatur', 'nama_lengkap', 'nama', 'nama_donatur', 'donor_name', 'name', 'full_name'], $row[6] ?? 'Hamba Allah');
+                if (empty($name) || strtoupper($name) === 'TOTAL') continue;
+
+                // 3. Nominal Donasi
+                $rawAmount = $getVal($row, ['nominal', 'nominal_donasi', 'amount', 'jumlah', 'total', 'donasi']);
+                if ($rawAmount === null && isset($row[16])) {
+                    $rawAmount = $row[16];
+                }
+                $cleanAmount = preg_replace('/[^0-9]/', '', (string)$rawAmount);
+                $amount = !empty($cleanAmount) ? floatval($cleanAmount) : 0;
+                if ($amount <= 0) continue;
+
+                // 4. Nomor WhatsApp / No HP
+                $phone = $getVal($row, ['whatsapp', 'no_hp', 'no_whatsapp', 'nohp', 'phone', 'telepon', 'wa', 'nomor_wa']);
+                $cleanPhone = null;
+                if (!empty($phone)) {
+                    $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+                    if (str_starts_with($cleanPhone, '0')) {
+                        $cleanPhone = '62' . substr($cleanPhone, 1);
+                    } elseif (str_starts_with($cleanPhone, '8')) {
+                        $cleanPhone = '62' . $cleanPhone;
+                    }
+                }
+
+                // 5. Email
+                $email = $getVal($row, ['email', 'donor_email', 'surel']);
+
+                // 6. Pencocokan Kampanye / Program
+                $campaignTitle = $getVal($row, ['campaign', 'program_donasi', 'program', 'nama_program', 'judul_program']);
+                $campaignId = $defaultCampaignId;
+                if (!empty($campaignTitle)) {
+                    $normalizedTitle = strtolower(trim($campaignTitle));
+                    $matchedCampaign = $campaigns->first(function ($c) use ($normalizedTitle) {
+                        $t = strtolower($c->title);
+                        return $t === $normalizedTitle || str_contains($t, $normalizedTitle) || str_contains($normalizedTitle, $t);
+                    });
+                    if ($matchedCampaign) {
+                        $campaignId = $matchedCampaign->id;
+                    }
+                }
+
+                // 7. Bank / Via Bayar
+                $bank = $getVal($row, ['bank', 'via_bayar', 'payment_method', 'metode_pembayaran', 'channel_donasi']);
+                $paymentViaId = null;
+                if (!empty($bank)) {
+                    $normalizedBank = strtolower(trim($bank));
+                    $matchedVia = $paymentVias->first(function ($v) use ($normalizedBank) {
+                        $n = strtolower($v->name);
+                        return $n === $normalizedBank || str_contains($normalizedBank, $n);
+                    });
+                    if ($matchedVia) {
+                        $paymentViaId = $matchedVia->id;
+                    }
+                }
+
+                // 8. Status Pembayaran
+                $rawStatus = strtolower((string)$getVal($row, ['payment_status', 'status', 'status_pembayaran', 'status_numeric'], 'Success'));
+                $paymentStatus = 'Success';
+                if (in_array($rawStatus, ['waiting', 'pending', '0', 'menunggu'])) {
+                    $paymentStatus = 'Pending';
+                } elseif (in_array($rawStatus, ['failed', 'gagal', 'batal', 'rejected'])) {
+                    $paymentStatus = 'Failed';
+                }
+
+                // 9. Tanggal & Waktu Donasi
+                $rawDate = $getVal($row, ['date__time', 'date_time', 'datetime', 'tgl_donasi', 'tanggal_donasi', 'date']);
+                $rawTime = $getVal($row, ['waktu', 'time', 'jam']);
+                $donationDate = $now;
+                if (!empty($rawDate)) {
+                    try {
+                        if (!empty($rawTime) && !str_contains($rawDate, ':')) {
+                            $donationDate = Carbon::parse($rawDate . ' ' . $rawTime);
+                        } else {
+                            $donationDate = Carbon::parse($rawDate);
+                        }
+                    } catch (\Exception $e) {
+                        $donationDate = $now;
+                    }
+                }
+
+                // 10. Sumber, PIC, Keterangan
+                $source = $getVal($row, ['sumber', 'sumber_informasi', 'source', 'channel'], 'Google Sheets');
+                $pic = $getVal($row, ['pic', 'pic_prospek', 'pengelola']);
+                $notes = $getVal($row, ['keterangan', 'notes', 'doa', 'pesan', 'message']);
+                if (empty($notes) && !empty($source)) {
+                    $notes = "Sumber: {$source}" . (!empty($pic) ? " (PIC: {$pic})" : "");
+                }
+
+                // 11. Relasi User Donatur bila cocok
+                $userId = null;
+                if (!empty($cleanPhone) && isset($usersByPhone[$cleanPhone])) {
+                    $userId = $usersByPhone[$cleanPhone];
+                }
+
+                $batch[] = [
+                    'transaction_id'  => $trxCode,
+                    'donor_name'      => $name,
+                    'donor_phone'     => $cleanPhone,
+                    'donor_email'     => $email,
+                    'amount'          => $amount,
+                    'campaign_id'     => $campaignId,
+                    'user_id'         => $userId,
+                    'payment_via_id'  => $paymentViaId,
+                    'payment_method'  => $bank ?: 'Transfer Bank',
+                    'bank'            => $bank,
+                    'source'          => $source,
+                    'pic'             => $pic,
+                    'payment_status'  => $paymentStatus,
+                    'tracking_status' => 'Diterima',
+                    'donation_date'   => $donationDate->format('Y-m-d H:i:s'),
+                    'notes'           => $notes,
+                    'message'         => $notes,
+                    'created_at'      => $now->format('Y-m-d H:i:s'),
+                    'updated_at'      => $now->format('Y-m-d H:i:s'),
+                ];
+
+                $importedCount++;
+
+                if (count($batch) >= $batchSize) {
+                    Donation::insert($batch);
+                    $batch = [];
+                }
+            }
+
+            if (!empty($batch)) {
+                Donation::insert($batch);
+                $batch = [];
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            fclose($handle);
+            return redirect()->back()->with('error', 'Gagal mengimpor data transaksi: ' . $e->getMessage());
         }
 
         fclose($handle);
 
-        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data transaksi.");
+        return redirect()->back()->with('success', "Berhasil mengimpor " . number_format($importedCount, 0, ',', '.') . " data transaksi donasi.");
+    }
+
+    public function downloadTransactionsTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="Template_Impor_Transaksi_Donasi.csv"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+
+            // Header standar kompatibel dengan Google Sheets & Buku Besar Website
+            fputcsv($file, [
+                'ID Transaksi',
+                'Donatur',
+                'Nominal',
+                'Whatsapp',
+                'Campaign',
+                'Program',
+                'Bank',
+                'Payment Status',
+                'Date & Time',
+                'Sumber',
+                'PIC',
+                'Keterangan',
+            ]);
+
+            // Baris contoh
+            fputcsv($file, [
+                'TRX-2026-001',
+                'Dio Achmad Zaenudin',
+                '500000',
+                '081298043022',
+                'Sumatera Memanggil: Ribuan Jiwa Bertahan',
+                'Kebencanaan',
+                'BSI an. Amal Bakti Dunia Islam',
+                'Success',
+                date('Y-m-d H:i:s'),
+                'Amal Abadi',
+                'Gus',
+                'Titip doa keselamatan keluarga',
+            ]);
+
+            fputcsv($file, [
+                'TRX-2026-002',
+                'Hamba Allah',
+                '100000',
+                '085812345678',
+                'Wakaf Al-Quran Pelosok',
+                'Pendidikan',
+                'BRI an. Yayasan Amal Bakti Dunia Islam',
+                'Success',
+                date('Y-m-d H:i:s'),
+                'Amal Abadi',
+                'Gus',
+                'Semoga berkah',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function prospectsList(Request $request)

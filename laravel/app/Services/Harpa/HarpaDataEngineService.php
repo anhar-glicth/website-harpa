@@ -224,7 +224,7 @@ class HarpaDataEngineService
             }
 
             // Normalisasi Tanggal
-            $rawDate = $r[$headerMap['date'] ?? $headerMap['tanggal'] ?? $headerMap['waktu'] ?? $headerMap['created_at'] ?? 1] ?? '';
+            $rawDate = $r[$headerMap['date__time'] ?? $headerMap['date_time'] ?? $headerMap['datetime'] ?? $headerMap['date'] ?? $headerMap['tanggal'] ?? $headerMap['waktu'] ?? $headerMap['created_at'] ?? 1] ?? '';
             $parsedDate = $this->parseDateString($rawDate);
             if (!$parsedDate) {
                 $dateErrors[] = [
@@ -286,7 +286,7 @@ class HarpaDataEngineService
                 'no_hp_clean'         => $cleanPhone,
                 'is_phone_valid'      => $isPhoneValid,
                 'donatur_id'          => $donaturId,
-                'nama'                => $r[$headerMap['name'] ?? $headerMap['nama'] ?? 3] ?? 'Donatur',
+                'nama'                => $r[$headerMap['name'] ?? $headerMap['nama'] ?? $headerMap['nama_lengkap'] ?? $headerMap['donatur'] ?? 3] ?? 'Donatur',
                 'campaign_title_raw'  => $rawCampaign,
                 'campaign_id'         => $resolvedCampaignId,
                 'tanggal'             => $parsedDate ? $parsedDate->toDateString() : null,

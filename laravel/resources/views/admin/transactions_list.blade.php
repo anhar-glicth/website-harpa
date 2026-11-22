@@ -534,7 +534,7 @@
     {{-- Modal Import CSV --}}
     <div x-show="showImportModal" x-cloak @keydown.escape.window="showImportModal = false" role="dialog" aria-modal="true" aria-labelledby="import-trx-title" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-slate-900/60" @click="showImportModal = false"></div>
-        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h2 id="import-trx-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
                     <i class="fa-solid fa-file-import text-emerald-700"></i> Import Data Transaksi (CSV)
@@ -543,14 +543,30 @@
             </div>
             <form action="{{ route('admin.transactions.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs font-semibold text-slate-700">
                 @csrf
-                <div class="space-y-1">
-                    <label for="import_trx_file">Pilih File Excel / CSV (.csv)</label>
-                    <input id="import_trx_file" type="file" name="file" accept=".csv" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px]">
+                <div class="space-y-1.5">
+                    <label for="import_trx_file" class="block font-bold text-slate-800">Pilih File CSV (.csv)</label>
+                    <input id="import_trx_file" type="file" name="file" accept=".csv,.txt" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px]">
                 </div>
-                <p class="text-xs text-slate-600 italic">Format kolom CSV: No, ID Transaksi, ID Donatur, Tgl Donasi, Nama Lengkap, Nominal Donasi</p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2 text-slate-600">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-800">Format Kolom yang Didukung:</span>
+                        <a href="{{ route('admin.transactions.template') }}" class="text-emerald-700 hover:text-emerald-800 hover:underline font-bold inline-flex items-center gap-1">
+                            <i class="fa-solid fa-download"></i> Unduh Template CSV
+                        </a>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-[11px] leading-relaxed">
+                        <li><strong>Format Google Sheets Harpa:</strong> Donatur, Nominal, Whatsapp, Campaign, Program, Bank, Payment Status, Date &amp; Time, ID Transaksi, Sumber, PIC.</li>
+                        <li><strong>Format Standar Website:</strong> ID Transaksi, Nama Lengkap, No HP, Nominal Donasi, Program Donasi, Via Bayar, Tgl Donasi.</li>
+                        <li>Maksimal ukuran file 50 MB (mendukung 20.000+ baris transaksi sekaligus).</li>
+                    </ul>
+                </div>
+
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" @click="showImportModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Upload & Import</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload &amp; Import
+                    </button>
                 </div>
             </form>
         </div>
