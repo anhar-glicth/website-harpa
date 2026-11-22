@@ -129,11 +129,16 @@
             <!-- Campaign list table -->
             <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-4 overflow-hidden">
                 <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
-                    <h2 class="font-montserrat font-black text-slate-800 text-sm uppercase tracking-wider">
-                        Daftar Program Kampanye
-                    </h2>
-                    <span class="text-xs font-bold text-slate-500">
-                        Menampilkan {{ $campaigns->count() }} dari {{ $campaigns->total() }} kampanye
+                    <div>
+                        <h2 class="font-montserrat font-black text-slate-900 text-sm uppercase tracking-wider">
+                            Daftar Program Kampanye
+                        </h2>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">
+                            Kelola data, capaian donasi, dan status publikasi kampanye kemanusiaan.
+                        </p>
+                    </div>
+                    <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold border border-slate-200/80">
+                        {{ $campaigns->count() }} dari {{ $campaigns->total() }} Kampanye
                     </span>
                 </div>
 
@@ -145,7 +150,7 @@
                                 <th scope="col" class="py-3 px-4">Target &amp; Capaian</th>
                                 <th scope="col" class="py-3 px-4">Pembuat</th>
                                 <th scope="col" class="py-3 px-4">Status</th>
-                                <th scope="col" class="py-3 px-4 text-center">Tindakan</th>
+                                <th scope="col" class="py-3 px-4 text-right">Tindakan</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 font-semibold">
@@ -153,23 +158,24 @@
                                 @php
                                     $percent = $c->target_amount > 0 ? min(100, round(($c->current_amount / $c->target_amount) * 100)) : 0;
                                 @endphp
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="py-3.5 px-4">
-                                        <div class="flex items-start gap-3">
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-3">
                                             @if($c->foto)
-                                                <img src="{{ $c->foto }}" alt="{{ $c->title }}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">
+                                                <img src="{{ $c->foto }}" alt="{{ $c->title }}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 shrink-0 shadow-2xs">
                                             @else
-                                                <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center shrink-0">
-                                                    <i class="fa-regular fa-image text-lg"></i>
+                                                <div class="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-[#063f5c] shrink-0 shadow-2xs">
+                                                    <i class="fa-solid fa-hand-holding-heart text-base text-[#063f5c]/70"></i>
+                                                    <span class="text-[9px] font-bold uppercase mt-0.5 tracking-tight text-[#063f5c]/80">{{ substr($c->category ?? 'Harpa', 0, 7) }}</span>
                                                 </div>
                                             @endif
                                             <div class="space-y-1 min-w-0">
-                                                <a href="{{ route('campaigns.show', $c->id) }}" target="_blank" class="font-bold text-slate-900 hover:text-primary-700 line-clamp-1 block" title="{{ $c->title }}">
+                                                <a href="{{ route('campaigns.show', $c->id) }}" target="_blank" class="font-bold text-slate-900 hover:text-primary-700 text-sm line-clamp-1 block" title="{{ $c->title }}">
                                                     {{ $c->title }}
                                                 </a>
                                                 <div class="flex items-center gap-2">
-                                                    <span class="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-                                                        {{ $c->category ?? 'Umum' }}
+                                                    <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                                                        {{ $c->category ?? 'Kemanusiaan' }}
                                                     </span>
                                                     <span class="text-[11px] text-slate-400 font-mono">
                                                         #{{ $c->id }}
@@ -178,96 +184,127 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-3.5 px-4">
-                                        <div class="space-y-1">
-                                            <div class="text-xs font-black text-slate-800">
-                                                Rp {{ number_format($c->current_amount, 0, ',', '.') }}
-                                                <span class="text-[11px] font-medium text-slate-500">/ Rp {{ number_format($c->target_amount, 0, ',', '.') }}</span>
+                                    <td class="py-4 px-4">
+                                        <div class="space-y-1.5 min-w-[200px] max-w-[240px]">
+                                            <div class="flex items-baseline justify-between gap-2">
+                                                <span class="text-xs font-black text-slate-900 tabular-nums">
+                                                    Rp {{ number_format($c->current_amount, 0, ',', '.') }}
+                                                </span>
+                                                <span class="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 tabular-nums whitespace-nowrap">
+                                                    {{ $percent }}%
+                                                </span>
                                             </div>
-                                            <div class="flex items-center gap-2">
-                                                <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                                    <div class="h-full bg-emerald-700 rounded-full" style="width: {{ $percent }}%"></div>
-                                                </div>
-                                                <span class="text-[11px] font-bold text-emerald-800">{{ $percent }}%</span>
-                                                <span class="text-[11px] text-slate-500">({{ $c->donations_count ?? 0 }} donatur)</span>
+                                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/80">
+                                                <div class="h-full bg-emerald-600 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                                            </div>
+                                            <div class="flex items-center justify-between text-[11px] text-slate-500 font-medium whitespace-nowrap">
+                                                <span class="tabular-nums">Target: Rp {{ number_format($c->target_amount, 0, ',', '.') }}</span>
+                                                <span class="font-bold text-slate-600">• {{ $c->donations_count ?? 0 }} donatur</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-3.5 px-4">
-                                        <span class="text-slate-800 font-bold block">{{ $c->author->name ?? 'Admin' }}</span>
-                                        <span class="text-[11px] text-slate-500 font-mono">{{ $c->created_at->format('d M Y') }}</span>
+                                    <td class="py-4 px-4 whitespace-nowrap">
+                                        <div class="space-y-0.5">
+                                            <span class="text-slate-900 font-bold text-xs block">{{ $c->author->name ?? 'Admin Humanity' }}</span>
+                                            <span class="text-[11px] text-slate-500 font-medium block">{{ $c->created_at->format('d M Y') }}</span>
+                                        </div>
                                     </td>
-                                    <td class="py-3.5 px-4 whitespace-nowrap">
+                                    <td class="py-4 px-4 whitespace-nowrap">
                                         @if($c->status === 'approved')
-                                            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1.5">
-                                                <i class="fa-solid fa-circle-check text-[10px]"></i> Approved
+                                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1.5 shadow-2xs">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Approved
                                             </span>
                                         @elseif($c->status === 'pending')
-                                            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 inline-flex items-center gap-1.5">
-                                                <i class="fa-solid fa-clock text-[10px]"></i> Pending
+                                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 inline-flex items-center gap-1.5 shadow-2xs">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Pending
                                             </span>
                                         @else
-                                            <span class="px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-50 text-rose-800 border border-rose-200 inline-flex items-center gap-1.5">
-                                                <i class="fa-solid fa-circle-xmark text-[10px]"></i> Rejected
+                                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-800 border border-rose-200 inline-flex items-center gap-1.5 shadow-2xs">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> Rejected
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="py-3.5 px-4 text-center whitespace-nowrap">
-                                        <div class="inline-flex items-center gap-1 justify-center">
+                                    <td class="py-4 px-4 text-right whitespace-nowrap">
+                                        <div class="inline-flex items-center gap-2 justify-end">
                                             
-                                            {{-- Lihat Halaman Publik --}}
+                                            {{-- Tombol Lihat di Web --}}
                                             <a href="{{ route('campaigns.show', $c->id) }}" target="_blank" aria-label="Lihat pratinjau halaman kampanye {{ $c->title }}"
-                                               class="w-9 h-9 inline-flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors" title="Buka Halaman Publik">
-                                                <i class="fa-solid fa-up-right-from-square text-xs" aria-hidden="true"></i>
+                                               class="px-2.5 py-1.5 min-h-[36px] bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs transition-colors" title="Lihat di Web">
+                                                <i class="fa-solid fa-arrow-up-right-from-square text-[11px] text-slate-400"></i>
+                                                <span class="hidden xl:inline">Lihat</span>
                                             </a>
 
-                                            {{-- Edit Kampanye --}}
+                                            {{-- Tombol Edit Utama --}}
                                             <button type="button" @click="openEditModal({{ $c->toJson() }})" aria-label="Edit kampanye {{ $c->title }}"
-                                                    class="w-9 h-9 inline-flex items-center justify-center text-[#063f5c] hover:bg-slate-100 rounded-xl transition-colors" title="Edit Data Kampanye">
-                                                <i class="fa-solid fa-pen-to-square text-xs" aria-hidden="true"></i>
+                                                    class="px-3 py-1.5 min-h-[36px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-lg text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs transition-colors" title="Edit Data Kampanye">
+                                                <i class="fa-solid fa-pen-to-square text-[11px]"></i>
+                                                <span>Edit</span>
                                             </button>
 
-                                            {{-- Quick Approve / Reject Actions --}}
-                                            @if($c->status === 'pending')
-                                                <form action="{{ route('admin.campaigns.approve', $c->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" aria-label="Setujui kampanye {{ $c->title }}"
-                                                            class="w-9 h-9 inline-flex items-center justify-center text-emerald-800 hover:bg-emerald-50 rounded-xl transition-colors" title="Setujui Kampanye Ini">
-                                                        <i class="fa-solid fa-check text-xs" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                                <form action="{{ route('admin.campaigns.reject', $c->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" aria-label="Tolak kampanye {{ $c->title }}"
-                                                            class="w-9 h-9 inline-flex items-center justify-center text-rose-700 hover:bg-rose-50 rounded-xl transition-colors" title="Tolak Kampanye Ini">
-                                                        <i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                            @elseif($c->status === 'approved')
-                                                <form action="{{ route('admin.campaigns.reject', $c->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" onclick="return confirm('Nonaktifkan kampanye ini dari status publik (Rejected)?')" aria-label="Nonaktifkan kampanye {{ $c->title }}"
-                                                            class="w-9 h-9 inline-flex items-center justify-center text-amber-700 hover:bg-amber-50 rounded-xl transition-colors" title="Nonaktifkan (Tolak)">
-                                                        <i class="fa-solid fa-ban text-xs" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('admin.campaigns.approve', $c->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" aria-label="Setujui kembali kampanye {{ $c->title }}"
-                                                            class="w-9 h-9 inline-flex items-center justify-center text-emerald-800 hover:bg-emerald-50 rounded-xl transition-colors" title="Setujui Kembali">
-                                                        <i class="fa-solid fa-rotate-left text-xs" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            {{-- Dropdown Aksi Lanjutan (Status & Hapus) --}}
+                                            <div class="relative" x-data="{ open: false }">
+                                                <button type="button" @click="open = !open" @click.outside="open = false" 
+                                                        aria-label="Aksi lainnya untuk {{ $c->title }}"
+                                                        class="w-9 h-9 inline-flex items-center justify-center text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 shadow-2xs">
+                                                    <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
+                                                </button>
+                                                <div x-show="open" x-cloak style="display: none;" 
+                                                     class="absolute right-0 mt-1.5 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-1.5 z-30 text-xs font-semibold text-left">
+                                                    
+                                                    @if($c->status === 'approved')
+                                                        <form action="{{ route('admin.campaigns.reject', $c->id) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" onclick="return confirm('Nonaktifkan kampanye ini dari publik?')" class="w-full text-left px-3.5 py-2 hover:bg-slate-50 text-amber-700 flex items-center gap-2 transition-colors">
+                                                                <i class="fa-solid fa-ban text-xs w-4"></i> Nonaktifkan (Tolak)
+                                                            </button>
+                                                        </form>
+                                                    @elseif($c->status === 'pending')
+                                                        <form action="{{ route('admin.campaigns.approve', $c->id) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="w-full text-left px-3.5 py-2 hover:bg-emerald-50 text-emerald-800 flex items-center gap-2 transition-colors">
+                                                                <i class="fa-solid fa-check text-xs w-4"></i> Setujui Kampanye
+                                                            </button>
+                                                        </form>
+                                                        <form action="{{ route('admin.campaigns.reject', $c->id) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="w-full text-left px-3.5 py-2 hover:bg-rose-50 text-rose-700 flex items-center gap-2 transition-colors">
+                                                                <i class="fa-solid fa-xmark text-xs w-4"></i> Tolak Kampanye
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <form action="{{ route('admin.campaigns.approve', $c->id) }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="w-full text-left px-3.5 py-2 hover:bg-emerald-50 text-emerald-800 flex items-center gap-2 transition-colors">
+                                                                <i class="fa-solid fa-rotate-left text-xs w-4"></i> Setujui Kembali
+                                                            </button>
+                                                        </form>
+                                                    @endif
 
-                                            {{-- Hapus Kampanye --}}
-                                            <button type="button" @click="openDeleteModal({{ $c->toJson() }}, {{ $c->donations_count ?? 0 }})" aria-label="Hapus kampanye {{ $c->title }}"
-                                                    class="w-9 h-9 inline-flex items-center justify-center text-rose-700 hover:bg-rose-50 rounded-xl transition-colors" title="Hapus Kampanye">
-                                                <i class="fa-regular fa-trash-can text-xs" aria-hidden="true"></i>
-                                            </button>
+                                                    <div class="my-1 border-t border-slate-100"></div>
+
+                                                    <button type="button" @click="open = false; openDeleteModal({{ $c->toJson() }}, {{ $c->donations_count ?? 0 }})" 
+                                                            class="w-full text-left px-3.5 py-2 hover:bg-rose-50 text-rose-700 flex items-center gap-2 transition-colors">
+                                                        <i class="fa-regular fa-trash-can text-xs w-4"></i> Hapus Kampanye
+                                                    </button>
+                                                </div>
+                                            </div>
 
                                         </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="py-10 text-center text-slate-500 font-bold">
+                                        <div class="flex flex-col items-center justify-center gap-2">
+                                            <i class="fa-solid fa-bullhorn text-slate-400 text-3xl"></i>
+                                            <p>Belum ada data kampanye yang cocok dengan pencarian / filter.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
                                     </td>
                                 </tr>
                             @empty
