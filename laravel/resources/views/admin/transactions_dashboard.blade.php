@@ -13,31 +13,17 @@
         {{-- Main Content Column --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Tab Navigation Header --}}
-            <div class="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-0 overflow-x-auto">
-                <a href="{{ route('admin.donors_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
-                    List Donatur
-                </a>
-                <a href="{{ route('admin.transactions_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
-                    List Transaksi
-                </a>
-                <a href="{{ route('admin.prospects_list') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
-                    List Prospek
-                </a>
-                <a href="{{ route('admin.potential_donors') }}" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors">
-                    List Calon Donatur
-                </a>
-                <a href="{{ route('admin.transactions_dashboard') }}" aria-current="page" class="px-4 py-2.5 min-h-[44px] inline-flex items-center rounded-t-xl text-xs font-black bg-emerald-700 text-white shadow-sm">
-                    Dashboard Transaksi
-                </a>
-            </div>
+            {{-- Header Page Title & Subnav --}}
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                        Dashboard <span class="text-primary-600">Transaksi Donasi</span>
+                    </h1>
+                    <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+                </div>
 
-            {{-- Top Header Banner --}}
-            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
-                <span class="flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line text-white"></i> Dashboard Transaksi
-                </span>
-                <span class="text-xs text-emerald-100 font-normal">Transaction Management / Dashboard Transaksi</span>
+                {{-- Segmented Pills Subnav --}}
+                @include('admin.partials.transactions_subnav', ['active' => 'transactions_dashboard'])
             </div>
 
             {{-- Filter Form Controls --}}
@@ -106,34 +92,26 @@
             </div>
 
             {{-- 4 Summary Card Headers --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Capaian Total
-                        </div>
-                        <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalCapaian, 0, ',', '.') }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Capaian Total</span>
+                        <p class="text-2xl font-black text-[#063f5c] font-mono">Rp {{ number_format($totalCapaian, 0, ',', '.') }}</p>
                     </div>
 
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Total Donatur
-                        </div>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Donatur</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalDonorsCount) }}</p>
                     </div>
 
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Total Transaksi
-                        </div>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Transaksi</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalTransactionsCount) }}</p>
                     </div>
 
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Rata-rata Donasi
-                        </div>
-                        <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($averageDonation, 0, ',', '.') }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Rata-rata Donasi</span>
+                        <p class="text-2xl font-black text-slate-900 font-mono">Rp {{ number_format($averageDonation, 0, ',', '.') }}</p>
                     </div>
                 </div>
             </div>
