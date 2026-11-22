@@ -65,6 +65,9 @@
                     <button type="button" @click="openAddModal()" class="px-5 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition-colors">
                         <i class="fa-solid fa-user-plus text-xs"></i> Tambah Pengguna
                     </button>
+                    <button type="button" @click="showImportModal = true" class="px-5 py-2.5 min-h-[44px] bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition-colors">
+                        <i class="fa-solid fa-file-import text-xs text-emerald-700"></i> Import Excel / CSV
+                    </button>
                     <a href="{{ route('admin.users.export', request()->all()) }}" class="px-5 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition-colors">
                         <i class="fa-solid fa-file-excel text-sm"></i> Export Excel
                     </a>
@@ -382,6 +385,51 @@
         </div>
     </div>
 
+    {{-- Modal 4: Import Pengguna Excel / CSV --}}
+    <div x-show="showImportModal" x-cloak @keydown.escape.window="showImportModal = false" role="dialog" aria-modal="true" aria-labelledby="import-user-title" class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-950/60" @click="showImportModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-100 my-8">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h2 id="import-user-title" class="font-montserrat font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-file-import text-emerald-700"></i> Import Data Pengguna (Excel / CSV)
+                </h2>
+                <button type="button" @click="showImportModal = false" aria-label="Tutup modal import pengguna" class="w-10 h-10 inline-flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('admin.users.import') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs font-semibold text-slate-700">
+                @csrf
+                <div class="space-y-1.5">
+                    <label for="import_user_file" class="block font-bold text-slate-800">Pilih File Spreadsheet (.xlsx, .xls, .csv)</label>
+                    <input id="import_user_file" type="file" name="file" accept=".xlsx,.xls,.csv,.txt" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] bg-slate-50 text-xs text-slate-700 focus:border-[#063f5c] focus:outline-hidden">
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5 text-slate-600">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-800 text-xs">Format Template:</span>
+                        <a href="{{ route('admin.users.template') }}" class="text-emerald-700 hover:text-emerald-800 hover:underline font-bold inline-flex items-center gap-1.5 text-xs">
+                            <i class="fa-solid fa-download"></i> Unduh Format Template
+                        </a>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-xs leading-relaxed text-slate-600">
+                        <li><strong>Kolom Standar:</strong> Nama Lengkap, Email, Peran / Hak Akses, Password, No. Telp, Kantor / Cabang.</li>
+                        <li><strong>Pilihan Hak Akses (Role):</strong> <code>admin</code> (Super Admin), <code>marketing</code>, <code>operator</code>, <code>finance</code>, <code>program_manager</code>, <code>crm_staff</code>, <code>field_worker</code>, <code>user</code> (Donatur).</li>
+                        <li><strong>Password:</strong> Kosongkan jika ingin memakai password default (<code>password123</code>).</li>
+                        <li><strong>Duplikasi Email:</strong> Akun dengan email yang sudah ada akan otomatis diperbarui datanya tanpa membuat akun duplikat.</li>
+                    </ul>
+                </div>
+
+                <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+                    <button type="button" @click="showImportModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold transition-colors shadow-xs inline-flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload &amp; Import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </section>
 
 <!-- Alpine Script -->
@@ -391,6 +439,7 @@ function userManagement() {
         showAddModal: false,
         showEditModal: false,
         showDeleteModal: false,
+        showImportModal: false,
         editForm: {
             id: null,
             name: '',

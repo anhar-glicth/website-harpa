@@ -1139,6 +1139,247 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function downloadUsersTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="Template_Impor_Pengguna.csv"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+
+            // Header standar
+            fputcsv($file, [
+                'Nama Lengkap',
+                'Email',
+                'Peran / Hak Akses',
+                'Password',
+                'No. Telp',
+                'Kantor / Cabang',
+            ]);
+
+            // Sample rows
+            fputcsv($file, [
+                'Ahmad Fadli',
+                'ahmad.fadli@example.com',
+                'marketing',
+                'rahasia123',
+                '081234567890',
+                'Kantor Pusat',
+            ]);
+            fputcsv($file, [
+                'Siti Rahmah',
+                'siti.rahmah@example.com',
+                'finance',
+                'password123',
+                '081298765432',
+                'Kantor Cabang Jakarta',
+            ]);
+            fputcsv($file, [
+                'Budi Santoso',
+                'budi.santoso@example.com',
+                'field_worker',
+                'password123',
+                '085712345678',
+                'Kantor Cabang Bandung',
+            ]);
+            fputcsv($file, [
+                'Donatur Teladan',
+                'donatur.teladan@example.com',
+                'user',
+                '',
+                '082155556666',
+                '',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function importUsers(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|max:51200',
+        ]);
+
+        $file = $request->file('file');
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, ['csv', 'txt', 'xlsx', 'xls'])) {
+            return redirect()->back()->with('error', 'Format file tidak didukung. Harap unggah file berformat .csv atau .xlsx / .xls.');
+        }
+
+        try {
+            ini_set('max_execution_time', '300');
+            ini_set('memory_limit', '512M');
+
+            $dataEngine = app(\App\Services\Harpa\HarpaDataEngineService::class);
+            $parsed = $dataEngine->readFile($file->getRealPath(), $ext);
+
+            $headers = $parsed['headers'] ?? [];
+            $rows = $parsed['rows'] ?? [];
+
+            if (empty($headers) || empty($rows)) {
+                return redirect()->back()->with('error', 'File yang diunggah kosong atau tidak memiliki data.');
+            }
+
+            // Normalisasi nama kolom header
+            $colMap = [];
+            foreach ($headers as $idx => $headerName) {
+                $clean = strtolower(trim((string)$headerName));
+                $clean = preg_replace('/[^a-z0-9]/', '', $clean);
+
+                if (str_contains($clean, 'nama') || $clean === 'name') {
+                    $colMap['name'] = $idx;
+                } elseif (str_contains($clean, 'email') || str_contains($clean, 'surel')) {
+                    $colMap['email'] = $idx;
+                } elseif (str_contains($clean, 'role') || str_contains($clean, 'peran') || str_contains($clean, 'hakakses') || str_contains($clean, 'jabatan')) {
+                    $colMap['role'] = $idx;
+                } elseif (str_contains($clean, 'password') || str_contains($clean, 'sandi')) {
+                    $colMap['password'] = $idx;
+                } elseif (str_contains($clean, 'telp') || str_contains($clean, 'phone') || str_contains($clean, 'hp') || str_contains($clean, 'wa') || str_contains($clean, 'whatsapp')) {
+                    $colMap['phone'] = $idx;
+                } elseif (str_contains($clean, 'kantor') || str_contains($clean, 'cabang') || str_contains($clean, 'office')) {
+                    $colMap['office'] = $idx;
+                }
+            }
+
+            $nameIdx = $colMap['name'] ?? 0;
+            $emailIdx = $colMap['email'] ?? 1;
+            $roleIdx = $colMap['role'] ?? 2;
+            $passIdx = $colMap['password'] ?? 3;
+            $phoneIdx = $colMap['phone'] ?? 4;
+            $officeIdx = $colMap['office'] ?? 5;
+
+            $validRoles = ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'marketing', 'field_worker', 'user'];
+            $roleAliases = [
+                'super admin' => 'admin',
+                'superadmin' => 'admin',
+                'admin' => 'admin',
+                'marketing' => 'marketing',
+                'staff marketing' => 'marketing',
+                'meta ads' => 'marketing',
+                'operator' => 'operator',
+                'data entry' => 'operator',
+                'admin data entry' => 'operator',
+                'keuangan' => 'finance',
+                'staff keuangan' => 'finance',
+                'finance' => 'finance',
+                'manager program' => 'program_manager',
+                'program manager' => 'program_manager',
+                'program' => 'program_manager',
+                'crm' => 'crm_staff',
+                'staff crm' => 'crm_staff',
+                'telemarketing' => 'crm_staff',
+                'petugas lapangan' => 'field_worker',
+                'lapangan' => 'field_worker',
+                'field worker' => 'field_worker',
+                'donatur' => 'user',
+                'user' => 'user',
+            ];
+
+            $offices = Office::all();
+
+            $createdCount = 0;
+            $updatedCount = 0;
+            $skippedCount = 0;
+
+            foreach ($rows as $row) {
+                if (empty($row) || !is_array($row)) {
+                    continue;
+                }
+
+                $name = trim((string)($row[$nameIdx] ?? ''));
+                $email = strtolower(trim((string)($row[$emailIdx] ?? '')));
+
+                if (empty($name) || empty($email) || $name === 'Nama Lengkap' || $email === 'email') {
+                    continue;
+                }
+
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                $rawRole = strtolower(trim((string)($row[$roleIdx] ?? 'user')));
+                $role = $roleAliases[$rawRole] ?? (in_array($rawRole, $validRoles) ? $rawRole : 'user');
+
+                $rawPass = trim((string)($row[$passIdx] ?? ''));
+                $password = !empty($rawPass) ? $rawPass : 'password123';
+
+                $phone = trim((string)($row[$phoneIdx] ?? ''));
+                $phone = !empty($phone) && $phone !== '-' ? preg_replace('/[^0-9+]/', '', $phone) : null;
+
+                $officeStr = trim((string)($row[$officeIdx] ?? ''));
+                $officeId = null;
+                if (!empty($officeStr) && $officeStr !== '-') {
+                    if (is_numeric($officeStr)) {
+                        $matchedOffice = $offices->firstWhere('id', (int)$officeStr);
+                    } else {
+                        $matchedOffice = $offices->first(fn($o) => stripos($o->name, $officeStr) !== false);
+                    }
+                    if ($matchedOffice) {
+                        $officeId = $matchedOffice->id;
+                    }
+                }
+
+                $existingUser = User::where('email', $email)->first();
+                if ($existingUser) {
+                    $updatePayload = [
+                        'name' => $name,
+                        'role' => $role,
+                    ];
+                    if ($phone) {
+                        $updatePayload['phone'] = $phone;
+                    }
+                    if ($officeId) {
+                        $updatePayload['office_id'] = $officeId;
+                    }
+                    if (!empty($rawPass)) {
+                        $updatePayload['password'] = \Illuminate\Support\Facades\Hash::make($rawPass);
+                    }
+                    $existingUser->update($updatePayload);
+                    $updatedCount++;
+                } else {
+                    User::create([
+                        'name' => $name,
+                        'email' => $email,
+                        'password' => \Illuminate\Support\Facades\Hash::make($password),
+                        'role' => $role,
+                        'phone' => $phone,
+                        'office_id' => $officeId,
+                    ]);
+                    $createdCount++;
+                }
+            }
+
+            $totalProcessed = $createdCount + $updatedCount;
+            if ($totalProcessed === 0 && $skippedCount > 0) {
+                return redirect()->route('admin.users')->with('error', "Gagal mengimpor data. Sebanyak {$skippedCount} baris memiliki format email yang tidak valid.");
+            }
+
+            $msg = "Import berhasil: {$createdCount} pengguna baru ditambahkan";
+            if ($updatedCount > 0) {
+                $msg .= ", {$updatedCount} data pengguna diperbarui";
+            }
+            if ($skippedCount > 0) {
+                $msg .= " ({$skippedCount} baris dilewati karena email tidak valid)";
+            }
+            $msg .= '.';
+
+            return redirect()->route('admin.users')->with('success', $msg);
+        } catch (\Throwable $e) {
+            \Log::error('Error importing users: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses file import: ' . $e->getMessage());
+        }
+    }
+
     public function settings()
     {
         $settings = SiteSetting::first();

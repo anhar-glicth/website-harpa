@@ -130,6 +130,8 @@ class HarpaDataEngineService
                 if ($dt !== false) {
                     return $dt;
                 }
+            } catch (\Throwable $e) {
+                // Lanjut coba format berikutnya
             }
         }
 

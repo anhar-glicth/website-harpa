@@ -256,6 +256,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::put('/admin/users/{id}/update', [AdminController::class, 'updateUser'])->name('admin.users.update');
         Route::delete('/admin/users/{id}/delete', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
         Route::get('/admin/users/export', [AdminController::class, 'exportUsers'])->name('admin.users.export');
+        Route::get('/admin/users/template', [AdminController::class, 'downloadUsersTemplate'])->name('admin.users.template');
+        Route::post('/admin/users/import', [AdminController::class, 'importUsers'])->name('admin.users.import');
         Route::get('/admin/users/{id}/monitoring', [AdminController::class, 'userMonitoring'])->name('admin.users.monitoring');
         Route::post('/admin/users/{id}/tasks', [AdminController::class, 'assignTask'])->name('admin.users.assign_task');
 
