@@ -253,19 +253,34 @@
                         </span>
                     </div>
 
-                    <button type="button" @click="openCreateModal('completed')" 
-                            aria-label="Tambah Kartu di Kolom Selesai"
-                            class="w-11 h-11 rounded-xl bg-white border border-slate-200 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors shadow-xs" 
-                            title="Tambah Kartu di Kolom Ini">
-                        <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i>
-                    </button>
+                    <div class="flex items-center gap-1.5">
+                        @if($completedTodos->count() > 0)
+                        <button type="button" @click="archiveCompleted()" 
+                                class="px-2.5 py-1 text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg transition-colors inline-flex items-center gap-1 shadow-2xs" 
+                                title="Arsipkan semua tugas selesai dari papan agar kembali bersih">
+                            <i class="fa-solid fa-box-archive text-xs text-slate-500" aria-hidden="true"></i>
+                            <span>Arsipkan</span>
+                        </button>
+                        @endif
+
+                        <button type="button" @click="openCreateModal('completed')" 
+                                aria-label="Tambah Kartu di Kolom Selesai"
+                                class="w-11 h-11 rounded-xl bg-white border border-slate-200 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors shadow-xs" 
+                                title="Tambah Kartu di Kolom Ini">
+                            <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Cards Dropzone -->
                 <div id="lane-completed" 
                      data-status="completed" 
                      class="trello-lane space-y-3 min-h-[320px] max-h-[600px] overflow-y-auto pr-1 transition-colors p-0.5 rounded-xl">
-                    @forelse($completedTodos as $item)
+                    @php
+                        $displayedCompletedTodos = $completedTodos->take(15);
+                        $remainingCompletedCount = $completedTodos->count() - $displayedCompletedTodos->count();
+                    @endphp
+                    @forelse($displayedCompletedTodos as $item)
                         @include('components.trello-card', ['todo' => $item])
                     @empty
                         <div class="empty-lane-placeholder py-12 text-center text-slate-600 text-xs font-bold space-y-1">
@@ -274,6 +289,15 @@
                             <p class="text-xs font-normal text-slate-600">Tarik tugas yang sudah tuntas ke sini</p>
                         </div>
                     @endforelse
+
+                    @if($remainingCompletedCount > 0)
+                        <div class="p-3 bg-white border border-slate-200 rounded-xl text-center text-xs text-slate-600 space-y-1 shadow-xs">
+                            <p class="font-semibold">+{{ $remainingCompletedCount }} tugas selesai lainnya.</p>
+                            <button type="button" @click="archiveCompleted()" class="text-primary-700 hover:text-primary-800 font-bold block mx-auto underline text-xs">
+                                Arsipkan semua untuk merapikan papan
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Quick Add Card at Lane Footer -->
@@ -492,12 +516,23 @@
                     </div>
 
                     <div class="flex items-center justify-between gap-3 pt-2">
-                        <!-- Delete Card Button -->
-                        <button type="button" 
-                                @click="deleteCard(detailModal.data.id)"
-                                class="px-3.5 py-2.5 min-h-[44px] text-rose-700 hover:bg-rose-50 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5">
-                            <i class="fa-regular fa-trash-can"></i> Hapus
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <!-- Delete Card Button -->
+                            <button type="button" 
+                                    @click="deleteCard(detailModal.data.id)"
+                                    class="px-3.5 py-2.5 min-h-[44px] text-rose-700 hover:bg-rose-50 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5">
+                                <i class="fa-regular fa-trash-can"></i> Hapus
+                            </button>
+
+                            <!-- Archive Single Card Button -->
+                            <button type="button" 
+                                    x-show="detailModal.data.status === 'completed'"
+                                    @click="archiveCard(detailModal.data.id)"
+                                    class="px-3.5 py-2.5 min-h-[44px] text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
+                                    title="Arsipkan kartu ini dari papan">
+                                <i class="fa-solid fa-box-archive text-xs"></i> Arsipkan
+                            </button>
+                        </div>
 
                         <button type="submit" 
                                 class="px-5 py-2.5 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-black uppercase tracking-wider transition-colors shadow-sm">
@@ -701,6 +736,75 @@ function trelloBoardData() {
                     this.showToast('Tugas berhasil dihapus.', 'success');
                 } else {
                     this.showToast(data.message || 'Gagal menghapus tugas.', 'error');
+                }
+            })
+            .catch(() => {
+                this.showToast('Koneksi terganggu.', 'error');
+            });
+        },
+        archiveCompleted() {
+            if (!confirm('Arsipkan semua tugas yang sudah selesai? Kartu akan dibersihkan dari papan Kanban, namun riwayat pekerjaan tetap tersimpan aman di database dan tabel list.')) return;
+
+            fetch('{{ route("admin.tasks.archive_completed") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: this.selectedAssignee || null
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const lane = document.getElementById('lane-completed');
+                    if (lane) {
+                        lane.querySelectorAll('.trello-card').forEach(el => el.remove());
+                        const existingPlaceholder = lane.querySelector('.empty-lane-placeholder');
+                        if (!existingPlaceholder) {
+                            lane.insertAdjacentHTML('beforeend', `
+                                <div class="empty-lane-placeholder py-12 text-center text-slate-600 text-xs font-bold space-y-1">
+                                    <i class="fa-regular fa-circle-check text-slate-500 text-2xl block mb-1" aria-hidden="true"></i>
+                                    <p>Papan tugas telah diarsipkan & bersih</p>
+                                    <p class="text-xs font-normal text-slate-600">Tarik tugas yang tuntas berikutnya ke sini</p>
+                                </div>
+                            `);
+                        }
+                    }
+                    this.updateCounts();
+                    this.showToast(data.message || 'Tugas selesai berhasil diarsipkan.', 'success');
+                    setTimeout(() => window.location.reload(), 1200);
+                } else {
+                    this.showToast(data.message || 'Gagal mengarsipkan tugas.', 'error');
+                }
+            })
+            .catch(() => {
+                this.showToast('Koneksi terganggu.', 'error');
+            });
+        },
+        archiveCard(cardId) {
+            if (!confirm('Arsipkan kartu tugas ini dari papan?')) return;
+
+            fetch('{{ url("todo") }}/' + cardId + '/archive', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const cardEl = document.querySelector(`.trello-card[data-id="${cardId}"]`);
+                    if (cardEl) cardEl.remove();
+                    this.detailModal.open = false;
+                    this.updateCounts();
+                    this.showToast('Kartu berhasil diarsipkan.', 'success');
+                } else {
+                    this.showToast(data.message || 'Gagal mengarsipkan kartu.', 'error');
                 }
             })
             .catch(() => {

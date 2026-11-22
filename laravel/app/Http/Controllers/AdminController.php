@@ -67,7 +67,7 @@ class AdminController extends Controller
         // 1. Analisa Pegawai & Kegiatan
         $totalStaff = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker'])->count();
         $totalTasks = \App\Models\TodoList::count();
-        $completedTasks = \App\Models\TodoList::where('status', 'completed')->count();
+        $completedTasks = \App\Models\TodoList::whereIn('status', ['completed', 'archived'])->count();
         $presentToday = \App\Models\Attendance::where('type', 'check_in')
             ->forTodayWita()
             ->distinct('user_id')
@@ -85,7 +85,7 @@ class AdminController extends Controller
         $staffChartData = [];
         foreach ($workers as $worker) {
             $totalWTasks = \App\Models\TodoList::where('user_id', $worker->id)->count();
-            $completedWTasks = \App\Models\TodoList::where('user_id', $worker->id)->where('status', 'completed')->count();
+            $completedWTasks = \App\Models\TodoList::where('user_id', $worker->id)->whereIn('status', ['completed', 'archived'])->count();
             $eff = $totalWTasks > 0 ? round(($completedWTasks / $totalWTasks) * 100) : 0;
             $staffChartData[] = [
                 'name' => $worker->name,
@@ -1020,7 +1020,7 @@ class AdminController extends Controller
         $totalFunds = $myCampaigns->sum('current_amount');
         $presentDays = \App\Models\Attendance::where('user_id', $id)->where('type', 'check_in')->count();
         $totalTasks = \App\Models\TodoList::where('user_id', $id)->count();
-        $completedTasks = \App\Models\TodoList::where('user_id', $id)->where('status', 'completed')->count();
+        $completedTasks = \App\Models\TodoList::where('user_id', $id)->whereIn('status', ['completed', 'archived'])->count();
         $effectiveness = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
 
         $stats = [
@@ -1168,7 +1168,12 @@ class AdminController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            if ($request->status !== 'all') {
+                $query->where('status', $request->status);
+            }
+        } else {
+            // Default: sembunyikan tugas yang sudah diarsipkan agar papan Kanban tetap bersih
+            $query->where('status', '!=', 'archived');
         }
 
         if ($request->filled('start_date')) {
@@ -1185,8 +1190,9 @@ class AdminController extends Controller
             ->orderBy('name')
             ->get();
         $myTodos = \App\Models\TodoList::where('user_id', auth()->id())->latest()->get();
+        $archivedCount = \App\Models\TodoList::where('status', 'archived')->count();
 
-        return view('admin.tasks', compact('todos', 'allTodos', 'workers', 'myTodos'));
+        return view('admin.tasks', compact('todos', 'allTodos', 'workers', 'myTodos', 'archivedCount'));
     }
 
     public function exportTasks(Request $request)
@@ -1346,6 +1352,42 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Tugas berhasil dihapus.');
     }
 
+    public function archiveCompletedTasks(Request $request)
+    {
+        $query = \App\Models\TodoList::where('status', 'completed');
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+        $count = $query->count();
+        $query->update(['status' => 'archived']);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'count' => $count,
+                'message' => "{$count} tugas selesai berhasil diarsipkan dari papan."
+            ]);
+        }
+
+        return redirect()->back()->with('success', "{$count} tugas selesai berhasil diarsipkan dari papan.");
+    }
+
+    public function archiveTask($id)
+    {
+        $todo = \App\Models\TodoList::findOrFail($id);
+        $todo->status = 'archived';
+        $todo->save();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kartu tugas berhasil diarsipkan.'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Kartu tugas berhasil diarsipkan.');
+    }
+
     public function performanceList(Request $request)
     {
         $staffRoles = [
@@ -1403,7 +1445,7 @@ class AdminController extends Controller
             $totalFunds = $myCampaigns->sum('current_amount');
             $presentDays = \App\Models\Attendance::where('user_id', $worker->id)->where('type', 'check_in')->count();
             $totalTasks = $todos->count();
-            $completedTasks = $todos->where('status', 'completed')->count();
+            $completedTasks = $todos->whereIn('status', ['completed', 'archived'])->count();
             $effectiveness = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
             
             $workerPerformance[] = [

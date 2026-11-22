@@ -47,10 +47,19 @@
                     <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
                 </div>
 
-                {{-- Export Button (Excel/CSV) --}}
-                <a href="{{ route('admin.tasks.export', request()->all()) }}" class="px-5 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-sm transition-colors">
-                    <i class="fa-solid fa-file-excel text-sm"></i> Export Excel
-                </a>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    @if(isset($archivedCount) && $archivedCount > 0)
+                        <span class="px-3.5 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-xl text-xs font-bold inline-flex items-center gap-1.5" title="Total tugas yang telah diarsipkan dan tersimpan aman di database">
+                            <i class="fa-solid fa-box-archive text-slate-500 text-xs"></i>
+                            <span>{{ $archivedCount }} Diarsipkan</span>
+                        </span>
+                    @endif
+
+                    {{-- Export Button (Excel/CSV) --}}
+                    <a href="{{ route('admin.tasks.export', request()->all()) }}" class="px-5 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-sm transition-colors">
+                        <i class="fa-solid fa-file-excel text-sm"></i> Export Excel
+                    </a>
+                </div>
             </div>
 
             <!-- Trello Kanban Board Component -->
