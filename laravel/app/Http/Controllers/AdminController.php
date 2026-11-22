@@ -272,22 +272,16 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Akses ditolak: Hanya Super Admin dan Manager Program yang berhak menghapus kampanye.');
         }
 
-        $campaign = Campaign::withCount('donations')->findOrFail($id);
-
-        // Keamanan: Cek jika kampanye sudah memiliki transaksi donasi
-        if ($campaign->donations_count > 0 && !$request->boolean('force')) {
-            $msg = "Kampanye '{$campaign->title}' memiliki {$campaign->donations_count} transaksi donasi tercatat. Untuk menjaga integritas data keuangan donatur, disarankan menonaktifkan kampanye (ubah status menjadi Rejected) daripada menghapusnya.";
-            if ($request->wantsJson()) {
-                return response()->json(['success' => false, 'message' => $msg, 'has_donations' => true], 422);
-            }
-            return redirect()->back()->with('error', $msg);
-        }
+        $campaign = Campaign::findOrFail($id);
 
         if ($campaign->foto && str_starts_with($campaign->foto, '/storage/campaigns/')) {
             $oldPath = str_replace('/storage/', '', $campaign->foto);
             Storage::disk('public')->delete($oldPath);
         }
 
+        // Hapus data transaksi/donasi dan update terkait (termasuk data dummy/testing)
+        $campaign->donations()->delete();
+        $campaign->updates()->delete();
         $campaign->delete();
 
         if ($request->wantsJson()) {
