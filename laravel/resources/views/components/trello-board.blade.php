@@ -128,27 +128,6 @@
             </button>
         </div>
     </div>
-            <div class="flex items-center gap-1.5">
-                <label for="trello_filter_assignee" class="text-xs font-bold text-slate-600 uppercase tracking-wider hidden sm:inline">Pegawai:</label>
-                <select id="trello_filter_assignee" x-model="selectedAssignee" 
-                        @change="filterCards()" 
-                        class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs font-bold text-slate-700 focus:border-primary-500">
-                    <option value="">Semua Pegawai</option>
-                    @foreach($workers as $w)
-                        <option value="{{ $w->id }}">{{ $w->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            @endif
-
-            <button type="button" x-show="searchQuery || selectedAssignee" 
-                    @click="resetFilters()" 
-                    style="display: none;"
-                    class="min-h-[44px] text-xs font-bold text-rose-700 hover:text-rose-800 underline px-2">
-                Reset Filter
-            </button>
-        </div>
-    </div>
 
     <!-- View 1: Trello Kanban Board -->
     <div x-show="currentView === 'kanban'" x-transition class="space-y-4">
@@ -324,55 +303,39 @@
         </div>
     </div>
 
-    <!-- View 2: Classic Table View -->
+    <!-- View 2: Classic Table View (Active Tasks) -->
     @if($showViewToggle)
     <div x-show="currentView === 'table'" x-transition style="display: none;" class="space-y-4">
-        <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm overflow-hidden">
-            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
                 <div>
                     <h3 class="font-montserrat font-black text-slate-800 text-sm uppercase tracking-wider">
-                        Daftar Tabel Tugas Lengkap
+                        Daftar Tabel Tugas Aktif
                     </h3>
                     @if($paginatedTodos && method_exists($paginatedTodos, 'total'))
                         <p class="text-xs text-slate-500 font-medium mt-0.5">
-                            Menampilkan {{ $paginatedTodos->count() }} tugas per halaman (Total: {{ $paginatedTodos->total() }} tugas)
+                            Menampilkan {{ $paginatedTodos->count() }} tugas aktif per halaman (Total: {{ $paginatedTodos->total() }} tugas)
                         </p>
                     @endif
                 </div>
                 @if($tableRoute)
-                    <a href="{{ $tableRoute }}" class="px-3.5 py-2 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                        <i class="fa-solid fa-file-excel"></i> Export Data
+                    <a href="{{ $tableRoute }}" class="px-3.5 py-2 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-xs transition-colors">
+                        <i class="fa-solid fa-file-excel text-emerald-700"></i>
+                        <span>Export Data</span>
                     </a>
                 @endif
             </div>
-
-            @if(request('status') === 'archived')
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs mb-4 shadow-xs">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-[#063f5c] text-white flex items-center justify-center shrink-0 shadow-xs">
-                        <i class="fa-solid fa-box-archive text-sm" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <p class="font-bold text-slate-900 text-sm">Daftar Tugas yang Diarsipkan</p>
-                        <p class="text-slate-600 font-medium">Tugas di bawah ini telah diselesaikan dan disimpan di arsip. Anda dapat memulihkannya kembali ke papan aktif jika dibutuhkan.</p>
-                    </div>
-                </div>
-                <a href="{{ route('admin.tasks') }}" class="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 rounded-xl font-bold uppercase tracking-wider text-xs transition-colors inline-flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-arrow-left text-xs" aria-hidden="true"></i> Kembali ke Papan Aktif
-                </a>
-            </div>
-            @endif
 
             <div class="overflow-x-auto mt-4">
                 <table class="w-full text-left text-xs text-slate-700">
                     <thead class="bg-slate-50 text-xs font-black uppercase tracking-wider text-slate-600 border-b border-slate-100">
                         <tr>
-                            <th class="py-3 px-4">Tugas</th>
-                            <th class="py-3 px-4">Pegawai (Untuk)</th>
-                            <th class="py-3 px-4">Pemberi Tugas</th>
-                            <th class="py-3 px-4">Status</th>
-                            <th class="py-3 px-4">Deadline</th>
-                            <th class="py-3 px-4 text-center">Aksi</th>
+                            <th scope="col" class="py-3 px-4">Tugas</th>
+                            <th scope="col" class="py-3 px-4">Pegawai (Untuk)</th>
+                            <th scope="col" class="py-3 px-4">Pemberi Tugas</th>
+                            <th scope="col" class="py-3 px-4">Status</th>
+                            <th scope="col" class="py-3 px-4">Deadline</th>
+                            <th scope="col" class="py-3 px-4 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-semibold">
@@ -395,8 +358,6 @@
                                     <span class="text-xs font-bold text-emerald-700">Selesai</span>
                                 @elseif($t->status === 'in_progress')
                                     <span class="text-xs font-bold text-[#063f5c]">In Progress</span>
-                                @elseif($t->status === 'archived')
-                                    <span class="text-xs font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">Diarsipkan</span>
                                 @else
                                     <span class="text-xs font-semibold text-slate-600">To Do</span>
                                 @endif
@@ -405,23 +366,15 @@
                                 {{ $t->deadline ? $t->deadline->format('d M Y H:i') : '-' }}
                             </td>
                             <td class="py-3 px-4 text-center">
-                                <div class="inline-flex items-center gap-1.5 justify-center">
-                                    @if($t->status === 'archived')
-                                        <button type="button" @click="restoreCard({{ $t->id }})" aria-label="Pulihkan ke Papan Aktif"
-                                                class="w-9 h-9 inline-flex items-center justify-center text-emerald-700 hover:bg-emerald-50 rounded-xl transition-colors border border-emerald-200" title="Pulihkan tugas ini ke papan aktif">
-                                            <i class="fa-solid fa-rotate-left text-xs" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                    <button type="button" @click="openDetailModal({{ $t->toJson() }})" aria-label="Buka Detail"
-                                            class="w-9 h-9 inline-flex items-center justify-center text-primary-700 hover:bg-primary-50 rounded-xl transition-colors" title="Buka Detail">
-                                        <i class="fa-solid fa-up-right-from-square text-xs" aria-hidden="true"></i>
-                                    </button>
-                                </div>
+                                <button type="button" @click="openDetailModal({{ $t->toJson() }})" aria-label="Buka Detail Tugas {{ $t->task }}"
+                                        class="w-9 h-9 inline-flex items-center justify-center text-primary-700 hover:bg-primary-50 rounded-xl transition-colors" title="Buka Detail">
+                                    <i class="fa-solid fa-up-right-from-square text-xs" aria-hidden="true"></i>
+                                </button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-8 text-slate-600 font-bold">Belum ada tugas yang tercatat.</td>
+                            <td colspan="6" class="text-center py-8 text-slate-600 font-bold">Belum ada tugas aktif yang tercatat.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -431,6 +384,104 @@
             @if($paginatedTodos && method_exists($paginatedTodos, 'links'))
                 <div class="mt-4 pt-4 border-t border-slate-100">
                     {{ $paginatedTodos->links() }}
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- View 3: Archive View (Tugas Diarsipkan) -->
+    <div x-show="currentView === 'archive'" x-transition style="display: none;" class="space-y-4">
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs overflow-hidden">
+            
+            <!-- Archive Informative Banner -->
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs mb-5 shadow-xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-[#063f5c] text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <i class="fa-solid fa-box-archive text-base" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-montserrat font-black text-slate-900 text-sm uppercase tracking-wider">
+                            Kotak Arsip Tugas Selesai ({{ $archivedCount }})
+                        </h3>
+                        <p class="text-slate-600 font-medium mt-0.5">
+                            Tugas di bawah ini telah diselesaikan dan disimpan dalam arsip agar papan Kanban tetap rapi. Anda dapat memulihkannya kembali ke papan aktif sewaktu-waktu jika diperlukan.
+                        </p>
+                    </div>
+                </div>
+                <button type="button" @click="setView('kanban')" class="px-4 py-2 min-h-[44px] bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 rounded-xl font-bold uppercase tracking-wider text-xs transition-colors inline-flex items-center gap-2 shrink-0">
+                    <i class="fa-solid fa-arrow-left text-xs" aria-hidden="true"></i>
+                    <span>Kembali ke Papan</span>
+                </button>
+            </div>
+
+            <!-- Archived Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-700">
+                    <thead class="bg-slate-50 text-xs font-black uppercase tracking-wider text-slate-600 border-b border-slate-100">
+                        <tr>
+                            <th scope="col" class="py-3 px-4">Tugas</th>
+                            <th scope="col" class="py-3 px-4">Pegawai (Untuk)</th>
+                            <th scope="col" class="py-3 px-4">Pemberi Tugas</th>
+                            <th scope="col" class="py-3 px-4">Status</th>
+                            <th scope="col" class="py-3 px-4">Diarsipkan Pada</th>
+                            <th scope="col" class="py-3 px-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-semibold">
+                        @forelse($archivedTodosList as $t)
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-3 px-4">
+                                <span class="font-bold text-slate-900">{{ $t->task }}</span>
+                                @if($t->description)
+                                    <p class="text-xs text-slate-600 max-w-sm break-words">{{ $t->description }}</p>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-[#063f5c] font-bold">{{ $t->user->name ?? '-' }}</span>
+                            </td>
+                            <td class="py-3 px-4 text-slate-600">
+                                {{ $t->assigner->name ?? 'Sistem' }}
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-xs font-bold text-slate-700 uppercase tracking-wider bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 inline-flex items-center gap-1.5">
+                                    <i class="fa-solid fa-box-archive text-[10px] text-slate-500" aria-hidden="true"></i>
+                                    Diarsipkan
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-xs font-mono text-slate-600">
+                                {{ $t->updated_at ? $t->updated_at->format('d M Y H:i') : '-' }}
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <div class="inline-flex items-center gap-1.5 justify-center">
+                                    <button type="button" @click="restoreCard({{ $t->id }})" aria-label="Pulihkan tugas {{ $t->task }} ke papan aktif"
+                                            class="px-2.5 py-1.5 min-h-[36px] inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors border border-emerald-200 text-xs font-bold" title="Pulihkan tugas ini ke papan aktif">
+                                        <i class="fa-solid fa-rotate-left text-xs" aria-hidden="true"></i>
+                                        <span>Pulihkan</span>
+                                    </button>
+                                    <button type="button" @click="openDetailModal({{ $t->toJson() }})" aria-label="Buka detail tugas {{ $t->task }}"
+                                            class="w-9 h-9 inline-flex items-center justify-center text-primary-700 hover:bg-primary-50 rounded-xl transition-colors" title="Buka Detail">
+                                        <i class="fa-solid fa-up-right-from-square text-xs" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-10 text-slate-500 font-bold">
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <i class="fa-solid fa-box-archive text-slate-400 text-3xl"></i>
+                                    <p>Belum ada tugas yang diarsipkan.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if($archivedTodos && method_exists($archivedTodos, 'links'))
+                <div class="mt-4 pt-4 border-t border-slate-100">
+                    {{ $archivedTodos->links() }}
                 </div>
             @endif
         </div>
@@ -672,7 +723,12 @@
 <script>
 function trelloBoardData() {
     return {
-        currentView: '{{ request("status") === "archived" ? "table" : "kanban" }}',
+        currentView: (() => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('status') === 'archived' || params.get('view') === 'archive') return 'archive';
+            if (params.get('view') === 'table') return 'table';
+            return 'kanban';
+        })(),
         searchQuery: '',
         selectedAssignee: '',
         toast: {
@@ -696,6 +752,21 @@ function trelloBoardData() {
         },
         get progressPercent() {
             return this.counts.total > 0 ? Math.round((this.counts.completed / this.counts.total) * 100) : 0;
+        },
+        setView(view) {
+            this.currentView = view;
+            const url = new URL(window.location.href);
+            if (view === 'archive') {
+                url.searchParams.set('status', 'archived');
+                url.searchParams.delete('view');
+            } else if (view === 'table') {
+                url.searchParams.set('view', 'table');
+                url.searchParams.delete('status');
+            } else {
+                url.searchParams.delete('status');
+                url.searchParams.delete('view');
+            }
+            window.history.replaceState({}, '', url);
         },
         showToast(msg, type = 'success') {
             this.toast.message = msg;
@@ -916,6 +987,13 @@ function trelloBoardData() {
         },
         initBoard() {
             const self = this;
+
+            // Global listener to open create task modal from page header CTA
+            window.addEventListener('open-create-task-modal', (e) => {
+                const target = (e && e.detail && e.detail.status) ? e.detail.status : 'pending';
+                self.openCreateModal(target);
+            });
+
             const lanes = ['pending', 'in_progress', 'completed'];
 
             lanes.forEach(status => {
