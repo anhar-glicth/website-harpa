@@ -77,6 +77,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/distributions/{id}/update', [AdminController::class, 'updateDistribution'])->name('admin.distributions.update');
     Route::delete('/admin/distributions/{id}/delete', [AdminController::class, 'deleteDistribution'])->name('admin.distributions.delete');
     Route::get('/admin/distributions/export', [AdminController::class, 'exportDistributions'])->name('admin.distributions.export');
+    Route::get('/admin/distributions/template', [AdminController::class, 'downloadDistributionsTemplate'])->name('admin.distributions.template');
     Route::post('/admin/distributions/import', [AdminController::class, 'importDistributions'])->name('admin.distributions.import');
     // Master Kantor Routes
     Route::get('/admin/offices', [AdminController::class, 'officesList'])->name('admin.offices');
@@ -173,6 +174,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/donors/{id}/update', [AdminController::class, 'updateDonor'])->name('admin.donors.update');
     Route::delete('/admin/donors/{id}/delete', [AdminController::class, 'deleteDonor'])->name('admin.donors.delete');
     Route::get('/admin/donors/export', [AdminController::class, 'exportDonors'])->name('admin.donors.export');
+    Route::get('/admin/donors/template', [AdminController::class, 'downloadDonorsTemplate'])->name('admin.donors.template');
     Route::post('/admin/donors/import', [AdminController::class, 'importDonors'])->name('admin.donors.import');
     Route::get('/admin/donors-batch-receipt', [AdminController::class, 'donorsBatchReceipt'])->name('admin.donors.batch_receipt');
     Route::get('/admin/donors/{id}/receipt', [AdminController::class, 'donorReceipt'])->name('admin.donors.receipt');
@@ -191,6 +193,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/prospects/{id}/update', [AdminController::class, 'updateProspect'])->name('admin.prospects.update');
     Route::delete('/admin/prospects/{id}/delete', [AdminController::class, 'deleteProspect'])->name('admin.prospects.delete');
     Route::get('/admin/prospects/export', [AdminController::class, 'exportProspects'])->name('admin.prospects.export');
+    Route::get('/admin/prospects/template', [AdminController::class, 'downloadProspectsTemplate'])->name('admin.prospects.template');
     Route::post('/admin/prospects/import', [AdminController::class, 'importProspects'])->name('admin.prospects.import');
     Route::get('/admin/potential-donors', [AdminController::class, 'potentialDonors'])->name('admin.potential_donors');
     Route::post('/admin/potential-donors/store', [AdminController::class, 'storePotentialDonor'])->name('admin.potential_donors.store');
@@ -198,6 +201,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/admin/potential-donors/{id}/delete', [AdminController::class, 'deletePotentialDonor'])->name('admin.potential_donors.delete');
     Route::post('/admin/potential-donors/{id}/set-donor', [AdminController::class, 'setAsDonor'])->name('admin.potential_donors.set_donor');
     Route::get('/admin/potential-donors/export', [AdminController::class, 'exportPotentialDonors'])->name('admin.potential_donors.export');
+    Route::get('/admin/potential-donors/template', [AdminController::class, 'downloadPotentialDonorsTemplate'])->name('admin.potential_donors.template');
     Route::post('/admin/potential-donors/import', [AdminController::class, 'importPotentialDonors'])->name('admin.potential_donors.import');
     Route::get('/admin/transactions-dashboard', [AdminController::class, 'transactionsDashboard'])->name('admin.transactions_dashboard');
     Route::get('/admin/donors-dashboard', [AdminController::class, 'donorsDashboard'])->name('admin.donors_dashboard');

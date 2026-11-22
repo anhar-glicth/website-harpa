@@ -673,13 +673,18 @@
             <form method="POST" action="{{ route('admin.distributions.import') }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2 text-slate-700">
-                    <p class="font-bold text-slate-800">Format Kolom CSV:</p>
-                    <p class="font-mono text-xs text-slate-600">No, ID Penyaluran, Tgl Penyaluran, Program, Nominal, Nama PIC, Kontak PIC, Tgl Insert, Kota/Kab, Provinsi</p>
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-800">Format Kolom Spreadsheet:</span>
+                        <a href="{{ route('admin.distributions.template') }}" class="text-sky-700 hover:text-sky-800 hover:underline font-bold inline-flex items-center gap-1">
+                            <i class="fa-solid fa-download"></i> Unduh Format Template
+                        </a>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">No, ID Penyaluran, Tgl Penyaluran, Program, Nominal, Nama PIC, Kontak PIC, Tgl Insert, Kota/Kab, Provinsi</p>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Pilih File CSV (.csv)</label>
-                    <input type="file" name="file" accept=".csv,.txt" required
+                    <label class="block text-xs font-black text-slate-600 uppercase tracking-wider mb-1.5">Pilih File Spreadsheet (.xlsx, .xls, .csv)</label>
+                    <input type="file" name="file" accept=".xlsx,.xls,.csv,.txt" required
                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-100 file:text-sky-700 hover:file:bg-sky-200">
                 </div>
 

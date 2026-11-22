@@ -919,6 +919,65 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function downloadDistributionsTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="Template_Impor_Penyaluran_Distribusi.csv"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+
+            fputcsv($file, [
+                'No',
+                'ID Penyaluran',
+                'Tgl Penyaluran',
+                'Program',
+                'Nominal',
+                'Nama PIC',
+                'Kontak PIC',
+                'Tgl Insert',
+                'Kota/Kab',
+                'Provinsi',
+            ]);
+
+            fputcsv($file, [
+                '1',
+                'DIS-' . date('Ym') . '-001',
+                date('Y-m-d'),
+                'Bantuan Pangan Darurat',
+                '5000000',
+                'Ahmad Relawan',
+                '081234567890',
+                date('Y-m-d'),
+                'Kota Bandung',
+                'Jawa Barat',
+            ]);
+
+            fputcsv($file, [
+                '2',
+                'DIS-' . date('Ym') . '-002',
+                date('Y-m-d'),
+                'Santunan Anak Yatim',
+                '3500000',
+                'Siti Koordinator',
+                '089876543210',
+                date('Y-m-d'),
+                'Jakarta Timur',
+                'DKI Jakarta',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function importDistributions(Request $request)
     {
         if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
@@ -926,57 +985,62 @@ class AdminController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'file' => 'required|file|max:51200',
         ]);
 
         $file = $request->file('file');
-        $handle = fopen($file->getRealPath(), 'r');
-        
-        // Skip BOM if present
-        $bom = fread($handle, 3);
-        if ($bom !== "\xEF\xBB\xBF") {
-            rewind($handle);
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, ['csv', 'txt', 'xlsx', 'xls'])) {
+            return redirect()->back()->with('error', 'Format file tidak didukung. Harap unggah file berformat .csv atau .xlsx / .xls.');
         }
 
-        // Header row
-        $header = fgetcsv($handle);
-        
-        $importedCount = 0;
-        $firstProgram = Program::where('status', 'Aktif')->first();
-        $defaultProgramId = $firstProgram ? $firstProgram->id : null;
+        try {
+            $dataEngine = app(\App\Services\Harpa\HarpaDataEngineService::class);
+            $parsed = $dataEngine->readFile($file->getRealPath(), $ext);
 
-        while (($row = fgetcsv($handle)) !== false) {
-            if (empty($row) || count($row) < 2) continue;
+            $rows = $parsed['rows'] ?? [];
+            if (empty($rows)) {
+                return redirect()->back()->with('error', 'File yang diunggah kosong atau tidak memiliki data.');
+            }
 
-            $code  = !empty($row[1]) ? $row[1] : ('DIS-' . date('Ym') . '-' . rand(100,999));
-            $tgl   = !empty($row[2]) ? date('Y-m-d', strtotime($row[2])) : date('Y-m-d');
-            $nom   = isset($row[4]) && is_numeric($row[4]) ? floatval($row[4]) : 100000;
-            $pic   = $row[5] ?? 'PIC Penyaluran';
-            $phone = $row[6] ?? '-';
-            $city  = $row[8] ?? '-';
-            $prov  = $row[9] ?? '-';
+            $importedCount = 0;
+            $firstProgram = Program::where('status', 'Aktif')->first();
+            $defaultProgramId = $firstProgram ? $firstProgram->id : null;
 
-            if ($code === 'TOTAL' || $code === 'No' || $code === 'ID Penyaluran') continue;
+            foreach ($rows as $row) {
+                if (empty($row) || count($row) < 2) continue;
 
-            Distribution::create([
-                'distribution_code' => $code,
-                'program_id'        => $defaultProgramId,
-                'recipient_name'    => $pic,
-                'pic_name'          => $pic,
-                'pic_phone'         => $phone,
-                'amount'            => $nom,
-                'distribution_date' => $tgl,
-                'city'              => $city,
-                'province'          => $prov,
-                'status'            => 'Tersalur',
-            ]);
+                $code  = !empty($row[1]) ? trim((string)$row[1]) : ('DIS-' . date('Ym') . '-' . rand(100,999));
+                $tgl   = !empty($row[2]) ? date('Y-m-d', strtotime((string)$row[2])) : date('Y-m-d');
+                $nom   = isset($row[4]) && is_numeric(str_replace(['.', ','], '', (string)$row[4])) ? floatval(str_replace(['.', ','], '', (string)$row[4])) : 100000;
+                $pic   = !empty($row[5]) ? trim((string)$row[5]) : 'PIC Penyaluran';
+                $phone = !empty($row[6]) ? trim((string)$row[6]) : '-';
+                $city  = !empty($row[8]) ? trim((string)$row[8]) : '-';
+                $prov  = !empty($row[9]) ? trim((string)$row[9]) : '-';
 
-            $importedCount++;
+                if ($code === 'TOTAL' || $code === 'No' || $code === 'ID Penyaluran') continue;
+
+                Distribution::create([
+                    'distribution_code' => $code,
+                    'program_id'        => $defaultProgramId,
+                    'recipient_name'    => $pic,
+                    'pic_name'          => $pic,
+                    'pic_phone'         => $phone,
+                    'amount'            => $nom,
+                    'distribution_date' => $tgl,
+                    'city'              => $city,
+                    'province'          => $prov,
+                    'status'            => 'Tersalur',
+                ]);
+
+                $importedCount++;
+            }
+
+            return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data penyaluran.");
+        } catch (\Throwable $e) {
+            \Log::error('Error importing distributions: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses file penyaluran: ' . $e->getMessage());
         }
-
-        fclose($handle);
-
-        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data penyaluran.");
     }
 
     public function users(Request $request)
@@ -3068,51 +3132,122 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function downloadDonorsTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="Template_Impor_Donatur.csv"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+
+            fputcsv($file, [
+                'No',
+                'ID Donatur',
+                'Nama Lengkap',
+                'Jenis Kelamin (L/P)',
+                'No. HP / WhatsApp',
+                'Email',
+                'Alamat',
+                'Segmen Donatur',
+            ]);
+
+            fputcsv($file, [
+                '1',
+                'DNR-001',
+                'Ahmad Syahputra',
+                'L',
+                '081234567890',
+                'ahmad.syahputra@example.com',
+                'Jl. Merdeka No. 45, Bandung',
+                'Retail Donors',
+            ]);
+
+            fputcsv($file, [
+                '2',
+                'DNR-002',
+                'Dewi Lestari',
+                'P',
+                '089876543210',
+                'dewi.lestari@example.com',
+                'Jl. Sudirman Kav. 12, Jakarta',
+                'Loyal Donors',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function importDonors(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'file' => 'required|file|max:51200',
         ]);
 
         $file = $request->file('file');
-        $handle = fopen($file->getRealPath(), 'r');
-
-        $bom = fread($handle, 3);
-        if ($bom !== "\xEF\xBB\xBF") {
-            rewind($handle);
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, ['csv', 'txt', 'xlsx', 'xls'])) {
+            return redirect()->back()->with('error', 'Format file tidak didukung. Harap unggah file berformat .csv atau .xlsx / .xls.');
         }
 
-        $header = fgetcsv($handle);
-        $importedCount = 0;
+        try {
+            $dataEngine = app(\App\Services\Harpa\HarpaDataEngineService::class);
+            $parsed = $dataEngine->readFile($file->getRealPath(), $ext);
 
-        while (($row = fgetcsv($handle)) !== false) {
-            if (empty($row) || count($row) < 2) continue;
+            $rows = $parsed['rows'] ?? [];
+            if (empty($rows)) {
+                return redirect()->back()->with('error', 'File yang diunggah kosong atau tidak memiliki data.');
+            }
 
-            $name   = $row[2] ?? $row[1] ?? 'Donatur';
-            $gender = (isset($row[3]) && in_array(strtoupper($row[3]), ['L', 'P', 'LAKI-LAKI', 'PEREMPUAN'])) ? (str_contains(strtoupper($row[3]), 'P') ? 'P' : 'L') : null;
-            $phone  = !empty($row[4]) && $row[4] !== '-' ? $row[4] : null;
-            $email  = (!empty($row[5]) && filter_var($row[5], FILTER_VALIDATE_EMAIL)) ? $row[5] : ('donor_' . time() . '_' . rand(1000,9999) . '@donor.local');
-            $seg    = !empty($row[7]) ? $row[7] : null;
+            $importedCount = 0;
 
-            if ($name === 'TOTAL' || $name === 'No' || $name === 'Nama Lengkap') continue;
+            foreach ($rows as $row) {
+                if (empty($row) || count($row) < 2) continue;
 
-            User::create([
-                'name'       => $name,
-                'email'      => $email,
-                'password'   => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
-                'role'       => 'user',
-                'phone'      => $phone,
-                'gender'     => $gender,
-                'segment'    => $seg,
-                'rfm_alltime'=> 'Recent Donors',
-            ]);
+                $name   = !empty($row[2]) ? trim((string)$row[2]) : (!empty($row[1]) ? trim((string)$row[1]) : 'Donatur');
+                $gender = (isset($row[3]) && in_array(strtoupper(trim((string)$row[3])), ['L', 'P', 'LAKI-LAKI', 'PEREMPUAN'])) ? (str_contains(strtoupper((string)$row[3]), 'P') ? 'P' : 'L') : null;
+                $phone  = !empty($row[4]) && $row[4] !== '-' ? trim((string)$row[4]) : null;
+                $email  = (!empty($row[5]) && filter_var(trim((string)$row[5]), FILTER_VALIDATE_EMAIL)) ? strtolower(trim((string)$row[5])) : ('donor_' . time() . '_' . rand(1000,9999) . '@donor.local');
+                $seg    = !empty($row[7]) ? trim((string)$row[7]) : 'Recent Donors';
 
-            $importedCount++;
+                if ($name === 'TOTAL' || $name === 'No' || $name === 'Nama Lengkap') continue;
+
+                $existing = User::where('email', $email)->first();
+                if ($existing) {
+                    $existing->update([
+                        'name'    => $name,
+                        'phone'   => $phone ?? $existing->phone,
+                        'gender'  => $gender ?? $existing->gender,
+                        'segment' => $seg ?? $existing->segment,
+                    ]);
+                } else {
+                    User::create([
+                        'name'       => $name,
+                        'email'      => $email,
+                        'password'   => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
+                        'role'       => 'user',
+                        'phone'      => $phone,
+                        'gender'     => $gender,
+                        'segment'    => $seg,
+                        'rfm_alltime'=> 'Recent Donors',
+                    ]);
+                }
+
+                $importedCount++;
+            }
+
+            return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data donatur.");
+        } catch (\Throwable $e) {
+            \Log::error('Error importing donors: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses file donatur: ' . $e->getMessage());
         }
-
-        fclose($handle);
-
-        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data donatur.");
     }
 
     public function donorReceipt(Request $request, $id)
@@ -3819,44 +3954,93 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function downloadProspectsTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="Template_Impor_Prospek.csv"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+
+            fputcsv($file, [
+                'No',
+                'Nama Lengkap',
+                'No HP',
+                'Email',
+            ]);
+
+            fputcsv($file, [
+                '1',
+                'Hendra Gunawan',
+                '081234567890',
+                'hendra.gunawan@example.com',
+            ]);
+
+            fputcsv($file, [
+                '2',
+                'Maya Indah',
+                '089876543210',
+                'maya.indah@example.com',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function importProspects(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'file' => 'required|file|max:51200',
         ]);
 
         $file = $request->file('file');
-        $handle = fopen($file->getRealPath(), 'r');
-
-        $bom = fread($handle, 3);
-        if ($bom !== "\xEF\xBB\xBF") {
-            rewind($handle);
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, ['csv', 'txt', 'xlsx', 'xls'])) {
+            return redirect()->back()->with('error', 'Format file tidak didukung. Harap unggah file berformat .csv atau .xlsx / .xls.');
         }
 
-        $header = fgetcsv($handle);
-        $importedCount = 0;
+        try {
+            $dataEngine = app(\App\Services\Harpa\HarpaDataEngineService::class);
+            $parsed = $dataEngine->readFile($file->getRealPath(), $ext);
 
-        while (($row = fgetcsv($handle)) !== false) {
-            if (empty($row) || count($row) < 2) continue;
+            $rows = $parsed['rows'] ?? [];
+            if (empty($rows)) {
+                return redirect()->back()->with('error', 'File yang diunggah kosong atau tidak memiliki data.');
+            }
 
-            $name  = !empty($row[4]) ? trim($row[4]) : (!empty($row[1]) ? trim($row[1]) : null);
-            $phone = !empty($row[5]) ? trim($row[5]) : (!empty($row[2]) ? trim($row[2]) : null);
-            $email = !empty($row[6]) ? trim($row[6]) : (!empty($row[3]) ? trim($row[3]) : null);
+            $importedCount = 0;
 
-            if (!$name || $name === 'Nama Lengkap' || $name === 'No') continue;
+            foreach ($rows as $row) {
+                if (empty($row) || count($row) < 2) continue;
 
-            Prospect::create([
-                'name'  => $name,
-                'phone' => $phone,
-                'email' => $email,
-            ]);
+                $name  = !empty($row[4]) ? trim((string)$row[4]) : (!empty($row[1]) ? trim((string)$row[1]) : null);
+                $phone = !empty($row[5]) ? trim((string)$row[5]) : (!empty($row[2]) ? trim((string)$row[2]) : null);
+                $email = !empty($row[6]) ? trim((string)$row[6]) : (!empty($row[3]) ? trim((string)$row[3]) : null);
 
-            $importedCount++;
+                if (!$name || $name === 'Nama Lengkap' || $name === 'No') continue;
+
+                Prospect::create([
+                    'name'  => $name,
+                    'phone' => $phone,
+                    'email' => $email,
+                ]);
+
+                $importedCount++;
+            }
+
+            return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data prospek.");
+        } catch (\Throwable $e) {
+            \Log::error('Error importing prospects: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses file prospek: ' . $e->getMessage());
         }
-
-        fclose($handle);
-
-        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data prospek.");
     }
 
     public function potentialDonors(Request $request)
@@ -4018,44 +4202,99 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function downloadPotentialDonorsTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="Template_Impor_Calon_Donatur.csv"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF)); // UTF-8 BOM
+
+            fputcsv($file, [
+                'No',
+                'ID Calon Donatur',
+                'Nama Lengkap / Mitra',
+                'Tgl Insert',
+                'No HP / WhatsApp',
+                'Email',
+            ]);
+
+            fputcsv($file, [
+                '1',
+                'CDNR-001',
+                'PT Berkah Bersama',
+                date('Y-m-d'),
+                '081234567890',
+                'kontak@berkahbersama.com',
+            ]);
+
+            fputcsv($file, [
+                '2',
+                'CDNR-002',
+                'dr. Bambang Irawan',
+                date('Y-m-d'),
+                '085712345678',
+                'bambang.irawan@example.com',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function importPotentialDonors(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt|max:5120',
+            'file' => 'required|file|max:51200',
         ]);
 
         $file = $request->file('file');
-        $handle = fopen($file->getRealPath(), 'r');
-
-        $bom = fread($handle, 3);
-        if ($bom !== "\xEF\xBB\xBF") {
-            rewind($handle);
+        $ext = strtolower($file->getClientOriginalExtension());
+        if (!in_array($ext, ['csv', 'txt', 'xlsx', 'xls'])) {
+            return redirect()->back()->with('error', 'Format file tidak didukung. Harap unggah file berformat .csv atau .xlsx / .xls.');
         }
 
-        $header = fgetcsv($handle);
-        $importedCount = 0;
+        try {
+            $dataEngine = app(\App\Services\Harpa\HarpaDataEngineService::class);
+            $parsed = $dataEngine->readFile($file->getRealPath(), $ext);
 
-        while (($row = fgetcsv($handle)) !== false) {
-            if (empty($row) || count($row) < 2) continue;
+            $rows = $parsed['rows'] ?? [];
+            if (empty($rows)) {
+                return redirect()->back()->with('error', 'File yang diunggah kosong atau tidak memiliki data.');
+            }
 
-            $name  = !empty($row[2]) ? $row[2] : 'Calon Donatur';
-            $phone = !empty($row[4]) && $row[4] !== '-' ? $row[4] : null;
-            $email = (!empty($row[5]) && filter_var($row[5], FILTER_VALIDATE_EMAIL)) ? $row[5] : null;
+            $importedCount = 0;
 
-            if ($name === 'Nama Lengkap/Mitra' || $name === 'No') continue;
+            foreach ($rows as $row) {
+                if (empty($row) || count($row) < 2) continue;
 
-            Prospect::create([
-                'name'  => $name,
-                'phone' => $phone,
-                'email' => $email,
-            ]);
+                $name  = !empty($row[2]) ? trim((string)$row[2]) : (!empty($row[1]) ? trim((string)$row[1]) : 'Calon Donatur');
+                $phone = !empty($row[4]) && $row[4] !== '-' ? trim((string)$row[4]) : (!empty($row[2]) && $row[2] !== '-' ? trim((string)$row[2]) : null);
+                $email = (!empty($row[5]) && filter_var(trim((string)$row[5]), FILTER_VALIDATE_EMAIL)) ? strtolower(trim((string)$row[5])) : (!empty($row[3]) && filter_var(trim((string)$row[3]), FILTER_VALIDATE_EMAIL) ? strtolower(trim((string)$row[3])) : null);
 
-            $importedCount++;
+                if ($name === 'Nama Lengkap/Mitra' || $name === 'Nama Lengkap' || $name === 'No') continue;
+
+                Prospect::create([
+                    'name'  => $name,
+                    'phone' => $phone,
+                    'email' => $email,
+                ]);
+
+                $importedCount++;
+            }
+
+            return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data calon donatur.");
+        } catch (\Throwable $e) {
+            \Log::error('Error importing potential donors: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses file calon donatur: ' . $e->getMessage());
         }
-
-        fclose($handle);
-
-        return redirect()->back()->with('success', "Berhasil mengimpor {$importedCount} data calon donatur.");
     }
 
     public function transactionsDashboard(Request $request)
