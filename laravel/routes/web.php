@@ -232,6 +232,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::put('/ads/{id}/update', [MarketingController::class, 'update'])->name('update');
         Route::delete('/ads/{id}/delete', [MarketingController::class, 'destroy'])->name('destroy');
         Route::get('/ads/export', [MarketingController::class, 'export'])->name('export');
+        Route::post('/ads/import', [MarketingController::class, 'import'])->name('import');
+        Route::get('/ads/template', [MarketingController::class, 'downloadTemplate'])->name('template');
     });
 
     // Super Admin Strictly Protected Routes (Kelola Staff, Web Settings, Master Karyawan, Evaluasi Kinerja)

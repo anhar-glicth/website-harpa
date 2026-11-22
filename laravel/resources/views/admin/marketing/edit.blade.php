@@ -218,6 +218,36 @@
                         </div>
                     </div>
 
+                    <!-- Baris Program, Akun Iklan, dan PIC -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                                Program Donasi
+                            </label>
+                            <input type="text" name="program_name" value="{{ old('program_name', $ad->program_name) }}" 
+                                   placeholder="Contoh: Masjid Sekotong / Sedekah Subuh"
+                                   class="w-full text-xs font-bold text-slate-800 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500 py-3">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                                Nama Akun Iklan
+                            </label>
+                            <input type="text" name="account_name" value="{{ old('account_name', $ad->account_name) }}" 
+                                   placeholder="Contoh: Adspro - Amal Bakti Dunia Islam"
+                                   class="w-full text-xs font-bold text-slate-800 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500 py-3">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                                PIC / Pengelola Iklan
+                            </label>
+                            <input type="text" name="pic" value="{{ old('pic', $ad->pic) }}" 
+                                   placeholder="Contoh: Gus / Fadli"
+                                   class="w-full text-xs font-bold text-slate-800 rounded-xl border-slate-200 focus:ring-primary-500 focus:border-primary-500 py-3">
+                        </div>
+                    </div>
+
                     <!-- Baris 3: Anggaran & Hasil (Biaya & Donasi) -->
                     <div class="p-6 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-4">
                         <div class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">

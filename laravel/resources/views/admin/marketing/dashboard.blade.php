@@ -46,7 +46,7 @@
 
             <!-- Filter Card -->
             <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm">
-                <form method="GET" action="{{ route('admin.marketing.dashboard') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <form method="GET" action="{{ route('admin.marketing.dashboard') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div>
                         <label for="mkt_dash_platform" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Platform Iklan</label>
                         <select id="mkt_dash_platform" name="platform" class="w-full min-h-[44px] text-xs font-bold text-slate-700 rounded-xl border-slate-300 focus:ring-primary-500 focus:border-primary-500">
@@ -56,6 +56,18 @@
                             <option value="TikTok Ads" {{ $platform === 'TikTok Ads' ? 'selected' : '' }}>TikTok Ads</option>
                             <option value="YouTube Ads" {{ $platform === 'YouTube Ads' ? 'selected' : '' }}>YouTube Ads</option>
                             <option value="Lainnya" {{ $platform === 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="mkt_dash_program" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Program Donasi</label>
+                        <select id="mkt_dash_program" name="program" class="w-full min-h-[44px] text-xs font-bold text-slate-700 rounded-xl border-slate-300 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="ALL">Semua Program</option>
+                            @if(isset($programsList))
+                                @foreach($programsList as $p)
+                                    <option value="{{ $p }}" {{ ($program ?? '') === $p ? 'selected' : '' }}>{{ $p }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
 

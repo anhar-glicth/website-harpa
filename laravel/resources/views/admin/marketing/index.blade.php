@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="max-w-7xl mx-auto px-6 py-20">
+<section x-data="{ showImportModal: false }" class="max-w-7xl mx-auto px-6 py-20">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
         <!-- Sidebar Menu -->
@@ -29,13 +29,18 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" 
+                            @click="showImportModal = true"
+                            class="px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#053953] text-white rounded-xl text-xs font-black uppercase tracking-wider transition-colors inline-flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i> Impor CSV
+                    </button>
                     <a href="{{ route('admin.marketing.create') }}" 
-                       class="px-5 py-2.5 min-h-[44px] bg-blue-700 hover:bg-blue-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-700/20 transition-colors inline-flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Input Data Iklan Baru
+                       class="px-4 py-2.5 min-h-[44px] bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-sm transition-colors inline-flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Input Baru
                     </a>
                     <a href="{{ route('admin.marketing.dashboard') }}" 
-                       class="px-4 py-2.5 min-h-[44px] bg-slate-100 text-slate-700 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-slate-200 transition-colors inline-flex items-center gap-2">
-                        <i class="fa-solid fa-chart-line"></i> Dashboard Analisa
+                       class="px-4 py-2.5 min-h-[44px] bg-slate-100 text-slate-700 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-200 transition-colors inline-flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line"></i> Dashboard
                     </a>
                     <a href="{{ route('admin.marketing.export', request()->query()) }}" 
                        class="px-4 py-2.5 min-h-[44px] bg-white text-slate-800 border border-slate-300 rounded-xl text-xs font-black uppercase tracking-wider hover:border-[#063f5c] hover:text-[#063f5c] transition-colors inline-flex items-center gap-2">
@@ -49,6 +54,13 @@
             <div role="status" class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-emerald-800 text-xs font-bold">
                 <i class="fa-solid fa-circle-check text-emerald-700 text-base"></i>
                 <span>{{ session('success') }}</span>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div role="alert" class="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-center gap-3 text-rose-800 text-xs font-bold">
+                <i class="fa-solid fa-triangle-exclamation text-rose-700 text-base"></i>
+                <span>{{ session('error') }}</span>
             </div>
             @endif
 
@@ -99,6 +111,32 @@
                             <option value="ARCHIVED" {{ $status === 'ARCHIVED' ? 'selected' : '' }}>ARCHIVED (Arsip)</option>
                         </select>
                     </div>
+
+                    @if(isset($programsList) && count($programsList) > 0)
+                    <!-- Filter Program Donasi -->
+                    <div>
+                        <label for="mkt_idx_program" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Program Donasi</label>
+                        <select id="mkt_idx_program" name="program" class="w-full min-h-[44px] text-xs font-bold text-slate-700 py-2 rounded-xl border-slate-300">
+                            <option value="ALL">Semua Program</option>
+                            @foreach($programsList as $p)
+                                <option value="{{ $p }}" {{ ($program ?? '') === $p ? 'selected' : '' }}>{{ $p }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
+                    @if(isset($picsList) && count($picsList) > 0)
+                    <!-- Filter PIC -->
+                    <div>
+                        <label for="mkt_idx_pic" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">PIC Pengelola</label>
+                        <select id="mkt_idx_pic" name="pic" class="w-full min-h-[44px] text-xs font-bold text-slate-700 py-2 rounded-xl border-slate-300">
+                            <option value="ALL">Semua PIC</option>
+                            @foreach($picsList as $picItem)
+                                <option value="{{ $picItem }}" {{ ($pic ?? '') === $picItem ? 'selected' : '' }}>{{ $picItem }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
 
                     <div class="sm:col-span-2 lg:col-span-5 flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-50">
                         <div class="flex flex-wrap items-center gap-2">
@@ -155,6 +193,19 @@
                                     <div class="font-black text-slate-800 truncate" title="{{ $ad->campaign_name }}">
                                         {{ $ad->campaign_name }}
                                     </div>
+                                    @if($ad->program_name || $ad->pic || $ad->account_name)
+                                        <div class="text-[11px] font-bold text-slate-500 truncate mt-0.5">
+                                            @if($ad->program_name)
+                                                <span class="text-[#063f5c] font-black">{{ $ad->program_name }}</span>
+                                            @endif
+                                            @if($ad->pic)
+                                                <span class="text-slate-500">&bull; PIC: {{ $ad->pic }}</span>
+                                            @endif
+                                            @if($ad->account_name)
+                                                <span class="text-slate-500">&bull; {{ Str::limit($ad->account_name, 25) }}</span>
+                                            @endif
+                                        </div>
+                                    @endif
                                     @if($ad->adset_name || $ad->ad_name)
                                         <div class="text-xs text-slate-600 truncate mt-0.5">
                                             {{ $ad->adset_name }} {{ $ad->ad_name ? '/ ' . $ad->ad_name : '' }}
@@ -177,6 +228,9 @@
                                 <td class="py-3.5 px-4 text-center">
                                     <div class="font-bold text-slate-800">{{ number_format($ad->impressions) }}</div>
                                     <div class="text-xs text-slate-600">Reach: {{ number_format($ad->reach) }}</div>
+                                    @if($ad->landing_page_views)
+                                        <div class="text-[10px] text-slate-500 font-medium">LP: {{ number_format($ad->landing_page_views) }}</div>
+                                    @endif
                                 </td>
 
                                 <!-- Clicks / CTR -->
@@ -258,6 +312,77 @@
 
         </div>
 
+    </div>
+
+    <!-- Modal Import CSV Meta Ads -->
+    <div x-show="showImportModal"
+         x-cloak
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="import-modal-title"
+         @keydown.escape.window="showImportModal = false"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div @click.outside="showImportModal = false"
+             class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                <div class="space-y-1">
+                    <h3 id="import-modal-title" class="text-lg font-black font-montserrat text-slate-900 uppercase tracking-tight">
+                        Impor Data Performa Meta Ads
+                    </h3>
+                    <p class="text-xs text-slate-600 font-bold">
+                        Format CSV mendukung ekspor Ads Manager &amp; spreadsheet Google Sheets
+                    </p>
+                </div>
+                <button type="button"
+                        @click="showImportModal = false"
+                        aria-label="Tutup Modal"
+                        class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('admin.marketing.import') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @csrf
+                <div class="space-y-2">
+                    <label for="import_file_input" class="block text-xs font-black uppercase tracking-wider text-slate-700">
+                        Pilih File CSV Performa Iklan
+                    </label>
+                    <input id="import_file_input"
+                           type="file"
+                           name="file"
+                           required
+                           accept=".csv,.txt"
+                           class="w-full min-h-[44px] text-xs font-bold text-slate-700 py-2.5 px-3 rounded-xl border border-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-black file:uppercase file:bg-[#063f5c] file:text-white hover:file:bg-[#053953] cursor-pointer">
+                    <p class="text-[11px] text-slate-500 font-medium">
+                        Ukuran file maksimal 50 MB. Header kolom seperti <code>Date, PIC, Program, Nama Kampanye, Spend, Impresi, Pembelian</code> akan dipetakan otomatis.
+                    </p>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 text-xs text-slate-700">
+                    <div class="font-black text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-[#063f5c]" aria-hidden="true"></i> Panduan &amp; Template Format
+                    </div>
+                    <p class="text-[11px] leading-relaxed">
+                        Data impor akan otomatis dihitung metriknya (CPC, CTR, CPM, CPA, ROAS) dan diklasifikasikan ke rekomendasi SCALE, MAINTAIN, atau STOP.
+                    </p>
+                    <a href="{{ route('admin.marketing.template') }}" class="inline-flex items-center gap-1.5 text-xs font-black text-[#063f5c] hover:underline pt-1">
+                        <i class="fa-solid fa-download" aria-hidden="true"></i> Unduh File Contoh Template CSV
+                    </a>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button"
+                            @click="showImportModal = false"
+                            class="px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="px-5 py-2.5 min-h-[44px] rounded-xl text-xs font-black uppercase tracking-wider text-white bg-[#063f5c] hover:bg-[#053953] shadow-md transition-colors inline-flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Mulai Impor Data
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </section>
 @endsection

@@ -12,7 +12,7 @@
 ### Group 1: Hard Gate (Priority: HIGH)
 
 1. **[FIXED | #1 | R-17, R-18, R-36, R-38, C-5] Popup bukti sosial kini hanya dari database terverifikasi**
-   - `laravel/resources/views/layouts/app.blade.php`: Array donatur fiktif hardcoded beserta label statis dihapus. Kontainer `liveDonationToast()` hanya dirender jika `@if(!$isDashboardOrAdmin && isset($liveDonations) && $liveDonations->isNotEmpty())` menggunakan label jujur `"Tercatat"`.
+   - `laravel/resources/views/layouts/app.blade.phhttps://docs.google.com/spreadsheets/d/1eBGPt8_K0Xrm-DfpfIo7iNJ3Bzw0DO4F1W2Y86Udwv4/edit?gid=0#gid=0p`: Array donatur fiktif hardcoded beserta label statis dihapus. Kontainer `liveDonationToast()` hanya dirender jika `@if(!$isDashboardOrAdmin && isset($liveDonations) && $liveDonations->isNotEmpty())` menggunakan label jujur `"Tercatat"`.
 
 2. **[FIXED | #2 | R-17, R-38] Statistik hero memakai data database nyata**
    - `laravel/app/Http/Controllers/HomeController.php` & `laravel/resources/views/home.blade.php`: Mengirim `$realStats` (`campaigns`, `distributions`, `volunteers`) dari database sehingga jika `$settings` kosong, halaman utama menampilkan jumlah titik penyaluran, kampanye aktif, dan relawan aktual dari database tanpa angka fallback fiktif (`2.500 +`, `95 +`, `20 +`).
