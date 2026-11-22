@@ -139,6 +139,11 @@ class User extends Authenticatable
         return $this->role === self::ROLE_USER;
     }
 
+    public function isStaff(): bool
+    {
+        return $this->hasAdminAccess();
+    }
+
     public function hasAdminAccess(): bool
     {
         return in_array($this->role, [

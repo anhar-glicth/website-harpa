@@ -1007,8 +1007,8 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         
-        if (!$user->isFieldWorker()) {
-            return redirect()->route('admin.users')->with('error', 'Hanya petugas lapangan yang dapat dipantau.');
+        if (!$user->isStaff()) {
+            return redirect()->route('admin.users')->with('error', 'Hanya akun staf / pegawai yang dapat dipantau kinerjanya.');
         }
 
         $attendances = \App\Models\Attendance::where('user_id', $id)->latest()->paginate(10, ['*'], 'attendance_page');
@@ -1346,9 +1346,52 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Tugas berhasil dihapus.');
     }
 
-    public function performanceList()
+    public function performanceList(Request $request)
     {
-        $workers = User::where('role', 'field_worker')->get();
+        $staffRoles = [
+            'field_worker',
+            'marketing',
+            'crm_staff',
+            'finance',
+            'program_manager',
+            'operator',
+            'admin',
+        ];
+
+        $roleLabels = [
+            'all' => 'Semua Divisi',
+            'field_worker' => 'Petugas Lapangan',
+            'marketing' => 'Staff Marketing',
+            'crm_staff' => 'Staff CRM & WA',
+            'finance' => 'Staff Keuangan',
+            'program_manager' => 'Manager Program',
+            'operator' => 'Operator Data Entry',
+            'admin' => 'Super Admin',
+        ];
+
+        $roleCounts = [
+            'all' => User::whereIn('role', $staffRoles)->count(),
+        ];
+        foreach ($staffRoles as $r) {
+            $roleCounts[$r] = User::where('role', $r)->count();
+        }
+
+        $query = User::whereIn('role', $staffRoles);
+
+        $selectedRole = $request->query('role', 'all');
+        if ($selectedRole !== 'all' && in_array($selectedRole, $staffRoles)) {
+            $query->where('role', $selectedRole);
+        }
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $workers = $query->orderBy('name')->get();
         
         $workerPerformance = [];
         foreach ($workers as $worker) {
@@ -1375,7 +1418,7 @@ class AdminController extends Controller
             ];
         }
 
-        return view('admin.performance', compact('workerPerformance'));
+        return view('admin.performance', compact('workerPerformance', 'roleCounts', 'roleLabels', 'selectedRole'));
     }
 
     public function analytics()

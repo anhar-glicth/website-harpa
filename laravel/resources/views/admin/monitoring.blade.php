@@ -31,11 +31,11 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div class="space-y-2">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('admin.users') }}" aria-label="Kembali ke daftar pengguna" class="min-w-[44px] min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center transition-colors">
+                        <a href="{{ url()->previous() != url()->current() ? url()->previous() : route('admin.performance') }}" aria-label="Kembali" class="min-w-[44px] min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl flex items-center justify-center transition-colors">
                             <i class="fa-solid fa-arrow-left text-xs" aria-hidden="true"></i>
                         </a>
                         <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                            Monitoring <span class="text-primary-600">Pegawai Lapangan</span>
+                            Monitoring Kinerja <span class="text-primary-600">{{ $user->role_label }}</span>
                         </h1>
                     </div>
                     <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
@@ -55,7 +55,7 @@
                         </div>
                         <div class="space-y-1.5">
                             <span class="px-3 py-1 bg-slate-900/60 border border-[#f7ad1a]/40 text-[#f7ad1a] rounded-full text-xs font-black uppercase tracking-widest block w-fit mx-auto sm:mx-0">
-                                {{ str_replace('_', ' ', $user->role) }}
+                                {{ $user->role_label }}
                             </span>
                             <h2 class="text-2xl font-black font-montserrat tracking-tight leading-none uppercase italic">{{ $user->name }}</h2>
                             <p class="text-xs font-bold text-slate-200 tracking-wider">{{ $user->email }} | {{ $user->phone ?? 'Tidak ada nomor telepon' }}</p>
