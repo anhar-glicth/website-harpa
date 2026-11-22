@@ -305,21 +305,6 @@
                         </tbody>
                     </table>
                 </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="py-10 text-center text-slate-500 font-bold">
-                                        <div class="flex flex-col items-center justify-center gap-2">
-                                            <i class="fa-solid fa-bullhorn text-slate-400 text-3xl"></i>
-                                            <p>Belum ada data kampanye yang cocok dengan pencarian / filter.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
 
                 @if($campaigns->hasPages())
                     <div class="pt-4 border-t border-slate-100">
