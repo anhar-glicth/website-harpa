@@ -13,33 +13,34 @@
         <div class="lg:col-span-3 space-y-8">
             
             <!-- Header section -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div class="space-y-2">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#063f5c] text-white rounded-full text-xs font-black uppercase tracking-widest shadow-md">
-                        <i class="fa-brands fa-meta"></i> Marketing &amp; Meta Ads Intelligence
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-600 uppercase tracking-widest">
+                        <span>Pemasaran Digital</span>
+                        <span aria-hidden="true">/</span>
+                        <span class="text-primary-600 font-black">Meta &amp; Google Ads</span>
                     </div>
-                    <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                        Dashboard <span class="text-primary-600">Performa Iklan &amp; Keputusan</span>
+                    <h1 class="text-xl sm:text-2xl font-montserrat font-black text-slate-900 tracking-tight mt-1 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-[#f7ad1a]" aria-hidden="true"></i> Performa Kampanye Iklan
                     </h1>
-                    <p class="text-slate-600 font-bold text-xs tracking-widest uppercase">
-                        Analisa Biaya Iklan, Hasil Donasi, ROAS, dan Rekomendasi Keputusan (Scale / Maintain / Stop)
+                    <p class="text-xs text-slate-600 font-medium mt-1">
+                        Monitoring biaya iklan, perolehan donasi, rasio ROAS, dan efisiensi biaya per konversi.
                     </p>
-                    <div class="w-12 h-1 bg-primary-500 rounded-full mt-2"></div>
                 </div>
 
                 <!-- Quick Action Buttons -->
-                <div class="flex flex-wrap items-center gap-3">
+                <div class="flex flex-wrap items-center gap-2">
                     <a href="{{ route('admin.marketing.create') }}" 
-                       class="px-5 py-2.5 min-h-[44px] bg-blue-700 hover:bg-blue-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-blue-700/20 transition-colors inline-flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Input Data Iklan
+                       class="px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
+                        <i class="fa-solid fa-plus text-[#f7ad1a]" aria-hidden="true"></i> Tambah Data Iklan
                     </a>
                     <a href="{{ route('admin.marketing.index') }}" 
-                       class="px-4 py-2.5 min-h-[44px] bg-slate-100 text-slate-700 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-slate-200 transition-colors inline-flex items-center gap-2">
-                        <i class="fa-solid fa-table-list"></i> Semua Data
+                       class="px-4 py-2.5 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-slate-600" aria-hidden="true"></i> Riwayat Lengkap
                     </a>
                     <a href="{{ route('admin.marketing.export', request()->query()) }}" 
-                       class="px-4 py-2.5 min-h-[44px] bg-white text-slate-800 border border-slate-300 rounded-xl text-xs font-black uppercase tracking-wider hover:border-[#063f5c] hover:text-[#063f5c] transition-colors inline-flex items-center gap-2">
-                        <i class="fa-solid fa-file-csv" aria-hidden="true"></i> Unduh CSV
+                       class="px-4 py-2.5 min-h-[44px] bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors inline-flex items-center gap-2">
+                        <i class="fa-solid fa-file-csv text-emerald-700" aria-hidden="true"></i> Unduh CSV
                     </a>
                 </div>
             </div>
@@ -178,78 +179,6 @@
                     </div>
                     <div class="mt-2 text-xs font-bold text-slate-600">
                         CPC: <span class="text-slate-700 font-black">Rp {{ number_format($avgCpc, 0, ',', '.') }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rekomendasi Tindakan Iklan (Clean Institutional Design) -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-slate-200">
-                    <div>
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-                            <span>Evaluasi Kinerja Iklan</span>
-                            <span aria-hidden="true">&bull;</span>
-                            <span class="text-[#063f5c] font-black">Meta Ads</span>
-                        </div>
-                        <h2 class="text-base sm:text-lg font-montserrat font-bold text-slate-900 tracking-tight mt-0.5">
-                            Rekomendasi Alokasi Anggaran &amp; Materi Iklan
-                        </h2>
-                    </div>
-                    <p class="text-xs text-slate-500 max-w-md font-medium">
-                        Pengelompokan otomatis berdasarkan rasio perolehan donasi (ROAS) dan efisiensi biaya per donasi (CPA).
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <!-- 1. SCALE -->
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase tracking-wider">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                Tingkatkan Anggaran (Scale)
-                            </span>
-                            <span class="text-xs font-bold text-slate-500">ROAS &ge; 3.0x</span>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-montserrat font-black text-slate-900">{{ $scaleCount }} <span class="text-xs font-semibold text-slate-500">Kampanye</span></div>
-                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                                Menghasilkan donasi tinggi dengan biaya efisien. Layak ditambah anggaran harian untuk memperluas jangkauan.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- 2. MAINTAIN -->
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 uppercase tracking-wider">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
-                                Pertahankan &amp; Optimasi
-                            </span>
-                            <span class="text-xs font-bold text-slate-500">ROAS 1.5x - 3.0x</span>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-montserrat font-black text-slate-900">{{ $maintainCount }} <span class="text-xs font-semibold text-slate-500">Kampanye</span></div>
-                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                                Performa stabil. Pertahankan anggaran saat ini dan lakukan penyegaran materi visual secara berkala.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- 3. STOP -->
-                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200 uppercase tracking-wider">
-                                <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
-                                Evaluasi / Matikan
-                            </span>
-                            <span class="text-xs font-bold text-slate-500">ROAS &lt; 1.5x</span>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-montserrat font-black text-slate-900">{{ $stopCount }} <span class="text-xs font-semibold text-slate-500">Kampanye</span></div>
-                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                                Biaya iklan tinggi namun konversi donasi rendah. Disarankan jeda sementara atau rombak target audiens.
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
