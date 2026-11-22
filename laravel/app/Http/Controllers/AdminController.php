@@ -1167,15 +1167,6 @@ class AdminController extends Controller
             $query->where('user_id', $request->user_id);
         }
 
-        if ($request->filled('status')) {
-            if ($request->status !== 'all') {
-                $query->where('status', $request->status);
-            }
-        } else {
-            // Default: sembunyikan tugas yang sudah diarsipkan agar papan Kanban tetap bersih
-            $query->where('status', '!=', 'archived');
-        }
-
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
@@ -1184,15 +1175,26 @@ class AdminController extends Controller
             $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        $allTodos = (clone $query)->latest()->get();
-        $todos = $query->latest()->paginate(15)->withQueryString();
+        // 1. Active Tasks (Exclude archived)
+        $activeQuery = (clone $query)->where('status', '!=', 'archived');
+        if ($request->filled('status') && !in_array($request->status, ['all', 'archived'])) {
+            $activeQuery->where('status', $request->status);
+        }
+
+        $allTodos = (clone $activeQuery)->latest()->get();
+        $todos = $activeQuery->latest()->paginate(15)->withQueryString();
+
+        // 2. Archived Tasks
+        $archivedQuery = (clone $query)->where('status', 'archived');
+        $archivedTodos = $archivedQuery->latest()->paginate(15, ['*'], 'archive_page')->withQueryString();
+        $archivedCount = \App\Models\TodoList::where('status', 'archived')->count();
+
         $workers = User::whereIn('role', ['admin', 'operator', 'finance', 'program_manager', 'crm_staff', 'field_worker', 'marketing'])
             ->orderBy('name')
             ->get();
         $myTodos = \App\Models\TodoList::where('user_id', auth()->id())->latest()->get();
-        $archivedCount = \App\Models\TodoList::where('status', 'archived')->count();
 
-        return view('admin.tasks', compact('todos', 'allTodos', 'workers', 'myTodos', 'archivedCount'));
+        return view('admin.tasks', compact('todos', 'allTodos', 'archivedTodos', 'workers', 'myTodos', 'archivedCount'));
     }
 
     public function exportTasks(Request $request)

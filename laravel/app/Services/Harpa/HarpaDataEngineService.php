@@ -130,8 +130,6 @@ class HarpaDataEngineService
                 if ($dt !== false) {
                     return $dt;
                 }
-            } catch (\Throwable $e) {
-                // Lanjut ke format berikutnya
             }
         }
 
@@ -142,9 +140,7 @@ class HarpaDataEngineService
         }
     }
 
-    /**
-     * ALUR A: Masuk data donasi (FH, IM, WA) & papan kerja (gerbang berhenti).
-     */
+
     public function processDonationImport(
         string $filePath,
         string $source, // 'FH', 'IM', 'WA'
@@ -158,7 +154,6 @@ class HarpaDataEngineService
         $headers = $fileData['headers'];
         $rows = $fileData['rows'];
 
-        // Cek duplikasi kontrol tarik periode yang sama untuk sumber ini
         $existingKontrol = KontrolTarik::where('sumber', $source)
             ->where('periode', $periode)
             ->first();
@@ -171,7 +166,6 @@ class HarpaDataEngineService
             ];
         }
 
-        // Peta index kolom berdasarkan header
         $headerMap = [];
         foreach ($headers as $idx => $name) {
             $key = strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', str_replace(' ', '_', $name)));

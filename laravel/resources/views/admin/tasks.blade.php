@@ -38,30 +38,29 @@
         <!-- Dashboard Content -->
         <div class="lg:col-span-3 space-y-6">
             
-            {{-- Header Page Title & Export Excel Button --}}
+            {{-- Header Page Title & Top Actions --}}
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="space-y-1">
                     <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
-                        Manajemen <span class="text-primary-600">Tugas & To-Do List</span>
+                        Manajemen <span class="text-primary-600">Tugas & Pekerjaan</span>
                     </h1>
                     <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2.5">
-                    @if(request('status') === 'archived')
-                        <a href="{{ route('admin.tasks') }}" class="px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-xs transition-colors">
-                            <i class="fa-solid fa-arrow-left text-xs"></i> Papan Tugas Aktif
-                        </a>
-                    @else
-                        <a href="{{ route('admin.tasks', ['status' => 'archived']) }}" class="px-4 py-2.5 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-xs transition-colors" title="Buka daftar tugas yang telah diarsipkan">
-                            <i class="fa-solid fa-box-archive text-slate-600 text-xs"></i>
-                            <span>{{ $archivedCount ?? 0 }} Diarsipkan</span>
-                        </a>
-                    @endif
+                    {{-- Tombol Tambah Tugas Baru --}}
+                    <button type="button" 
+                            onclick="window.dispatchEvent(new CustomEvent('open-create-task-modal'))" 
+                            class="px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-xs transition-colors">
+                        <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i>
+                        <span>+ Tugas Baru</span>
+                    </button>
 
                     {{-- Export Button (Excel/CSV) --}}
-                    <a href="{{ route('admin.tasks.export', request()->all()) }}" class="px-5 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-sm transition-colors">
-                        <i class="fa-solid fa-file-excel text-sm"></i> Export Excel
+                    <a href="{{ route('admin.tasks.export', request()->all()) }}" 
+                       class="px-4 py-2.5 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-xs transition-colors">
+                        <i class="fa-solid fa-file-excel text-emerald-700 text-xs"></i>
+                        <span>Export Excel</span>
                     </a>
                 </div>
             </div>
@@ -73,6 +72,7 @@
                 :canAssign="true" 
                 :storeRoute="route('admin.tasks.store')" 
                 :paginatedTodos="$todos" 
+                :archivedTodos="$archivedTodos"
                 :tableRoute="route('admin.tasks.export', request()->all())" 
                 :showViewToggle="true" 
                 :archivedCount="$archivedCount ?? 0"

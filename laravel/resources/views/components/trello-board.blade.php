@@ -6,6 +6,7 @@
     'showViewToggle' => true,
     'tableRoute' => null,
     'paginatedTodos' => null,
+    'archivedTodos' => null,
     'archivedCount' => 0,
 ])
 
@@ -17,6 +18,7 @@
     $totalCount = $todosCollection->count();
     $completedCount = $completedTodos->count();
     $progressPercent = $totalCount > 0 ? round(($completedCount / $totalCount) * 100) : 0;
+    $archivedTodosList = $archivedTodos ?? collect();
 @endphp
 
 <!-- SortableJS for smooth drag & drop -->
@@ -42,69 +44,51 @@
     </div>
 
     <!-- Trello Top Toolbar -->
-    <div class="bg-white border border-slate-200 rounded-3xl p-4 sm:p-5 shadow-sm space-y-4">
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
         
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             
-            <!-- Left: Title & Progress Bar -->
-            <div class="space-y-2">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-xl bg-[#063f5c] text-white flex items-center justify-center shadow-xs">
-                        <i class="fa-solid fa-table-columns text-sm" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-base sm:text-lg font-montserrat font-black text-slate-900 uppercase tracking-tight">
-                            Papan <span class="text-[#063f5c]">Tugas (Trello Board)</span>
-                        </h2>
-                        <p class="text-xs text-slate-600 font-bold uppercase tracking-wider">
-                            <span x-text="counts.completed">{{ $completedCount }}</span> dari <span x-text="counts.total">{{ $totalCount }}</span> Selesai (<span x-text="progressPercent">{{ $progressPercent }}</span>%)
-                        </p>
-                    </div>
-                </div>
+            <!-- Left: View Switcher (Clean Segmented Control) -->
+            @if($showViewToggle)
+            <div class="bg-slate-100 border border-slate-200/80 p-1 rounded-xl inline-flex items-center gap-1 text-xs font-bold text-slate-600 self-start sm:self-auto">
+                <button type="button" @click="setView('kanban')" 
+                        :aria-pressed="currentView === 'kanban'"
+                        :class="currentView === 'kanban' ? 'bg-white text-slate-900 shadow-xs font-black' : 'text-slate-600 hover:text-slate-900 font-bold'"
+                        class="px-3.5 py-2 min-h-[40px] rounded-lg transition-all inline-flex items-center gap-1.5 text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-table-columns text-xs" :class="currentView === 'kanban' ? 'text-primary-700' : 'text-slate-400'" aria-hidden="true"></i>
+                    <span>Papan Kanban</span>
+                </button>
+                <button type="button" @click="setView('table')" 
+                        :aria-pressed="currentView === 'table'"
+                        :class="currentView === 'table' ? 'bg-white text-slate-900 shadow-xs font-black' : 'text-slate-600 hover:text-slate-900 font-bold'"
+                        class="px-3.5 py-2 min-h-[40px] rounded-lg transition-all inline-flex items-center gap-1.5 text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-list-check text-xs" :class="currentView === 'table' ? 'text-primary-700' : 'text-slate-400'" aria-hidden="true"></i>
+                    <span>Tabel List</span>
+                </button>
+                <button type="button" @click="setView('archive')" 
+                        :aria-pressed="currentView === 'archive'"
+                        :class="currentView === 'archive' ? 'bg-white text-slate-900 shadow-xs font-black' : 'text-slate-600 hover:text-slate-900 font-bold'"
+                        class="px-3.5 py-2 min-h-[40px] rounded-lg transition-all inline-flex items-center gap-1.5 text-xs uppercase tracking-wider">
+                    <i class="fa-solid fa-box-archive text-xs" :class="currentView === 'archive' ? 'text-primary-700' : 'text-slate-400'" aria-hidden="true"></i>
+                    <span>Arsip ({{ $archivedCount }})</span>
+                </button>
+            </div>
+            @endif
 
-                <!-- Mini Progress Bar -->
-                <div class="w-full sm:w-64 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div class="h-full bg-emerald-700 rounded-full transition-all duration-500"
+            <!-- Right: Completion Progress -->
+            <div class="flex items-center gap-3">
+                <div class="text-left sm:text-right">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Penyelesaian Tugas</span>
+                    <span class="text-xs font-black text-slate-800">
+                        <span x-text="counts.completed">{{ $completedCount }}</span> / <span x-text="counts.total">{{ $totalCount }}</span> Selesai (<span x-text="progressPercent">{{ $progressPercent }}</span>%)
+                    </span>
+                </div>
+                <div class="w-24 sm:w-32 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200 shrink-0">
+                    <div class="h-full bg-primary-600 rounded-full transition-all duration-500"
                          :style="'width: ' + progressPercent + '%'"></div>
                 </div>
             </div>
 
-            <!-- Right: Actions & View Switcher -->
-            <div class="flex flex-wrap items-center gap-2.5">
-                
-                @if($showViewToggle)
-                <!-- View Toggle Buttons -->
-                <div class="bg-slate-100 border border-slate-200 p-1 rounded-xl flex items-center text-xs font-bold text-slate-600">
-                    <button type="button" @click="currentView = 'kanban'" 
-                            :aria-pressed="currentView === 'kanban'"
-                            :class="currentView === 'kanban' ? 'bg-white text-primary-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                            class="px-3.5 py-2 min-h-[44px] rounded-lg transition-colors inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider">
-                        <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
-                        <span>Papan Kanban</span>
-                    </button>
-                    <button type="button" @click="currentView = 'table'" 
-                            :aria-pressed="currentView === 'table'"
-                            :class="currentView === 'table' ? 'bg-white text-primary-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-                            class="px-3.5 py-2 min-h-[44px] rounded-lg transition-colors inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider">
-                        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
-                        <span>Tabel List</span>
-                    </button>
-                    <a href="{{ request('status') === 'archived' ? route('admin.tasks') : route('admin.tasks', ['status' => 'archived']) }}" 
-                       class="px-3.5 py-2 min-h-[44px] rounded-lg transition-colors inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider {{ request('status') === 'archived' ? 'bg-[#063f5c] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' }}"
-                       title="Buka daftar tugas yang telah diarsipkan">
-                        <i class="fa-solid fa-box-archive text-xs" aria-hidden="true"></i>
-                        <span>Arsip ({{ $archivedCount }})</span>
-                    </a>
-                </div>
-                @endif
-
-                <!-- Button Buat Tugas Baru -->
-                <button type="button" @click="openCreateModal()" 
-                        class="px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-primary-700 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-2 shadow-sm transition-colors">
-                    <i class="fa-solid fa-plus text-xs" aria-hidden="true"></i>
-                    <span>Tugas Baru</span>
-                </button>
-            </div>
         </div>
 
         <!-- Filter Bar -->
@@ -112,17 +96,38 @@
             
             <!-- Real-time Search Box -->
             <div class="relative flex-1 min-w-[200px]">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs"></i>
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs" aria-hidden="true"></i>
                 <input type="text" 
-                       aria-label="Cari kartu tugas atau staf"
+                       aria-label="Cari kartu tugas atau nama staf"
                        x-model="searchQuery" 
                        @input="filterCards()" 
-                       placeholder="Cari kartu tugas atau staf..." 
-                       class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-4 py-2.5 min-h-[44px] text-xs font-semibold text-slate-800 placeholder:text-slate-500 focus:border-primary-500 focus:bg-white transition-colors">
+                       placeholder="Cari kartu tugas atau nama staf..." 
+                       class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-4 py-2 min-h-[44px] text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:border-primary-500 focus:bg-white transition-colors">
             </div>
 
             @if($workers->count() > 0)
             <!-- Assignee Filter -->
+            <div class="flex items-center gap-2">
+                <label for="trello_filter_assignee" class="text-xs font-bold text-slate-600 uppercase tracking-wider hidden sm:inline shrink-0">Pegawai:</label>
+                <select id="trello_filter_assignee" x-model="selectedAssignee" 
+                        @change="filterCards()" 
+                        class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs font-bold text-slate-700 focus:border-primary-500">
+                    <option value="">Semua Pegawai</option>
+                    @foreach($workers as $w)
+                        <option value="{{ $w->id }}">{{ $w->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
+            <button type="button" x-show="searchQuery || selectedAssignee" 
+                    @click="resetFilters()" 
+                    style="display: none;"
+                    class="min-h-[44px] text-xs font-bold text-rose-700 hover:text-rose-800 underline px-2">
+                Reset Filter
+            </button>
+        </div>
+    </div>
             <div class="flex items-center gap-1.5">
                 <label for="trello_filter_assignee" class="text-xs font-bold text-slate-600 uppercase tracking-wider hidden sm:inline">Pegawai:</label>
                 <select id="trello_filter_assignee" x-model="selectedAssignee" 
