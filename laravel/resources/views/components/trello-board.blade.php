@@ -293,9 +293,16 @@
     <div x-show="currentView === 'table'" x-transition style="display: none;" class="space-y-4">
         <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm overflow-hidden">
             <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-100">
-                <h3 class="font-montserrat font-black text-slate-800 text-sm uppercase tracking-wider">
-                    Daftar Tabel Tugas Lengkap
-                </h3>
+                <div>
+                    <h3 class="font-montserrat font-black text-slate-800 text-sm uppercase tracking-wider">
+                        Daftar Tabel Tugas Lengkap
+                    </h3>
+                    @if($paginatedTodos && method_exists($paginatedTodos, 'total'))
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">
+                            Menampilkan {{ $paginatedTodos->count() }} tugas per halaman (Total: {{ $paginatedTodos->total() }} tugas)
+                        </p>
+                    @endif
+                </div>
                 @if($tableRoute)
                     <a href="{{ $tableRoute }}" class="px-3.5 py-2 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm transition-colors">
                         <i class="fa-solid fa-file-excel"></i> Export Data
@@ -316,7 +323,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-semibold">
-                        @forelse($todos as $t)
+                        @forelse(($paginatedTodos ?? $todos) as $t)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="py-3 px-4">
                                 <span class="font-bold text-slate-900">{{ $t->task }}</span>
