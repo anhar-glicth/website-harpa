@@ -170,7 +170,7 @@
                 <!-- Cards Dropzone -->
                 <div id="lane-pending" 
                      data-status="pending" 
-                     class="trello-lane space-y-3 min-h-[320px] transition-colors p-0.5 rounded-xl">
+                     class="trello-lane space-y-3 min-h-[320px] max-h-[600px] overflow-y-auto pr-1 transition-colors p-0.5 rounded-xl">
                     @forelse($pendingTodos as $item)
                         @include('components.trello-card', ['todo' => $item])
                     @empty
@@ -217,7 +217,7 @@
                 <!-- Cards Dropzone -->
                 <div id="lane-in_progress" 
                      data-status="in_progress" 
-                     class="trello-lane space-y-3 min-h-[320px] transition-colors p-0.5 rounded-xl">
+                     class="trello-lane space-y-3 min-h-[320px] max-h-[600px] overflow-y-auto pr-1 transition-colors p-0.5 rounded-xl">
                     @forelse($inProgressTodos as $item)
                         @include('components.trello-card', ['todo' => $item])
                     @empty
@@ -264,7 +264,7 @@
                 <!-- Cards Dropzone -->
                 <div id="lane-completed" 
                      data-status="completed" 
-                     class="trello-lane space-y-3 min-h-[320px] transition-colors p-0.5 rounded-xl">
+                     class="trello-lane space-y-3 min-h-[320px] max-h-[600px] overflow-y-auto pr-1 transition-colors p-0.5 rounded-xl">
                     @forelse($completedTodos as $item)
                         @include('components.trello-card', ['todo' => $item])
                     @empty
