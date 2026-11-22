@@ -1388,6 +1388,22 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Kartu tugas berhasil diarsipkan.');
     }
 
+    public function restoreTask($id)
+    {
+        $todo = \App\Models\TodoList::findOrFail($id);
+        $todo->status = 'completed';
+        $todo->save();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas berhasil dikembalikan ke papan aktif.'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Tugas berhasil dikembalikan ke papan aktif.');
+    }
+
     public function performanceList(Request $request)
     {
         $staffRoles = [

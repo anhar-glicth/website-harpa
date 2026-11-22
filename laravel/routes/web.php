@@ -150,6 +150,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/tasks/{id}/move', [AdminController::class, 'moveTask'])->name('admin.tasks.move');
     Route::post('/admin/tasks/archive-completed', [AdminController::class, 'archiveCompletedTasks'])->name('admin.tasks.archive_completed');
     Route::post('/admin/tasks/{id}/archive', [AdminController::class, 'archiveTask'])->name('admin.tasks.archive');
+    Route::post('/admin/tasks/{id}/restore', [AdminController::class, 'restoreTask'])->name('admin.tasks.restore');
     Route::delete('/admin/tasks/{id}/delete', [AdminController::class, 'deleteTask'])->name('admin.tasks.delete');
     Route::get('/admin/tasks/export', [AdminController::class, 'exportTasks'])->name('admin.tasks.export');
 
@@ -159,6 +160,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/todo/{id}/update', [FieldController::class, 'todoUpdate'])->name('todo.update');
     Route::post('/todo/{id}/move', [AdminController::class, 'moveTask'])->name('todo.move');
     Route::post('/todo/{id}/archive', [AdminController::class, 'archiveTask'])->name('todo.archive');
+    Route::post('/todo/{id}/restore', [AdminController::class, 'restoreTask'])->name('todo.restore');
     Route::delete('/todo/{id}/delete', [AdminController::class, 'deleteTask'])->name('todo.delete');
     
     // Transaction Management Routes

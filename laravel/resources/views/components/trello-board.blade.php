@@ -6,6 +6,7 @@
     'showViewToggle' => true,
     'tableRoute' => null,
     'paginatedTodos' => null,
+    'archivedCount' => 0,
 ])
 
 @php
@@ -88,6 +89,12 @@
                         <i class="fa-solid fa-list-check" aria-hidden="true"></i>
                         <span>Tabel List</span>
                     </button>
+                    <a href="{{ request('status') === 'archived' ? route('admin.tasks') : route('admin.tasks', ['status' => 'archived']) }}" 
+                       class="px-3.5 py-2 min-h-[44px] rounded-lg transition-colors inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider {{ request('status') === 'archived' ? 'bg-[#063f5c] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' }}"
+                       title="Buka daftar tugas yang telah diarsipkan">
+                        <i class="fa-solid fa-box-archive text-xs" aria-hidden="true"></i>
+                        <span>Arsip ({{ $archivedCount }})</span>
+                    </a>
                 </div>
                 @endif
 
@@ -334,6 +341,23 @@
                 @endif
             </div>
 
+            @if(request('status') === 'archived')
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs mb-4 shadow-xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-[#063f5c] text-white flex items-center justify-center shrink-0 shadow-xs">
+                        <i class="fa-solid fa-box-archive text-sm" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-900 text-sm">Daftar Tugas yang Diarsipkan</p>
+                        <p class="text-slate-600 font-medium">Tugas di bawah ini telah diselesaikan dan disimpan di arsip. Anda dapat memulihkannya kembali ke papan aktif jika dibutuhkan.</p>
+                    </div>
+                </div>
+                <a href="{{ route('admin.tasks') }}" class="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 rounded-xl font-bold uppercase tracking-wider text-xs transition-colors inline-flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-arrow-left text-xs" aria-hidden="true"></i> Kembali ke Papan Aktif
+                </a>
+            </div>
+            @endif
+
             <div class="overflow-x-auto mt-4">
                 <table class="w-full text-left text-xs text-slate-700">
                     <thead class="bg-slate-50 text-xs font-black uppercase tracking-wider text-slate-600 border-b border-slate-100">
@@ -366,6 +390,8 @@
                                     <span class="text-xs font-bold text-emerald-700">Selesai</span>
                                 @elseif($t->status === 'in_progress')
                                     <span class="text-xs font-bold text-[#063f5c]">In Progress</span>
+                                @elseif($t->status === 'archived')
+                                    <span class="text-xs font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">Diarsipkan</span>
                                 @else
                                     <span class="text-xs font-semibold text-slate-600">To Do</span>
                                 @endif
@@ -374,10 +400,18 @@
                                 {{ $t->deadline ? $t->deadline->format('d M Y H:i') : '-' }}
                             </td>
                             <td class="py-3 px-4 text-center">
-                                <button type="button" @click="openDetailModal({{ $t->toJson() }})" aria-label="Buka Detail"
-                                        class="w-11 h-11 inline-flex items-center justify-center text-primary-700 hover:bg-primary-50 rounded-xl transition-colors" title="Buka Detail">
-                                    <i class="fa-solid fa-up-right-from-square"></i>
-                                </button>
+                                <div class="inline-flex items-center gap-1.5 justify-center">
+                                    @if($t->status === 'archived')
+                                        <button type="button" @click="restoreCard({{ $t->id }})" aria-label="Pulihkan ke Papan Aktif"
+                                                class="w-9 h-9 inline-flex items-center justify-center text-emerald-700 hover:bg-emerald-50 rounded-xl transition-colors border border-emerald-200" title="Pulihkan tugas ini ke papan aktif">
+                                            <i class="fa-solid fa-rotate-left text-xs" aria-hidden="true"></i>
+                                        </button>
+                                    @endif
+                                    <button type="button" @click="openDetailModal({{ $t->toJson() }})" aria-label="Buka Detail"
+                                            class="w-9 h-9 inline-flex items-center justify-center text-primary-700 hover:bg-primary-50 rounded-xl transition-colors" title="Buka Detail">
+                                        <i class="fa-solid fa-up-right-from-square text-xs" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         @empty
@@ -633,7 +667,7 @@
 <script>
 function trelloBoardData() {
     return {
-        currentView: 'kanban',
+        currentView: '{{ request("status") === "archived" ? "table" : "kanban" }}',
         searchQuery: '',
         selectedAssignee: '',
         toast: {
@@ -805,6 +839,30 @@ function trelloBoardData() {
                     this.showToast('Kartu berhasil diarsipkan.', 'success');
                 } else {
                     this.showToast(data.message || 'Gagal mengarsipkan kartu.', 'error');
+                }
+            })
+            .catch(() => {
+                this.showToast('Koneksi terganggu.', 'error');
+            });
+        },
+        restoreCard(cardId) {
+            if (!confirm('Kembalikan tugas ini ke papan tugas aktif?')) return;
+
+            fetch('{{ url("todo") }}/' + cardId + '/restore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    this.showToast(data.message || 'Tugas berhasil dipulihkan ke papan aktif.', 'success');
+                    setTimeout(() => window.location.reload(), 800);
+                } else {
+                    this.showToast(data.message || 'Gagal memulihkan tugas.', 'error');
                 }
             })
             .catch(() => {

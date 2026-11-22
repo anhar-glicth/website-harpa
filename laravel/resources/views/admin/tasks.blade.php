@@ -48,11 +48,15 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2.5">
-                    @if(isset($archivedCount) && $archivedCount > 0)
-                        <span class="px-3.5 py-2 bg-slate-100 border border-slate-200 text-slate-600 rounded-xl text-xs font-bold inline-flex items-center gap-1.5" title="Total tugas yang telah diarsipkan dan tersimpan aman di database">
-                            <i class="fa-solid fa-box-archive text-slate-500 text-xs"></i>
-                            <span>{{ $archivedCount }} Diarsipkan</span>
-                        </span>
+                    @if(request('status') === 'archived')
+                        <a href="{{ route('admin.tasks') }}" class="px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-xs transition-colors">
+                            <i class="fa-solid fa-arrow-left text-xs"></i> Papan Tugas Aktif
+                        </a>
+                    @else
+                        <a href="{{ route('admin.tasks', ['status' => 'archived']) }}" class="px-4 py-2.5 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 rounded-xl text-xs font-black uppercase tracking-wider inline-flex items-center justify-center gap-2 shadow-xs transition-colors" title="Buka daftar tugas yang telah diarsipkan">
+                            <i class="fa-solid fa-box-archive text-slate-600 text-xs"></i>
+                            <span>{{ $archivedCount ?? 0 }} Diarsipkan</span>
+                        </a>
                     @endif
 
                     {{-- Export Button (Excel/CSV) --}}
@@ -71,6 +75,7 @@
                 :paginatedTodos="$todos" 
                 :tableRoute="route('admin.tasks.export', request()->all())" 
                 :showViewToggle="true" 
+                :archivedCount="$archivedCount ?? 0"
             />
 
         </div>
