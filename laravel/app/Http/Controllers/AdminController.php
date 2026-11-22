@@ -28,6 +28,7 @@ use App\Models\Target;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -123,35 +124,215 @@ class AdminController extends Controller
         ));
     }
 
-    public function campaigns()
+    public function campaigns(Request $request)
     {
         if (!Auth::user()->canAccessMenu('campaigns')) {
             return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin untuk mengelola kampanye.');
         }
 
-        $campaigns = Campaign::with('author')->latest()->paginate(10);
-        return view('admin.campaigns', compact('campaigns'));
+        $query = Campaign::with(['author', 'group'])->withCount('donations');
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->where('category', $request->category);
+        }
+
+        $campaigns = $query->latest()->paginate(10)->withQueryString();
+        $categories = Campaign::distinct()->pluck('category')->filter()->values();
+        $programGroups = ProgramGroup::orderBy('name')->get();
+
+        $totalCampaigns = Campaign::count();
+        $approvedCampaigns = Campaign::where('status', 'approved')->count();
+        $pendingCampaigns = Campaign::where('status', 'pending')->count();
+        $rejectedCampaigns = Campaign::where('status', 'rejected')->count();
+        $totalCollected = Campaign::sum('current_amount');
+
+        return view('admin.campaigns', compact(
+            'campaigns',
+            'categories',
+            'programGroups',
+            'totalCampaigns',
+            'approvedCampaigns',
+            'pendingCampaigns',
+            'rejectedCampaigns',
+            'totalCollected'
+        ));
+    }
+
+    public function storeCampaign(Request $request)
+    {
+        if (!Auth::user()->canAccessMenu('campaigns')) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+            }
+            return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin untuk mengelola kampanye.');
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'target_amount' => 'required|numeric|min:1000',
+            'description' => 'required|string',
+            'status' => 'required|in:pending,approved,rejected',
+            'foto' => 'nullable|image|max:3072',
+        ]);
+
+        $data = $request->only(['title', 'category', 'target_amount', 'description', 'status']);
+        $data['author_id'] = Auth::id();
+        $data['current_amount'] = 0;
+
+        $group = ProgramGroup::where('name', $request->category)->first();
+        if ($group) {
+            $data['group_id'] = $group->id;
+        }
+
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('campaigns', 'public');
+            $data['foto'] = '/storage/' . $path;
+        }
+
+        $campaign = Campaign::create($data);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kampanye baru berhasil dibuat.',
+                'campaign' => $campaign
+            ]);
+        }
+
+        return redirect()->route('admin.campaigns')->with('success', 'Kampanye baru berhasil dibuat dan disimpan.');
+    }
+
+    public function updateCampaign(Request $request, $id)
+    {
+        if (!Auth::user()->canAccessMenu('campaigns')) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak.'], 403);
+            }
+            return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin untuk mengelola kampanye.');
+        }
+
+        $campaign = Campaign::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'target_amount' => 'required|numeric|min:1000',
+            'description' => 'required|string',
+            'status' => 'required|in:pending,approved,rejected',
+            'foto' => 'nullable|image|max:3072',
+        ]);
+
+        $data = $request->only(['title', 'category', 'target_amount', 'description', 'status']);
+
+        $group = ProgramGroup::where('name', $request->category)->first();
+        $data['group_id'] = $group ? $group->id : null;
+
+        if ($request->hasFile('foto')) {
+            if ($campaign->foto && str_starts_with($campaign->foto, '/storage/campaigns/')) {
+                $oldPath = str_replace('/storage/', '', $campaign->foto);
+                Storage::disk('public')->delete($oldPath);
+            }
+            $path = $request->file('foto')->store('campaigns', 'public');
+            $data['foto'] = '/storage/' . $path;
+        }
+
+        $campaign->update($data);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data kampanye berhasil diperbarui.',
+                'campaign' => $campaign
+            ]);
+        }
+
+        return redirect()->route('admin.campaigns')->with('success', 'Data kampanye berhasil diperbarui.');
+    }
+
+    public function deleteCampaign(Request $request, $id)
+    {
+        if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak: Hanya Super Admin dan Manager Program yang berhak menghapus kampanye.'], 403);
+            }
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya Super Admin dan Manager Program yang berhak menghapus kampanye.');
+        }
+
+        $campaign = Campaign::withCount('donations')->findOrFail($id);
+
+        // Keamanan: Cek jika kampanye sudah memiliki transaksi donasi
+        if ($campaign->donations_count > 0 && !$request->boolean('force')) {
+            $msg = "Kampanye '{$campaign->title}' memiliki {$campaign->donations_count} transaksi donasi tercatat. Untuk menjaga integritas data keuangan donatur, disarankan menonaktifkan kampanye (ubah status menjadi Rejected) daripada menghapusnya.";
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg, 'has_donations' => true], 422);
+            }
+            return redirect()->back()->with('error', $msg);
+        }
+
+        if ($campaign->foto && str_starts_with($campaign->foto, '/storage/campaigns/')) {
+            $oldPath = str_replace('/storage/', '', $campaign->foto);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        $campaign->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kampanye berhasil dihapus.'
+            ]);
+        }
+
+        return redirect()->route('admin.campaigns')->with('success', 'Kampanye berhasil dihapus.');
     }
 
     public function approveCampaign($id)
     {
         if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menyetujui kampanye.'], 403);
+            }
             return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menyetujui kampanye.');
         }
 
         $campaign = Campaign::findOrFail($id);
         $campaign->update(['status' => 'approved']);
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Kampanye berhasil disetujui.']);
+        }
         return redirect()->back()->with('success', 'Kampanye berhasil disetujui.');
     }
 
     public function rejectCampaign($id)
     {
         if (!Auth::user()->isAdmin() && !Auth::user()->isProgramManager()) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menolak kampanye.'], 403);
+            }
             return redirect()->back()->with('error', 'Akses ditolak: Hanya Manager Program dan Super Admin yang berhak menolak kampanye.');
         }
 
         $campaign = Campaign::findOrFail($id);
         $campaign->update(['status' => 'rejected']);
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Kampanye ditolak.']);
+        }
         return redirect()->back()->with('success', 'Kampanye ditolak.');
     }
 
