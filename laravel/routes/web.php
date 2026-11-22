@@ -219,6 +219,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::post('/daftar-kirim/update-status', [HarpaDataController::class, 'updateDaftarKirimStatus'])->name('daftar_kirim.update_status');
         Route::get('/daftar-kirim/export/{type}', [HarpaDataController::class, 'exportDaftarKirim'])->name('daftar_kirim.export');
         Route::get('/laporan', [HarpaDataController::class, 'laporanAnalitik'])->name('laporan');
+        Route::post('/laporan/update-nomor-baru', [HarpaDataController::class, 'updateNomorBaru'])->name('laporan.update_nomor_baru');
+        Route::get('/laporan/export/{type}', [HarpaDataController::class, 'exportLaporanAnalitik'])->name('laporan.export');
+        Route::post('/laporan/sync', [HarpaDataController::class, 'syncWebDonations'])->name('laporan.sync');
         Route::get('/settings', [HarpaDataController::class, 'settings'])->name('settings');
         Route::post('/settings', [HarpaDataController::class, 'updateSettings'])->name('settings.update');
     });

@@ -1026,6 +1026,11 @@ class HarpaDataController extends Controller
     {
         $tab = $request->query('tab', 'hitung_donatur');
 
+        // Jika master donatur masih kosong, otomatis sinkronkan dari data donasi web
+        if (\App\Models\Harpa\MasterDonatur::count() === 0) {
+            $this->engine->syncFromWebDonations();
+        }
+
         $hitungDonatur = ($tab === 'hitung_donatur') ? $this->engine->getLaporanHitungDonatur() : [];
         $kohort = ($tab === 'kohort') ? $this->engine->getLaporanKohort() : [];
         $donaturTakBaca = ($tab === 'donatur_tak_baca') ? $this->engine->getLaporanDonaturTakBaca(
@@ -1033,15 +1038,186 @@ class HarpaDataController extends Controller
             $request->query('end_date')
         ) : [];
 
+        $mintaNomorBaru = ($tab === 'minta_nomor_baru') ? $this->engine->getLaporanMintaNomorBaru(
+            $request->filled('min_donasi') ? (float)$request->query('min_donasi') : null,
+            $request->query('search')
+        ) : [];
+
+        $trackingBulanan = ($tab === 'tracking_bulanan') ? $this->engine->getLaporanTrackingBulanan(
+            $request->filled('year') ? (int)$request->query('year') : null,
+            $request->query('search')
+        ) : [];
+
+        $trackingJumat = ($tab === 'tracking_jumat') ? $this->engine->getLaporanTrackingJumat(
+            $request->filled('year') ? (int)$request->query('year') : null,
+            $request->filled('month') ? (int)$request->query('month') : null,
+            $request->query('search')
+        ) : [];
+
         return view('admin.harpa.laporan_analitik', [
-            'active'         => 'harpa_laporan',
-            'tab'            => $tab,
-            'hitungDonatur'  => $hitungDonatur,
-            'kohort'         => $kohort,
-            'donaturTakBaca' => $donaturTakBaca,
-            'startDate'      => $request->query('start_date'),
-            'endDate'        => $request->query('end_date'),
+            'active'          => 'harpa_laporan',
+            'tab'             => $tab,
+            'hitungDonatur'   => $hitungDonatur,
+            'kohort'          => $kohort,
+            'donaturTakBaca'  => $donaturTakBaca,
+            'mintaNomorBaru'  => $mintaNomorBaru,
+            'trackingBulanan' => $trackingBulanan,
+            'trackingJumat'   => $trackingJumat,
+            'startDate'       => $request->query('start_date'),
+            'endDate'         => $request->query('end_date'),
+            'search'          => $request->query('search'),
+            'year'            => $request->query('year', (int)date('Y')),
+            'month'           => $request->query('month', (int)date('m')),
+            'minDonasi'       => $request->query('min_donasi'),
         ]);
+    }
+
+    /**
+     * Memperbarui nomor telepon baru donatur (Minta Nomor Baru CRM).
+     */
+    public function updateNomorBaru(Request $request)
+    {
+        $request->validate([
+            'donatur_id' => 'required|string',
+            'no_hp_lama' => 'required|string',
+            'nomor_baru' => 'required|string',
+            'pic_crm'    => 'nullable|string|max:100',
+            'catatan'    => 'nullable|string|max:255',
+        ]);
+
+        $donatur = \App\Models\Harpa\MasterDonatur::findOrFail($request->input('donatur_id'));
+        $norm = \App\Models\Harpa\MasterNomor::normalize($request->input('nomor_baru'));
+
+        if (!$norm['is_valid']) {
+            return back()->with('error', 'Format nomor baru tidak valid. Pastikan nomor HP aktif diawali 08 atau 62.');
+        }
+
+        $cleanNewNumber = $norm['number'];
+        $oldNumber = $request->input('no_hp_lama');
+        $picCrm = $request->input('pic_crm') ?: 'Staff CRM';
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            // Perbarui data donatur
+            $donatur->no_hp = $cleanNewNumber;
+            if ($request->filled('pic_crm')) {
+                $donatur->pic_prospek = $picCrm;
+            }
+            $donatur->save();
+
+            // Tandai nomor lama sebagai non-aktif
+            $oldMaster = \App\Models\Harpa\MasterNomor::find($oldNumber);
+            if ($oldMaster) {
+                $oldMaster->wa_aktif = false;
+                $oldMaster->status_nomor = 'DEAD';
+                $oldMaster->catatan = 'Digantikan oleh ' . $cleanNewNumber . ' (' . $picCrm . ')';
+                $oldMaster->save();
+            }
+
+            // Daftarkan nomor baru
+            \App\Models\Harpa\MasterNomor::updateOrCreate(
+                ['no_hp' => $cleanNewNumber],
+                [
+                    'donatur_id'   => $donatur->donatur_id,
+                    'status_nomor' => 'ACTIVE',
+                    'wa_aktif'     => true,
+                    'tgl_catat'    => now()->toDateString(),
+                    'catatan'      => $request->input('catatan') ?: 'Nomor baru hasil reaktivasi CRM',
+                ]
+            );
+
+            \Illuminate\Support\Facades\DB::commit();
+            return back()->with('success', "Nomor donatur {$donatur->nama_lengkap} ({$donatur->donatur_id}) berhasil diperbarui menjadi {$cleanNewNumber}.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Gagal memperbarui nomor: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Ekspor data laporan analitik ke file CSV.
+     */
+    public function exportLaporanAnalitik(Request $request, string $type)
+    {
+        $filename = "laporan_{$type}_" . date('Ymd_His') . ".csv";
+
+        return response()->streamDownload(function () use ($type, $request) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
+
+            if ($type === 'minta_nomor_baru') {
+                fputcsv($handle, ['no_hp_lama', 'donatur_id', 'total_donasi', 'nama_lengkap', 'nomor_baru', 'pic_crm', 'status_wa', 'donasi_terakhir', 'catatan']);
+                $data = $this->engine->getLaporanMintaNomorBaru(
+                    $request->filled('min_donasi') ? (float)$request->query('min_donasi') : null,
+                    $request->query('search')
+                );
+                foreach ($data['items'] as $row) {
+                    fputcsv($handle, [
+                        $row['no_hp_lama'],
+                        $row['donatur_id'],
+                        $row['total_donasi'],
+                        $row['nama_lengkap'],
+                        $row['nomor_baru'],
+                        $row['pic_crm'],
+                        $row['status_wa'],
+                        $row['donasi_terakhir'],
+                        $row['catatan'],
+                    ]);
+                }
+            } elseif ($type === 'tracking_bulanan') {
+                $year = $request->query('year', (int)date('Y'));
+                fputcsv($handle, ['donatur_id', 'nama_lengkap', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des', 'total', 'frekuensi', 'rata_rata', 'kategori', 'badge']);
+                $data = $this->engine->getLaporanTrackingBulanan((int)$year, $request->query('search'));
+                foreach ($data['items'] as $row) {
+                    $m = $row['monthly'];
+                    fputcsv($handle, [
+                        $row['donatur_id'],
+                        $row['nama_lengkap'],
+                        $m[1], $m[2], $m[3], $m[4], $m[5], $m[6], $m[7], $m[8], $m[9], $m[10], $m[11], $m[12],
+                        $row['total'],
+                        $row['frekuensi'],
+                        round($row['rata_rata']),
+                        $row['kategori'],
+                        $row['badge'],
+                    ]);
+                }
+            } elseif ($type === 'tracking_jumat') {
+                $year = $request->query('year', (int)date('Y'));
+                $month = $request->query('month', (int)date('m'));
+                fputcsv($handle, ['donatur_id', 'nama_lengkap', 'bulan', 'J1', 'J2', 'J3', 'J4', 'J5', 'total_bulan', 'jml_blast', 'jml_read', 'status_terakhir', 'catatan_crm']);
+                $data = $this->engine->getLaporanTrackingJumat((int)$year, (int)$month, $request->query('search'));
+                foreach ($data['items'] as $row) {
+                    fputcsv($handle, [
+                        $row['donatur_id'],
+                        $row['nama_lengkap'],
+                        $month,
+                        $row['j1'],
+                        $row['j2'],
+                        $row['j3'],
+                        $row['j4'],
+                        $row['j5'],
+                        $row['total_bulan'],
+                        $row['jml_blast'],
+                        $row['jml_read'],
+                        $row['status_terakhir'],
+                        $row['catatan_crm'],
+                    ]);
+                }
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
+     * Trigger manual sinkronisasi data donasi web ke sistem data Harpa.
+     */
+    public function syncWebDonations(Request $request)
+    {
+        $count = $this->engine->syncFromWebDonations();
+        return back()->with('success', "Berhasil menyinkronkan {$count} transaksi donasi dari website ke Sistem Data Harpa.");
     }
 
     /**

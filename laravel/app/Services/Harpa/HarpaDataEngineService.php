@@ -1207,6 +1207,407 @@ class HarpaDataEngineService
 
         return $results;
     }
+
+    /**
+     * Sinkronisasi data donasi dari tabel donations (website live) ke Harpa Data Engine.
+     */
+    public function syncFromWebDonations(): int
+    {
+        $webDonations = \App\Models\Donation::whereIn('status', ['verified', 'paid', 'Success', 'success'])
+            ->get();
+
+        $synced = 0;
+        foreach ($webDonations as $d) {
+            $invId = $d->transaction_id ?: ('WEB-' . $d->id);
+            if (TransaksiDonasi::where('donasi_id', $invId)->exists()) {
+                continue;
+            }
+
+            $rawPhone = $d->donor_phone ?: $d->phone;
+            $norm = MasterNomor::normalize($rawPhone);
+            $cleanPhone = $norm['number'];
+
+            $donorName = $d->donor_name ?: ($d->name ?: 'Hamba Allah');
+
+            $donatur = null;
+            if ($cleanPhone) {
+                $masterNomor = MasterNomor::find($cleanPhone);
+                if ($masterNomor && $masterNomor->donatur_id) {
+                    $donatur = MasterDonatur::find($masterNomor->donatur_id);
+                }
+            }
+
+            if (!$donatur) {
+                $maxId = MasterDonatur::selectRaw("MAX(CAST(SUBSTR(donatur_id, 4) AS UNSIGNED)) as max_num")->value('max_num') ?? 0;
+                $newId = 'DNR' . str_pad($maxId + 1, 6, '0', STR_PAD_LEFT);
+
+                $donatur = MasterDonatur::create([
+                    'donatur_id'       => $newId,
+                    'no_hp'            => $cleanPhone ?: null,
+                    'nama_lengkap'     => $donorName,
+                    'email'            => $d->donor_email ?: $d->email,
+                    'tgl_registrasi'   => $d->created_at ? $d->created_at->toDateString() : now()->toDateString(),
+                    'sumber_informasi' => $d->source ?: 'Website Donasi',
+                    'pic_prospek'      => $d->pic ?: 'Staff CRM',
+                    'is_aktif'         => true,
+                ]);
+
+                if ($cleanPhone) {
+                    MasterNomor::firstOrCreate(
+                        ['no_hp' => $cleanPhone],
+                        [
+                            'donatur_id'   => $newId,
+                            'status_nomor' => 'ACTIVE',
+                            'wa_aktif'     => true,
+                            'tgl_catat'    => now()->toDateString(),
+                        ]
+                    );
+                }
+            }
+
+            TransaksiDonasi::create([
+                'donasi_id'          => $invId,
+                'donatur_id'         => $donatur->donatur_id,
+                'no_hp_input'        => $cleanPhone,
+                'campaign_id'        => $d->campaign_id,
+                'campaign_title_raw' => $d->campaign?->title ?: 'Kampanye Harpa',
+                'tanggal'            => $d->created_at ? $d->created_at->toDateString() : now()->toDateString(),
+                'jam'                => $d->created_at ? $d->created_at->toTimeString() : '00:00:00',
+                'nominal'            => (float)$d->amount,
+                'kode_unik'          => 0,
+                'total'              => (float)$d->amount,
+                'via_bayar'          => $d->bank ?: ($d->payment_method ?: 'TRANSFER'),
+                'status_bayar'       => 'success',
+                'sumber_data'        => $d->source ?: 'WEB',
+            ]);
+
+            $synced++;
+        }
+
+        return $synced;
+    }
+
+    /**
+     * Laporan Minta Nomor Baru (Donatur bernilai tinggi yang nomor WA-nya mati/tidak valid).
+     * Sesuai sheet MINTA_NOMOR_BARU di HARPA_ANALITIK.
+     */
+    public function getLaporanMintaNomorBaru(?float $minDonasi = null, ?string $search = null): array
+    {
+        $deadNumbers = MasterNomor::where('wa_aktif', false)
+            ->orWhereIn('status_nomor', ['DEAD', 'INVALID', 'NOT_WA', 'TIDAK_AKTIF'])
+            ->with(['donatur' => function($q) {
+                $q->with('transaksiSukses');
+            }])
+            ->get();
+
+        $rows = [];
+        $totalTakTerjangkau = 0;
+        $totalRecovered = 0;
+
+        foreach ($deadNumbers as $item) {
+            $donatur = $item->donatur;
+            if (!$donatur) continue;
+
+            $transaksi = $donatur->transaksiSukses;
+            $totalDonasi = (float) $transaksi->sum('nominal');
+            $frekuensi = $transaksi->count();
+
+            if ($minDonasi !== null && $totalDonasi < $minDonasi) {
+                continue;
+            }
+
+            if ($search) {
+                $s = strtolower($search);
+                if (
+                    strpos(strtolower($donatur->nama_lengkap), $s) === false &&
+                    strpos(strtolower($donatur->donatur_id), $s) === false &&
+                    strpos((string)$item->no_hp, $s) === false
+                ) {
+                    continue;
+                }
+            }
+
+            $donasiTerakhir = $transaksi->sortByDesc('tanggal')->first()?->tanggal;
+            $hasRecovered = !empty($donatur->no_hp) && $donatur->no_hp !== $item->no_hp;
+
+            if ($hasRecovered) {
+                $totalRecovered++;
+            } else {
+                $totalTakTerjangkau += $totalDonasi;
+            }
+
+            $rows[] = [
+                'no_hp_lama'       => $item->no_hp,
+                'donatur_id'       => $donatur->donatur_id,
+                'nama_lengkap'     => $donatur->nama_lengkap,
+                'total_donasi'     => $totalDonasi,
+                'frekuensi'        => $frekuensi,
+                'donasi_terakhir'  => $donasiTerakhir ? Carbon::parse($donasiTerakhir)->toDateString() : '-',
+                'nomor_baru'       => $hasRecovered ? $donatur->no_hp : '',
+                'pic_crm'          => $donatur->pic_prospek ?: 'Staff CRM',
+                'status_wa'        => $item->status_nomor ?: 'DEAD',
+                'catatan'          => $item->catatan ?: 'Nomor mati hasil validasi WBS Pro',
+                'is_recovered'     => $hasRecovered,
+            ];
+        }
+
+        usort($rows, function ($a, $b) {
+            return $b['total_donasi'] <=> $a['total_donasi'];
+        });
+
+        return [
+            'items'                => $rows,
+            'total_tak_terjangkau' => $totalTakTerjangkau,
+            'total_donatur'        => count($rows),
+            'total_recovered'      => $totalRecovered,
+        ];
+    }
+
+    /**
+     * Laporan Tracking Bulanan (12 Bulan Jan-Des per donatur).
+     * Sesuai sheet tracking_bulanan di HARPA_ANALITIK.
+     */
+    public function getLaporanTrackingBulanan(?int $year = null, ?string $search = null): array
+    {
+        $year = $year ?: (int) date('Y');
+
+        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
+        $yearExpr = $isSqlite ? "DISTINCT STRFTIME('%Y', tanggal) as yr" : "DISTINCT YEAR(tanggal) as yr";
+
+        $availableYears = TransaksiDonasi::selectRaw($yearExpr)
+            ->whereNotNull('tanggal')
+            ->pluck('yr')
+            ->map(fn($y) => (int)$y)
+            ->filter(fn($y) => $y > 2000)
+            ->sortDesc()
+            ->values()
+            ->all();
+
+        if (empty($availableYears)) {
+            $availableYears = [$year, $year - 1];
+        }
+
+        $donaturs = MasterDonatur::with(['transaksiSukses' => function($q) use ($year) {
+            $q->whereYear('tanggal', $year);
+        }])->get();
+
+        $rows = [];
+        $monthlyTotals = array_fill(1, 12, 0.0);
+        $grandTotal = 0.0;
+        $activeDonors = 0;
+
+        foreach ($donaturs as $d) {
+            $txYear = $d->transaksiSukses;
+            if ($txYear->isEmpty()) {
+                continue;
+            }
+
+            if ($search) {
+                $s = strtolower($search);
+                if (
+                    strpos(strtolower($d->nama_lengkap), $s) === false &&
+                    strpos(strtolower($d->donatur_id), $s) === false
+                ) {
+                    continue;
+                }
+            }
+
+            $monthly = array_fill(1, 12, 0.0);
+            foreach ($txYear as $tx) {
+                $m = (int) Carbon::parse($tx->tanggal)->format('n');
+                $monthly[$m] += (float) $tx->nominal;
+                $monthlyTotals[$m] += (float) $tx->nominal;
+            }
+
+            $totalYear = array_sum($monthly);
+            $freqYear = $txYear->count();
+            $avgYear = $freqYear > 0 ? ($totalYear / $freqYear) : 0;
+            $grandTotal += $totalYear;
+            $activeDonors++;
+
+            $kategori = ($freqYear >= 3) ? 'LOYAL' : (($freqYear >= 1) ? 'AKTIF' : 'BARU');
+            if ($totalYear >= 10000000) {
+                $badge = 'PLATINUM';
+            } elseif ($totalYear >= 1000000) {
+                $badge = 'GOLD';
+            } elseif ($totalYear > 0) {
+                $badge = 'SILVER';
+            } else {
+                $badge = 'NONE';
+            }
+
+            $rows[] = [
+                'donatur_id'   => $d->donatur_id,
+                'nama_lengkap' => $d->nama_lengkap,
+                'monthly'      => $monthly,
+                'total'        => $totalYear,
+                'frekuensi'    => $freqYear,
+                'rata_rata'    => $avgYear,
+                'kategori'     => $kategori,
+                'badge'        => $badge,
+            ];
+        }
+
+        usort($rows, function ($a, $b) {
+            return $b['total'] <=> $a['total'];
+        });
+
+        $bestMonth = 1;
+        $maxMonthVal = 0.0;
+        foreach ($monthlyTotals as $m => $val) {
+            if ($val > $maxMonthVal) {
+                $maxMonthVal = $val;
+                $bestMonth = $m;
+            }
+        }
+
+        return [
+            'year'            => $year,
+            'available_years' => $availableYears,
+            'items'           => $rows,
+            'monthly_totals'  => $monthlyTotals,
+            'grand_total'     => $grandTotal,
+            'active_donors'   => $activeDonors,
+            'best_month'      => $bestMonth,
+            'best_month_val'  => $maxMonthVal,
+        ];
+    }
+
+    /**
+     * Laporan Tracking Jumat Mingguan (J1-J5 disandingkan dengan evaluasi blast Everpro).
+     * Sesuai sheet tracking_jumat di HARPA_ANALITIK.
+     */
+    public function getLaporanTrackingJumat(?int $year = null, ?int $month = null, ?string $search = null): array
+    {
+        $year = $year ?: (int) date('Y');
+        $month = $month ?: (int) date('m');
+
+        $fridays = [];
+        $dt = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $daysInMonth = $dt->daysInMonth;
+
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $cur = Carbon::createFromDate($year, $month, $day);
+            if ($cur->isFriday()) {
+                $fridays[] = $day;
+            }
+        }
+
+        $ranges = [
+            1 => ['start' => 1, 'end' => $fridays[0] ?? 7],
+            2 => ['start' => ($fridays[0] ?? 7) + 1, 'end' => $fridays[1] ?? 14],
+            3 => ['start' => ($fridays[1] ?? 14) + 1, 'end' => $fridays[2] ?? 21],
+            4 => ['start' => ($fridays[2] ?? 21) + 1, 'end' => $fridays[3] ?? 28],
+            5 => ['start' => ($fridays[3] ?? 28) + 1, 'end' => $daysInMonth],
+        ];
+
+        $donaturs = MasterDonatur::with(['transaksiSukses' => function($q) use ($year, $month) {
+            $q->whereYear('tanggal', $year)->whereMonth('tanggal', $month);
+        }, 'nomor'])->get();
+
+        $rows = [];
+        $jumatTotals = [1 => 0.0, 2 => 0.0, 3 => 0.0, 4 => 0.0, 5 => 0.0];
+        $grandTotalMonth = 0.0;
+        $totalBlastAll = 0;
+        $totalReadAll = 0;
+
+        $startDateStr = Carbon::createFromDate($year, $month, 1)->toDateString();
+        $endDateStr = Carbon::createFromDate($year, $month, $daysInMonth)->toDateString();
+
+        foreach ($donaturs as $d) {
+            $txMonth = $d->transaksiSukses;
+            if ($txMonth->isEmpty()) {
+                continue;
+            }
+
+            if ($search) {
+                $s = strtolower($search);
+                if (
+                    strpos(strtolower($d->nama_lengkap), $s) === false &&
+                    strpos(strtolower($d->donatur_id), $s) === false
+                ) {
+                    continue;
+                }
+            }
+
+            $jNominal = [1 => 0.0, 2 => 0.0, 3 => 0.0, 4 => 0.0, 5 => 0.0];
+            foreach ($txMonth as $tx) {
+                $day = (int) Carbon::parse($tx->tanggal)->format('j');
+                $matchedJ = 5;
+                foreach ($ranges as $jIdx => $rng) {
+                    if ($day >= $rng['start'] && $day <= $rng['end']) {
+                        $matchedJ = $jIdx;
+                        break;
+                    }
+                }
+                $jNominal[$matchedJ] += (float) $tx->nominal;
+                $jumatTotals[$matchedJ] += (float) $tx->nominal;
+            }
+
+            $totalBulan = array_sum($jNominal);
+            $grandTotalMonth += $totalBulan;
+
+            $phones = $d->nomor->pluck('no_hp')->all();
+            if ($d->no_hp) $phones[] = $d->no_hp;
+            $phones = array_unique(array_filter($phones));
+
+            $blastList = RawBlast::whereIn('receiver_number', $phones)
+                ->whereBetween('timestamp_blast', [$startDateStr . ' 00:00:00', $endDateStr . ' 23:59:59'])
+                ->get();
+
+            $jmlBlast = $blastList->count();
+            $jmlRead = $blastList->where('status', 'READ')->count();
+            $statusTerakhir = $blastList->sortByDesc('timestamp_blast')->first()?->status ?: '-';
+
+            $totalBlastAll += $jmlBlast;
+            $totalReadAll += $jmlRead;
+
+            $rows[] = [
+                'donatur_id'      => $d->donatur_id,
+                'nama_lengkap'    => $d->nama_lengkap,
+                'j1'              => $jNominal[1],
+                'j2'              => $jNominal[2],
+                'j3'              => $jNominal[3],
+                'j4'              => $jNominal[4],
+                'j5'              => $jNominal[5],
+                'total_bulan'     => $totalBulan,
+                'jml_blast'       => $jmlBlast,
+                'jml_read'        => $jmlRead,
+                'status_terakhir' => $statusTerakhir,
+                'catatan_crm'     => $d->catatan ?: '-',
+            ];
+        }
+
+        usort($rows, function ($a, $b) {
+            return $b['total_bulan'] <=> $a['total_bulan'];
+        });
+
+        $bestJ = 1;
+        $maxJVal = 0.0;
+        foreach ($jumatTotals as $j => $val) {
+            if ($val > $maxJVal) {
+                $maxJVal = $val;
+                $bestJ = $j;
+            }
+        }
+
+        $readRate = $totalBlastAll > 0 ? round(($totalReadAll / $totalBlastAll) * 100, 1) : 0;
+
+        return [
+            'year'             => $year,
+            'month'            => $month,
+            'fridays'          => $fridays,
+            'ranges'           => $ranges,
+            'items'            => $rows,
+            'jumat_totals'     => $jumatTotals,
+            'grand_total'      => $grandTotalMonth,
+            'best_jumat'       => $bestJ,
+            'best_jumat_val'   => $maxJVal,
+            'total_blast'      => $totalBlastAll,
+            'total_read'       => $totalReadAll,
+            'read_rate'        => $readRate,
+        ];
+    }
 }
 
 
