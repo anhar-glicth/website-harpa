@@ -1418,7 +1418,7 @@ class AdminController extends Controller
             ];
         }
 
-        return view('admin.performance', compact('workerPerformance', 'roleCounts', 'roleLabels', 'selectedRole'));
+        return view('admin.performance', compact('workerPerformance', 'roleCounts', 'roleLabels', 'staffRoles', 'selectedRole'));
     }
 
     public function analytics()
