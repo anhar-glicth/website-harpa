@@ -434,11 +434,11 @@
                 </div>
                 <div class="space-y-1">
                     <label for="add_trx_notes">Keterangan / Doa</label>
-                    <textarea id="add_trx_notes" name="notes" rows="2" placeholder="Catatan transaksi atau titipan doa donatur..." class="w-full border border-slate-300 rounded-xl p-3 focus:border-emerald-700"></textarea>
+                    <textarea id="add_trx_notes" name="notes" rows="2" placeholder="Catatan transaksi atau titipan doa donatur..." class="w-full border border-slate-300 rounded-xl p-3 focus:border-primary-600"></textarea>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
                     <button type="button" @click="showAddModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Simpan Transaksi</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold shadow-xs">Simpan Transaksi</button>
                 </div>
             </form>
         </div>
@@ -450,7 +450,7 @@
         <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h2 id="edit-trx-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-emerald-700"></i> Edit Data Transaksi
+                    <i class="fa-solid fa-pen-to-square text-primary-600"></i> Edit Data Transaksi
                 </h2>
                 <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit transaksi" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -459,16 +459,16 @@
                 @method('PUT')
                 <div class="space-y-1">
                     <label for="edit_trx_name">Nama Donatur <span class="text-rose-700">*</span></label>
-                    <input id="edit_trx_name" type="text" name="donor_name" x-model="editData.donor_name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                    <input id="edit_trx_name" type="text" name="donor_name" x-model="editData.donor_name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="edit_trx_amount">Nominal Donasi (Rp) <span class="text-rose-700">*</span></label>
-                        <input id="edit_trx_amount" type="number" name="amount" x-model="editData.amount" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="edit_trx_amount" type="number" name="amount" x-model="editData.amount" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                     <div class="space-y-1">
                         <label for="edit_trx_campaign">Program Donasi <span class="text-rose-700">*</span></label>
-                        <select id="edit_trx_campaign" name="campaign_id" x-model="editData.campaign_id" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <select id="edit_trx_campaign" name="campaign_id" x-model="editData.campaign_id" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                             <option value="">Pilih Program</option>
                             @foreach($programs as $prg)
                                 <option value="{{ $prg->id }}">{{ $prg->title }}</option>
@@ -478,7 +478,7 @@
                 </div>
                 <div class="space-y-1">
                     <label for="edit_trx_payment">Via Bayar</label>
-                    <select id="edit_trx_payment" name="payment_via_id" x-model="editData.payment_via_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                    <select id="edit_trx_payment" name="payment_via_id" x-model="editData.payment_via_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                         <option value="">Pilih Via Bayar</option>
                         @foreach($paymentVias as $pv)
                             <option value="{{ $pv->id }}">{{ $pv->name }}</option>
@@ -487,11 +487,11 @@
                 </div>
                 <div class="space-y-1">
                     <label for="edit_trx_notes">Keterangan / Doa</label>
-                    <textarea id="edit_trx_notes" name="notes" x-model="editData.notes" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-emerald-700"></textarea>
+                    <textarea id="edit_trx_notes" name="notes" x-model="editData.notes" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-primary-600"></textarea>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
                     <button type="button" @click="showEditModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Perbarui Transaksi</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold shadow-xs">Perbarui Transaksi</button>
                 </div>
             </form>
         </div>
@@ -523,7 +523,7 @@
         <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h2 id="import-trx-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-file-import text-emerald-700"></i> Import Data Transaksi (CSV)
+                    <i class="fa-solid fa-file-import text-primary-600"></i> Import Data Transaksi (CSV)
                 </h2>
                 <button type="button" @click="showImportModal = false" aria-label="Tutup modal import transaksi" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -537,7 +537,7 @@
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2 text-slate-600">
                     <div class="flex items-center justify-between">
                         <span class="font-bold text-slate-800">Format Kolom yang Didukung:</span>
-                        <a href="{{ route('admin.transactions.template') }}" class="text-emerald-700 hover:text-emerald-800 hover:underline font-bold inline-flex items-center gap-1">
+                        <a href="{{ route('admin.transactions.template') }}" class="text-[#063f5c] hover:underline font-bold inline-flex items-center gap-1">
                             <i class="fa-solid fa-download"></i> Unduh Template CSV
                         </a>
                     </div>
@@ -550,7 +550,7 @@
 
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" @click="showImportModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md inline-flex items-center gap-1.5">
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold shadow-xs inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Upload &amp; Import
                     </button>
                 </div>
