@@ -48,25 +48,17 @@
         {{-- Main Content Column (Locked min-w-0 to prevent horizontal page scrolling) --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Tab Header Navigation --}}
-            <div class="flex flex-wrap items-center gap-1 border-b border-slate-200 pb-0">
-                <a href="{{ route('admin.donors_list') }}" class="px-5 py-2.5 min-h-[44px] rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors inline-flex items-center gap-2">
-                    List Donatur
-                </a>
-                <a href="{{ route('admin.transactions_list') }}" aria-current="page" class="px-5 py-2.5 min-h-[44px] rounded-t-xl text-xs font-black bg-emerald-700 text-white shadow-sm inline-flex items-center gap-2">
-                    List Transaksi
-                </a>
-                <a href="{{ route('admin.prospects_list') }}" class="px-5 py-2.5 min-h-[44px] rounded-t-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors inline-flex items-center gap-2">
-                    List Prospek
-                </a>
-            </div>
+            {{-- Header Page Title & Subnav --}}
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                        Daftar <span class="text-primary-600">Transaksi Donasi</span>
+                    </h1>
+                    <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+                </div>
 
-            {{-- Top Banner --}}
-            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
-                <span class="flex items-center gap-2">
-                    <i class="fa-solid fa-receipt text-white"></i> List Transaksi
-                </span>
-                <span class="text-xs text-emerald-100 font-normal">Transaction Management / List Transaksi</span>
+                {{-- Segmented Pills Subnav --}}
+                @include('admin.partials.transactions_subnav', ['active' => 'transactions_list'])
             </div>
 
             {{-- Flash Messages --}}
@@ -88,34 +80,28 @@
             @endif
 
             {{-- Dashboard Summary Bar --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-slate-50 px-4 py-2 border-b border-slate-200 text-xs font-bold text-slate-600">
-                    Dashboard
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200 text-xs font-bold text-slate-600 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-primary-600"></i> Ringkasan Transaksi
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
                     {{-- Total Quantity --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Jumlah Quantity
-                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Jumlah Quantity</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalQuantity) }}</p>
                     </div>
 
                     {{-- Total Donatur --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Jumlah Donatur
-                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Jumlah Donatur</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalDonorsCount) }}</p>
                     </div>
 
                     {{-- Total Capaian --}}
                     <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Total Capaian
-                        </div>
-                        <p class="text-2xl font-black text-emerald-700 font-mono">
-                            {{ number_format($totalCapaian, 0, ',', '.') }}
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Total Capaian</span>
+                        <p class="text-2xl font-black text-[#063f5c] font-mono">
+                            Rp {{ number_format($totalCapaian, 0, ',', '.') }}
                         </p>
                     </div>
                 </div>
@@ -263,58 +249,58 @@
 
             {{-- Action Toolbar: Add, Edit, Print, Delete, Export, Import, Link Bukti Donasi --}}
             <div class="flex flex-wrap items-center gap-2 pt-1 pb-1">
-                <button type="button" @click="showAddModal = true" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-circle-plus"></i> Add
+                <button type="button" @click="showAddModal = true" class="bg-[#063f5c] hover:bg-[#04324a] text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-circle-plus"></i> Tambah Transaksi
                 </button>
 
                 <button type="button" 
                         @click="if(selectedItem) { openEdit(selectedItem); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
-                        class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
                 </button>
 
                 <button type="button" 
                         @click="if(selectedItem) { window.open('/admin/transactions/' + selectedItem.id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
-                        class="bg-sky-700 hover:bg-sky-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors"
                         title="Cetak kwitansi dari 1 baris yang dipilih">
-                    <i class="fa-solid fa-print"></i> Print (Pilihan)
+                    <i class="fa-solid fa-print"></i> Cetak Kwitansi
                 </button>
 
                 <a href="{{ route('admin.transactions.batch_receipt', request()->query()) }}" target="_blank" 
-                   class="bg-[#063f5c] hover:bg-primary-700 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
+                   class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors"
                    title="Download atau Cetak Semua Kwitansi Hasil Filter (atau Keseluruhan)">
-                    <i class="fa-solid fa-file-invoice" aria-hidden="true"></i> Download / Cetak Kwitansi Terfilter
+                    <i class="fa-solid fa-file-invoice" aria-hidden="true"></i> Cetak Massal
                 </a>
 
                 <button type="button" 
                         @click="if(selectedId) { openDelete(selectedId, selectedTrxId); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
-                        class="bg-rose-700 hover:bg-rose-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-trash-can"></i> Delete
+                        class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                    <i class="fa-solid fa-trash-can"></i> Hapus
                 </button>
 
-                <a href="{{ route('admin.transactions.export', request()->query()) }}" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-file-excel"></i> Export
+                <a href="{{ route('admin.transactions.export', request()->query()) }}" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-file-excel"></i> Export Excel
                 </a>
 
-                <button type="button" @click="showImportModal = true" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-file-import"></i> Import
+                <button type="button" @click="showImportModal = true" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-file-import text-primary-600"></i> Import Data
                 </button>
 
                 <button type="button" 
                         @click="if(selectedItem) { window.open('/admin/transactions/' + selectedItem.id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
-                        class="bg-[#063f5c] hover:bg-primary-700 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                     <i class="fa-solid fa-link" aria-hidden="true"></i> Link Bukti Donasi
                 </button>
             </div>
 
             {{-- Table Transaksi Container --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm w-full">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs w-full">
                 
                 {{-- Horizontal Scrollable Wrapper --}}
-                <div class="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-slate-100">
+                <div class="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
                     <table class="w-full text-left border-collapse whitespace-nowrap min-w-[2400px]">
                         <thead>
-                            <tr class="bg-emerald-700 text-white text-xs font-black uppercase tracking-wider">
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
                                 <th class="py-3.5 px-4 text-center">No</th>
                                 <th class="py-3.5 px-4">ID Transaksi</th>
                                 <th class="py-3.5 px-4">ID Donatur</th>
