@@ -1,12 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="max-w-7xl mx-auto px-6 py-12" x-data="{ 
-    showAddModal: false, 
-    showEditModal: false, 
-    showDeleteModal: false,
-    selectedUser: {}
-}">
+<section class="max-w-7xl mx-auto px-6 py-12" x-data="userManagement()">
     
     {{-- Alerts --}}
     @if(session('success'))
@@ -15,7 +10,7 @@
                 <i class="fa-solid fa-circle-check text-emerald-700 text-base" aria-hidden="true"></i>
                 <span>{{ session('success') }}</span>
             </div>
-            <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-emerald-700 hover:bg-emerald-100">
+            <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-emerald-700 hover:bg-emerald-100 transition-colors">
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
         </div>
@@ -27,9 +22,23 @@
                 <i class="fa-solid fa-triangle-exclamation text-rose-700 text-base" aria-hidden="true"></i>
                 <span>{{ session('error') }}</span>
             </div>
-            <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-rose-700 hover:bg-rose-100">
+            <button type="button" @click="$el.parentElement.remove()" aria-label="Tutup notifikasi" class="w-11 h-11 -my-2 inline-flex items-center justify-center rounded-xl text-rose-700 hover:bg-rose-100 transition-colors">
                 <i class="fa-solid fa-xmark"></i>
             </button>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div role="alert" class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl font-semibold text-xs space-y-1 shadow-xs">
+            <div class="flex items-center gap-2 font-bold text-rose-900">
+                <i class="fa-solid fa-triangle-exclamation text-rose-700"></i>
+                <span>Terjadi kendala pada pengisian formulir:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 text-rose-700 pl-2">
+                @foreach($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -53,17 +62,17 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
-                    <button type="button" @click="showAddModal = true" class="px-5 py-2.5 min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-colors">
+                    <button type="button" @click="openAddModal()" class="px-5 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition-colors">
                         <i class="fa-solid fa-user-plus text-xs"></i> Tambah Pengguna
                     </button>
-                    <a href="{{ route('admin.users.export', request()->all()) }}" class="px-5 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-colors">
+                    <a href="{{ route('admin.users.export', request()->all()) }}" class="px-5 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs transition-colors">
                         <i class="fa-solid fa-file-excel text-sm"></i> Export Excel
                     </a>
                 </div>
             </div>
 
             {{-- Filter Bar Pengguna --}}
-            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
                 <form action="{{ route('admin.users') }}" method="GET" class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-700">
                     
                     <div class="flex items-center gap-2">
@@ -76,6 +85,7 @@
                         <select id="filter_users_role" name="role" class="min-h-[44px] border border-slate-300 rounded-xl px-3 py-2 text-xs focus:border-primary-600 w-44">
                             <option value="">Semua Peran</option>
                             <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Super Admin</option>
+                            <option value="marketing" {{ request('role') == 'marketing' ? 'selected' : '' }}>Staff Marketing</option>
                             <option value="operator" {{ request('role') == 'operator' ? 'selected' : '' }}>Admin Data Entry</option>
                             <option value="finance" {{ request('role') == 'finance' ? 'selected' : '' }}>Staff Keuangan</option>
                             <option value="program_manager" {{ request('role') == 'program_manager' ? 'selected' : '' }}>Manager Program</option>
@@ -95,7 +105,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="min-h-[44px] bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                    <button type="submit" class="min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white px-4 py-2 rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                         <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Filter
                     </button>
                     
@@ -107,11 +117,11 @@
             </div>
 
             <!-- Users table -->
-            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse whitespace-nowrap">
                         <thead>
-                            <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
+                            <tr class="border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500">
                                 <th class="pb-4 w-12 text-center">#</th>
                                 <th class="pb-4">Nama Lengkap</th>
                                 <th class="pb-4">Email</th>
@@ -122,51 +132,80 @@
                                 <th class="pb-4 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="text-xs font-semibold text-slate-700 uppercase tracking-wide divide-y divide-slate-100">
+                        <tbody class="text-xs font-semibold text-slate-700 divide-y divide-slate-100">
                             @forelse($users as $index => $user)
                                 <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="py-4 text-center text-slate-600 font-mono">{{ $users->firstItem() + $index }}</td>
+                                    <td class="py-4 text-center text-slate-500 font-mono">{{ $users->firstItem() + $index }}</td>
                                     <td class="py-4 font-bold text-slate-900">{{ $user->name }}</td>
                                     <td class="py-4 text-slate-600 font-mono text-xs lowercase">{{ $user->email }}</td>
                                     <td class="py-4">
                                         @if($user->role === 'admin')
-                                            <span class="text-xs font-bold uppercase tracking-wider text-rose-700">SUPER ADMIN</span>
+                                            <span class="text-xs font-bold text-rose-700">Super Admin</span>
+                                        @elseif($user->role === 'marketing')
+                                            <span class="text-xs font-bold text-amber-700">Staff Marketing</span>
                                         @elseif($user->role === 'operator')
-                                            <span class="text-xs font-bold uppercase tracking-wider text-amber-800">ADMIN DATA ENTRY</span>
+                                            <span class="text-xs font-bold text-slate-700">Admin Data Entry</span>
                                         @elseif($user->role === 'finance')
-                                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">STAFF KEUANGAN</span>
+                                            <span class="text-xs font-bold text-emerald-700">Staff Keuangan</span>
                                         @elseif($user->role === 'program_manager')
-                                            <span class="text-xs font-bold uppercase tracking-wider text-[#063f5c]">MANAGER PROGRAM</span>
+                                            <span class="text-xs font-bold text-[#063f5c]">Manager Program</span>
                                         @elseif($user->role === 'crm_staff')
-                                            <span class="text-xs font-bold uppercase tracking-wider text-rose-700">STAFF CRM</span>
+                                            <span class="text-xs font-bold text-indigo-700">Staff CRM &amp; WA</span>
                                         @elseif($user->role === 'field_worker')
-                                            <span class="text-xs font-bold uppercase tracking-wider text-sky-700">PETUGAS LAPANGAN</span>
+                                            <span class="text-xs font-bold text-sky-700">Petugas Lapangan</span>
                                         @else
-                                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-600">DONATUR</span>
+                                            <span class="text-xs font-medium text-slate-500">Donatur</span>
                                         @endif
                                     </td>
                                     <td class="py-4 font-mono text-xs">{{ $user->phone ?? '-' }}</td>
                                     <td class="py-4 text-slate-700">{{ $user->office ? $user->office->name : '-' }}</td>
-                                    <td class="py-4 text-slate-600 text-xs">{{ $user->created_at->format('d M Y') }}</td>
+                                    <td class="py-4 text-slate-500 text-xs">{{ $user->created_at->format('d M Y') }}</td>
                                     <td class="py-4 text-right">
                                         <div class="flex items-center justify-end gap-1.5">
                                             @if($user->role === 'field_worker')
-                                                <a href="{{ route('admin.users.monitoring', $user->id) }}" aria-label="Pantau kinerja {{ $user->name }}" class="w-11 h-11 inline-flex items-center justify-center bg-primary-50 text-primary-700 hover:bg-primary-100 rounded-lg text-xs transition-colors border border-primary-200" title="Pantau Kinerja">
-                                                    <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+                                                <a href="{{ route('admin.users.monitoring', $user->id) }}" aria-label="Pantau kinerja {{ $user->name }}" class="px-2.5 py-1 text-xs font-semibold text-sky-700 hover:bg-sky-50 rounded-lg transition-colors inline-flex items-center gap-1" title="Pantau Kinerja">
+                                                    <i class="fa-solid fa-gauge-high text-[11px]" aria-hidden="true"></i>
+                                                    <span>Pantau</span>
                                                 </a>
                                             @endif
-                                            <button type="button" @click="selectedUser = {{ json_encode($user) }}; showEditModal = true" aria-label="Edit pengguna {{ $user->name }}" class="w-11 h-11 inline-flex items-center justify-center text-amber-700 hover:bg-amber-50 rounded-lg transition-colors" title="Edit Pengguna">
-                                                <i class="fa-solid fa-pen-to-square text-sm" aria-hidden="true"></i>
+                                            
+                                            {{-- Tombol Edit --}}
+                                            <button type="button" 
+                                                    @click="openEditModal({{ json_encode([
+                                                        'id' => $user->id,
+                                                        'name' => $user->name,
+                                                        'email' => $user->email,
+                                                        'role' => $user->role,
+                                                        'phone' => $user->phone ?? '',
+                                                        'office_id' => $user->office_id ?? ''
+                                                    ]) }})" 
+                                                    aria-label="Edit pengguna {{ $user->name }}" 
+                                                    class="px-2.5 py-1 text-xs font-bold text-[#063f5c] hover:bg-slate-100 rounded-lg transition-colors inline-flex items-center gap-1" 
+                                                    title="Edit Pengguna">
+                                                <i class="fa-solid fa-pen-to-square text-[11px]" aria-hidden="true"></i>
+                                                <span>Edit</span>
                                             </button>
-                                            <button type="button" @click="selectedUser = {{ json_encode($user) }}; showDeleteModal = true" aria-label="Hapus pengguna {{ $user->name }}" class="w-11 h-11 inline-flex items-center justify-center text-rose-700 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Pengguna">
-                                                <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
-                                            </button>
+
+                                            {{-- Tombol Hapus --}}
+                                            @if(auth()->id() !== $user->id)
+                                                <button type="button" 
+                                                        @click="openDeleteModal({{ json_encode([
+                                                            'id' => $user->id,
+                                                            'name' => $user->name
+                                                        ]) }})" 
+                                                        aria-label="Hapus pengguna {{ $user->name }}" 
+                                                        class="px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-50 rounded-lg transition-colors inline-flex items-center gap-1" 
+                                                        title="Hapus Pengguna">
+                                                    <i class="fa-regular fa-trash-can text-[11px]" aria-hidden="true"></i>
+                                                    <span>Hapus</span>
+                                                </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="py-12 text-center text-slate-600 font-bold uppercase tracking-wider">Belum ada pengguna terdaftar yang sesuai filter.</td>
+                                    <td colspan="8" class="py-12 text-center text-slate-500 font-medium">Belum ada pengguna terdaftar yang sesuai filter.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -182,152 +221,210 @@
 
     </div>
 
-    {{-- Modal Add User --}}
+    {{-- Modal 1: Tambah Pengguna Baru --}}
     <div x-show="showAddModal" x-cloak @keydown.escape.window="showAddModal = false" role="dialog" aria-modal="true" aria-labelledby="add-user-title" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60" @click="showAddModal = false"></div>
-        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-xl border border-slate-100">
-            <div class="flex items-center justify-between border-b pb-3">
-                <h2 id="add-user-title" class="font-black text-slate-900 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus text-primary-600"></i> Tambah Pengguna Baru
+        <div class="absolute inset-0 bg-slate-950/60" @click="showAddModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 id="add-user-title" class="font-montserrat font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-[#063f5c]"></i> Tambah Pengguna Baru
                 </h2>
-                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah pengguna" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah pengguna" class="w-10 h-10 inline-flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <form action="{{ route('admin.users.store') }}" method="POST" class="space-y-3 text-xs font-semibold">
+            
+            <form action="{{ route('admin.users.store') }}" method="POST" class="space-y-3.5 text-xs font-semibold">
                 @csrf
                 <div>
-                    <label for="add_user_name" class="block text-slate-700 mb-1">Nama Lengkap *</label>
-                    <input id="add_user_name" type="text" name="name" required placeholder="Nama Pengguna" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                    <label for="add_user_name" class="block text-slate-700 mb-1">Nama Lengkap <span class="text-rose-600">*</span></label>
+                    <input id="add_user_name" type="text" name="name" required placeholder="Contoh: Ahmad Fadli" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                 </div>
                 <div>
-                    <label for="add_user_email" class="block text-slate-700 mb-1">Email *</label>
-                    <input id="add_user_email" type="email" name="email" required placeholder="user@domain.com" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                    <label for="add_user_email" class="block text-slate-700 mb-1">Email <span class="text-rose-600">*</span></label>
+                    <input id="add_user_email" type="email" name="email" required placeholder="user@domain.com" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                 </div>
                 <div x-data="{ show: false }">
-                    <label for="add_user_password" class="block text-slate-700 mb-1">Password *</label>
+                    <label for="add_user_password" class="block text-slate-700 mb-1">Password <span class="text-rose-600">*</span></label>
                     <div class="relative">
-                        <input id="add_user_password" :type="show ? 'text' : 'password'" name="password" required placeholder="Minimal 6 karakter" class="w-full border border-slate-300 rounded-xl pl-3.5 pr-12 py-2 min-h-[44px] text-xs focus:border-primary-600">
-                        <button type="button" @click="show = !show" :aria-label="show ? 'Sembunyikan password' : 'Lihat password'" class="absolute inset-y-0 right-0 flex items-center justify-center w-11 text-slate-600 hover:text-primary-600 transition-colors" :title="show ? 'Sembunyikan' : 'Lihat'">
+                        <input id="add_user_password" :type="show ? 'text' : 'password'" name="password" required placeholder="Minimal 6 karakter" class="w-full border border-slate-300 rounded-xl pl-3.5 pr-12 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
+                        <button type="button" @click="show = !show" :aria-label="show ? 'Sembunyikan password' : 'Lihat password'" class="absolute inset-y-0 right-0 flex items-center justify-center w-11 text-slate-500 hover:text-slate-800 transition-colors" :title="show ? 'Sembunyikan' : 'Lihat'">
                             <i class="fa-solid text-xs" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
                         </button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label for="add_user_role" class="block text-slate-700 mb-1">Hak Akses / Role *</label>
-                        <select id="add_user_role" name="role" required class="w-full border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                        <label for="add_user_role" class="block text-slate-700 mb-1">Hak Akses / Role <span class="text-rose-600">*</span></label>
+                        <select id="add_user_role" name="role" required class="w-full border border-slate-300 rounded-xl px-3 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                             <option value="user">Donatur</option>
                             <option value="field_worker">Petugas Lapangan</option>
+                            <option value="marketing">Staff Marketing & Meta Ads</option>
                             <option value="operator">Admin Data Entry</option>
                             <option value="finance">Staff Keuangan</option>
                             <option value="program_manager">Manager Program</option>
-                            <option value="crm_staff">Staff CRM & Telemarketing</option>
+                            <option value="crm_staff">Staff CRM &amp; Telemarketing</option>
                             <option value="admin">Super Admin</option>
                         </select>
                     </div>
                     <div>
                         <label for="add_user_phone" class="block text-slate-700 mb-1">No. Telp / WA</label>
-                        <input id="add_user_phone" type="text" name="phone" placeholder="08123456789" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                        <input id="add_user_phone" type="text" name="phone" placeholder="08123456789" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                     </div>
                 </div>
                 <div>
                     <label for="add_user_office" class="block text-slate-700 mb-1">Kantor / Cabang</label>
-                    <select id="add_user_office" name="office_id" class="w-full border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                    <select id="add_user_office" name="office_id" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                         <option value="">-- Pilih Kantor (Opsional) --</option>
                         @foreach($offices as $ofc)
                             <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="flex justify-end gap-2 pt-3 border-t">
-                    <button type="button" @click="showAddModal = false" class="px-4 py-2 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2 min-h-[44px] bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700">Simpan User</button>
+                <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+                    <button type="button" @click="showAddModal = false" class="px-4 py-2.5 min-h-[44px] bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-xl font-bold transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl font-bold transition-colors shadow-xs">Simpan Pengguna</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- Modal Edit User --}}
+    {{-- Modal 2: Edit Pengguna --}}
     <div x-show="showEditModal" x-cloak @keydown.escape.window="showEditModal = false" role="dialog" aria-modal="true" aria-labelledby="edit-user-title" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60" @click="showEditModal = false"></div>
-        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-xl border border-slate-100">
-            <div class="flex items-center justify-between border-b pb-3">
-                <h2 id="edit-user-title" class="font-black text-slate-900 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-amber-700"></i> Edit Pengguna
+        <div class="absolute inset-0 bg-slate-950/60" @click="showEditModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 id="edit-user-title" class="font-montserrat font-bold text-slate-900 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-[#063f5c]"></i> Edit Pengguna
                 </h2>
-                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit pengguna" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit pengguna" class="w-10 h-10 inline-flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <form :action="'{{ url('admin/users') }}/' + selectedUser.id + '/update'" method="POST" class="space-y-3 text-xs font-semibold">
+            
+            <form :action="'{{ url('admin/users') }}/' + editForm.id + '/update'" method="POST" class="space-y-3.5 text-xs font-semibold">
                 @csrf
                 @method('PUT')
                 <div>
-                    <label for="edit_user_name" class="block text-slate-700 mb-1">Nama Lengkap *</label>
-                    <input id="edit_user_name" type="text" name="name" required :value="selectedUser.name" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                    <label for="edit_user_name" class="block text-slate-700 mb-1">Nama Lengkap <span class="text-rose-600">*</span></label>
+                    <input id="edit_user_name" type="text" name="name" required x-model="editForm.name" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                 </div>
                 <div>
-                    <label for="edit_user_email" class="block text-slate-700 mb-1">Email *</label>
-                    <input id="edit_user_email" type="email" name="email" required :value="selectedUser.email" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                    <label for="edit_user_email" class="block text-slate-700 mb-1">Email <span class="text-rose-600">*</span></label>
+                    <input id="edit_user_email" type="email" name="email" required x-model="editForm.email" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                 </div>
                 <div x-data="{ show: false }">
-                    <label for="edit_user_password" class="block text-slate-700 mb-1">Password Baru (Kosongkan jika tidak diganti)</label>
+                    <label for="edit_user_password" class="block text-slate-700 mb-1">Password Baru (Kosongkan jika tidak ingin diubah)</label>
                     <div class="relative">
-                        <input id="edit_user_password" :type="show ? 'text' : 'password'" name="password" placeholder="Min. 6 karakter jika mau ubah" class="w-full border border-slate-300 rounded-xl pl-3.5 pr-12 py-2 min-h-[44px] text-xs focus:border-primary-600">
-                        <button type="button" @click="show = !show" :aria-label="show ? 'Sembunyikan password' : 'Lihat password'" class="absolute inset-y-0 right-0 flex items-center justify-center w-11 text-slate-600 hover:text-primary-600 transition-colors" :title="show ? 'Sembunyikan' : 'Lihat'">
+                        <input id="edit_user_password" :type="show ? 'text' : 'password'" name="password" placeholder="Min. 6 karakter jika mau ganti" class="w-full border border-slate-300 rounded-xl pl-3.5 pr-12 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
+                        <button type="button" @click="show = !show" :aria-label="show ? 'Sembunyikan password' : 'Lihat password'" class="absolute inset-y-0 right-0 flex items-center justify-center w-11 text-slate-500 hover:text-slate-800 transition-colors" :title="show ? 'Sembunyikan' : 'Lihat'">
                             <i class="fa-solid text-xs" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
                         </button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label for="edit_user_role" class="block text-slate-700 mb-1">Hak Akses / Role *</label>
-                        <select id="edit_user_role" name="role" required class="w-full border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600">
-                            <option value="user" :selected="selectedUser.role == 'user'">Donatur</option>
-                            <option value="field_worker" :selected="selectedUser.role == 'field_worker'">Petugas Lapangan</option>
-                            <option value="operator" :selected="selectedUser.role == 'operator'">Admin Data Entry</option>
-                            <option value="finance" :selected="selectedUser.role == 'finance'">Staff Keuangan</option>
-                            <option value="program_manager" :selected="selectedUser.role == 'program_manager'">Manager Program</option>
-                            <option value="crm_staff" :selected="selectedUser.role == 'crm_staff'">Staff CRM & Telemarketing</option>
-                            <option value="admin" :selected="selectedUser.role == 'admin'">Super Admin</option>
+                        <label for="edit_user_role" class="block text-slate-700 mb-1">Hak Akses / Role <span class="text-rose-600">*</span></label>
+                        <select id="edit_user_role" name="role" required x-model="editForm.role" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
+                            <option value="user">Donatur</option>
+                            <option value="field_worker">Petugas Lapangan</option>
+                            <option value="marketing">Staff Marketing & Meta Ads</option>
+                            <option value="operator">Admin Data Entry</option>
+                            <option value="finance">Staff Keuangan</option>
+                            <option value="program_manager">Manager Program</option>
+                            <option value="crm_staff">Staff CRM &amp; Telemarketing</option>
+                            <option value="admin">Super Admin</option>
                         </select>
                     </div>
                     <div>
                         <label for="edit_user_phone" class="block text-slate-700 mb-1">No. Telp / WA</label>
-                        <input id="edit_user_phone" type="text" name="phone" :value="selectedUser.phone" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 min-h-[44px] text-xs focus:border-primary-600">
+                        <input id="edit_user_phone" type="text" name="phone" x-model="editForm.phone" placeholder="08123456789" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
                     </div>
                 </div>
                 <div>
                     <label for="edit_user_office" class="block text-slate-700 mb-1">Kantor / Cabang</label>
-                    <select id="edit_user_office" name="office_id" class="w-full border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600">
-                        <option value="">-- Pilih Kantor --</option>
+                    <select id="edit_user_office" name="office_id" x-model="editForm.office_id" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 min-h-[44px] text-xs focus:border-[#063f5c] focus:outline-hidden">
+                        <option value="">-- Pilih Kantor (Opsional) --</option>
                         @foreach($offices as $ofc)
-                            <option value="{{ $ofc->id }}" :selected="selectedUser.office_id == {{ $ofc->id }}">{{ $ofc->name }}</option>
+                            <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="flex justify-end gap-2 pt-3 border-t">
-                    <button type="button" @click="showEditModal = false" class="px-4 py-2 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2 min-h-[44px] bg-amber-700 text-white rounded-xl font-bold hover:bg-amber-800">Update User</button>
+                <div class="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+                    <button type="button" @click="showEditModal = false" class="px-4 py-2.5 min-h-[44px] bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-xl font-bold transition-colors">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl font-bold transition-colors shadow-xs">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    {{-- Modal Delete User --}}
+    {{-- Modal 3: Hapus Pengguna --}}
     <div x-show="showDeleteModal" x-cloak @keydown.escape.window="showDeleteModal = false" role="dialog" aria-modal="true" aria-labelledby="delete-user-title" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/60" @click="showDeleteModal = false"></div>
-        <div class="relative z-10 bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 text-center shadow-xl border border-slate-100">
-            <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-trash"></i>
+        <div class="absolute inset-0 bg-slate-950/60" @click="showDeleteModal = false"></div>
+        <div class="relative z-10 bg-white rounded-3xl max-w-sm w-full p-6 sm:p-8 space-y-5 text-center shadow-2xl border border-slate-100">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h2 id="delete-user-title" class="font-black text-slate-900 text-sm">Hapus Pengguna?</h2>
-            <p class="text-xs text-slate-600">Apakah Anda yakin ingin menghapus akun <strong class="text-slate-900" x-text="selectedUser.name"></strong>?</p>
-            <form :action="'{{ url('admin/users') }}/' + selectedUser.id + '/delete'" method="POST" class="flex justify-center gap-2 pt-2">
+            
+            <div class="space-y-1">
+                <h2 id="delete-user-title" class="font-montserrat font-bold text-slate-900 text-base">Hapus Pengguna?</h2>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Apakah Anda yakin ingin menghapus akun <strong class="text-slate-900" x-text="deleteTarget.name"></strong>? Tindakan ini bersifat permanen.
+                </p>
+            </div>
+            
+            <form :action="'{{ url('admin/users') }}/' + deleteTarget.id + '/delete'" method="POST" class="flex justify-center gap-2.5 pt-2">
                 @csrf
                 @method('DELETE')
-                <button type="button" @click="showDeleteModal = false" class="px-4 py-2 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs">Batal</button>
-                <button type="submit" class="px-5 py-2 min-h-[44px] bg-rose-700 text-white rounded-xl font-bold text-xs hover:bg-rose-800">Hapus</button>
+                <button type="button" @click="showDeleteModal = false" class="px-4 py-2.5 min-h-[44px] bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-xl font-bold text-xs transition-colors">Batal</button>
+                <button type="submit" class="px-5 py-2.5 min-h-[44px] bg-rose-700 text-white rounded-xl font-bold text-xs hover:bg-rose-800 transition-colors shadow-xs">Ya, Hapus</button>
             </form>
         </div>
     </div>
 
 </section>
+
+<!-- Alpine Script -->
+<script>
+function userManagement() {
+    return {
+        showAddModal: false,
+        showEditModal: false,
+        showDeleteModal: false,
+        editForm: {
+            id: null,
+            name: '',
+            email: '',
+            role: 'user',
+            phone: '',
+            office_id: ''
+        },
+        deleteTarget: {
+            id: null,
+            name: ''
+        },
+        openAddModal() {
+            this.showAddModal = true;
+        },
+        openEditModal(user) {
+            this.editForm = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                phone: user.phone || '',
+                office_id: user.office_id || ''
+            };
+            this.showEditModal = true;
+        },
+        openDeleteModal(user) {
+            this.deleteTarget = {
+                id: user.id,
+                name: user.name
+            };
+            this.showDeleteModal = true;
+        }
+    };
+}
+</script>
 @endsection

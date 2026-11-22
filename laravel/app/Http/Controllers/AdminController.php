@@ -1012,7 +1012,7 @@ class AdminController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|max:255|unique:users,email',
             'password'  => 'required|string|min:6',
-            'role'      => 'required|in:admin,operator,finance,program_manager,crm_staff,field_worker,user',
+            'role'      => 'required|in:admin,operator,finance,program_manager,crm_staff,marketing,field_worker,user',
             'phone'     => 'nullable|string|max:20',
             'office_id' => 'nullable|exists:offices,id',
         ]);
@@ -1036,7 +1036,7 @@ class AdminController extends Controller
         $request->validate([
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|max:255|unique:users,email,' . $id,
-            'role'      => 'required|in:admin,operator,finance,program_manager,crm_staff,field_worker,user',
+            'role'      => 'required|in:admin,operator,finance,program_manager,crm_staff,marketing,field_worker,user',
             'phone'     => 'nullable|string|max:20',
             'office_id' => 'nullable|exists:offices,id',
             'password'  => 'nullable|string|min:6',
@@ -1071,9 +1071,18 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
-        $user->delete();
+        try {
+            // Bersihkan relasi tugas & absensi jika ada
+            \App\Models\TodoList::where('user_id', $user->id)->orWhere('assigned_by', $user->id)->delete();
+            \App\Models\Attendance::where('user_id', $user->id)->delete();
 
-        return redirect()->route('admin.users')->with('success', 'Pengguna berhasil dihapus.');
+            $user->delete();
+
+            return redirect()->route('admin.users')->with('success', 'Pengguna berhasil dihapus.');
+        } catch (\Throwable $e) {
+            \Log::error('Error deleting user: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus pengguna karena memiliki keterkaitan data: ' . $e->getMessage());
+        }
     }
 
     public function exportUsers(Request $request)
