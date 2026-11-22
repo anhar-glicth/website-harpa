@@ -5,12 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use App\Models\MarketingAdsData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MarketingController extends Controller
 {
+    /**
+     * Memastikan tabel dan kolom marketing_ads_data sudah ada di database server.
+     */
+    protected function ensureTableExists(): bool
+    {
+        if (!Schema::hasTable('marketing_ads_data') || !Schema::hasColumn('marketing_ads_data', 'program_name')) {
+            try {
+                Artisan::call('migrate', ['--force' => true]);
+            } catch (\Throwable $e) {
+                // Lanjut jika migrasi belum bisa dieksekusi otomatis
+            }
+        }
+        return Schema::hasTable('marketing_ads_data');
+    }
+
     /**
      * Dashboard Analisa Marketing & Meta Ads
      * Menampilkan KPI, Bar Chart (Spend vs Donasi), Pie/Donut Chart, dan Rekomendasi Keputusan (SCALE / MAINTAIN / STOP).
@@ -22,6 +39,44 @@ class MarketingController extends Controller
         $dateFrom = $request->query('date_from', now()->subDays(30)->toDateString());
         $dateTo = $request->query('date_to', now()->toDateString());
         $campaignId = $request->query('campaign_id');
+
+        if (!$this->ensureTableExists()) {
+            return view('admin.marketing.dashboard', [
+                'tableNotMigrated' => true,
+                'totalSpend'       => 0,
+                'totalDonations'   => 0,
+                'totalImpressions' => 0,
+                'totalReach'       => 0,
+                'totalClicks'      => 0,
+                'totalConversions' => 0,
+                'overallRoas'      => 0,
+                'overallCtr'       => 0,
+                'avgCpc'           => 0,
+                'avgCpa'           => 0,
+                'avgCpm'           => 0,
+                'scaleCount'       => 0,
+                'maintainCount'    => 0,
+                'stopCount'        => 0,
+                'barDates'         => [],
+                'barSpends'        => [],
+                'barDonations'     => [],
+                'barConversions'   => [],
+                'pieCampaignLabels'=> [],
+                'pieCampaignData'  => [],
+                'piePlatformLabels'=> [],
+                'piePlatformData'  => [],
+                'scaleHighlights'  => collect(),
+                'stopHighlights'   => collect(),
+                'recentAds'        => collect(),
+                'allCampaigns'     => Campaign::select('id', 'title')->orderBy('title')->get(),
+                'programsList'     => collect(),
+                'platform'         => $platform,
+                'program'          => $program,
+                'dateFrom'         => $dateFrom,
+                'dateTo'           => $dateTo,
+                'campaignId'       => $campaignId,
+            ]);
+        }
 
         $query = MarketingAdsData::query();
 
@@ -73,8 +128,8 @@ class MarketingController extends Controller
                 DB::raw('SUM(donation_amount) as total_donation'),
                 DB::raw('SUM(conversions) as total_conversions')
             )
-            ->groupBy('ad_date')
-            ->orderBy('ad_date', 'ASC')
+            ->groupBy(DB::raw('DATE(date)'))
+            ->orderBy(DB::raw('DATE(date)'), 'ASC')
             ->get();
 
         $barDates = [];
@@ -93,7 +148,7 @@ class MarketingController extends Controller
         $pieCampaignRaw = (clone $query)
             ->select('campaign_name', DB::raw('SUM(spend) as total_spend'))
             ->groupBy('campaign_name')
-            ->orderByDesc('total_spend')
+            ->orderBy(DB::raw('SUM(spend)'), 'DESC')
             ->limit(6)
             ->get();
 
@@ -106,9 +161,9 @@ class MarketingController extends Controller
 
         // 3. Data Pie/Donut Chart 2: Porsi Spend Berdasarkan Platform
         $piePlatformRaw = (clone $query)
-            ->select('platform', DB::raw('SUM(spend) as total_spend'), DB::raw('SUM(donation_amount) as total_donation'))
+            ->select('platform', DB::raw('SUM(spend) as total_spend'))
             ->groupBy('platform')
-            ->orderByDesc('total_spend')
+            ->orderBy(DB::raw('SUM(spend)'), 'DESC')
             ->get();
 
         $piePlatformLabels = [];
@@ -177,6 +232,23 @@ class MarketingController extends Controller
         $pic = $request->query('pic');
         $dateFrom = $request->query('date_from');
         $dateTo = $request->query('date_to');
+
+        if (!$this->ensureTableExists()) {
+            return view('admin.marketing.index', [
+                'tableNotMigrated' => true,
+                'ads'              => new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15),
+                'search'           => '',
+                'platform'         => 'ALL',
+                'decision'         => 'ALL',
+                'status'           => 'ALL',
+                'program'          => 'ALL',
+                'pic'              => 'ALL',
+                'dateFrom'         => null,
+                'dateTo'           => null,
+                'programsList'     => collect(),
+                'picsList'         => collect(),
+            ]);
+        }
 
         $query = MarketingAdsData::query()->with('campaign', 'creator');
 

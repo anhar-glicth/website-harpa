@@ -257,6 +257,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         Route::get('/admin/settings', [AdminController::class, 'settings'])->name('admin.settings');
         Route::post('/admin/settings/update', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
+        Route::get('/admin/system-migrate', function () {
+            if (!Auth::user()->isAdmin()) {
+                abort(403, 'Akses ditolak: Hanya Super Admin yang berhak menjalankan migrasi database.');
+            }
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            $output = \Illuminate\Support\Facades\Artisan::output();
+            return response("<pre style='background:#0f172a;color:#10b981;padding:24px;border-radius:16px;font-family:monospace;font-size:14px;line-height:1.6;'>=== HASIL MIGRASI DATABASE SERVER HOSTINGER ===\n\n" . htmlspecialchars($output ?: "Semua tabel database sudah yang terbaru (Nothing to migrate).\n") . "\n<a href='/admin/marketing/dashboard' style='color:#38bdf8;font-weight:bold;text-decoration:underline;'>&larr; Buka Dashboard Marketing</a> | <a href='/admin/transactions-list' style='color:#38bdf8;font-weight:bold;text-decoration:underline;'>Buka List Transaksi</a></pre>");
+        })->name('admin.system_migrate');
     });
 });
 

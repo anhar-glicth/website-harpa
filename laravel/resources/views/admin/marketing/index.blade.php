@@ -64,6 +64,21 @@
             </div>
             @endif
 
+            @if(isset($tableNotMigrated) && $tableNotMigrated)
+            <div role="alert" class="p-5 bg-amber-50 border border-amber-300 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-amber-900 text-xs font-bold shadow-sm">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-700 text-xl" aria-hidden="true"></i>
+                    <div>
+                        <p class="font-bold text-sm">Tabel Database Belum Terpasang di Server Hostinger</p>
+                        <p class="font-normal text-amber-800 mt-0.5">Tabel `marketing_ads_data` belum dibuat di database live. Klik tombol di samping untuk menjalankan migrasi otomatis.</p>
+                    </div>
+                </div>
+                <a href="{{ route('admin.system_migrate') }}" class="min-h-[44px] px-5 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs rounded-xl inline-flex items-center gap-2 whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-database" aria-hidden="true"></i> Jalankan Migrasi Database
+                </a>
+            </div>
+            @endif
+
             <!-- Filter & Search Card -->
             <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
                 <form method="GET" action="{{ route('admin.marketing.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
