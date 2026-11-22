@@ -80,7 +80,7 @@
             @endif
 
             <!-- Filter & Search Card -->
-            <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
                 <form method="GET" action="{{ route('admin.marketing.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                     <!-- Search Input -->
                     <div class="lg:col-span-2">
@@ -174,11 +174,11 @@
             </div>
 
             <!-- Main Table Card -->
-            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead>
-                            <tr class="bg-slate-50 border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-600">
+                            <tr class="bg-slate-50 border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="py-3.5 px-4">Tanggal &amp; Platform</th>
                                 <th class="py-3.5 px-4">Nama Campaign &amp; Ad</th>
                                 <th class="py-3.5 px-4 text-right">Biaya (Spend)</th>
@@ -319,7 +319,7 @@
 
                 <!-- Pagination -->
                 @if($ads->hasPages())
-                <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+                <div class="p-4 border-t border-slate-200 bg-slate-50/50">
                     {{ $ads->links() }}
                 </div>
                 @endif
@@ -339,7 +339,7 @@
          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
         <div @click.outside="showImportModal = false"
              class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
                 <div class="space-y-1">
                     <h3 id="import-modal-title" class="text-lg font-black font-montserrat text-slate-900 uppercase tracking-tight">
                         Impor Data Performa Meta Ads

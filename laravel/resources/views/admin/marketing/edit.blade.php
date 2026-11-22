@@ -91,7 +91,7 @@
             @endif
 
             <!-- Live Calculation Preview Widget -->
-            <div class="bg-[#063f5c] rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
+            <div class="bg-[#063f5c] rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/15 pb-4 mb-4">
                     <div>
                         <div class="text-xs font-bold text-[#f7ad1a] uppercase tracking-widest flex items-center gap-1.5">
@@ -146,7 +146,7 @@
             </div>
 
             <!-- Form Card -->
-            <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm">
+            <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
                 <form method="POST" action="{{ route('admin.marketing.update', $ad->id) }}" class="space-y-6">
                     @csrf
                     @method('PUT')
@@ -249,7 +249,7 @@
                     </div>
 
                     <!-- Baris 3: Anggaran & Hasil (Biaya & Donasi) -->
-                    <div class="p-6 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-4">
+                    <div class="p-6 bg-slate-50/70 rounded-2xl border border-slate-200 space-y-4">
                         <div class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-coins text-amber-500"></i> Metrik Biaya & Hasil Finansial
                         </div>
@@ -273,7 +273,7 @@
                     </div>
 
                     <!-- Baris 4: Metrik Trafik & Engagement -->
-                    <div class="p-6 bg-slate-50/70 rounded-2xl border border-slate-100 space-y-4">
+                    <div class="p-6 bg-slate-50/70 rounded-2xl border border-slate-200 space-y-4">
                         <div class="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
                             <i class="fa-solid fa-chart-pie text-blue-500"></i> Metrik Trafik & Konversi
                         </div>

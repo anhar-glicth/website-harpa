@@ -60,7 +60,7 @@
             @endif
 
             <!-- Filter Card -->
-            <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                 <form method="GET" action="{{ route('admin.marketing.dashboard') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div>
                         <label for="mkt_dash_platform" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5">Platform Iklan</label>
@@ -118,7 +118,7 @@
             <!-- KPI Summary Cards -->
             <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- 1. Total Spend -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-black uppercase tracking-widest text-slate-600">Total Biaya Iklan</span>
                         <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center text-xs">
@@ -134,7 +134,7 @@
                 </div>
 
                 <!-- 2. Total Donasi Didapat -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-black uppercase tracking-widest text-slate-600">Hasil Donasi Didapat</span>
                         <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs">
@@ -150,7 +150,7 @@
                 </div>
 
                 <!-- 3. Overall ROAS -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-black uppercase tracking-widest text-slate-600">Return On Ad Spend</span>
                         <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xs">
@@ -166,7 +166,7 @@
                 </div>
 
                 <!-- 4. Trafik Clicks & CTR -->
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-black uppercase tracking-widest text-slate-600">Trafik &amp; CTR</span>
                         <div class="w-8 h-8 rounded-xl bg-primary-50 text-[#063f5c] flex items-center justify-center text-xs">
@@ -182,34 +182,73 @@
                 </div>
             </div>
 
-            <!-- Decision Summary Banner -->
-            <div class="bg-[#063f5c] rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden">
-                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <!-- Rekomendasi Tindakan Iklan (Clean Institutional Design) -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-slate-200">
                     <div>
-                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#f7ad1a] mb-1">
-                            <i class="fa-solid fa-microchip" aria-hidden="true"></i> Engine Rekomendasi Keputusan
+                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                            <span>Evaluasi Kinerja Iklan</span>
+                            <span aria-hidden="true">&bull;</span>
+                            <span class="text-[#063f5c] font-black">Meta Ads</span>
                         </div>
-                        <h2 class="text-xl font-black">Evaluasi Otomatis Berdasarkan ROAS, CPA &amp; CTR</h2>
-                        <p class="text-xs text-slate-200 mt-1 max-w-xl">
-                            Algoritma menganalisa performa iklan: <strong>SCALE</strong> jika ROAS &ge; 3.0x atau CPA murah, <strong>MAINTAIN</strong> jika performa stabil, dan <strong>STOP</strong> jika biaya tinggi tanpa hasil donasi memadai.
-                        </p>
+                        <h2 class="text-base sm:text-lg font-montserrat font-bold text-slate-900 tracking-tight mt-0.5">
+                            Rekomendasi Alokasi Anggaran &amp; Materi Iklan
+                        </h2>
+                    </div>
+                    <p class="text-xs text-slate-500 max-w-md font-medium">
+                        Pengelompokan otomatis berdasarkan rasio perolehan donasi (ROAS) dan efisiensi biaya per donasi (CPA).
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- 1. SCALE -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase tracking-wider">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                Tingkatkan Anggaran (Scale)
+                            </span>
+                            <span class="text-xs font-bold text-slate-500">ROAS &ge; 3.0x</span>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-montserrat font-black text-slate-900">{{ $scaleCount }} <span class="text-xs font-semibold text-slate-500">Kampanye</span></div>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Menghasilkan donasi tinggi dengan biaya efisien. Layak ditambah anggaran harian untuk memperluas jangkauan.
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-3">
-                        <div class="bg-emerald-900 border border-emerald-700 px-4 py-3 rounded-2xl text-center min-w-[90px]">
-                            <div class="text-xs font-black uppercase tracking-wider text-emerald-200">SCALE</div>
-                            <div class="text-2xl font-black text-white mt-0.5">{{ $scaleCount }}</div>
-                            <div class="text-xs text-emerald-100">Naikkan Budget</div>
+                    <!-- 2. MAINTAIN -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200 uppercase tracking-wider">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                Pertahankan &amp; Optimasi
+                            </span>
+                            <span class="text-xs font-bold text-slate-500">ROAS 1.5x - 3.0x</span>
                         </div>
-                        <div class="bg-amber-900 border border-amber-700 px-4 py-3 rounded-2xl text-center min-w-[90px]">
-                            <div class="text-xs font-black uppercase tracking-wider text-amber-200">MAINTAIN</div>
-                            <div class="text-2xl font-black text-white mt-0.5">{{ $maintainCount }}</div>
-                            <div class="text-xs text-amber-100">Optimasi Materi</div>
+                        <div>
+                            <div class="text-2xl font-montserrat font-black text-slate-900">{{ $maintainCount }} <span class="text-xs font-semibold text-slate-500">Kampanye</span></div>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Performa stabil. Pertahankan anggaran saat ini dan lakukan penyegaran materi visual secara berkala.
+                            </p>
                         </div>
-                        <div class="bg-rose-900 border border-rose-700 px-4 py-3 rounded-2xl text-center min-w-[90px]">
-                            <div class="text-xs font-black uppercase tracking-wider text-rose-200">STOP</div>
-                            <div class="text-2xl font-black text-white mt-0.5">{{ $stopCount }}</div>
-                            <div class="text-xs text-rose-100">Matikan Iklan</div>
+                    </div>
+
+                    <!-- 3. STOP -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200 uppercase tracking-wider">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
+                                Evaluasi / Matikan
+                            </span>
+                            <span class="text-xs font-bold text-slate-500">ROAS &lt; 1.5x</span>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-montserrat font-black text-slate-900">{{ $stopCount }} <span class="text-xs font-semibold text-slate-500">Kampanye</span></div>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Biaya iklan tinggi namun konversi donasi rendah. Disarankan jeda sementara atau rombak target audiens.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -219,7 +258,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
                 <!-- 1. DIAGRAM BATANG (BAR CHART): Biaya Iklan vs Hasil Donasi -->
-                <div class="lg:col-span-2 bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
                     <div class="flex items-center justify-between">
                         <div>
                             <h2 class="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
@@ -240,7 +279,7 @@
                 <!-- 2. PIE / DONUT CHARTS: Distribusi Biaya Iklan -->
                 <div class="space-y-6">
                     <!-- Pie Chart 1: Spend per Campaign -->
-                    <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
                         <div>
                             <h2 class="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                                 <i class="fa-solid fa-chart-pie text-amber-600"></i> Porsi Biaya per Kampanye
@@ -257,7 +296,7 @@
                     </div>
 
                     <!-- Pie Chart 2: Spend per Platform -->
-                    <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
                         <div>
                             <h2 class="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
                                 <i class="fa-brands fa-meta text-blue-700"></i> Porsi per Platform
@@ -280,7 +319,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <!-- SCALE Highlights -->
-                <div class="bg-white rounded-[2rem] p-6 border border-emerald-100 shadow-sm space-y-4">
+                <div class="bg-white rounded-2xl p-6 border border-emerald-100 shadow-sm space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-emerald-50">
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-xs">
@@ -296,7 +335,7 @@
 
                     <div class="space-y-3">
                         @forelse($scaleHighlights as $item)
-                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition-colors flex items-center justify-between gap-3">
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-200 transition-colors flex items-center justify-between gap-3">
                             <div class="min-w-0">
                                 <div class="text-xs font-black text-slate-800 truncate">{{ $item->campaign_name }}</div>
                                 <div class="text-xs text-slate-600 flex items-center gap-2 mt-0.5">
@@ -317,7 +356,7 @@
                 </div>
 
                 <!-- STOP Highlights -->
-                <div class="bg-white rounded-[2rem] p-6 border border-rose-100 shadow-sm space-y-4">
+                <div class="bg-white rounded-2xl p-6 border border-rose-100 shadow-sm space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-rose-50">
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 rounded-xl bg-rose-700 text-white flex items-center justify-center text-xs">
@@ -333,7 +372,7 @@
 
                     <div class="space-y-3">
                         @forelse($stopHighlights as $item)
-                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-rose-200 transition-all flex items-center justify-between gap-3">
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-rose-200 transition-all flex items-center justify-between gap-3">
                             <div class="min-w-0">
                                 <div class="text-xs font-black text-slate-800 truncate">{{ $item->campaign_name }}</div>
                                 <div class="text-xs text-slate-600 flex items-center gap-2 mt-0.5">
@@ -356,7 +395,7 @@
             </div>
 
             <!-- Tabel Data Iklan Terbaru -->
-            <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm space-y-4">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-base font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
@@ -372,7 +411,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead>
-                            <tr class="border-b border-slate-100 text-xs font-black uppercase tracking-wider text-slate-600">
+                            <tr class="border-b border-slate-200 text-xs font-black uppercase tracking-wider text-slate-600">
                                 <th class="py-3 px-3">Tanggal</th>
                                 <th class="py-3 px-3">Platform</th>
                                 <th class="py-3 px-3">Nama Campaign</th>
