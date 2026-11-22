@@ -48,12 +48,17 @@
         {{-- Main Content Column (Locked min-w-0 to prevent page-wide horizontal scrolling) --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Emerald Header Banner --}}
-            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
-                <span class="flex items-center gap-2">
-                    <i class="fa-solid fa-address-book text-white"></i> List Calon Donatur
-                </span>
-                <span class="text-xs text-emerald-100 font-normal">Transaction Management / List Calon Donatur</span>
+            {{-- Header Page Title & Subnav --}}
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                        Daftar <span class="text-primary-600">Calon Donatur</span>
+                    </h1>
+                    <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+                </div>
+
+                {{-- Segmented Pills Subnav --}}
+                @include('admin.partials.transactions_subnav', ['active' => 'potential_donors'])
             </div>
 
             {{-- Flash Messages --}}

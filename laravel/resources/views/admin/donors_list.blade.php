@@ -55,12 +55,17 @@
         {{-- Main Content Column (TerKunci min-w-0 agar tidak ikut ter-scroll ke samping) --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Emerald Header Banner --}}
-            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
-                <span class="flex items-center gap-2">
-                    <i class="fa-solid fa-users text-white"></i> List Donatur
-                </span>
-                <span class="text-xs text-emerald-100 font-normal">Transaction Management / List Donatur</span>
+            {{-- Header Page Title & Subnav --}}
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <h1 class="text-2xl sm:text-3xl font-montserrat font-black text-slate-900 uppercase tracking-tight italic">
+                        Daftar <span class="text-primary-600">Donatur Harpa</span>
+                    </h1>
+                    <div class="w-12 h-1 bg-primary-500 rounded-full"></div>
+                </div>
+
+                {{-- Segmented Pills Subnav --}}
+                @include('admin.partials.transactions_subnav', ['active' => 'donors_list'])
             </div>
 
             {{-- Flash Messages --}}
@@ -91,7 +96,7 @@
                         <label for="donors_search" class="text-xs font-bold text-slate-700">Search :</label>
                         <input id="donors_search" type="text" name="search" value="{{ request('search') }}" 
                                placeholder="Nama Lengkap/ID/No HP/Email" 
-                               class="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] text-xs font-medium focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700 min-w-[240px]">
+                               class="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] text-xs font-medium focus:border-primary-600 focus:ring-1 focus:ring-primary-600 min-w-[240px]">
                         
                         <button type="submit" class="bg-white hover:border-[#063f5c] text-slate-800 hover:text-[#063f5c] border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                             <i class="fa-solid fa-magnifying-glass"></i> Search
@@ -112,14 +117,14 @@
                             <div class="md:col-span-1 lg:col-span-7 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Tgl Registrasi</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Tanggal registrasi mulai" type="date" name="start_reg_date" value="{{ request('start_reg_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal registrasi mulai" type="date" name="start_reg_date" value="{{ request('start_reg_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                 <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
-                                <input aria-label="Tanggal registrasi akhir" type="date" name="end_reg_date" value="{{ request('end_reg_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal registrasi akhir" type="date" name="end_reg_date" value="{{ request('end_reg_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="md:col-span-1 lg:col-span-5 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Jenis Kelamin</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter jenis kelamin" name="gender" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter jenis kelamin" name="gender" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                     <option value="L" {{ request('gender') === 'L' ? 'selected' : '' }}>Laki-Laki (L)</option>
                                     <option value="P" {{ request('gender') === 'P' ? 'selected' : '' }}>Perempuan (P)</option>
@@ -132,14 +137,14 @@
                             <div class="md:col-span-1 lg:col-span-7 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Sudah Donasi</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Tanggal donasi mulai" type="date" name="start_donation_date" value="{{ request('start_donation_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal donasi mulai" type="date" name="start_donation_date" value="{{ request('start_donation_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                 <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
-                                <input aria-label="Tanggal donasi akhir" type="date" name="end_donation_date" value="{{ request('end_donation_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal donasi akhir" type="date" name="end_donation_date" value="{{ request('end_donation_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="md:col-span-1 lg:col-span-5 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Segmen</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Filter segmen" type="text" name="segment" value="{{ request('segment') }}" placeholder="Segmen" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Filter segmen" type="text" name="segment" value="{{ request('segment') }}" placeholder="Segmen" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                         </div>
 
@@ -148,14 +153,14 @@
                             <div class="md:col-span-1 lg:col-span-7 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Sudah Diprospek</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Tanggal prospek mulai" type="date" name="start_prospect_date" value="{{ request('start_prospect_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal prospek mulai" type="date" name="start_prospect_date" value="{{ request('start_prospect_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                 <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
-                                <input aria-label="Tanggal prospek akhir" type="date" name="end_prospect_date" value="{{ request('end_prospect_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal prospek akhir" type="date" name="end_prospect_date" value="{{ request('end_prospect_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="md:col-span-1 lg:col-span-5 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Pernah Donasi</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter pernah donasi" name="ever_donated" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter pernah donasi" name="ever_donated" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
@@ -168,16 +173,16 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Profil</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Filter profil" type="text" name="profile" value="{{ request('profile') }}" placeholder="Profil" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Filter profil" type="text" name="profile" value="{{ request('profile') }}" placeholder="Profil" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Milad</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Tanggal milad" name="milad_date" class="w-20 shrink-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700">
+                                <select aria-label="Tanggal milad" name="milad_date" class="w-20 shrink-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600">
                                     <option value="">Tgl</option>
                                     @for($i=1; $i<=31; $i++) <option value="{{ $i }}">{{ $i }}</option> @endfor
                                 </select>
-                                <select aria-label="Bulan milad" name="milad_month" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700">
+                                <select aria-label="Bulan milad" name="milad_month" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600">
                                     <option value="">Bln</option>
                                     @foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $mIdx => $mName)
                                         <option value="{{ $mIdx+1 }}">{{ $mName }}</option>
@@ -187,7 +192,7 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Pernah Diprospek</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter pernah diprospek" name="ever_prospected" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter pernah diprospek" name="ever_prospected" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
@@ -200,21 +205,21 @@
                             <div class="md:col-span-2 lg:col-span-5 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Last Nominal</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Nominal minimum" type="number" name="min_nominal" value="{{ request('min_nominal') }}" placeholder="Min Rp" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Nominal minimum" type="number" name="min_nominal" value="{{ request('min_nominal') }}" placeholder="Min Rp" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                 <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
-                                <input aria-label="Nominal maksimum" type="number" name="max_nominal" value="{{ request('max_nominal') }}" placeholder="Maks Rp" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Nominal maksimum" type="number" name="max_nominal" value="{{ request('max_nominal') }}" placeholder="Maks Rp" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="md:col-span-1 lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-24 shrink-0 text-xs font-semibold whitespace-nowrap">Last Program</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter program terakhir" name="last_program" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter program terakhir" name="last_program" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="">Last Program Donasi</option>
                                 </select>
                             </div>
                             <div class="md:col-span-1 lg:col-span-3 flex items-center gap-2 min-w-0">
                                 <span class="w-20 shrink-0 text-xs font-semibold whitespace-nowrap">Last Respon</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter respon terakhir" name="last_response" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter respon terakhir" name="last_response" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="">Last Respon</option>
                                 </select>
                             </div>
@@ -225,21 +230,21 @@
                             <div class="md:col-span-2 lg:col-span-5 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Last Waktu Donasi</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Jam donasi mulai" type="time" name="start_time" value="{{ request('start_time') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Jam donasi mulai" type="time" name="start_time" value="{{ request('start_time') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                 <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
-                                <input aria-label="Jam donasi akhir" type="time" name="end_time" value="{{ request('end_time') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Jam donasi akhir" type="time" name="end_time" value="{{ request('end_time') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="md:col-span-1 lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-24 shrink-0 text-xs font-semibold whitespace-nowrap">Last Via Bayar</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter via bayar terakhir" name="last_via_bayar" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter via bayar terakhir" name="last_via_bayar" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="">Last Via Bayar</option>
                                 </select>
                             </div>
                             <div class="md:col-span-1 lg:col-span-3 flex items-center gap-2 min-w-0">
                                 <span class="w-20 shrink-0 text-xs font-semibold whitespace-nowrap">Last Media</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter media prospek terakhir" name="last_prospect_media" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter media prospek terakhir" name="last_prospect_media" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="">Last Media</option>
                                     @foreach($prospectMedia as $pm)
                                         <option value="{{ $pm->id }}">{{ $pm->name }}</option>
@@ -253,7 +258,7 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Ada No HP</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter kepemilikan nomor HP" name="has_phone" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter kepemilikan nomor HP" name="has_phone" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
@@ -262,7 +267,7 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Ada Email</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter kepemilikan email" name="has_email" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter kepemilikan email" name="has_email" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
@@ -271,7 +276,7 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Sumber Info</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Filter sumber info" type="text" name="source_info" value="{{ request('source_info') }}" placeholder="Sumber Informasi" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Filter sumber info" type="text" name="source_info" value="{{ request('source_info') }}" placeholder="Sumber Informasi" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                         </div>
 
@@ -280,19 +285,19 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">PIC Prospek</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter PIC prospek" name="pic_prospect" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter PIC prospek" name="pic_prospect" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="">PIC Prospek</option>
                                 </select>
                             </div>
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Kota / Kab</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Filter kota atau kabupaten" type="text" name="city" value="{{ request('city') }}" placeholder="Kota / Kab" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Filter kota atau kabupaten" type="text" name="city" value="{{ request('city') }}" placeholder="Kota / Kab" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Aktif</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter status aktif" name="is_active" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter status aktif" name="is_active" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="Ya">Ya</option>
                                     <option value="Tidak">Tidak</option>
                                 </select>
@@ -304,7 +309,7 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Kantor Layanan</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter kantor layanan" name="office_id" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter kantor layanan" name="office_id" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="">Pilih Kantor Layanan</option>
                                     @foreach($offices as $ofc)
                                         <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -314,14 +319,14 @@
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Kategori</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter kategori" name="category" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter kategori" name="category" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                 </select>
                             </div>
                             <div class="lg:col-span-4 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Badge</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter badge" name="badge" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter badge" name="badge" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                 </select>
                             </div>
@@ -332,14 +337,14 @@
                             <div class="md:col-span-2 lg:col-span-6 flex items-center gap-2 min-w-0">
                                 <span class="w-28 shrink-0 text-xs font-semibold whitespace-nowrap">Tgl Insert</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <input aria-label="Tanggal insert mulai" type="date" name="start_insert_date" value="{{ request('start_insert_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal insert mulai" type="date" name="start_insert_date" value="{{ request('start_insert_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                 <span class="shrink-0 text-slate-600 font-medium text-xs">s/d</span>
-                                <input aria-label="Tanggal insert akhir" type="date" name="end_insert_date" value="{{ request('end_insert_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <input aria-label="Tanggal insert akhir" type="date" name="end_insert_date" value="{{ request('end_insert_date') }}" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                             </div>
                             <div class="md:col-span-1 lg:col-span-3 flex items-center gap-2 min-w-0">
                                 <span class="w-20 shrink-0 text-xs font-semibold whitespace-nowrap">RFM 90D</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter RFM 90 hari" name="rfm_last_90" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter RFM 90 hari" name="rfm_last_90" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                     <option value="Champions">Champions</option>
                                     <option value="Loyal Donors">Loyal Donors</option>
@@ -353,7 +358,7 @@
                             <div class="md:col-span-1 lg:col-span-3 flex items-center gap-2 min-w-0">
                                 <span class="w-20 shrink-0 text-xs font-semibold whitespace-nowrap">RFM All</span>
                                 <span class="shrink-0 text-slate-600 font-bold">:</span>
-                                <select aria-label="Filter RFM sepanjang waktu" name="rfm_alltime" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-emerald-700 focus:ring-1 focus:ring-emerald-700">
+                                <select aria-label="Filter RFM sepanjang waktu" name="rfm_alltime" class="flex-1 min-w-0 min-h-[44px] bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs focus:border-primary-600 focus:ring-1 focus:ring-primary-600">
                                     <option value="All">All</option>
                                     <option value="Champions">Champions</option>
                                     <option value="Loyal Donors">Loyal Donors</option>
@@ -373,51 +378,51 @@
 
             {{-- Action Toolbar: Add, Edit, Delete, Export, Import, Detail Data --}}
             <div class="flex flex-wrap items-center gap-2 pt-1 pb-1">
-                <button type="button" @click="showAddModal = true" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-circle-plus"></i> Add
+                <button type="button" @click="showAddModal = true" class="bg-[#063f5c] hover:bg-[#04324a] text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-circle-plus"></i> Tambah Donatur
                 </button>
 
                 <button type="button" 
                         @click="if(selectedItem) { openEdit(selectedItem); } else { alert('Pilih donatur dari tabel terlebih dahulu.'); }" 
-                        class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                     <i class="fa-solid fa-pen-to-square"></i> Edit
                 </button>
 
                 <button type="button" 
                         @click="if(selectedId) { openDelete(selectedId, selectedName); } else { alert('Pilih donatur dari tabel terlebih dahulu.'); }" 
-                        class="bg-rose-700 hover:bg-rose-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-trash-can"></i> Delete
+                        class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
+                    <i class="fa-solid fa-trash-can"></i> Hapus
                 </button>
 
-                <a href="{{ route('admin.donors.export', request()->query()) }}" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-file-excel"></i> Export
+                <a href="{{ route('admin.donors.export', request()->query()) }}" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-file-excel"></i> Export Excel
                 </a>
 
                 <a href="{{ route('admin.donors.batch_receipt', request()->query()) }}" target="_blank" 
-                   class="bg-[#063f5c] hover:bg-primary-700 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors"
+                   class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors"
                    title="Download atau Cetak Semua Kwitansi Donatur Hasil Filter (atau Keseluruhan)">
-                    <i class="fa-solid fa-file-invoice" aria-hidden="true"></i> Download / Cetak Kwitansi Terfilter
+                    <i class="fa-solid fa-file-invoice" aria-hidden="true"></i> Cetak Kwitansi Massal
                 </a>
 
-                <button type="button" @click="showImportModal = true" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
-                    <i class="fa-solid fa-file-import"></i> Import
+                <button type="button" @click="showImportModal = true" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-file-import text-primary-600"></i> Import Data
                 </button>
 
                 <button type="button" 
                         @click="if(selectedItem) { openDetail(selectedItem); } else { alert('Pilih donatur dari tabel terlebih dahulu.'); }" 
-                        class="bg-sky-700 hover:bg-sky-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-sm transition-colors">
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                     <i class="fa-solid fa-circle-info"></i> Detail Data
                 </button>
             </div>
 
             {{-- Table Donatur Container --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm w-full">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs w-full">
                 
                 {{-- Horizontal Scrollable Wrapper --}}
-                <div class="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-emerald-700 scrollbar-track-slate-100">
+                <div class="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
                     <table class="w-full text-left border-collapse whitespace-nowrap min-w-[2400px]">
                         <thead>
-                            <tr class="bg-emerald-700 text-white text-xs font-black uppercase tracking-wider">
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
                                 <th class="py-3.5 px-4 text-center">No</th>
                                 <th class="py-3.5 px-4">ID Donatur</th>
                                 <th class="py-3.5 px-4">Nama Lengkap</th>
@@ -435,7 +440,7 @@
                                 <th class="py-3.5 px-4 text-right">Total Nominal</th>
                                 <th class="py-3.5 px-4 text-center">Tgl Registrasi</th>
                                 <th class="py-3.5 px-4 text-center">Tgl Insert</th>
-                                <th class="py-3.5 px-4 text-center bg-emerald-800 shadow-inner">Action</th>
+                                <th class="py-3.5 px-4 text-center bg-slate-100 border-l border-r border-slate-200">Aksi</th>
                                 <th class="py-3.5 px-4">PIC Prospek</th>
                                 <th class="py-3.5 px-4">Sumber Informasi</th>
                                 <th class="py-3.5 px-4 text-center">Tgl Terakhir Donasi</th>
@@ -585,16 +590,16 @@
                 @csrf
                 <div class="space-y-1">
                     <label for="add_donor_name">Nama Lengkap Donatur <span class="text-rose-700">*</span></label>
-                    <input id="add_donor_name" type="text" name="name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                    <input id="add_donor_name" type="text" name="name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="add_donor_phone">No HP / WA</label>
-                        <input id="add_donor_phone" type="text" name="phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="add_donor_phone" type="text" name="phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                     <div class="space-y-1">
                         <label for="add_donor_gender">Jenis Kelamin</label>
-                        <select id="add_donor_gender" name="gender" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <select id="add_donor_gender" name="gender" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                             <option value="">Pilih Jenis Kelamin</option>
                             <option value="L">Laki-Laki</option>
                             <option value="P">Perempuan</option>
@@ -603,12 +608,12 @@
                 </div>
                 <div class="space-y-1">
                     <label for="add_donor_email">Email Donatur</label>
-                    <input id="add_donor_email" type="email" name="email" placeholder="Kosongkan jika tidak ada" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                    <input id="add_donor_email" type="email" name="email" placeholder="Kosongkan jika tidak ada" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="add_donor_office">Kantor Layanan</label>
-                        <select id="add_donor_office" name="office_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <select id="add_donor_office" name="office_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                             <option value="">Pilih Kantor Layanan</option>
                             @foreach($offices as $ofc)
                                 <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -617,16 +622,16 @@
                     </div>
                     <div class="space-y-1">
                         <label for="add_donor_segment">Segmen</label>
-                        <input id="add_donor_segment" type="text" name="segment" placeholder="Digital/Web" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="add_donor_segment" type="text" name="segment" placeholder="Digital/Web" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                 </div>
                 <div class="space-y-1">
                     <label for="add_donor_address">Alamat Lengkap</label>
-                    <textarea id="add_donor_address" name="address" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-emerald-700"></textarea>
+                    <textarea id="add_donor_address" name="address" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-primary-600"></textarea>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
                     <button type="button" @click="showAddModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Simpan Donatur</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold shadow-xs">Simpan Donatur</button>
                 </div>
             </form>
         </div>
@@ -638,7 +643,7 @@
         <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h2 id="edit-donor-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-emerald-700"></i> Edit Data Donatur
+                    <i class="fa-solid fa-pen-to-square text-primary-600"></i> Edit Data Donatur
                 </h2>
                 <button type="button" @click="showEditModal = false" aria-label="Tutup modal edit donatur" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -647,16 +652,16 @@
                 @method('PUT')
                 <div class="space-y-1">
                     <label for="edit_donor_name">Nama Lengkap Donatur <span class="text-rose-700">*</span></label>
-                    <input id="edit_donor_name" type="text" name="name" x-model="editData.name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                    <input id="edit_donor_name" type="text" name="name" x-model="editData.name" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="edit_donor_phone">No HP / WA</label>
-                        <input id="edit_donor_phone" type="text" name="phone" x-model="editData.phone" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="edit_donor_phone" type="text" name="phone" x-model="editData.phone" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                     <div class="space-y-1">
                         <label for="edit_donor_gender">Jenis Kelamin</label>
-                        <select id="edit_donor_gender" name="gender" x-model="editData.gender" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <select id="edit_donor_gender" name="gender" x-model="editData.gender" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                             <option value="L">Laki-Laki</option>
                             <option value="P">Perempuan</option>
                         </select>
@@ -664,12 +669,12 @@
                 </div>
                 <div class="space-y-1">
                     <label for="edit_donor_email">Email Donatur</label>
-                    <input id="edit_donor_email" type="email" name="email" x-model="editData.email" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                    <input id="edit_donor_email" type="email" name="email" x-model="editData.email" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="edit_donor_office">Kantor Layanan</label>
-                        <select id="edit_donor_office" name="office_id" x-model="editData.office_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <select id="edit_donor_office" name="office_id" x-model="editData.office_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                             <option value="">Pilih Kantor Layanan</option>
                             @foreach($offices as $ofc)
                                 <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -678,16 +683,16 @@
                     </div>
                     <div class="space-y-1">
                         <label for="edit_donor_segment">Segmen</label>
-                        <input id="edit_donor_segment" type="text" name="segment" x-model="editData.segment" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="edit_donor_segment" type="text" name="segment" x-model="editData.segment" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                 </div>
                 <div class="space-y-1">
                     <label for="edit_donor_address">Alamat Lengkap</label>
-                    <textarea id="edit_donor_address" name="address" x-model="editData.address" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-emerald-700"></textarea>
+                    <textarea id="edit_donor_address" name="address" x-model="editData.address" rows="2" class="w-full border border-slate-300 rounded-xl p-3 focus:border-primary-600"></textarea>
                 </div>
                 <div class="flex justify-end gap-3 pt-3">
                     <button type="button" @click="showEditModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Perbarui Donatur</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold shadow-xs">Perbarui Donatur</button>
                 </div>
             </form>
         </div>
@@ -719,7 +724,7 @@
         <div class="relative z-10 bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h2 id="import-donor-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-file-import text-emerald-700"></i> Import Data Donatur (CSV)
+                    <i class="fa-solid fa-file-import text-primary-600"></i> Import Data Donatur
                 </h2>
                 <button type="button" @click="showImportModal = false" aria-label="Tutup modal import donatur" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -732,7 +737,7 @@
                 <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 text-xs">
                     <div class="flex items-center justify-between">
                         <span class="font-bold text-slate-800">Format Kolom:</span>
-                        <a href="{{ route('admin.donors.template') }}" class="text-emerald-700 hover:text-emerald-800 hover:underline font-bold inline-flex items-center gap-1">
+                        <a href="{{ route('admin.donors.template') }}" class="text-[#063f5c] hover:underline font-bold inline-flex items-center gap-1">
                             <i class="fa-solid fa-download"></i> Unduh Format Template
                         </a>
                     </div>
@@ -740,7 +745,7 @@
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" @click="showImportModal = false" class="px-5 py-2.5 min-h-[44px] rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold shadow-md">Upload & Import</button>
+                    <button type="submit" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold shadow-xs">Upload &amp; Import</button>
                 </div>
             </form>
         </div>
@@ -757,13 +762,13 @@
                 <button type="button" @click="showDetailModal = false" aria-label="Tutup modal detail donatur" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-2 text-xs font-semibold text-slate-700 divide-y divide-slate-100">
-                <div class="py-2 flex justify-between"><span class="text-slate-600">ID Donatur:</span><span class="font-bold font-mono text-emerald-700" x-text="'022607' + String(selectedItem.id).padStart(8, '0')"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">ID Donatur:</span><span class="font-bold font-mono text-primary-700" x-text="'022607' + String(selectedItem.id).padStart(8, '0')"></span></div>
                 <div class="py-2 flex justify-between"><span class="text-slate-600">Nama Lengkap:</span><span class="font-bold text-slate-900" x-text="selectedItem.name"></span></div>
                 <div class="py-2 flex justify-between"><span class="text-slate-600">Jenis Kelamin:</span><span x-text="selectedItem.gender === 'L' ? 'Laki-Laki' : (selectedItem.gender === 'P' ? 'Perempuan' : '-')"></span></div>
                 <div class="py-2 flex justify-between"><span class="text-slate-600">No HP / WA:</span><span class="font-mono" x-text="selectedItem.phone || '-'"></span></div>
                 <div class="py-2 flex justify-between"><span class="text-slate-600">Email:</span><span x-text="selectedItem.email || '-'"></span></div>
                 <div class="py-2 flex justify-between"><span class="text-slate-600">Segmen:</span><span x-text="selectedItem.segment || '-'"></span></div>
-                <div class="py-2 flex justify-between"><span class="text-slate-600">RFM All Time:</span><span class="font-bold text-emerald-700" x-text="selectedItem.rfm_alltime || '-'"></span></div>
+                <div class="py-2 flex justify-between"><span class="text-slate-600">RFM All Time:</span><span class="font-bold text-primary-700" x-text="selectedItem.rfm_alltime || '-'"></span></div>
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <a :href="'/admin/donors/' + selectedItem.id + '/receipt'" target="_blank" class="px-5 py-2.5 min-h-[44px] rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold inline-flex items-center gap-2 text-xs">

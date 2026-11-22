@@ -332,10 +332,10 @@
                                     $donorCode = $trx->user ? ($trx->user->donor_id ?: ('DNR-' . str_pad($trx->user->id, 5, '0', STR_PAD_LEFT))) : '-';
                                 @endphp
                                 <tr @click="selectedItem = {{ json_encode($trx) }}; selectedId = {{ $trx->id }}; selectedTrxId = '{{ $trxCode }}'" 
-                                    :class="selectedId === {{ $trx->id }} ? 'bg-emerald-50 border-l-4 border-emerald-600' : 'hover:bg-slate-50/80'"
+                                    :class="selectedId === {{ $trx->id }} ? 'bg-primary-50/80 border-l-4 border-[#063f5c]' : 'hover:bg-slate-50/80'"
                                     class="cursor-pointer transition-colors">
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $donations->firstItem() + $index }}</td>
-                                    <td class="py-3.5 px-4 font-mono font-bold text-emerald-700">{{ $trxCode }}</td>
+                                    <td class="py-3.5 px-4 font-mono font-bold text-primary-700">{{ $trxCode }}</td>
                                     <td class="py-3.5 px-4 font-mono text-slate-600">{{ $donorCode }}</td>
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $trx->donation_date ? $trx->donation_date->format('Y-m-d H:i:s') : ($trx->created_at ? $trx->created_at->format('Y-m-d H:i:s') : '-') }}</td>
                                     <td class="py-3.5 px-4 text-center font-mono text-slate-600">{{ $trx->created_at ? $trx->created_at->format('Y-m-d H:i:s') : '-' }}</td>
@@ -350,7 +350,7 @@
                                     <td class="py-3.5 px-4 text-slate-800">{{ $trx->campaign && $trx->campaign->group ? $trx->campaign->group->name : ($trx->campaign ? $trx->campaign->category : '-') }}</td>
                                     <td class="py-3.5 px-4 text-slate-900 font-medium">{{ $trx->campaign ? $trx->campaign->title : '-' }}</td>
                                     <td class="py-3.5 px-4 text-center font-mono font-bold text-slate-900">1</td>
-                                    <td class="py-3.5 px-4 text-right font-black text-emerald-700">Rp {{ number_format($trx->amount ?: 0, 0, ',', '.') }}</td>
+                                    <td class="py-3.5 px-4 text-right font-black text-slate-900 font-mono">Rp {{ number_format($trx->amount ?: 0, 0, ',', '.') }}</td>
                                     <td class="py-3.5 px-4 text-slate-700">{{ $trx->payment_method ?: ($trx->paymentVia ? $trx->paymentVia->name : '-') }}</td>
                                     <td class="py-3.5 px-4 text-slate-600">-</td>
                                     <td class="py-3.5 px-4 text-slate-600">{{ $trx->source ?: 'Web' }}</td>
@@ -382,7 +382,7 @@
         <div class="relative z-10 bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                 <h2 id="add-trx-title" class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-circle-plus text-emerald-700"></i> Tambah Transaksi Donasi Baru
+                    <i class="fa-solid fa-circle-plus text-primary-600"></i> Tambah Transaksi Donasi Baru
                 </h2>
                 <button type="button" @click="showAddModal = false" aria-label="Tutup modal tambah transaksi" class="w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -390,32 +390,32 @@
                 @csrf
                 <div class="space-y-1">
                     <label for="add_trx_name">Nama Donatur <span class="text-rose-700">*</span></label>
-                    <input id="add_trx_name" type="text" name="donor_name" required placeholder="Contoh: Ahmad Abdullah" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                    <input id="add_trx_name" type="text" name="donor_name" required placeholder="Contoh: Ahmad Abdullah" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="add_trx_phone">No HP / WA Donatur</label>
-                        <input id="add_trx_phone" type="text" name="donor_phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="add_trx_phone" type="text" name="donor_phone" placeholder="Contoh: 08123456789" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                     <div class="space-y-1">
                         <label for="add_trx_email">Email Donatur</label>
-                        <input id="add_trx_email" type="email" name="donor_email" placeholder="Contoh: donatur@email.com" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="add_trx_email" type="email" name="donor_email" placeholder="Contoh: donatur@email.com" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="add_trx_amount">Nominal Donasi (Rp) <span class="text-rose-700">*</span></label>
-                        <input id="add_trx_amount" type="number" name="amount" required placeholder="Contoh: 50000" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="add_trx_amount" type="number" name="amount" required placeholder="Contoh: 50000" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                     <div class="space-y-1">
                         <label for="add_trx_date">Tgl Donasi <span class="text-rose-700">*</span></label>
-                        <input id="add_trx_date" type="datetime-local" name="donation_date" value="{{ date('Y-m-d\TH:i') }}" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <input id="add_trx_date" type="datetime-local" name="donation_date" value="{{ date('Y-m-d\TH:i') }}" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="space-y-1">
                         <label for="add_trx_campaign">Program Donasi <span class="text-rose-700">*</span></label>
-                        <select id="add_trx_campaign" name="campaign_id" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <select id="add_trx_campaign" name="campaign_id" required class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                             <option value="">Pilih Program</option>
                             @foreach($programs as $prg)
                                 <option value="{{ $prg->id }}">{{ $prg->title }}</option>
@@ -424,7 +424,7 @@
                     </div>
                     <div class="space-y-1">
                         <label for="add_trx_payment">Via Bayar</label>
-                        <select id="add_trx_payment" name="payment_via_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-emerald-700">
+                        <select id="add_trx_payment" name="payment_via_id" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 min-h-[44px] focus:border-primary-600">
                             <option value="">Pilih Via Bayar</option>
                             @foreach($paymentVias as $pv)
                                 <option value="{{ $pv->id }}">{{ $pv->name }}</option>
