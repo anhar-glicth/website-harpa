@@ -32,13 +32,13 @@
                     <div class="flex flex-wrap items-center gap-4">
                         <div class="flex items-center gap-2">
                             <label for="trx_dash_start">Tgl Donasi :</label>
-                            <input id="trx_dash_start" type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
+                            <input id="trx_dash_start" type="date" name="start_date" value="{{ request('start_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600">
                             <span>s/d</span>
-                            <input id="trx_dash_end" type="date" name="end_date" aria-label="Tanggal akhir donasi" value="{{ request('end_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700">
+                            <input id="trx_dash_end" type="date" name="end_date" aria-label="Tanggal akhir donasi" value="{{ request('end_date') }}" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600">
                         </div>
                         <div class="flex items-center gap-2">
                             <label for="trx_dash_group">Rumpun Program :</label>
-                            <select id="trx_dash_group" name="program_group_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
+                            <select id="trx_dash_group" name="program_group_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600 min-w-[140px]">
                                 <option value="">Semua Rumpun</option>
                                 @foreach($programGroups as $pg)
                                     <option value="{{ $pg->id }}">{{ $pg->name }}</option>
@@ -47,7 +47,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <label for="trx_dash_program">Program :</label>
-                            <select id="trx_dash_program" name="program_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
+                            <select id="trx_dash_program" name="program_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600 min-w-[140px]">
                                 <option value="">Semua Program</option>
                                 @foreach($programs as $prg)
                                     <option value="{{ $prg->id }}">{{ $prg->title }}</option>
@@ -56,7 +56,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <label for="trx_dash_donor">Donatur :</label>
-                            <select id="trx_dash_donor" name="donor_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[140px]">
+                            <select id="trx_dash_donor" name="donor_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600 min-w-[140px]">
                                 <option value="">Semua Donatur</option>
                                 @foreach($donors as $dnr)
                                     <option value="{{ $dnr->id }}">{{ $dnr->name }}</option>
@@ -71,7 +71,7 @@
                     <div class="flex flex-wrap items-center gap-4 pt-1">
                         <div class="flex items-center gap-2">
                             <label for="trx_dash_pic">PIC Prospek :</label>
-                            <select id="trx_dash_pic" name="pic_prospect" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[160px]">
+                            <select id="trx_dash_pic" name="pic_prospect" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600 min-w-[160px]">
                                 <option value="">Semua PIC</option>
                                 @foreach($picUsers as $pic)
                                     <option value="{{ $pic->name }}" {{ request('pic_prospect') == $pic->name ? 'selected' : '' }}>{{ $pic->name }}</option>
@@ -80,7 +80,7 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <label for="trx_dash_office">Kantor :</label>
-                            <select id="trx_dash_office" name="office_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-emerald-700 min-w-[160px]">
+                            <select id="trx_dash_office" name="office_id" class="border border-slate-300 rounded-xl px-3 py-2 min-h-[44px] text-xs focus:border-primary-600 min-w-[160px]">
                                 <option value="">Pilih Kantor</option>
                                 @foreach($offices as $ofc)
                                     <option value="{{ $ofc->id }}">{{ $ofc->name }}</option>
@@ -183,10 +183,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4">
 
                 {{-- Table 1: Resume Capaian PIC Prospek (Col 7) --}}
-                <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
-                        <span class="font-black text-xs uppercase tracking-wider">Resume Capaian PIC Prospek</span>
-                        <button type="button" aria-label="Export Resume Capaian PIC" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                    <div class="bg-[#063f5c] text-white px-4 py-2.5 flex items-center justify-between">
+                        <span class="font-bold text-xs uppercase tracking-wider">Resume Capaian PIC Prospek</span>
+                        <button type="button" aria-label="Export Resume Capaian PIC" class="text-slate-300 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
@@ -204,7 +204,7 @@
                                         <td class="py-2 px-3 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2 px-3 font-semibold text-slate-900">{{ $rPic['name'] }}</td>
                                         <td class="py-2 px-3 text-right font-mono font-bold text-slate-800">{{ number_format($rPic['amount'], 0, ',', '.') }}</td>
-                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700">{{ $rPic['percent'] }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-primary-700">{{ $rPic['percent'] }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -213,10 +213,10 @@
                 </div>
 
                 {{-- Table 2: Resume Capaian Per Kantor (Col 5) --}}
-                <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
-                        <span class="font-black text-xs uppercase tracking-wider">Resume Capaian Per Kantor</span>
-                        <button type="button" aria-label="Export Resume Capaian Per Kantor" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                    <div class="bg-[#063f5c] text-white px-4 py-2.5 flex items-center justify-between">
+                        <span class="font-bold text-xs uppercase tracking-wider">Resume Capaian Per Kantor</span>
+                        <button type="button" aria-label="Export Resume Capaian Per Kantor" class="text-slate-300 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100">
@@ -234,7 +234,7 @@
                                         <td class="py-2 px-3 text-center text-slate-600 font-mono">{{ $idx + 1 }}</td>
                                         <td class="py-2 px-3 font-semibold text-slate-900">{{ $rOfc['name'] }}</td>
                                         <td class="py-2 px-3 text-right font-mono font-bold text-slate-800">{{ number_format($rOfc['amount'], 0, ',', '.') }}</td>
-                                        <td class="py-2 px-3 text-right font-mono font-bold text-emerald-700">{{ $rOfc['percent'] }}</td>
+                                        <td class="py-2 px-3 text-right font-mono font-bold text-primary-700">{{ $rOfc['percent'] }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -245,14 +245,14 @@
             </div>
 
             {{-- Table 3: Top 20 Donatur Base On Kontribusi Donasi (Full Width) --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
-                    <span class="font-black text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi</span>
-                    <button type="button" aria-label="Export Top 20 Donatur" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
+                    <span class="font-bold text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi</span>
+                    <button type="button" aria-label="Export Top 20 Donatur" class="text-slate-300 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Nama Donatur</th>
