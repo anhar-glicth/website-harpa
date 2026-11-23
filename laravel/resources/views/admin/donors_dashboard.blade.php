@@ -202,7 +202,7 @@
 
                 {{-- Table 1: Resume Donatur By Kantor (Col 5) --}}
                 <div class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Donatur By Kantor</span>
                         <button type="button" aria-label="Export Resume Donatur By Kantor" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
@@ -232,7 +232,7 @@
 
                 {{-- Table 2: Resume Donatur By PIC Prospek (Col 7) --}}
                 <div class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Donatur By PIC Prospek</span>
                         <button type="button" aria-label="Export Resume Donatur By PIC" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
@@ -263,14 +263,14 @@
             </div>
 
             {{-- Table 3: Top 20 Donatur Base On Kontribusi Donasi (All Time Donation) --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
-                    <span class="font-black text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi (All Time Donation)</span>
-                    <button type="button" aria-label="Export Top 20 Donatur" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+                <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
+                    <span class="font-bold text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi (All Time Donation)</span>
+                    <button type="button" aria-label="Export Top 20 Donatur" class="text-slate-200 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                        <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Nama Donatur</th>

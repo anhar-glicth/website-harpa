@@ -13,12 +13,12 @@
         {{-- Main Content Column --}}
         <div class="space-y-5 min-w-0 overflow-hidden">
 
-            {{-- Top Header Banner (Emerald Theme Website) --}}
-            <div class="bg-emerald-700 rounded-2xl px-6 py-4 text-white font-black text-sm uppercase tracking-wider shadow-md flex flex-wrap items-center justify-between gap-2">
-                <span class="flex items-center gap-2.5 text-base italic">
+            {{-- Top Header Banner --}}
+            <div class="bg-[#063f5c] rounded-2xl px-6 py-4 text-white font-bold text-sm uppercase tracking-wider shadow-xs flex flex-wrap items-center justify-between gap-2">
+                <span class="flex items-center gap-2.5 text-base">
                     <i class="fa-solid fa-building text-white"></i> Master Kantor
                 </span>
-                <span class="text-xs text-emerald-100 font-medium tracking-normal">Admin Management / Master Kantor</span>
+                <span class="text-xs text-slate-200 font-medium tracking-normal">Admin Management / Master Kantor</span>
             </div>
 
             {{-- Flash Alerts --}}
@@ -67,7 +67,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors shadow-sm">
+                    <button type="submit" class="bg-[#063f5c] hover:bg-[#04324a] text-white font-bold px-4 py-2 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors shadow-xs">
                         <i class="fa-solid fa-magnifying-glass"></i> Search
                     </button>
 
@@ -75,28 +75,28 @@
             </div>
 
             {{-- Action Toolbar & Data Table Card --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
                 
                 {{-- Toolbar (Add, Edit, Delete, Export) --}}
                 <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex flex-wrap items-center gap-4 text-xs font-bold text-slate-700">
-                    <button type="button" @click="showAddModal = true" class="min-h-[44px] px-2 text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus-circle text-emerald-700"></i> Add
+                    <button type="button" @click="showAddModal = true" class="min-h-[44px] px-2 text-[#063f5c] hover:text-[#04324a] inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus-circle text-[#063f5c]"></i> Add
                     </button>
-                    <button type="button" @click="if(activeOffice.id) showEditModal = true; else alert('Pilih kantor dari tabel dulu!')" class="min-h-[44px] px-2 text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1.5">
-                        <i class="fa-solid fa-pen text-emerald-700"></i> Edit
+                    <button type="button" @click="if(activeOffice.id) showEditModal = true; else alert('Pilih kantor dari tabel dulu!')" class="min-h-[44px] px-2 text-[#063f5c] hover:text-[#04324a] inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen text-[#063f5c]"></i> Edit
                     </button>
-                    <button type="button" @click="if(activeOffice.id) showDeleteModal = true; else alert('Pilih kantor dari tabel dulu!')" class="min-h-[44px] px-2 text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1.5">
-                        <i class="fa-solid fa-minus-circle text-emerald-700"></i> Delete
+                    <button type="button" @click="if(activeOffice.id) showDeleteModal = true; else alert('Pilih kantor dari tabel dulu!')" class="min-h-[44px] px-2 text-rose-700 hover:text-rose-800 inline-flex items-center gap-1.5">
+                        <i class="fa-solid fa-minus-circle text-rose-700"></i> Delete
                     </button>
-                    <a href="{{ route('admin.offices.export') }}" class="min-h-[44px] px-2 text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1.5">
+                    <a href="{{ route('admin.offices.export') }}" class="min-h-[44px] px-2 text-slate-700 hover:text-[#063f5c] inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-file-excel text-emerald-700"></i> Export
                     </a>
                 </div>
 
-                {{-- Table Header & Content (Emerald Theme) --}}
+                {{-- Table Header & Content --}}
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                        <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center w-12">NO</th>
                                 <th class="py-3 px-4 text-center">ID KANTOR</th>
@@ -194,7 +194,7 @@
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t">
                     <button type="button" @click="showAddModal = false" class="px-4 py-2 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2 min-h-[44px] bg-emerald-700 text-white rounded-xl font-bold hover:bg-emerald-800">Simpan Kantor</button>
+                    <button type="submit" class="px-5 py-2 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl font-bold transition-colors">Simpan Kantor</button>
                 </div>
             </form>
         </div>
@@ -249,7 +249,7 @@
                 </div>
                 <div class="flex justify-end gap-2 pt-3 border-t">
                     <button type="button" @click="showEditModal = false" class="px-4 py-2 min-h-[44px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold">Batal</button>
-                    <button type="submit" class="px-5 py-2 min-h-[44px] bg-emerald-700 text-white rounded-xl font-bold hover:bg-emerald-800">Update Kantor</button>
+                    <button type="submit" class="px-5 py-2 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl font-bold transition-colors">Update Kantor</button>
                 </div>
             </form>
         </div>

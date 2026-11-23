@@ -13,12 +13,12 @@
         {{-- Main Content Column --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Emerald Header Banner --}}
-            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
+            {{-- Top Header Banner --}}
+            <div class="bg-[#063f5c] rounded-2xl px-6 py-3.5 text-white font-bold text-sm uppercase tracking-wider shadow-xs flex flex-wrap items-center justify-between gap-2">
                 <span class="flex items-center gap-2">
                     <i class="fa-solid fa-bullseye text-white"></i> Target vs Capaian
                 </span>
-                <span class="text-xs text-emerald-100 font-normal">Dashboard / Target vs Capaian</span>
+                <span class="text-xs text-slate-200 font-normal">Dashboard / Target vs Capaian</span>
             </div>
 
             {{-- Filter Form Controls --}}
@@ -36,39 +36,31 @@
             </div>
 
             {{-- 4 Summary Card Headers --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
                     
                     {{-- Target --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Total Target
-                        </div>
-                        <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalTarget, 0, ',', '.') }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Target</span>
+                        <p class="text-2xl font-black text-slate-900 font-mono">Rp {{ number_format($totalTarget, 0, ',', '.') }}</p>
                     </div>
 
                     {{-- Capaian --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Total Capaian
-                        </div>
-                        <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalCapaian, 0, ',', '.') }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Capaian</span>
+                        <p class="text-2xl font-black text-[#063f5c] font-mono">Rp {{ number_format($totalCapaian, 0, ',', '.') }}</p>
                     </div>
 
                     {{-- % Target Vs Capaian --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            % Target Vs Capaian
-                        </div>
-                        <p class="text-2xl font-black text-emerald-700 font-mono">{{ $achievementPct }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">% Target Vs Capaian</span>
+                        <p class="text-2xl font-black text-[#063f5c] font-mono">{{ $achievementPct }}</p>
                     </div>
 
                     {{-- Sisa Target --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Sisa Target
-                        </div>
-                        <p class="text-2xl font-black text-emerald-700 font-mono">{{ $sisaTarget }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Sisa Target</span>
+                        <p class="text-2xl font-black text-slate-900 font-mono">{{ $sisaTarget }}</p>
                     </div>
 
                 </div>
@@ -99,13 +91,13 @@
 
             {{-- Resume Table Section --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
-                    <span class="font-black text-xs uppercase tracking-wider">Resume Target Vs Capaian Per PIC Prospek</span>
-                    <button type="button" aria-label="Export Target Vs Capaian" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
+                <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
+                    <span class="font-bold text-xs uppercase tracking-wider">Resume Target Vs Capaian Per PIC Prospek</span>
+                    <button type="button" aria-label="Export Target Vs Capaian" class="text-slate-200 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                        <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Bulan</th>

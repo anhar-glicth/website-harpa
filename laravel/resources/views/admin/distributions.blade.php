@@ -93,8 +93,8 @@
             @endif
 
             {{-- Dashboard Info Banner --}}
-            <div class="bg-white border border-emerald-100 rounded-3xl overflow-hidden shadow-sm">
-                <div class="bg-emerald-700 px-6 py-2.5 text-center text-white text-xs font-black uppercase tracking-wider">
+            <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+                <div class="bg-[#063f5c] px-6 py-2.5 text-center text-white text-xs font-bold uppercase tracking-wider">
                     Informasi Penyaluran
                 </div>
                 <div class="p-6 text-center">
@@ -209,7 +209,7 @@
                     <div class="flex flex-wrap items-center gap-2.5">
                         {{-- Add Button --}}
                         <button type="button" @click="showAddModal = true"
-                                class="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-700/20 transition-colors">
+                                class="inline-flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs transition-colors">
                             <i class="fa-solid fa-plus text-xs"></i> Add
                         </button>
 
@@ -452,7 +452,7 @@
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-700/20 transition-colors">
+                            class="flex-1 py-3 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl text-xs font-bold shadow-xs transition-colors">
                         Simpan Penyaluran
                     </button>
                 </div>
@@ -595,7 +595,7 @@
                         Batal
                     </button>
                     <button type="submit"
-                            class="flex-1 py-3 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-700/20 transition-colors">
+                            class="flex-1 py-3 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl text-xs font-bold shadow-xs transition-colors">
                         Simpan Perubahan
                     </button>
                 </div>

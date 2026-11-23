@@ -250,7 +250,7 @@
 
                 {{-- Table 1: Resume Prospek PIC Prospek (Col 6) --}}
                 <div class="lg:col-span-6 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Prospek PIC Prospek</span>
                         <button type="button" aria-label="Export Resume Prospek PIC" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
@@ -280,7 +280,7 @@
 
                 {{-- Table 2: Resume Prospek Per Kantor (Col 6) --}}
                 <div class="lg:col-span-6 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-4 py-2.5 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-4 py-2.5 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume Prospek Per Kantor</span>
                         <button type="button" aria-label="Export Resume Prospek Per Kantor" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
@@ -312,13 +312,13 @@
 
             {{-- Table 3: Top 20 Prospek Donatur Base On Potensi Dana --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
                     <span class="font-black text-xs uppercase tracking-wider">Top 20 Prospek Donatur Base On Potensi Dana</span>
                     <button type="button" aria-label="Export Top 20 Prospek" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                        <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Nama Donatur</th>
@@ -356,13 +356,13 @@
 
             {{-- Table 4: Top 20 Prospek Calon Donatur Base On Potensi Dana --}}
             <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
                     <span class="font-black text-xs uppercase tracking-wider">Top 20 Prospek Calon Donatur Base On Potensi Dana</span>
                     <button type="button" aria-label="Export Top 20 Prospek Calon Donatur" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                        <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                        <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                             <tr>
                                 <th class="py-3 px-4 text-center">No</th>
                                 <th class="py-3 px-4">Nama Donatur</th>

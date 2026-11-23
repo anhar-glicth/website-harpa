@@ -130,34 +130,50 @@ class AdminController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: Anda tidak memiliki izin untuk mengelola kampanye.');
         }
 
-        $query = Campaign::with(['author', 'group'])->withCount('donations');
+        try {
+            $query = Campaign::with(['author']);
+            if (\Illuminate\Support\Facades\Schema::hasColumn('campaigns', 'group_id') && \Illuminate\Support\Facades\Schema::hasTable('program_groups')) {
+                $query->with('group');
+            }
+            $query->withCount('donations');
 
-        if ($request->filled('search')) {
-            $search = trim($request->search);
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%");
-            });
+            if ($request->filled('search')) {
+                $search = trim($request->search);
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%")
+                      ->orWhere('category', 'like', "%{$search}%");
+                });
+            }
+
+            if ($request->filled('status') && $request->status !== 'all') {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->filled('category') && $request->category !== 'all') {
+                $query->where('category', $request->category);
+            }
+
+            $campaigns = $query->latest()->paginate(10)->withQueryString();
+            $categories = Campaign::distinct()->pluck('category')->filter()->values();
+            $programGroups = \Illuminate\Support\Facades\Schema::hasTable('program_groups') ? ProgramGroup::orderBy('name')->get() : collect([]);
+
+            $totalCampaigns = Campaign::count();
+            $approvedCampaigns = Campaign::where('status', 'approved')->count();
+            $pendingCampaigns = Campaign::where('status', 'pending')->count();
+            $rejectedCampaigns = Campaign::where('status', 'rejected')->count();
+            $totalCollected = Campaign::sum('current_amount');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Error loading admin campaigns: ' . $e->getMessage());
+            $campaigns = Campaign::latest()->paginate(10);
+            $categories = collect([]);
+            $programGroups = collect([]);
+            $totalCampaigns = Campaign::count();
+            $approvedCampaigns = Campaign::where('status', 'approved')->count();
+            $pendingCampaigns = 0;
+            $rejectedCampaigns = 0;
+            $totalCollected = Campaign::sum('current_amount');
         }
-
-        if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('category') && $request->category !== 'all') {
-            $query->where('category', $request->category);
-        }
-
-        $campaigns = $query->latest()->paginate(10)->withQueryString();
-        $categories = Campaign::distinct()->pluck('category')->filter()->values();
-        $programGroups = ProgramGroup::orderBy('name')->get();
-
-        $totalCampaigns = Campaign::count();
-        $approvedCampaigns = Campaign::where('status', 'approved')->count();
-        $pendingCampaigns = Campaign::where('status', 'pending')->count();
-        $rejectedCampaigns = Campaign::where('status', 'rejected')->count();
-        $totalCollected = Campaign::sum('current_amount');
 
         return view('admin.campaigns', compact(
             'campaigns',
@@ -189,31 +205,41 @@ class AdminController extends Controller
             'foto' => 'nullable|image|max:3072',
         ]);
 
-        $data = $request->only(['title', 'category', 'target_amount', 'description', 'status']);
-        $data['author_id'] = Auth::id();
-        $data['current_amount'] = 0;
+        try {
+            $data = $request->only(['title', 'category', 'target_amount', 'description', 'status']);
+            $data['author_id'] = Auth::id();
+            $data['current_amount'] = 0;
 
-        $group = ProgramGroup::where('name', $request->category)->first();
-        if ($group) {
-            $data['group_id'] = $group->id;
+            if (\Illuminate\Support\Facades\Schema::hasTable('program_groups') && \Illuminate\Support\Facades\Schema::hasColumn('campaigns', 'group_id')) {
+                $group = ProgramGroup::where('name', $request->category)->first();
+                if ($group) {
+                    $data['group_id'] = $group->id;
+                }
+            }
+
+            if ($request->hasFile('foto')) {
+                $path = $request->file('foto')->store('campaigns', 'public');
+                $data['foto'] = '/storage/' . $path;
+            }
+
+            $campaign = Campaign::create($data);
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Kampanye baru berhasil dibuat.',
+                    'campaign' => $campaign
+                ]);
+            }
+
+            return redirect()->route('admin.campaigns')->with('success', 'Kampanye baru berhasil dibuat dan disimpan.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Error creating campaign: ' . $e->getMessage());
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal membuat kampanye: ' . $e->getMessage()], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal membuat kampanye: ' . $e->getMessage());
         }
-
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('campaigns', 'public');
-            $data['foto'] = '/storage/' . $path;
-        }
-
-        $campaign = Campaign::create($data);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Kampanye baru berhasil dibuat.',
-                'campaign' => $campaign
-            ]);
-        }
-
-        return redirect()->route('admin.campaigns')->with('success', 'Kampanye baru berhasil dibuat dan disimpan.');
     }
 
     public function updateCampaign(Request $request, $id)
@@ -236,31 +262,41 @@ class AdminController extends Controller
             'foto' => 'nullable|image|max:3072',
         ]);
 
-        $data = $request->only(['title', 'category', 'target_amount', 'description', 'status']);
+        try {
+            $data = $request->only(['title', 'category', 'target_amount', 'description', 'status']);
 
-        $group = ProgramGroup::where('name', $request->category)->first();
-        $data['group_id'] = $group ? $group->id : null;
-
-        if ($request->hasFile('foto')) {
-            if ($campaign->foto && str_starts_with($campaign->foto, '/storage/campaigns/')) {
-                $oldPath = str_replace('/storage/', '', $campaign->foto);
-                Storage::disk('public')->delete($oldPath);
+            if (\Illuminate\Support\Facades\Schema::hasTable('program_groups') && \Illuminate\Support\Facades\Schema::hasColumn('campaigns', 'group_id')) {
+                $group = ProgramGroup::where('name', $request->category)->first();
+                $data['group_id'] = $group ? $group->id : null;
             }
-            $path = $request->file('foto')->store('campaigns', 'public');
-            $data['foto'] = '/storage/' . $path;
+
+            if ($request->hasFile('foto')) {
+                if ($campaign->foto && str_starts_with($campaign->foto, '/storage/campaigns/')) {
+                    $oldPath = str_replace('/storage/', '', $campaign->foto);
+                    Storage::disk('public')->delete($oldPath);
+                }
+                $path = $request->file('foto')->store('campaigns', 'public');
+                $data['foto'] = '/storage/' . $path;
+            }
+
+            $campaign->update($data);
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data kampanye berhasil diperbarui.',
+                    'campaign' => $campaign
+                ]);
+            }
+
+            return redirect()->route('admin.campaigns')->with('success', 'Data kampanye berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Error updating campaign: ' . $e->getMessage());
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal memperbarui kampanye: ' . $e->getMessage()], 500);
+            }
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui kampanye: ' . $e->getMessage());
         }
-
-        $campaign->update($data);
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Data kampanye berhasil diperbarui.',
-                'campaign' => $campaign
-            ]);
-        }
-
-        return redirect()->route('admin.campaigns')->with('success', 'Data kampanye berhasil diperbarui.');
     }
 
     public function deleteCampaign(Request $request, $id)
@@ -272,26 +308,55 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Akses ditolak: Hanya Super Admin dan Manager Program yang berhak menghapus kampanye.');
         }
 
-        $campaign = Campaign::findOrFail($id);
+        try {
+            DB::beginTransaction();
+            $campaign = Campaign::findOrFail($id);
 
-        if ($campaign->foto && str_starts_with($campaign->foto, '/storage/campaigns/')) {
-            $oldPath = str_replace('/storage/', '', $campaign->foto);
-            Storage::disk('public')->delete($oldPath);
+            if ($campaign->foto && str_starts_with($campaign->foto, '/storage/campaigns/')) {
+                $oldPath = str_replace('/storage/', '', $campaign->foto);
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            // Hapus data transaksi/donasi dan update terkait
+            $campaign->donations()->delete();
+            $campaign->updates()->delete();
+
+            // Nullify atau hapus referensi foreign key di modul lain agar tidak memicu integrity violation
+            if (\Illuminate\Support\Facades\Schema::hasTable('distributions')) {
+                DB::table('distributions')->where('program_id', $id)->update(['program_id' => null]);
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('targets')) {
+                DB::table('targets')->where('program_id', $id)->delete();
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('transaksi_donasi')) {
+                DB::table('transaksi_donasi')->where('campaign_id', $id)->update(['campaign_id' => null]);
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('marketing_ads_data')) {
+                DB::table('marketing_ads_data')->where('campaign_id', $id)->update(['campaign_id' => null]);
+            }
+            if (\Illuminate\Support\Facades\Schema::hasTable('ref_campaign_alias')) {
+                DB::table('ref_campaign_alias')->where('campaign_id', $id)->update(['campaign_id' => null]);
+            }
+
+            $campaign->delete();
+            DB::commit();
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Kampanye berhasil dihapus.'
+                ]);
+            }
+
+            return redirect()->route('admin.campaigns')->with('success', 'Kampanye berhasil dihapus.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            \Illuminate\Support\Facades\Log::error('Error deleting campaign: ' . $e->getMessage());
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menghapus kampanye: ' . $e->getMessage()], 500);
+            }
+            return redirect()->back()->with('error', 'Gagal menghapus kampanye: ' . $e->getMessage());
         }
-
-        // Hapus data transaksi/donasi dan update terkait (termasuk data dummy/testing)
-        $campaign->donations()->delete();
-        $campaign->updates()->delete();
-        $campaign->delete();
-
-        if ($request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Kampanye berhasil dihapus.'
-            ]);
-        }
-
-        return redirect()->route('admin.campaigns')->with('success', 'Kampanye berhasil dihapus.');
     }
 
     public function approveCampaign($id)

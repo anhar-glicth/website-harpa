@@ -23,11 +23,11 @@
                     <p class="text-xs font-semibold text-slate-600 uppercase tracking-widest">Distribusi Management / Dashboard Analytics & Grafik Penyaluran</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('admin.distributions') }}" class="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-black uppercase tracking-wider shadow-lg shadow-emerald-700/20 transition-colors">
+                    <a href="{{ route('admin.distributions') }}" class="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[#063f5c] hover:bg-[#04324a] text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-xs transition-colors">
                         <i class="fa-solid fa-truck-ramp-box text-xs"></i>
                         <span>Input & List Penyaluran</span>
                     </a>
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-700 shadow-sm">
+                    <div class="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center text-[#063f5c] shadow-xs">
                         <i class="fa-solid fa-chart-line text-lg"></i>
                     </div>
                 </div>
@@ -150,47 +150,37 @@
             </div>
 
             {{-- Summary Banner Bar --}}
-            <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
                 <div class="grid grid-cols-2 sm:grid-cols-5 text-center divide-x divide-slate-200 bg-white">
 
                     {{-- Total Quantity --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Jumlah Quantity
-                        </div>
-                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumQuantity) }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Jumlah Quantity</span>
+                        <p class="text-2xl font-bold font-montserrat text-slate-900">{{ number_format($sumQuantity) }}</p>
                     </div>
 
                     {{-- Total Kota --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Jumlah Kota
-                        </div>
-                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumKota) }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Jumlah Kota</span>
+                        <p class="text-2xl font-bold font-montserrat text-slate-900">{{ number_format($sumKota) }}</p>
                     </div>
 
                     {{-- Total Provinsi --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Jumlah Provinsi
-                        </div>
-                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumProvinsi) }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Jumlah Provinsi</span>
+                        <p class="text-2xl font-bold font-montserrat text-slate-900">{{ number_format($sumProvinsi) }}</p>
                     </div>
 
                     {{-- Total Penerima Manfaat --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Penerima Manfaat
-                        </div>
-                        <p class="text-2xl font-black text-slate-900">{{ number_format($sumPM) }}</p>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Penerima Manfaat</span>
+                        <p class="text-2xl font-bold font-montserrat text-slate-900">{{ number_format($sumPM) }}</p>
                     </div>
 
                     {{-- Total Dana Penyaluran --}}
-                    <div class="p-4 space-y-1 col-span-2 sm:col-span-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Dana Penyaluran
-                        </div>
-                        <p class="text-2xl font-black text-emerald-700">
+                    <div class="p-5 space-y-1 col-span-2 sm:col-span-1 bg-slate-50">
+                        <span class="text-xs font-bold uppercase tracking-wider text-[#063f5c] block">Dana Penyaluran</span>
+                        <p class="text-2xl font-black font-montserrat text-[#063f5c]">
                             Rp {{ number_format($sumDana, 0, ',', '.') }}
                         </p>
                     </div>
@@ -311,7 +301,7 @@
 
                 {{-- 1. Resume Penyaluran By Asnaf --}}
                 <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                    <div class="bg-[#063f5c] px-6 py-3 text-white flex items-center justify-between">
                         <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Asnaf</span>
                         <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'asnaf'])) }}" aria-label="Export Data Resume Asnaf Excel" class="w-9 h-9 inline-flex items-center justify-center text-emerald-100 hover:text-white transition-colors" title="Export Data Resume Asnaf Excel">
                             <i class="fa-solid fa-file-excel text-base"></i>
@@ -350,7 +340,7 @@
 
                 {{-- 2. Resume Penyaluran By Kota --}}
                 <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                    <div class="bg-[#063f5c] px-6 py-3 text-white flex items-center justify-between">
                         <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Kota</span>
                         <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'kota'])) }}" aria-label="Export Data Resume Kota Excel" class="w-9 h-9 inline-flex items-center justify-center text-emerald-100 hover:text-white transition-colors" title="Export Data Resume Kota Excel">
                             <i class="fa-solid fa-file-excel text-base"></i>
@@ -391,7 +381,7 @@
 
                 {{-- 3. Resume Penyaluran By Kategori Program --}}
                 <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                    <div class="bg-[#063f5c] px-6 py-3 text-white flex items-center justify-between">
                         <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Kategori Program</span>
                         <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'kategori'])) }}" aria-label="Export Data Resume Kategori Excel" class="w-9 h-9 inline-flex items-center justify-center text-emerald-100 hover:text-white transition-colors" title="Export Data Resume Kategori Excel">
                             <i class="fa-solid fa-file-excel text-base"></i>
@@ -430,7 +420,7 @@
 
                 {{-- 4. Resume Penyaluran By Program --}}
                 <div class="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 px-6 py-3 text-white flex items-center justify-between">
+                    <div class="bg-[#063f5c] px-6 py-3 text-white flex items-center justify-between">
                         <span class="text-xs font-black uppercase tracking-wider">Resume Penyaluran By Program</span>
                         <a href="{{ route('admin.distributions.export', array_merge(request()->query(), ['export_type' => 'program'])) }}" aria-label="Export Data Resume Program Excel" class="w-9 h-9 inline-flex items-center justify-center text-emerald-100 hover:text-white transition-colors" title="Export Data Resume Program Excel">
                             <i class="fa-solid fa-file-excel text-base"></i>

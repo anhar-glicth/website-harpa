@@ -13,12 +13,12 @@
         {{-- Main Content Column --}}
         <div class="space-y-6 min-w-0 overflow-hidden">
 
-            {{-- Top Emerald Header Banner --}}
-            <div class="bg-emerald-700 rounded-2xl px-6 py-3.5 text-white font-black text-sm uppercase tracking-wider shadow-sm flex flex-wrap items-center justify-between gap-2">
+            {{-- Top Header Banner --}}
+            <div class="bg-[#063f5c] rounded-2xl px-6 py-3.5 text-white font-bold text-sm uppercase tracking-wider shadow-xs flex flex-wrap items-center justify-between gap-2">
                 <span class="flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-white"></i> Dashboard RFM Segmentation
                 </span>
-                <span class="text-xs text-emerald-100 font-normal">Dashboard / RFM Segmentation</span>
+                <span class="text-xs text-slate-200 font-normal">Dashboard / RFM Segmentation</span>
             </div>
 
             {{-- Filter Form Controls --}}
@@ -101,38 +101,30 @@
             </div>
 
             {{-- 4 Summary Card Headers --}}
-            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 text-center">
                     
                     {{-- Donatur All --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Total Donatur All
-                        </div>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Donatur All</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($totalDonors) }}</p>
                     </div>
 
                     {{-- Donatur Laki-laki --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Donatur Laki-laki
-                        </div>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Donatur Laki-laki</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($maleDonors) }}</p>
                     </div>
 
                     {{-- Donatur Perempuan --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Donatur Perempuan
-                        </div>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Donatur Perempuan</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($femaleDonors) }}</p>
                     </div>
 
                     {{-- Jenis Kelamin Tidak Diketahui --}}
-                    <div class="p-4 space-y-1">
-                        <div class="bg-emerald-700 text-white py-1.5 px-2 text-xs font-black uppercase tracking-wider rounded-t-xl -mx-4 -mt-4 mb-2">
-                            Gender Tidak Diketahui
-                        </div>
+                    <div class="p-5 space-y-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">Gender Tidak Diketahui</span>
                         <p class="text-2xl font-black text-slate-900 font-mono">{{ number_format($unknownSexDonors) }}</p>
                     </div>
 
@@ -222,13 +214,13 @@
 
                 {{-- Table 1: Resume RFM 90 Days By PIC Prospek --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM 90 Days By PIC Prospek</span>
                         <button type="button" aria-label="Export Resume RFM 90 Days" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                            <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">PIC Prospek</th>
@@ -272,13 +264,13 @@
 
                 {{-- Table 2: Resume RFM All Time By PIC Prospek --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM All Time By PIC Prospek</span>
                         <button type="button" aria-label="Export Resume RFM All Time" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                            <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">PIC Prospek</th>
@@ -325,13 +317,13 @@
 
                 {{-- Table 3: Resume RFM 90 Days By Office --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM 90 Days By Office</span>
                         <button type="button" aria-label="Export Resume RFM 90 Days By Office" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                            <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">Kantor</th>
@@ -375,13 +367,13 @@
 
                 {{-- Table 4: Resume RFM All Time By Office --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Resume RFM All Time By Office</span>
                         <button type="button" aria-label="Export Resume RFM All Time By Office" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                            <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">Kantor</th>
@@ -428,13 +420,13 @@
 
                 {{-- Table 5: Top 20 Donatur Base On Kontribusi Donasi (All Time Donation) --}}
                 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div class="bg-emerald-700 text-white px-5 py-3 flex items-center justify-between">
+                    <div class="bg-[#063f5c] text-white px-5 py-3 flex items-center justify-between">
                         <span class="font-black text-xs uppercase tracking-wider">Top 20 Donatur Base On Kontribusi Donasi (All Time Donation)</span>
                         <button type="button" aria-label="Export Top 20 Donatur Kontribusi" class="text-emerald-100 hover:text-white text-xs"><i class="fa-solid fa-file-excel"></i></button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs font-medium text-slate-700 divide-y divide-slate-100 whitespace-nowrap">
-                            <thead class="bg-emerald-700 text-white text-xs font-black uppercase">
+                            <thead class="bg-[#063f5c] text-white text-xs font-bold uppercase">
                                 <tr>
                                     <th class="py-3 px-4 text-center">No</th>
                                     <th class="py-3 px-4">Nama Donatur</th>

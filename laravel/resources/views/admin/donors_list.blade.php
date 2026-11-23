@@ -394,8 +394,8 @@
                     <i class="fa-solid fa-trash-can"></i> Hapus
                 </button>
 
-                <a href="{{ route('admin.donors.export', request()->query()) }}" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
-                    <i class="fa-solid fa-file-excel"></i> Export Excel
+                <a href="{{ route('admin.donors.export', request()->query()) }}" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors">
+                    <i class="fa-solid fa-file-excel text-emerald-700"></i> Export Excel
                 </a>
 
                 <a href="{{ route('admin.donors.batch_receipt', request()->query()) }}" target="_blank" 
