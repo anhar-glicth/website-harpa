@@ -52,7 +52,7 @@
     }"
     @mouseenter="paused = true"
     @mouseleave="if (!userPaused) paused = false"
-    class="relative min-h-[70vh] flex items-center justify-center text-center text-white overflow-hidden py-24 sm:py-32 px-6"
+    class="relative min-h-[70vh] flex flex-col items-center justify-center text-center text-white overflow-hidden pt-24 pb-24 sm:pt-28 sm:pb-32 px-6"
 >
     <!-- Hero images -->
     <div class="absolute inset-0 z-0 overflow-hidden bg-slate-950">
@@ -121,14 +121,14 @@
         </div>
     </div>
 
-    <!-- Slider dots and pause control -->
-    <div class="absolute bottom-16 sm:bottom-28 left-0 right-0 z-20 flex justify-center items-center gap-3 pointer-events-auto">
+    <!-- Slider dots and pause control (in normal flow below CTA to prevent any overlap) -->
+    <div class="relative z-20 mt-8 sm:mt-10 flex justify-center items-center gap-3 pointer-events-auto">
         <button 
             type="button" 
             @click="togglePause()" 
             :aria-pressed="userPaused"
             :aria-label="userPaused ? 'Putar slide otomatis' : 'Jeda slide otomatis'"
-            class="min-w-[44px] min-h-[44px] px-3 py-1.5 rounded-xl bg-slate-950/75 hover:bg-slate-900 text-white border border-white/25 text-[11px] font-bold inline-flex items-center justify-center gap-1.5 transition-colors"
+            class="min-w-[44px] min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-950/65 hover:bg-slate-900 text-white/95 border border-white/20 text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-colors"
         >
             <i class="fa-solid text-xs" :class="userPaused ? 'fa-play' : 'fa-pause'" aria-hidden="true"></i>
             <span x-text="userPaused ? 'Putar' : 'Jeda'"></span>
