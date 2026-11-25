@@ -724,8 +724,13 @@
                     @endif
                 </div>
                 <div class="space-y-1.5" x-data="{ showPass: false }">
-                    <div class="flex justify-between items-center">
-                        <label for="modal_login_password" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Kata Sandi</label>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label for="modal_login_password" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Kata Sandi</label>
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" @click="openLogin = false" class="text-xs font-bold text-primary-700 hover:underline transition-colors py-1">
+                                Lupa Kata Sandi?
+                            </a>
+                        @endif
                     </div>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><i class="fa-solid fa-lock text-xs" aria-hidden="true"></i></span>

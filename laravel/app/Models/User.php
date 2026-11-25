@@ -259,4 +259,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Zakat::class);
     }
+
+    /**
+     * Send the password reset notification using Indonesian localization.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
 }
