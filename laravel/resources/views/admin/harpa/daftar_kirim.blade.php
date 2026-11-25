@@ -24,11 +24,15 @@
                         </h1>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber]) }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider shadow-sm transition-colors">
-                            <i class="fa-solid fa-file-csv" aria-hidden="true"></i>
-                            Unduh CSV CRM
+                        <a href="{{ route('admin.harpa.workbook.export', 'blast') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-colors" title="Unduh workbook lengkap 19 sheet format DB_BLAST (.xlsx)">
+                            <i class="fa-solid fa-file-excel text-[#f7ad1a]" aria-hidden="true"></i>
+                            Export DB_BLAST (.XLSX)
                         </a>
-                        <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber, 'mask' => 1]) }}" class="inline-flex items-center min-h-[44px] gap-2 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider transition-colors" title="Ekspor Aman Tanpa Nomor Lengkap untuk Laporan Pihak Ketiga">
+                        <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber]) }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs uppercase tracking-wider shadow-xs transition-colors">
+                            <i class="fa-solid fa-file-csv text-emerald-700" aria-hidden="true"></i>
+                            Unduh CSV Tab Ini
+                        </a>
+                        <a href="{{ route('admin.harpa.daftar_kirim.export', ['type' => $tab, 'bulan' => $bulan, 'sumber' => $sumber, 'mask' => 1]) }}" class="inline-flex items-center min-h-[44px] gap-2 px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs uppercase tracking-wider transition-colors" title="Ekspor Aman Tanpa Nomor Lengkap untuk Laporan Pihak Ketiga">
                             <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
                             Ekspor Aman
                         </a>

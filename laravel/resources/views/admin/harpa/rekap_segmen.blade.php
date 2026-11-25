@@ -23,8 +23,16 @@
                             <i class="fa-solid fa-filter-circle-dollar text-[#f7ad1a]" aria-hidden="true"></i> Rekap Segmen Per Nomor
                         </h1>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('admin.harpa.daftar_kirim') }}" class="inline-flex items-center min-h-[44px] gap-2 px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-black text-xs uppercase tracking-wider shadow-md transition-colors">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ route('admin.harpa.workbook.export', 'blast') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-colors" title="Unduh workbook lengkap 19 sheet format DB_BLAST (.xlsx)">
+                            <i class="fa-solid fa-file-excel text-[#f7ad1a]" aria-hidden="true"></i>
+                            Export DB_BLAST (.XLSX)
+                        </a>
+                        <a href="{{ route('admin.harpa.rekap.export', request()->query()) }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs uppercase tracking-wider shadow-xs transition-colors">
+                            <i class="fa-solid fa-file-csv text-emerald-700" aria-hidden="true"></i>
+                            Export CSV Rekap
+                        </a>
+                        <a href="{{ route('admin.harpa.daftar_kirim') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-[#063f5c] text-slate-800 hover:text-[#063f5c] font-bold text-xs uppercase tracking-wider transition-colors">
                             <i class="fa-solid fa-list-check" aria-hidden="true"></i>
                             Buka Daftar Kirim CRM
                         </a>

@@ -23,9 +23,13 @@
                             Impor Data Donasi (FH, IM, WA)
                         </h1>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs uppercase tracking-wider shadow-sm transition-colors">
-                            <i class="fa-solid fa-file-arrow-down text-sm" aria-hidden="true"></i>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ route('admin.harpa.workbook.export', 'induk') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-colors" title="Unduh workbook lengkap 20 sheet format HARPA_DB_INDUK (.xlsx)">
+                            <i class="fa-solid fa-file-excel text-[#f7ad1a]" aria-hidden="true"></i>
+                            Export DB_INDUK (.XLSX)
+                        </a>
+                        <a href="{{ route('admin.harpa.template.download', 'donasi') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs uppercase tracking-wider shadow-xs transition-colors">
+                            <i class="fa-solid fa-file-arrow-down text-emerald-700" aria-hidden="true"></i>
                             Unduh Template (.CSV)
                         </a>
                         <a href="{{ route('admin.harpa.papan_kerja') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-800 hover:border-[#063f5c] hover:text-[#063f5c] font-bold text-xs uppercase tracking-wider transition-colors">

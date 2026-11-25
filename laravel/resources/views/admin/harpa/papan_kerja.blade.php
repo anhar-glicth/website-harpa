@@ -23,7 +23,11 @@
                             <i class="fa-solid fa-clipboard-check text-[#f7ad1a]" aria-hidden="true"></i> Papan Kerja & Persetujuan
                         </h1>
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ route('admin.harpa.workbook.export', 'induk') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-[#063f5c] hover:bg-[#04324a] text-white font-bold text-xs uppercase tracking-wider shadow-xs transition-colors" title="Unduh workbook lengkap 20 sheet format HARPA_DB_INDUK (.xlsx)">
+                            <i class="fa-solid fa-file-excel text-[#f7ad1a]" aria-hidden="true"></i>
+                            Export DB_INDUK (.XLSX)
+                        </a>
                         <a href="{{ route('admin.harpa.import_donasi') }}" class="inline-flex items-center min-h-[44px] gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs uppercase tracking-wider transition-colors">
                             <i class="fa-solid fa-arrow-left text-sm" aria-hidden="true"></i>
                             Kembali ke Impor

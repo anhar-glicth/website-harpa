@@ -1203,12 +1203,193 @@ class HarpaDataController extends Controller
                         $row['catatan_crm'],
                     ]);
                 }
+            } elseif ($type === 'hitung_donatur') {
+                fputcsv($handle, ['donatur_id', 'nama_lengkap', 'no_hp', 'kategori', 'badge', 'segmen_rfm', 'frekuensi', 'total_donasi', 'donasi_terakhir', 'recency_hari']);
+                foreach ($this->engine->getLaporanHitungDonatur() as $row) {
+                    fputcsv($handle, [
+                        $row['donatur_id'],
+                        $row['nama_lengkap'],
+                        $row['no_hp'],
+                        $row['kategori'],
+                        $row['badge'],
+                        $row['segmen_rfm'],
+                        $row['frekuensi'],
+                        $row['total_donasi'],
+                        $row['donasi_terakhir'],
+                        $row['days_since_last'],
+                    ]);
+                }
+            } elseif ($type === 'kohort') {
+                $headers = ['bulan_gabung', 'jml_donatur'];
+                for ($m = 0; $m <= 11; $m++) {
+                    $headers[] = "M+{$m} (%)";
+                }
+                fputcsv($handle, $headers);
+                foreach ($this->engine->getLaporanKohort() as $month => $info) {
+                    $line = [$month, $info['cohort_size']];
+                    for ($m = 0; $m <= 11; $m++) {
+                        $activeCount = $info['months'][$m] ?? 0;
+                        $pct = $info['cohort_size'] > 0 ? round(($activeCount / $info['cohort_size']) * 100, 1) : 0;
+                        $line[] = $activeCount > 0 ? "{$pct}%" : '-';
+                    }
+                    fputcsv($handle, $line);
+                }
+            } elseif ($type === 'donatur_tak_baca') {
+                fputcsv($handle, ['donatur_id', 'nama_lengkap', 'no_hp', 'total_donasi', 'frekuensi', 'tgl_donasi_terakhir', 'jml_blast', 'read_blast', 'catatan_analisis']);
+                $rows = $this->engine->getLaporanDonaturTakBaca(
+                    $request->query('start_date'),
+                    $request->query('end_date')
+                );
+                foreach ($rows as $row) {
+                    fputcsv($handle, [
+                        $row['donatur_id'],
+                        $row['nama_lengkap'],
+                        $row['no_hp'],
+                        $row['total_donasi'],
+                        $row['frekuensi'],
+                        $row['donasi_terakhir'] ?: '-',
+                        $row['total_blast'],
+                        $row['read_blast'],
+                        $row['catatan'],
+                    ]);
+                }
             }
 
             fclose($handle);
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    /**
+     * Ekspor Workbook Lengkap Multi-Sheet (.xlsx) sesuai 3 Spreadsheet Acuan:
+     * - induk: HARPA_DB_INDUK (20 sheet)
+     * - blast: DB_BLAST (19 sheet)
+     * - analitik: HARPA_ANALITIK (14 sheet)
+     */
+    public function exportWorkbook(Request $request, string $workbook)
+    {
+        $exporter = app(\App\Services\Harpa\HarpaSpreadsheetExportService::class);
+        $stamp = date('Ymd_His');
+
+        switch (strtolower($workbook)) {
+            case 'induk':
+                $binary = $exporter->generateDbIndukWorkbook();
+                $filename = "HARPA_DB_INDUK_{$stamp}.xlsx";
+                break;
+
+            case 'blast':
+                $binary = $exporter->generateDbBlastWorkbook();
+                $filename = "HARPA_DB_BLAST_{$stamp}.xlsx";
+                break;
+
+            case 'analitik':
+                $year = $request->filled('year') ? (int) $request->query('year') : null;
+                $month = $request->filled('month') ? (int) $request->query('month') : null;
+                $binary = $exporter->generateAnalitikWorkbook(
+                    $year,
+                    $month,
+                    $request->query('start_date'),
+                    $request->query('end_date')
+                );
+                $filename = "HARPA_ANALITIK_{$stamp}.xlsx";
+                break;
+
+            default:
+                abort(404, 'Format workbook tidak ditemukan.');
+        }
+
+        return response($binary, 200, [
+            'Content-Type'        => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control'       => 'max-age=0',
+        ]);
+    }
+
+    /**
+     * Ekspor CSV Rekap Segmen Waterfall (Alur C).
+     */
+    public function exportRekapSegmen(Request $request)
+    {
+        $segmen = $request->query('segmen');
+        $search = $request->query('search');
+        $data = $this->engine->getRekapSegments($segmen ?: null, $search ?: null);
+        $filename = 'harpa_rekap_segmen_' . date('Ymd_His') . '.csv';
+
+        return response()->streamDownload(function () use ($data) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($handle, ['no_hp', 'donatur_id', 'nama', 'segmen', 'jadwal', 'alasan', 'total_blast', 'read', 'delivered', 'success', 'failed', 'total_donasi', 'donasi_count', 'tgl_donasi_terakhir', 'wa_aktif']);
+            foreach ($data as $r) {
+                fputcsv($handle, [
+                    $r['no_hp'],
+                    $r['donatur_id'],
+                    $r['nama'],
+                    $r['segmen'],
+                    $r['jadwal'],
+                    $r['alasan'],
+                    $r['total_blast'],
+                    $r['read'],
+                    $r['delivered'],
+                    $r['success'],
+                    $r['failed'],
+                    $r['total_donasi'],
+                    $r['donasi_count'],
+                    $r['tgl_donasi_terakhir'] ? \Carbon\Carbon::parse($r['tgl_donasi_terakhir'])->toDateString() : '-',
+                    $r['wa_aktif'] ? 'Aktif' : 'Mati',
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /**
+     * Ekspor CSV Riwayat Blast Everpro (Alur B).
+     */
+    public function exportBlastHistory(Request $request)
+    {
+        $filename = 'harpa_riwayat_blast_' . date('Ymd_His') . '.csv';
+
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($handle, ['receiver_number', 'broadcast_id', 'message_id', 'status', 'timestamp_blast', 'batch_tarik']);
+            foreach (RawBlast::orderBy('timestamp_blast', 'desc')->cursor() as $rb) {
+                fputcsv($handle, [
+                    $rb->receiver_number,
+                    $rb->broadcast_id,
+                    $rb->message_id,
+                    $rb->status,
+                    $rb->timestamp_blast ? $rb->timestamp_blast->format('Y-m-d H:i:s') : '',
+                    $rb->batch_tarik ?: '',
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    /**
+     * Ekspor CSV Nomor Mati WBS Pro (Alur E).
+     */
+    public function exportWbsPro(Request $request)
+    {
+        $filename = 'harpa_nomor_mati_wbs_' . date('Ymd_His') . '.csv';
+
+        return response()->streamDownload(function () {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($handle, ['no_hp', 'is_wa_aktif', 'tgl_cek', 'catatan', 'batch_tarik']);
+            foreach (RawCekWa::orderBy('tgl_cek', 'desc')->cursor() as $cw) {
+                fputcsv($handle, [
+                    $cw->no_hp,
+                    $cw->is_wa_aktif ? 1 : 0,
+                    $cw->tgl_cek ? \Carbon\Carbon::parse($cw->tgl_cek)->toDateString() : '',
+                    $cw->catatan ?: '',
+                    $cw->batch_tarik ?: '',
+                ]);
+            }
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     /**
