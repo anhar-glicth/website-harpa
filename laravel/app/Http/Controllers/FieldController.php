@@ -148,7 +148,9 @@ class FieldController extends Controller
             'result_note' => 'nullable|string',
         ]);
 
-        $todo = TodoList::where('user_id', Auth::id())->findOrFail($id);
+        $todo = Auth::user()->isAdmin()
+            ? TodoList::findOrFail($id)
+            : TodoList::where('user_id', Auth::id())->findOrFail($id);
         
         $data = ['status' => $request->status];
         if ($request->status === 'completed') {

@@ -453,11 +453,13 @@
                             </td>
                             <td class="py-3 px-4 text-center">
                                 <div class="inline-flex items-center gap-1.5 justify-center">
-                                    <button type="button" @click="restoreCard({{ $t->id }})" aria-label="Pulihkan tugas {{ $t->task }} ke papan aktif"
-                                            class="px-2.5 py-1.5 min-h-[36px] inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors border border-emerald-200 text-xs font-bold" title="Pulihkan tugas ini ke papan aktif">
-                                        <i class="fa-solid fa-rotate-left text-xs" aria-hidden="true"></i>
-                                        <span>Pulihkan</span>
-                                    </button>
+                                    @if(auth()->user()?->isAdmin() || (int) $t->user_id === (int) auth()->id())
+                                        <button type="button" @click="restoreCard({{ $t->id }})" aria-label="Pulihkan tugas {{ $t->task }} ke papan aktif"
+                                                class="px-2.5 py-1.5 min-h-[36px] inline-flex items-center gap-1.5 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors border border-emerald-200 text-xs font-bold" title="Pulihkan tugas ini ke papan aktif">
+                                            <i class="fa-solid fa-rotate-left text-xs" aria-hidden="true"></i>
+                                            <span>Pulihkan</span>
+                                        </button>
+                                    @endif
                                     <button type="button" @click="openDetailModal({{ $t->toJson() }})" aria-label="Buka detail tugas {{ $t->task }}"
                                             class="w-9 h-9 inline-flex items-center justify-center text-primary-700 hover:bg-primary-50 rounded-xl transition-colors" title="Buka Detail">
                                         <i class="fa-solid fa-up-right-from-square text-xs" aria-hidden="true"></i>
@@ -550,24 +552,39 @@
 
             <!-- Ubah Status Cepat -->
             <div class="space-y-2">
-                <span class="text-xs font-black uppercase tracking-wider text-slate-600">Pindahkan Status Kartu:</span>
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-600">Pindahkan Status Kartu:</span>
+                    <template x-if="!canManageDetail">
+                        <span class="text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-md inline-flex items-center gap-1">
+                            <i class="fa-solid fa-lock text-[10px]" aria-hidden="true"></i> Terkunci (Milik Staf Lain)
+                        </span>
+                    </template>
+                </div>
                 <div class="grid grid-cols-3 gap-2">
                     <button type="button" @click="changeStatusInModal('pending')" 
-                            :class="detailModal.data.status === 'pending' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                            :disabled="!canManageDetail"
+                            :class="[detailModal.data.status === 'pending' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50', !canManageDetail ? 'opacity-50 cursor-not-allowed' : '']"
                             class="py-2.5 px-2 min-h-[44px] border rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-regular fa-clipboard" aria-hidden="true"></i> To Do
                     </button>
                     <button type="button" @click="changeStatusInModal('in_progress')" 
-                            :class="detailModal.data.status === 'in_progress' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                            :disabled="!canManageDetail"
+                            :class="[detailModal.data.status === 'in_progress' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50', !canManageDetail ? 'opacity-50 cursor-not-allowed' : '']"
                             class="py-2.5 px-2 min-h-[44px] border rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> In Progress
                     </button>
                     <button type="button" @click="changeStatusInModal('completed')" 
-                            :class="detailModal.data.status === 'completed' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'"
+                            :disabled="!canManageDetail"
+                            :class="[detailModal.data.status === 'completed' ? 'bg-[#063f5c] text-white border-[#063f5c] shadow-xs' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50', !canManageDetail ? 'opacity-50 cursor-not-allowed' : '']"
                             class="py-2.5 px-2 min-h-[44px] border rounded-xl text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-check" aria-hidden="true"></i> Selesai
                     </button>
                 </div>
+                <template x-if="!canManageDetail">
+                    <p class="text-xs text-slate-600 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+                        Hanya pemilik tugas ini atau Super Admin yang dapat memindahkan status, mengarsipkan, atau menghapus kartu ini.
+                    </p>
+                </template>
             </div>
 
             <!-- Bukti & Laporan Hasil (Upload / View) -->
@@ -587,8 +604,8 @@
                     </div>
                 </template>
 
-                <!-- Existing / Update Note -->
-                <form :action="'{{ url('todo') }}/' + detailModal.data.id + '/update'" method="POST" enctype="multipart/form-data" class="space-y-3">
+                <!-- Existing / Update Note (Hanya pemilik kartu atau Super Admin) -->
+                <form x-show="canManageDetail" :action="'{{ url('todo') }}/' + detailModal.data.id + '/update'" method="POST" enctype="multipart/form-data" class="space-y-3">
                     @csrf
                     <input type="hidden" name="status" :value="detailModal.data.status">
                     
@@ -742,6 +759,8 @@ function trelloBoardData() {
             completed: {{ $completedTodos->count() }},
             total: {{ $totalCount }}
         },
+        isAdmin: {{ auth()->user()?->isAdmin() ? 'true' : 'false' }},
+        currentUserId: {{ (int) auth()->id() }},
         detailModal: {
             open: false,
             data: {}
@@ -749,6 +768,9 @@ function trelloBoardData() {
         createModal: {
             open: false,
             targetStatus: 'pending'
+        },
+        get canManageDetail() {
+            return this.isAdmin || Number(this.detailModal.data.user_id) === this.currentUserId;
         },
         get progressPercent() {
             return this.counts.total > 0 ? Math.round((this.counts.completed / this.counts.total) * 100) : 0;
@@ -792,6 +814,10 @@ function trelloBoardData() {
             this.detailModal.open = true;
         },
         changeStatusInModal(newStatus) {
+            if (!this.canManageDetail) {
+                this.showToast('Hanya pemilik tugas atau Super Admin yang dapat memindahkan kartu ini.', 'error');
+                return;
+            }
             const cardId = this.detailModal.data.id;
             this.detailModal.data.status = newStatus;
             
@@ -1006,7 +1032,9 @@ function trelloBoardData() {
                     ghostClass: 'opacity-30',
                     chosenClass: 'scale-[1.02]',
                     dragClass: 'shadow-2xl',
-                    filter: '.empty-lane-placeholder',
+                    draggable: '.trello-card:not(.trello-locked)',
+                    filter: '.empty-lane-placeholder, .trello-locked',
+                    preventOnFilter: true,
                     onEnd: function(evt) {
                         const itemEl = evt.item;
                         const cardId = itemEl.getAttribute('data-id');

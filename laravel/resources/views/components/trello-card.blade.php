@@ -4,16 +4,18 @@
     $isCompleted = $todo->status === 'completed';
     $isOverdue = !$isCompleted && $todo->deadline && $todo->deadline->isPast();
     $isDueSoon = !$isCompleted && $todo->deadline && $todo->deadline->isToday();
+    $canManageCard = auth()->user()?->isAdmin() || (int) $todo->user_id === (int) auth()->id();
 @endphp
 
 <div data-id="{{ $todo->id }}" 
      data-assignee-id="{{ $todo->user_id }}"
+     data-can-move="{{ $canManageCard ? '1' : '0' }}"
      role="button"
      tabindex="0"
      @click="openDetailModal({{ $todo->toJson() }})"
      @keydown.enter.prevent="openDetailModal({{ $todo->toJson() }})"
      @keydown.space.prevent="openDetailModal({{ $todo->toJson() }})"
-     class="trello-card bg-white rounded-2xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition-colors cursor-grab active:cursor-grabbing space-y-3 group select-none relative hover:border-primary-400">
+     class="trello-card bg-white rounded-2xl p-4 border border-slate-200 shadow-xs hover:shadow-md transition-colors space-y-3 group select-none relative hover:border-primary-400 {{ $canManageCard ? 'trello-draggable cursor-grab active:cursor-grabbing' : 'trello-locked cursor-pointer opacity-90' }}">
     
     <!-- Card Top Header: Status & Proof Indicators -->
     <div class="flex items-center justify-between gap-2">
@@ -31,23 +33,27 @@
             @endif
         </div>
 
-        @if($todo->result_attachment || $todo->result_note)
-            <div class="flex items-center gap-2 shrink-0">
-                @if($todo->result_attachment)
-                    <span class="text-emerald-700 inline-flex items-center gap-1" title="Ada Foto Bukti">
-                        <i class="fa-solid fa-paperclip text-xs" aria-hidden="true"></i>
-                        <span class="sr-only">Ada Foto Bukti</span>
-                    </span>
-                @endif
+        <div class="flex items-center gap-2 shrink-0">
+            @if(!$canManageCard)
+                <span class="text-slate-500 inline-flex items-center gap-1 text-[11px]" title="Terkunci: hanya pemilik kartu atau Super Admin yang dapat memindahkan">
+                    <i class="fa-solid fa-lock text-[11px]" aria-hidden="true"></i>
+                    <span class="sr-only">Terkunci</span>
+                </span>
+            @endif
+            @if($todo->result_attachment)
+                <span class="text-emerald-700 inline-flex items-center gap-1" title="Ada Foto Bukti">
+                    <i class="fa-solid fa-paperclip text-xs" aria-hidden="true"></i>
+                    <span class="sr-only">Ada Foto Bukti</span>
+                </span>
+            @endif
 
-                @if($todo->result_note)
-                    <span class="text-slate-600 inline-flex items-center gap-1" title="Ada Catatan Hasil">
-                        <i class="fa-regular fa-comment-dots text-xs" aria-hidden="true"></i>
-                        <span class="sr-only">Ada Catatan Hasil</span>
-                    </span>
-                @endif
-            </div>
-        @endif
+            @if($todo->result_note)
+                <span class="text-slate-600 inline-flex items-center gap-1" title="Ada Catatan Hasil">
+                    <i class="fa-regular fa-comment-dots text-xs" aria-hidden="true"></i>
+                    <span class="sr-only">Ada Catatan Hasil</span>
+                </span>
+            @endif
+        </div>
     </div>
 
     <!-- Task Title & Description -->

@@ -1865,9 +1865,13 @@ class AdminController extends Controller
         ]);
 
         $todo = \App\Models\TodoList::findOrFail($id);
+        $user = auth()->user();
 
-        if (!auth()->user()->isAdmin() && $todo->user_id !== auth()->id() && $todo->assigned_by !== auth()->id()) {
-            return response()->json(['success' => false, 'message' => 'Tidak memiliki izin untuk memindahkan tugas ini.'], 403);
+        if (!$user->isAdmin() && (int) $todo->user_id !== (int) $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak: Anda hanya dapat memindahkan tugas milik Anda sendiri. Hanya Super Admin yang dapat memindahkan tugas staf lain.'
+            ], 403);
         }
 
         $todo->status = $request->status;
@@ -1891,12 +1895,13 @@ class AdminController extends Controller
     public function deleteTask($id)
     {
         $todo = \App\Models\TodoList::findOrFail($id);
+        $user = auth()->user();
 
-        if (!auth()->user()->isAdmin() && $todo->assigned_by !== auth()->id() && $todo->user_id !== auth()->id()) {
+        if (!$user->isAdmin() && (int) $todo->user_id !== (int) $user->id) {
             if (request()->wantsJson()) {
-                return response()->json(['success' => false, 'message' => 'Tidak memiliki izin untuk menghapus tugas ini.'], 403);
+                return response()->json(['success' => false, 'message' => 'Akses ditolak: Hanya pemilik tugas atau Super Admin yang dapat menghapus tugas ini.'], 403);
             }
-            return redirect()->back()->with('error', 'Tidak memiliki izin untuk menghapus tugas ini.');
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya pemilik tugas atau Super Admin yang dapat menghapus tugas ini.');
         }
 
         $todo->delete();
@@ -1910,10 +1915,15 @@ class AdminController extends Controller
 
     public function archiveCompletedTasks(Request $request)
     {
+        $user = auth()->user();
         $query = \App\Models\TodoList::where('status', 'completed');
-        if ($request->filled('user_id')) {
+
+        if (!$user->isAdmin()) {
+            $query->where('user_id', $user->id);
+        } elseif ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
         }
+
         $count = $query->count();
         $query->update(['status' => 'archived']);
 
@@ -1931,6 +1941,15 @@ class AdminController extends Controller
     public function archiveTask($id)
     {
         $todo = \App\Models\TodoList::findOrFail($id);
+        $user = auth()->user();
+
+        if (!$user->isAdmin() && (int) $todo->user_id !== (int) $user->id) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak: Hanya pemilik tugas atau Super Admin yang dapat mengarsipkan kartu ini.'], 403);
+            }
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya pemilik tugas atau Super Admin yang dapat mengarsipkan kartu ini.');
+        }
+
         $todo->status = 'archived';
         $todo->save();
 
@@ -1947,6 +1966,15 @@ class AdminController extends Controller
     public function restoreTask($id)
     {
         $todo = \App\Models\TodoList::findOrFail($id);
+        $user = auth()->user();
+
+        if (!$user->isAdmin() && (int) $todo->user_id !== (int) $user->id) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Akses ditolak: Hanya pemilik tugas atau Super Admin yang dapat memulihkan kartu ini.'], 403);
+            }
+            return redirect()->back()->with('error', 'Akses ditolak: Hanya pemilik tugas atau Super Admin yang dapat memulihkan kartu ini.');
+        }
+
         $todo->status = 'completed';
         $todo->save();
 
