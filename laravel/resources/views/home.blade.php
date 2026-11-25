@@ -352,60 +352,6 @@
     });
 </script>
 
-<!-- About & Impact Mission Section -->
-<section class="bg-[#063f5c] text-white py-20 sm:py-24 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-15">
-        <img 
-            src="{{ !empty($settings->about_image) ? (str_starts_with($settings->about_image, 'http') ? $settings->about_image : asset($settings->about_image)) : 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&h=600&fit=crop' }}" 
-            width="1200"
-            height="600"
-            loading="lazy"
-            decoding="async"
-            class="w-full h-full object-cover" 
-            alt=""
-        >
-    </div>
-    <div class="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-        <div class="space-y-6">
-            <span class="text-xs font-black uppercase tracking-wider text-[#f7ad1a]">Visi dan Misi Lembaga</span>
-            <h2 class="text-2xl sm:text-4xl font-montserrat font-black uppercase tracking-tight">
-                Penyaluran yang <span class="text-[#f7ad1a]">Transparan</span> dan Bertanggung Jawab
-            </h2>
-            <div class="w-12 h-1.5 bg-[#f7ad1a] rounded-full"></div>
-            <p class="text-sm text-slate-200 leading-relaxed font-medium">
-                {{ $settings->about_mission ?? 'Kami memastikan setiap rupiah yang Anda donasikan tersalurkan langsung kepada penerima manfaat yang berhak dengan dokumentasi dan pelaporan terbuka.' }}
-            </p>
-            <div class="pt-2">
-                <a href="{{ route('about') }}" class="inline-flex items-center justify-center min-h-[44px] bg-[#f7ad1a] hover:bg-[#df9408] text-[#063f5c] text-xs font-black uppercase tracking-wider px-8 py-3.5 rounded-xl transition-colors duration-200 shadow-lg">
-                    Tentang Lembaga Kami
-                </a>
-            </div>
-        </div>
-        <div class="bg-[#04324a]/95 border border-[#0e567d] p-8 rounded-3xl space-y-6">
-            <h3 class="text-lg font-montserrat font-black uppercase tracking-wide text-white">Fokus Penyaluran</h3>
-            <div class="space-y-5">
-                <div class="flex items-start space-x-4">
-                    <div class="bg-[#063f5c] border border-[#0e567d] text-[#f7ad1a] w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-book-quran" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-black uppercase tracking-wider text-white">Mushaf Al-Quran Pelosok</h4>
-                        <p class="text-xs text-slate-200 leading-relaxed mt-1">Mendistribusikan mushaf Al-Quran untuk santri di pesantren wilayah pelosok.</p>
-                    </div>
-                </div>
-                <div class="flex items-start space-x-4">
-                    <div class="bg-[#063f5c] border border-[#0e567d] text-[#f7ad1a] w-11 h-11 rounded-xl flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-black uppercase tracking-wider text-white">Pendidikan Anak Dhuafa</h4>
-                        <p class="text-xs text-slate-200 leading-relaxed mt-1">Menyalurkan perlengkapan belajar dan sarana sekolah di wilayah terdampak bencana.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Prayer Board -->
 <section class="max-w-7xl mx-auto px-4 py-16 sm:py-24">
