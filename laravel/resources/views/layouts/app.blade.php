@@ -54,28 +54,47 @@
                 <img src="{{ asset('images/logo.png') }}?v=2" onerror="this.onerror=null; this.src='{{ asset('images/logo.jpeg') }}';" width="140" height="48" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300" alt="Yayasan Harpa Indonesia Madani">
             </a>
 
-            <div class="hidden md:flex items-center space-x-1 font-bold text-xs uppercase tracking-wider text-slate-600">
-                <a href="{{ route('home') }}" class="px-4 py-2.5 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('home') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Home</a>
-                <a href="{{ route('campaigns.index') }}" class="px-4 py-2.5 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('campaigns.*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Kampanye</a>
-                <a href="{{ route('zakat.index') }}" class="px-4 py-2.5 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('zakat.*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Zakat</a>
-                <a href="{{ route('prayers.index') }}" class="px-4 py-2.5 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('prayers.*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Doa</a>
-                <a href="{{ route('news') }}" class="px-4 py-2.5 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 {{ request()->routeIs('news*') ? 'bg-primary-50 text-primary-700 font-black' : '' }}">Berita</a>
+            <div class="hidden md:flex items-center space-x-2 lg:space-x-4 font-bold text-xs uppercase tracking-wider">
+                <a href="{{ route('home') }}" class="relative py-2 px-2 transition-colors duration-200 group {{ request()->routeIs('home') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-primary-600' }}">
+                    <span>Home</span>
+                    <span class="absolute bottom-0 left-2 right-2 h-0.5 bg-primary-600 rounded-full transition-all duration-300 origin-center {{ request()->routeIs('home') ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100' }}"></span>
+                </a>
+                <a href="{{ route('campaigns.index') }}" class="relative py-2 px-2 transition-colors duration-200 group {{ request()->routeIs('campaigns.*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-primary-600' }}">
+                    <span>Kampanye</span>
+                    <span class="absolute bottom-0 left-2 right-2 h-0.5 bg-primary-600 rounded-full transition-all duration-300 origin-center {{ request()->routeIs('campaigns.*') ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100' }}"></span>
+                </a>
+                <a href="{{ route('zakat.index') }}" class="relative py-2 px-2 transition-colors duration-200 group {{ request()->routeIs('zakat.*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-primary-600' }}">
+                    <span>Zakat</span>
+                    <span class="absolute bottom-0 left-2 right-2 h-0.5 bg-primary-600 rounded-full transition-all duration-300 origin-center {{ request()->routeIs('zakat.*') ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100' }}"></span>
+                </a>
+                <a href="{{ route('prayers.index') }}" class="relative py-2 px-2 transition-colors duration-200 group {{ request()->routeIs('prayers.*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-primary-600' }}">
+                    <span>Doa</span>
+                    <span class="absolute bottom-0 left-2 right-2 h-0.5 bg-primary-600 rounded-full transition-all duration-300 origin-center {{ request()->routeIs('prayers.*') ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100' }}"></span>
+                </a>
+                <a href="{{ route('news') }}" class="relative py-2 px-2 transition-colors duration-200 group {{ request()->routeIs('news*') ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-primary-600' }}">
+                    <span>Berita</span>
+                    <span class="absolute bottom-0 left-2 right-2 h-0.5 bg-primary-600 rounded-full transition-all duration-300 origin-center {{ request()->routeIs('news*') ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100' }}"></span>
+                </a>
                 
-                <div x-data="{ openLainnya: false }" @keydown.escape.window="openLainnya = false" class="relative">
-                    <button type="button" @click="openLainnya = !openLainnya" :aria-expanded="openLainnya" class="px-4 py-2.5 rounded-xl transition duration-200 hover:text-primary-600 hover:bg-slate-50 flex items-center space-x-1">
+                @php
+                    $isLainnyaActive = request()->routeIs('volunteer') || request()->routeIs('about') || request()->routeIs('contact');
+                @endphp
+                <div x-data="{ openLainnya: false }" @keydown.escape.window="openLainnya = false" class="relative group">
+                    <button type="button" @click="openLainnya = !openLainnya" :aria-expanded="openLainnya" class="relative py-2 px-2 transition-colors duration-200 flex items-center space-x-1 {{ $isLainnyaActive ? 'text-primary-700 font-black' : 'text-slate-600 hover:text-primary-600' }}">
                         <span>Lainnya</span>
                         <i class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200" :class="openLainnya ? 'rotate-180' : ''" aria-hidden="true"></i>
+                        <span class="absolute bottom-0 left-2 right-2 h-0.5 bg-primary-600 rounded-full transition-all duration-300 origin-center {{ $isLainnyaActive ? 'scale-x-100 opacity-100' : 'scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100' }}"></span>
                     </button>
                     <div x-show="openLainnya" x-transition.origin.top.left @click.away="openLainnya = false" style="display: none;" class="absolute left-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 text-xs font-bold text-slate-700">
-                        <a href="{{ route('volunteer') }}" class="flex items-center space-x-2 px-4 py-2.5 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                        <a href="{{ route('volunteer') }}" class="flex items-center space-x-2 px-4 py-2.5 hover:bg-slate-50 hover:text-primary-600 transition-colors {{ request()->routeIs('volunteer') ? 'text-primary-700 bg-primary-50/60' : '' }}">
                             <i class="fa-solid fa-people-carry-box text-slate-500" aria-hidden="true"></i>
                             <span>Gabung Relawan</span>
                         </a>
-                        <a href="{{ route('about') }}" class="flex items-center space-x-2 px-4 py-2.5 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                        <a href="{{ route('about') }}" class="flex items-center space-x-2 px-4 py-2.5 hover:bg-slate-50 hover:text-primary-600 transition-colors {{ request()->routeIs('about') ? 'text-primary-700 bg-primary-50/60' : '' }}">
                             <i class="fa-solid fa-circle-info text-slate-500" aria-hidden="true"></i>
                             <span>Tentang Kami</span>
                         </a>
-                        <a href="{{ route('contact') }}" class="flex items-center space-x-2 px-4 py-2.5 hover:bg-slate-50 hover:text-primary-600 transition-colors">
+                        <a href="{{ route('contact') }}" class="flex items-center space-x-2 px-4 py-2.5 hover:bg-slate-50 hover:text-primary-600 transition-colors {{ request()->routeIs('contact') ? 'text-primary-700 bg-primary-50/60' : '' }}">
                             <i class="fa-solid fa-comments text-slate-500" aria-hidden="true"></i>
                             <span>Kontak</span>
                         </a>
