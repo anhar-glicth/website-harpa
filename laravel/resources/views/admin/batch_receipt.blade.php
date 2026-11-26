@@ -35,14 +35,14 @@
         }
     }
 
-    $defaultReceiver = Auth::check() ? Auth::user()->name : 'Staff Amal Abadi';
+    $defaultReceiver = Auth::check() ? Auth::user()->name : 'Staff Harapan Palestina';
 @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Kwitansi Massal ({{ count($donations) }} Data) - Amal Abadi</title>
+    <title>Cetak Kwitansi Massal ({{ count($donations) }} Data) - Harapan Palestina</title>
 
     <!-- Favicon & App Icons -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -131,6 +131,8 @@
     customStampImage: localStorage.getItem('receipt_custom_stamp') || '',
     stampSize: parseInt(localStorage.getItem('receipt_stamp_size') || '105'),
     sigSize: parseInt(localStorage.getItem('receipt_sig_size') || '75'),
+    footerWebsite: localStorage.getItem('receipt_footer_website') || 'www.harapanpalestina.com',
+    footerSocial: localStorage.getItem('receipt_footer_social') || 'Find Us On: @harapanpalestina',
 
     handleLogoUpload(e) {
         const file = e.target.files[0];
@@ -193,6 +195,8 @@
         localStorage.setItem('receipt_show_stamp', this.showStamp);
         localStorage.setItem('receipt_stamp_size', this.stampSize);
         localStorage.setItem('receipt_sig_size', this.sigSize);
+        localStorage.setItem('receipt_footer_website', this.footerWebsite);
+        localStorage.setItem('receipt_footer_social', this.footerSocial);
         this.showCustomModal = false;
     },
     resetToDefault() {
@@ -209,6 +213,8 @@
         this.customStampImage = '';
         this.stampSize = 105;
         this.sigSize = 75;
+        this.footerWebsite = 'www.harapanpalestina.com';
+        this.footerSocial = 'Find Us On: @harapanpalestina';
         localStorage.removeItem('receipt_logo');
         localStorage.removeItem('receipt_receiver_name');
         localStorage.removeItem('receipt_receiver_title');
@@ -222,6 +228,8 @@
         localStorage.removeItem('receipt_custom_stamp');
         localStorage.removeItem('receipt_stamp_size');
         localStorage.removeItem('receipt_sig_size');
+        localStorage.removeItem('receipt_footer_website');
+        localStorage.removeItem('receipt_footer_social');
     }
 }" class="p-4 sm:p-8 flex flex-col items-center min-h-screen">
 
@@ -319,7 +327,7 @@
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] select-none z-0">
                 <div class="flex flex-col items-center text-center">
                     <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="w-[280px] h-auto object-contain grayscale" alt="">
-                    <span class="font-montserrat font-black text-4xl tracking-tight text-slate-800 mt-2">Amal Abadi</span>
+                    <span class="font-montserrat font-black text-4xl tracking-tight text-slate-800 mt-2">Harapan Palestina</span>
                 </div>
             </div>
 
@@ -335,7 +343,7 @@
                     {{-- Logo Top Left --}}
                     <div class="col-span-4 flex items-center gap-3">
                         <div class="flex items-center gap-2">
-                            <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-12 sm:h-14 w-auto object-contain max-w-[200px]" alt="Amal Abadi">
+                            <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-12 sm:h-14 w-auto object-contain max-w-[200px]" alt="Harapan Palestina">
                         </div>
                     </div>
 
@@ -519,7 +527,7 @@
                                         <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
                                             <circle cx="50" cy="50" r="46" stroke="#f7ad1a" stroke-width="3" stroke-dasharray="4 2"/>
                                             <circle cx="50" cy="50" r="38" stroke="#063f5c" stroke-width="2"/>
-                                            <text x="50" y="32" font-size="8" font-weight="900" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">AMAL ABADI</text>
+                                            <text x="50" y="32" font-size="7" font-weight="900" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">HARAPAN PALESTINA</text>
                                             <text x="50" y="52" font-size="7" font-weight="bold" fill="#063f5c" text-anchor="middle" font-family="Montserrat">VERIFIED</text>
                                             <text x="50" y="70" font-size="8" font-weight="900" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">YAYASAN</text>
                                         </svg>
@@ -560,10 +568,10 @@
             {{-- 4. BOTTOM BANNER (Full Width Bar) --}}
             <div class="w-full bg-[#063f5c] py-2.5 px-8 sm:px-10 flex flex-wrap items-center justify-between text-white text-xs font-montserrat font-bold tracking-wide">
                 <div class="flex items-center gap-2">
-                    <span>www.amalabadi.org</span>
+                    <span x-text="footerWebsite">www.harapanpalestina.com</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span>Find Us On: @amalabadinusantara</span>
+                    <span x-text="footerSocial">Find Us On: @harapanpalestina</span>
                 </div>
             </div>
 
@@ -604,7 +612,7 @@
                             <i class="fa-solid fa-image text-sky-600"></i> Logo Kwitansi
                         </span>
                         <button type="button" @click="receiptLogo = '{{ asset('images/logo.jpeg') }}'; localStorage.removeItem('receipt_logo');" class="text-[10px] font-bold text-sky-600 hover:underline flex items-center gap-1">
-                            <i class="fa-solid fa-rotate-left"></i> Reset ke Logo Amal Abadi
+                            <i class="fa-solid fa-rotate-left"></i> Reset ke Logo Harapan Palestina
                         </button>
                     </div>
                     <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -761,7 +769,7 @@
                                         </button>
                                     </template>
                                 </div>
-                                <p class="text-xs text-slate-600 font-medium">Jika tidak diupload, sistem otomatis menampilkan Stempel Digital Resmi Amal Abadi.</p>
+                                <p class="text-xs text-slate-600 font-medium">Jika tidak diupload, sistem otomatis menampilkan Stempel Digital Resmi Harapan Palestina.</p>
                             </div>
                         </template>
                     </div>
@@ -798,6 +806,23 @@
                                     <span>Besar (115px)</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. PENGATURAN FOOTER / BANNER BAWAH -->
+                <div class="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+                    <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-globe text-[#063f5c]"></i> Teks Banner Bawah (Footer Kwitansi)
+                    </span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label for="batch_footer_website" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">Website Resmi</label>
+                            <input id="batch_footer_website" type="text" x-model="footerWebsite" placeholder="www.harapanpalestina.com" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-[#063f5c] focus:ring-2 focus:ring-[#063f5c]/20 transition-all">
+                        </div>
+                        <div>
+                            <label for="batch_footer_social" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">Media Sosial</label>
+                            <input id="batch_footer_social" type="text" x-model="footerSocial" placeholder="Find Us On: @harapanpalestina" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-[#063f5c] focus:ring-2 focus:ring-[#063f5c]/20 transition-all">
                         </div>
                     </div>
                 </div>

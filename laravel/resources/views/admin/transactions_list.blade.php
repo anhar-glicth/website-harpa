@@ -358,7 +358,7 @@
                                         . "Terima kasih atas kesediaan Kak {$donorName} berdonasi pada program {$programTitle} sebesar {$nominal} melalui {$viaBayar}.\n\n"
                                         . "Berikut Putri sertakan kwitansi donasi atas donasi tersebut:\n"
                                         . "{$kwitansiUrl}\n\n"
-                                        . "Putri dan segenap teman-teman di Amal Abadi mendo'akan Kak {$donorName} semoga diberi balasan kebaikan yang berlipat ganda, lancar berkah rezekinya serta selalu dalam keadaan sehat sekeluarga. Aamiin Allahumma Aamiin.🤲🏼😊";
+                                        . "Putri dan segenap teman-teman di Harapan Palestina mendo'akan Kak {$donorName} semoga diberi balasan kebaikan yang berlipat ganda, lancar berkah rezekinya serta selalu dalam keadaan sehat sekeluarga. Aamiin Allahumma Aamiin.🤲🏼😊";
 
                                     $waLink = $cleanPhone ? 'https://wa.me/' . $cleanPhone . '?text=' . rawurlencode($waMessage) : null;
                                 @endphp
