@@ -3479,6 +3479,12 @@ class AdminController extends Controller
 
     public function storeTransaction(Request $request)
     {
+        // Auto migrate SEBELUM validasi — pastikan tabel payment_vias dan kolom extended sudah ada
+        if (!\Illuminate\Support\Facades\Schema::hasTable('payment_vias')
+            || !\Illuminate\Support\Facades\Schema::hasColumn('donations', 'transaction_id')) {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        }
+
         $request->validate([
             'donor_name'     => 'required|string|max:255',
             'amount'         => 'required|numeric|min:1000',
@@ -3492,10 +3498,6 @@ class AdminController extends Controller
         ]);
 
         try {
-            // Auto migrate if extended columns are not yet applied on server
-            if (!\Illuminate\Support\Facades\Schema::hasColumn('donations', 'transaction_id')) {
-                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-            }
 
             $data = [
                 'donor_name'     => $request->donor_name,
