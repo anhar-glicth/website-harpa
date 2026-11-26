@@ -3491,20 +3491,27 @@ class AdminController extends Controller
             'payment_status' => 'nullable|in:Pending,Success',
         ]);
 
-        Donation::create([
-            'transaction_id' => 'TRX-' . date('Ym') . '-' . rand(1000, 9999),
-            'donor_name'     => $request->donor_name,
-            'donor_phone'    => $request->donor_phone ?: null,
-            'donor_email'    => $request->donor_email ?: null,
-            'amount'         => $request->amount,
-            'campaign_id'    => $request->campaign_id,
-            'payment_via_id' => $request->payment_via_id,
-            'payment_status' => $request->payment_status ?: 'Success',
-            'donation_date'  => $request->donation_date,
-            'notes'          => $request->notes,
-        ]);
+        try {
+            Donation::create([
+                'transaction_id' => 'TRX-' . date('Ym') . '-' . rand(1000, 9999),
+                'donor_name'     => $request->donor_name,
+                'donor_phone'    => $request->donor_phone ?: null,
+                'donor_email'    => $request->donor_email ?: null,
+                'amount'         => $request->amount,
+                'campaign_id'    => $request->campaign_id,
+                'payment_via_id' => $request->filled('payment_via_id') ? $request->payment_via_id : null,
+                'payment_status' => $request->payment_status ?: 'Success',
+                'donation_date'  => $request->donation_date,
+                'notes'          => $request->notes ?: null,
+            ]);
 
-        return redirect()->back()->with('success', 'Transaksi Donasi baru berhasil dicatat.');
+            return redirect()->back()->with('success', 'Transaksi Donasi baru berhasil dicatat.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal simpan transaksi: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan transaksi: ' . $e->getMessage());
+        }
     }
 
     public function updateTransaction(Request $request, $id)
@@ -3519,16 +3526,23 @@ class AdminController extends Controller
             'notes'          => 'nullable|string',
         ]);
 
-        $donation->update([
-            'donor_name'     => $request->donor_name,
-            'donor_phone'    => $request->donor_phone ?? $donation->donor_phone,
-            'amount'         => $request->amount,
-            'campaign_id'    => $request->campaign_id,
-            'payment_via_id' => $request->payment_via_id,
-            'notes'          => $request->notes,
-        ]);
+        try {
+            $donation->update([
+                'donor_name'     => $request->donor_name,
+                'donor_phone'    => $request->donor_phone ?? $donation->donor_phone,
+                'amount'         => $request->amount,
+                'campaign_id'    => $request->campaign_id,
+                'payment_via_id' => $request->filled('payment_via_id') ? $request->payment_via_id : null,
+                'notes'          => $request->notes ?: null,
+            ]);
 
-        return redirect()->back()->with('success', 'Data Transaksi berhasil diperbarui.');
+            return redirect()->back()->with('success', 'Data Transaksi berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal update transaksi: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui transaksi: ' . $e->getMessage());
+        }
     }
 
     public function deleteTransaction($id)
