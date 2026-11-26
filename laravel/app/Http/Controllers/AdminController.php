@@ -3489,7 +3489,7 @@ class AdminController extends Controller
             'donor_name'     => 'required|string|max:255',
             'amount'         => 'required|numeric|min:1000',
             'campaign_id'    => 'required|exists:campaigns,id',
-            'payment_via_id' => 'nullable|exists:payment_vias,id',
+            'payment_via_id' => 'nullable',
             'donation_date'  => 'required|date',
             'notes'          => 'nullable|string',
             'donor_phone'    => 'nullable|string|max:50',
