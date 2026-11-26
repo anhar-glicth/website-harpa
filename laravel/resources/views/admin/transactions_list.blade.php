@@ -68,6 +68,12 @@
                     {{ session('success') }}
                 </div>
             @endif
+            @if(session('error'))
+                <div role="alert" class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-center gap-3">
+                    <i class="fa-solid fa-circle-exclamation text-rose-700"></i>
+                    {{ session('error') }}
+                </div>
+            @endif
             @if($errors->any())
                 <div role="alert" class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-3.5 rounded-2xl text-sm font-semibold flex items-start gap-3">
                     <i class="fa-solid fa-circle-exclamation text-rose-700 mt-0.5"></i>

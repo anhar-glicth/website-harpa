@@ -283,9 +283,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
             if (!Auth::user()->isAdmin()) {
                 abort(403, 'Akses ditolak: Hanya Super Admin yang berhak menjalankan migrasi database.');
             }
+            \Illuminate\Support\Facades\Artisan::call('optimize:clear');
             \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
             $output = \Illuminate\Support\Facades\Artisan::output();
-            return response("<pre style='background:#0f172a;color:#10b981;padding:24px;border-radius:16px;font-family:monospace;font-size:14px;line-height:1.6;'>=== HASIL MIGRASI DATABASE SERVER HOSTINGER ===\n\n" . htmlspecialchars($output ?: "Semua tabel database sudah yang terbaru (Nothing to migrate).\n") . "\n<a href='/admin/marketing/dashboard' style='color:#38bdf8;font-weight:bold;text-decoration:underline;'>&larr; Buka Dashboard Marketing</a> | <a href='/admin/transactions-list' style='color:#38bdf8;font-weight:bold;text-decoration:underline;'>Buka List Transaksi</a></pre>");
+            if (function_exists('opcache_reset')) {
+                @opcache_reset();
+            }
+            $lastCommit = @exec('git log -n 1 --oneline');
+            return response("<pre style='background:#0f172a;color:#10b981;padding:24px;border-radius:16px;font-family:monospace;font-size:14px;line-height:1.6;'>=== HASIL SINKRONISASI SERVER & DATABASE HOSTINGER ===\n\nCommit Aktif: " . htmlspecialchars($lastCommit ?: 'N/A') . "\n\nMigrasi Database:\n" . htmlspecialchars($output ?: "Semua tabel database sudah yang terbaru (Nothing to migrate).\n") . "\nStatus: Cache telah dibersihkan & OPcache direset.\n\n<a href='/admin/transactions-list' style='color:#38bdf8;font-weight:bold;text-decoration:underline;'>&larr; Buka Kembali List Transaksi</a></pre>");
         })->name('admin.system_migrate');
     });
 });
