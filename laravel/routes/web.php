@@ -24,6 +24,7 @@ Route::post('/newsletter', [HomeController::class, 'submitNewsletter'])->name('n
 
 Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
 Route::get('/campaigns/{id}', [CampaignController::class, 'show'])->name('campaigns.show');
+Route::get('/kwitansi/{id}', [AdminController::class, 'transactionReceipt'])->name('public.receipt');
 
 // Authenticated Routes (Donors / General Users)
 Route::middleware(['auth'])->group(function () {

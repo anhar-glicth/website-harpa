@@ -3606,12 +3606,13 @@ class AdminController extends Controller
                 'No', 'ID Transaksi', 'ID Donatur', 'Tgl Donasi', 'Tgl Insert', 'Tgl Konfirmasi', 
                 'Nama Lengkap', 'No HP', 'Email', 'Kantor Layanan', 'Segmen', 'Profil', 
                 'Channel Donasi', 'Rumpun Program', 'Program Donasi', 'Qty', 'Nominal Donasi', 
-                'Via Bayar', 'PIC Prospek', 'Sumber Informasi', 'No Kwitansi', 'Keterangan'
+                'Via Bayar', 'PIC Prospek', 'Sumber Informasi', 'No Kwitansi', 'Link Kwitansi', 'Keterangan'
             ]);
 
             $totalNominal = 0;
             foreach ($donations as $index => $row) {
                 $totalNominal += $row->amount;
+                $linkKwitansi = url('/kwitansi/' . $row->id);
                 fputcsv($file, [
                     $index + 1,
                     $row->transaction_id ?: ('TRX-' . str_pad($row->id, 8, '0', STR_PAD_LEFT)),
@@ -3634,11 +3635,12 @@ class AdminController extends Controller
                     $row->user && $row->user->picProspect ? $row->user->picProspect->name : 'CRM Staff',
                     'WEB',
                     'KWT-' . str_pad($row->id, 6, '0', STR_PAD_LEFT),
+                    $linkKwitansi,
                     $row->notes ?: '-',
                 ]);
             }
 
-            fputcsv($file, ['TOTAL', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', $totalNominal, '', '', '', '', '']);
+            fputcsv($file, ['TOTAL', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', $totalNominal, '', '', '', '', '', '']);
 
             fclose($file);
         };

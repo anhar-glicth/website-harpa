@@ -293,7 +293,7 @@
                 </button>
 
                 <button type="button" 
-                        @click="if(selectedItem) { window.open('/admin/transactions/' + selectedItem.id + '/receipt', '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
+                        @click="if(selectedItem) { window.open('/kwitansi/' + selectedItem.id, '_blank'); } else { alert('Pilih transaksi dari tabel terlebih dahulu.'); }" 
                         class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">
                     <i class="fa-solid fa-link" aria-hidden="true"></i> Link Bukti Donasi
                 </button>
@@ -328,6 +328,7 @@
                                 <th class="py-3.5 px-4">PIC Prospek</th>
                                 <th class="py-3.5 px-4">Sumber Informasi</th>
                                 <th class="py-3.5 px-4">No Kwitansi</th>
+                                <th class="py-3.5 px-4 text-center">Link Kwitansi</th>
                                 <th class="py-3.5 px-4">Keterangan</th>
                             </tr>
                         </thead>
@@ -361,11 +362,16 @@
                                     <td class="py-3.5 px-4 text-slate-600">-</td>
                                     <td class="py-3.5 px-4 text-slate-600">{{ $trx->source ?: 'Web' }}</td>
                                     <td class="py-3.5 px-4 font-mono text-slate-600">{{ $trx->receipt_no ?: ($trx->transaction_id ?: $trx->id) }}</td>
+                                    <td class="py-3.5 px-4 text-center">
+                                        <a href="{{ url('/kwitansi/' . $trx->id) }}" target="_blank" class="inline-flex items-center gap-1 text-[#063f5c] hover:underline font-bold text-xs" @click.stop title="Lihat Kwitansi Digital">
+                                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i> Lihat
+                                        </a>
+                                    </td>
                                     <td class="py-3.5 px-4 text-slate-600 italic max-w-xs truncate">{{ $trx->notes ?: ($trx->prayer ?: '-') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="22" class="py-12 text-center text-slate-600 font-bold">Belum ada data transaksi. Silakan klik + Add untuk menambah transaksi baru.</td>
+                                    <td colspan="23" class="py-12 text-center text-slate-600 font-bold">Belum ada data transaksi. Silakan klik + Add untuk menambah transaksi baru.</td>
                                 </tr>
                             @endforelse
                         </tbody>
