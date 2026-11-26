@@ -329,6 +329,7 @@
                                 <th class="py-3.5 px-4">Sumber Informasi</th>
                                 <th class="py-3.5 px-4">No Kwitansi</th>
                                 <th class="py-3.5 px-4 text-center">Link Kwitansi</th>
+                                <th class="py-3.5 px-4 text-center">WA</th>
                                 <th class="py-3.5 px-4">Keterangan</th>
                             </tr>
                         </thead>
@@ -337,6 +338,29 @@
                                 @php
                                     $trxCode = $trx->transaction_id ?: ('TRX-' . str_pad($trx->id, 6, '0', STR_PAD_LEFT));
                                     $donorCode = $trx->user ? ($trx->user->donor_id ?: ('DNR-' . str_pad($trx->user->id, 5, '0', STR_PAD_LEFT))) : '-';
+                                    $donorName = $trx->donor_name ?: ($trx->user ? $trx->user->name : 'Sahabat Donatur');
+                                    $rawPhone = $trx->donor_phone ?: ($trx->user ? $trx->user->phone : '');
+
+                                    // Format nomor HP ke format internasional WhatsApp (628...)
+                                    $cleanPhone = preg_replace('/[^0-9]/', '', (string)$rawPhone);
+                                    if (str_starts_with($cleanPhone, '0')) {
+                                        $cleanPhone = '62' . substr($cleanPhone, 1);
+                                    } elseif (str_starts_with($cleanPhone, '8')) {
+                                        $cleanPhone = '62' . $cleanPhone;
+                                    }
+
+                                    $programTitle = $trx->campaign ? $trx->campaign->title : 'Program Donasi';
+                                    $nominal = 'Rp ' . number_format($trx->amount ?: 0, 0, ',', '.');
+                                    $viaBayar = $trx->payment_method ?: ($trx->paymentVia ? $trx->paymentVia->name : 'Transfer Bank');
+                                    $kwitansiUrl = url('/kwitansi/' . $trx->id);
+
+                                    $waMessage = "Assalamu'alaikum Kak {$donorName}, mohon ijin perkenalkan saya Putri dari Customer Service Official😊🙏\n\n"
+                                        . "Terima kasih atas kesediaan Kak {$donorName} berdonasi pada program {$programTitle} sebesar {$nominal} melalui {$viaBayar}.\n\n"
+                                        . "Berikut Putri sertakan kwitansi donasi atas donasi tersebut:\n"
+                                        . "{$kwitansiUrl}\n\n"
+                                        . "Putri dan segenap teman-teman di Amal Abadi mendo'akan Kak {$donorName} semoga diberi balasan kebaikan yang berlipat ganda, lancar berkah rezekinya serta selalu dalam keadaan sehat sekeluarga. Aamiin Allahumma Aamiin.🤲🏼😊";
+
+                                    $waLink = $cleanPhone ? 'https://wa.me/' . $cleanPhone . '?text=' . rawurlencode($waMessage) : null;
                                 @endphp
                                 <tr @click="selectedItem = {{ json_encode($trx) }}; selectedId = {{ $trx->id }}; selectedTrxId = '{{ $trxCode }}'" 
                                     :class="selectedId === {{ $trx->id }} ? 'bg-primary-50/80 border-l-4 border-[#063f5c]' : 'hover:bg-slate-50/80'"
@@ -367,11 +391,30 @@
                                             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i> Lihat
                                         </a>
                                     </td>
+                                    <td class="py-3.5 px-4 text-center">
+                                        @if($cleanPhone)
+                                            <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" 
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-lg font-bold text-xs shadow-xs transition-all active:scale-95" 
+                                               @click.stop 
+                                               title="Kirim Kwitansi via WhatsApp ke {{ $rawPhone }}">
+                                                <i class="fa-brands fa-whatsapp text-sm text-emerald-600" aria-hidden="true"></i>
+                                                <span>WA</span>
+                                            </a>
+                                        @else
+                                            <button type="button" 
+                                                    @click.stop="alert('Nomor HP/WhatsApp donatur belum tercatat untuk transaksi ini.')" 
+                                                    class="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-lg font-semibold text-xs cursor-not-allowed" 
+                                                    title="Nomor WhatsApp belum tersedia">
+                                                <i class="fa-brands fa-whatsapp text-sm text-slate-400" aria-hidden="true"></i>
+                                                <span>No WA</span>
+                                            </button>
+                                        @endif
+                                    </td>
                                     <td class="py-3.5 px-4 text-slate-600 italic max-w-xs truncate">{{ $trx->notes ?: ($trx->prayer ?: '-') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="23" class="py-12 text-center text-slate-600 font-bold">Belum ada data transaksi. Silakan klik + Add untuk menambah transaksi baru.</td>
+                                    <td colspan="24" class="py-12 text-center text-slate-600 font-bold">Belum ada data transaksi. Silakan klik + Add untuk menambah transaksi baru.</td>
                                 </tr>
                             @endforelse
                         </tbody>
