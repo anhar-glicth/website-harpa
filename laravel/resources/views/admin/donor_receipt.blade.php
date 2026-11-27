@@ -138,6 +138,51 @@
             display: inline-block;
         }
 
+        .receipt-wrapper {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            border-radius: 28px;
+            background: #ffffff;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            max-width: 1020px;
+        }
+
+        .receipt-body {
+            padding: 38px 48px 32px 48px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 20px !important;
+            position: relative !important;
+            z-index: 10 !important;
+        }
+
+        .receipt-disclaimer-box {
+            background-color: #fefaf3 !important;
+            border-top: 1px solid rgba(245, 223, 170, 0.7) !important;
+            border-bottom: 1px solid rgba(245, 223, 170, 0.7) !important;
+            padding: 14px 48px !important;
+            text-align: center !important;
+            color: #334155 !important;
+            font-size: 11px !important;
+            line-height: 1.5 !important;
+        }
+
+        .receipt-footer-strip {
+            width: 100% !important;
+            background-color: #063f5c !important;
+            padding: 12px 48px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-family: 'Montserrat', sans-serif !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.05em !important;
+        }
+
         @media print {
             .no-print {
                 display: none !important;
@@ -150,12 +195,22 @@
             .receipt-wrapper {
                 box-shadow: none !important;
                 border: 1px solid #cbd5e1 !important;
+                border-radius: 0 !important;
                 margin: 0 auto !important;
                 page-break-inside: avoid;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            .receipt-body {
+                padding: 30px 40px !important;
+            }
+            .receipt-disclaimer-box, .receipt-footer-strip {
+                padding-left: 40px !important;
+                padding-right: 40px !important;
             }
             @page {
                 size: A4 landscape;
-                margin: 10mm;
+                margin: 12mm;
             }
         }
     </style>
@@ -340,10 +395,10 @@
         <div class="h-1.5 w-full bg-[#f7ad1a]"></div>
 
         {{-- Top Right Decorative Corner Badge --}}
-        <div style="position: absolute; top: 0; right: 0; width: 110px; height: 32px; pointer-events: none; z-index: 10;">
-            <svg style="width: 100%; height: 100%;" viewBox="0 0 110 32" preserveAspectRatio="none" fill="none">
-                <polygon points="28,0 110,0 110,32 0,0" fill="#063f5c"/>
-                <line x1="0" y1="0" x2="110" y2="32" stroke="#f7ad1a" stroke-width="3"/>
+        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 28px; pointer-events: none; z-index: 10;">
+            <svg style="width: 100%; height: 100%;" viewBox="0 0 100 28" preserveAspectRatio="none" fill="none">
+                <polygon points="25,0 100,0 100,28 0,0" fill="#063f5c"/>
+                <line x1="0" y1="0" x2="100" y2="28" stroke="#f7ad1a" stroke-width="3"/>
             </svg>
         </div>
 
@@ -355,7 +410,7 @@
             </div>
         </div>
 
-        <div class="relative z-10 p-7 sm:p-9 space-y-5">
+        <div class="receipt-body" style="position: relative; z-index: 10; padding: 38px 48px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
 
             {{-- 1. HEADER ROW (3 GROUPS: LOGOS, TITLE, KWITANSI NUMBER) --}}
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%;">
@@ -605,7 +660,7 @@
         </div>
 
         {{-- 5. LEGAL & DISCLAIMER BOX --}}
-        <div class="bg-[#fefaf3] border-t border-b border-[#f5dfaa]/60 py-2.5 px-6 text-center text-slate-700 text-[10px] sm:text-[11px] space-y-0.5">
+        <div class="receipt-disclaimer-box" style="background-color: #fefaf3; border-top: 1px solid rgba(245, 223, 170, 0.7); border-bottom: 1px solid rgba(245, 223, 170, 0.7); padding: 14px 48px; text-align: center; color: #334155; font-size: 11px; line-height: 1.5;">
             <p class="font-bold text-slate-800">
                 Harapan Palestina adalah program kemanusiaan Yayasan Harpa Indonesia Madani — HARPA singkatan dari HARapan PAlestina.
             </p>
@@ -618,7 +673,7 @@
         </div>
 
         {{-- 6. BOTTOM BANNER (Full Width Bar) --}}
-        <div class="w-full bg-[#063f5c] py-2.5 px-8 sm:px-10 flex flex-wrap items-center justify-between text-white text-xs font-montserrat font-bold tracking-wide">
+        <div class="receipt-footer-strip" style="width: 100%; background-color: #063f5c; padding: 12px 48px; display: flex; align-items: center; justify-content: space-between; color: #ffffff; font-size: 12px; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 0.05em;">
             <div class="flex items-center gap-2">
                 <span x-text="footerWebsite">indonesiamadani.org</span>
             </div>
