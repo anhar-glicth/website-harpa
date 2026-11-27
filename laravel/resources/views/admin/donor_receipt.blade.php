@@ -183,34 +183,50 @@
             letter-spacing: 0.05em !important;
         }
 
+        @page {
+            size: A4 landscape;
+            margin: 6mm;
+        }
+
         @media print {
             .no-print {
                 display: none !important;
             }
-            body {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            html, body {
                 background: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                display: block !important;
             }
             .receipt-wrapper {
                 box-shadow: none !important;
                 border: 1px solid #cbd5e1 !important;
-                border-radius: 0 !important;
+                border-radius: 12px !important;
                 margin: 0 auto !important;
-                page-break-inside: avoid;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
                 max-width: 100% !important;
                 width: 100% !important;
+                overflow: hidden !important;
             }
             .receipt-body {
-                padding: 30px 40px !important;
+                padding: 20px 36px 14px 36px !important;
+                gap: 12px !important;
             }
-            .receipt-disclaimer-box, .receipt-footer-strip {
-                padding-left: 40px !important;
-                padding-right: 40px !important;
+            .receipt-disclaimer-box {
+                padding: 8px 36px !important;
+                font-size: 10px !important;
             }
-            @page {
-                size: A4 landscape;
-                margin: 12mm;
+            .receipt-footer-strip {
+                padding: 8px 36px !important;
+                font-size: 11px !important;
             }
         }
     </style>
@@ -240,12 +256,34 @@
     async downloadImage() {
         this.isDownloading = true;
         try {
+            // Scroll to top to ensure complete coordinate alignment in html2canvas
+            window.scrollTo(0, 0);
+
             const element = document.querySelector('.receipt-wrapper');
+            const fullHeight = element.scrollHeight || element.offsetHeight;
+            const fullWidth = element.scrollWidth || element.offsetWidth;
+
             const canvas = await html2canvas(element, {
                 scale: 2,
                 useCORS: true,
                 allowTaint: true,
-                backgroundColor: '#ffffff'
+                backgroundColor: '#ffffff',
+                scrollX: 0,
+                scrollY: 0,
+                width: fullWidth,
+                height: fullHeight,
+                windowWidth: document.documentElement.offsetWidth,
+                windowHeight: document.documentElement.scrollHeight,
+                onclone: (clonedDoc) => {
+                    const clonedEl = clonedDoc.querySelector('.receipt-wrapper');
+                    if (clonedEl) {
+                        clonedEl.style.overflow = 'visible';
+                        clonedEl.style.transform = 'none';
+                        clonedEl.style.maxHeight = 'none';
+                        clonedEl.style.height = 'auto';
+                        clonedEl.style.margin = '0';
+                    }
+                }
             });
             const link = document.createElement('a');
             link.download = 'Kwitansi-' + '{{ $kwitansiNo }}' + '-' + '{{ Str::slug($donorName) }}' + '.png';

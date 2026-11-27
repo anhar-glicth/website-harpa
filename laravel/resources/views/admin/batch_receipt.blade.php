@@ -134,6 +134,11 @@
             letter-spacing: 0.05em !important;
         }
 
+        @page {
+            size: A4 landscape;
+            margin: 6mm;
+        }
+
         @media screen {
             .receipt-wrapper {
                 margin-bottom: 2.5rem;
@@ -144,34 +149,47 @@
             .no-print {
                 display: none !important;
             }
-            body {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            html, body {
                 background: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 0 !important;
+                display: block !important;
             }
             .receipt-wrapper {
                 box-shadow: none !important;
                 border: 1px solid #cbd5e1 !important;
-                border-radius: 0 !important;
+                border-radius: 12px !important;
                 margin: 0 auto !important;
-                page-break-after: always;
-                page-break-inside: avoid;
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
                 max-width: 100% !important;
                 width: 100% !important;
+                overflow: hidden !important;
             }
             .receipt-wrapper:last-child {
-                page-break-after: auto;
+                page-break-after: auto !important;
+                break-after: auto !important;
             }
             .receipt-body {
-                padding: 30px 40px !important;
+                padding: 20px 36px 14px 36px !important;
+                gap: 12px !important;
             }
-            .receipt-disclaimer-box, .receipt-footer-strip {
-                padding-left: 40px !important;
-                padding-right: 40px !important;
+            .receipt-disclaimer-box {
+                padding: 8px 36px !important;
+                font-size: 10px !important;
             }
-            @page {
-                size: A4 landscape;
-                margin: 12mm;
+            .receipt-footer-strip {
+                padding: 8px 36px !important;
+                font-size: 11px !important;
             }
         }
     </style>
