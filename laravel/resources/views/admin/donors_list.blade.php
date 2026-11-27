@@ -408,6 +408,13 @@
                     <i class="fa-solid fa-file-import text-primary-600"></i> Import Data
                 </button>
 
+                <a href="{{ route('admin.donors.sync_harpa') }}" 
+                   onclick="return confirm('Apakah Anda ingin menyinkronkan data donatur dan transaksi dari Sistem Data Harpa ke List Donatur?')"
+                   class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 shadow-xs transition-colors"
+                   title="Tarik dan sinkronkan donatur yang diimpor di Sistem Data Harpa ke List Donatur ini">
+                    <i class="fa-solid fa-arrows-rotate text-amber-600"></i> Sinkronkan Data Harpa
+                </a>
+
                 <button type="button" 
                         @click="if(selectedItem) { openDetail(selectedItem); } else { alert('Pilih donatur dari tabel terlebih dahulu.'); }" 
                         class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-4 py-2.5 min-h-[44px] rounded-xl text-xs inline-flex items-center gap-1.5 transition-colors">

@@ -3343,6 +3343,22 @@ class AdminController extends Controller
         }
     }
 
+    /**
+     * Sinkronkan data donatur dan transaksi dari Sistem Data Harpa ke List Donatur.
+     */
+    public function syncHarpaDonors(Request $request)
+    {
+        try {
+            $dataEngine = app(\App\Services\Harpa\HarpaDataEngineService::class);
+            $res = $dataEngine->syncAllHarpaToWeb();
+
+            return redirect()->route('admin.donors_list')->with('success', "Sinkronisasi berhasil! {$res['synced_donors']} donatur dan {$res['synced_donations']} transaksi dari Sistem Data Harpa berhasil dihubungkan ke List Donatur.");
+        } catch (\Throwable $e) {
+            \Log::error('Error syncHarpaDonors: ' . $e->getMessage());
+            return redirect()->route('admin.donors_list')->with('error', 'Gagal menyinkronkan data: ' . $e->getMessage());
+        }
+    }
+
     public function donorReceipt(Request $request, $id)
     {
         $donor = User::where('role', 'user')->with(['donations.campaign', 'donations.paymentVia', 'donations.collector'])->findOrFail($id);

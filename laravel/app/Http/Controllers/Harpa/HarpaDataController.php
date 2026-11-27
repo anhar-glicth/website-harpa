@@ -273,6 +273,26 @@ class HarpaDataController extends Controller
                 'tgl_input'          => now(),
             ]);
 
+            // Hubungkan otomatis ke User (List Donatur) & tabel donations
+            try {
+                $this->engine->syncHarpaRecordToWeb(
+                    name: (string)$request->nama_lengkap,
+                    phone: $cleanPhone ?: $request->no_hp,
+                    email: $request->email ? trim((string)$request->email) : null,
+                    campaignId: $campaignId,
+                    amount: (float)$request->nominal,
+                    tanggal: (string)$request->tanggal,
+                    jam: $request->jam ?: now()->format('H:i:s'),
+                    viaBayar: $request->via_bayar ?: 'Transfer Bank',
+                    statusBayar: $request->status_bayar ?: 'success',
+                    source: $source,
+                    donasiId: $donasiId,
+                    donaturId: $donaturId
+                );
+            } catch (\Throwable $syncErr) {
+                Log::warning('Gagal sinkron donasi manual ke List Donatur: ' . $syncErr->getMessage());
+            }
+
             DB::commit();
 
             return redirect()->route('admin.harpa.import_donasi')

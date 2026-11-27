@@ -179,6 +179,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/donors/import', [AdminController::class, 'importDonors'])->name('admin.donors.import');
     Route::get('/admin/donors-batch-receipt', [AdminController::class, 'donorsBatchReceipt'])->name('admin.donors.batch_receipt');
     Route::get('/admin/donors/{id}/receipt', [AdminController::class, 'donorReceipt'])->name('admin.donors.receipt');
+    Route::get('/admin/donors/sync-harpa', [AdminController::class, 'syncHarpaDonors'])->name('admin.donors.sync_harpa');
 
     Route::get('/admin/transactions-list', [AdminController::class, 'transactionsList'])->name('admin.transactions_list');
     Route::post('/admin/transactions/store', [AdminController::class, 'storeTransaction'])->name('admin.transactions.store');

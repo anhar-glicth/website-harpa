@@ -3,6 +3,8 @@
 namespace App\Services\Harpa;
 
 use App\Models\Campaign;
+use App\Models\Donation;
+use App\Models\User;
 use App\Models\Harpa\HarpaSetting;
 use App\Models\Harpa\KontrolBlast;
 use App\Models\Harpa\KontrolTarik;
@@ -19,6 +21,7 @@ use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class HarpaDataEngineService
 {
@@ -380,6 +383,27 @@ class HarpaDataEngineService
                         'batch_tarik'        => $batchTarik,
                         'tgl_input'          => now(),
                     ]);
+
+                    // Hubungkan otomatis ke User (List Donatur) & tabel donations
+                    try {
+                        $rawEmail = $p['raw_row'][$headerMap['email'] ?? $headerMap['donor_email'] ?? $headerMap['surel'] ?? -1] ?? null;
+                        $this->syncHarpaRecordToWeb(
+                            name: (string)($p['nama'] ?? 'Donatur'),
+                            phone: (string)($p['no_hp_clean'] ?? ''),
+                            email: $rawEmail ? trim((string)$rawEmail) : null,
+                            campaignId: $p['campaign_id'],
+                            amount: (float)$p['nominal'],
+                            tanggal: $p['tanggal'] ?: now()->toDateString(),
+                            jam: $p['jam'] ?: now()->toTimeString(),
+                            viaBayar: $p['via_bayar'] ?: 'Transfer Bank',
+                            statusBayar: $p['status_bayar'] ?: 'success',
+                            source: $source,
+                            donasiId: $donasiId,
+                            donaturId: $finalDonaturId
+                        );
+                    } catch (\Throwable $syncErr) {
+                        Log::warning("Gagal sinkron baris ke List Donatur: " . $syncErr->getMessage());
+                    }
                 }
 
                 // 3. Catat Kontrol Tarik
@@ -1602,6 +1626,206 @@ class HarpaDataEngineService
             'total_blast'      => $totalBlastAll,
             'total_read'       => $totalReadAll,
             'read_rate'        => $readRate,
+        ];
+    }
+
+    /**
+     * Hubungkan dan sinkronkan donatur & transaksi dari Sistem Data Harpa ke tabel User (List Donatur) & Donation.
+     */
+    public function syncHarpaRecordToWeb(
+        string $name,
+        ?string $phone,
+        ?string $email = null,
+        ?int $campaignId = null,
+        float $amount = 0,
+        ?string $tanggal = null,
+        ?string $jam = null,
+        ?string $viaBayar = null,
+        ?string $statusBayar = 'success',
+        string $source = 'HARPA',
+        ?string $donasiId = null,
+        ?string $donaturId = null
+    ): array {
+        // 1. Bersihkan & Normalisasi Nomor HP
+        $cleanPhone = null;
+        if (!empty($phone)) {
+            $norm = MasterNomor::normalize($phone);
+            $cleanPhone = $norm['number'];
+            if (!$cleanPhone && preg_match('/^[0-9]+$/', $phone)) {
+                $cleanPhone = $phone;
+                if (str_starts_with($cleanPhone, '0')) {
+                    $cleanPhone = '62' . substr($cleanPhone, 1);
+                } elseif (str_starts_with($cleanPhone, '8')) {
+                    $cleanPhone = '62' . $cleanPhone;
+                }
+            }
+        }
+
+        $cleanEmail = !empty($email) && filter_var(trim($email), FILTER_VALIDATE_EMAIL) ? strtolower(trim($email)) : null;
+
+        // 2. Cari existing User (role = user)
+        $user = null;
+        if ($cleanPhone) {
+            $user = User::where('role', 'user')
+                ->where(function($q) use ($cleanPhone) {
+                    $q->where('phone', $cleanPhone)
+                      ->orWhere('phone', '0' . substr($cleanPhone, 2));
+                })->first();
+        }
+
+        if (!$user && $cleanEmail) {
+            $user = User::where('email', $cleanEmail)->first();
+        }
+
+        $cleanName = !empty($name) && !in_array(strtoupper(trim($name)), ['TOTAL', 'NO', 'NAMA', 'DONATUR']) ? trim($name) : 'Donatur';
+
+        // Jika belum ada user, buat user baru untuk List Donatur
+        if (!$user) {
+            $safeEmail = $cleanEmail;
+            if (!$safeEmail) {
+                $baseSeed = $cleanPhone ?: ($donaturId ? strtolower($donaturId) : Str::random(8));
+                $safeEmail = 'donor_' . $baseSeed . '@donor.harpa.id';
+                if (User::where('email', $safeEmail)->exists()) {
+                    $safeEmail = 'donor_' . $baseSeed . '_' . rand(100, 999) . '@donor.harpa.id';
+                }
+            }
+
+            $user = User::create([
+                'name'        => $cleanName,
+                'phone'       => $cleanPhone ?: null,
+                'email'       => $safeEmail,
+                'password'    => bcrypt(Str::random(16)),
+                'role'        => 'user',
+                'segment'     => 'Recent Donors',
+                'source_info' => 'Sistem Data Harpa (' . $source . ')',
+                'created_at'  => $tanggal ? Carbon::parse($tanggal) : now(),
+            ]);
+        } else {
+            // Update nama jika sebelumnya 'Donatur' atau kosong
+            if ((empty($user->name) || $user->name === 'Donatur') && $cleanName !== 'Donatur') {
+                $user->name = $cleanName;
+            }
+            if (empty($user->phone) && $cleanPhone) {
+                $user->phone = $cleanPhone;
+            }
+            if (empty($user->email) && $cleanEmail) {
+                $user->email = $cleanEmail;
+            }
+            $user->save();
+        }
+
+        // 3. Simpan / Sinkronkan ke tabel donations (agar List Donatur memiliki total transaksi & latestDonation)
+        $donation = null;
+        if ($amount > 0 && $donasiId) {
+            $defaultCampaign = Campaign::where('status', 'approved')->first();
+            $defaultCampaignId = $defaultCampaign ? $defaultCampaign->id : 1;
+            $targetCampaignId = $campaignId ?: $defaultCampaignId;
+
+            $donationDateTime = now();
+            if ($tanggal) {
+                try {
+                    $donationDateTime = Carbon::parse($tanggal . ' ' . ($jam ?: '00:00:00'));
+                } catch (\Throwable $e) {
+                    $donationDateTime = now();
+                }
+            }
+
+            $paymentStatus = in_array(strtolower((string)$statusBayar), ['waiting', 'pending', '0', 'menunggu']) ? 'Pending' : 'Success';
+
+            $donation = Donation::updateOrCreate(
+                ['transaction_id' => $donasiId],
+                [
+                    'user_id'        => $user->id,
+                    'donor_name'     => $user->name,
+                    'donor_phone'    => $cleanPhone,
+                    'donor_email'    => $cleanEmail,
+                    'campaign_id'    => $targetCampaignId,
+                    'amount'         => $amount,
+                    'payment_status' => $paymentStatus,
+                    'payment_method' => $viaBayar ?: 'Transfer Bank',
+                    'donation_date'  => $donationDateTime,
+                    'notes'          => "Impor Data Harpa ({$source})" . ($donaturId ? " [{$donaturId}]" : ""),
+                ]
+            );
+        }
+
+        return [
+            'user'     => $user,
+            'donation' => $donation,
+        ];
+    }
+
+    /**
+     * Tarik dan sinkronkan SEMUA donatur dan transaksi dari Sistem Data Harpa ke tabel User (List Donatur) & Donation.
+     */
+    public function syncAllHarpaToWeb(): array
+    {
+        $donations = TransaksiDonasi::with('donatur')->get();
+        $syncedDonors = 0;
+        $syncedDonations = 0;
+        $seenUserIds = [];
+
+        foreach ($donations as $trx) {
+            $phone = $trx->no_hp_input ?: ($trx->donatur?->no_hp);
+            $name = $trx->donatur?->nama_lengkap ?: 'Donatur';
+            $email = $trx->donatur?->email;
+
+            $res = $this->syncHarpaRecordToWeb(
+                name: $name,
+                phone: $phone,
+                email: $email,
+                campaignId: $trx->campaign_id,
+                amount: (float)$trx->nominal,
+                tanggal: $trx->tanggal ? $trx->tanggal->toDateString() : null,
+                jam: $trx->jam,
+                viaBayar: $trx->via_bayar,
+                statusBayar: $trx->status_bayar,
+                source: $trx->sumber_data ?: 'HARPA',
+                donasiId: $trx->donasi_id,
+                donaturId: $trx->donatur_id
+            );
+
+            if (!empty($res['user'])) {
+                if (!isset($seenUserIds[$res['user']->id])) {
+                    $seenUserIds[$res['user']->id] = true;
+                    $syncedDonors++;
+                }
+            }
+            if (!empty($res['donation'])) {
+                $syncedDonations++;
+            }
+        }
+
+        // Juga cek master_donatur yang mungkin belum punya transaksi_donasi
+        $orphanDonors = MasterDonatur::whereNotIn('donatur_id', function($q) {
+            $q->select('donatur_id')->from('transaksi_donasi')->whereNotNull('donatur_id');
+        })->get();
+
+        foreach ($orphanDonors as $dnr) {
+            $res = $this->syncHarpaRecordToWeb(
+                name: $dnr->nama_lengkap,
+                phone: $dnr->no_hp,
+                email: $dnr->email,
+                campaignId: null,
+                amount: 0,
+                tanggal: $dnr->tgl_registrasi ? $dnr->tgl_registrasi->toDateString() : null,
+                jam: null,
+                viaBayar: null,
+                statusBayar: 'success',
+                source: $dnr->sumber_informasi ?: 'HARPA',
+                donasiId: null,
+                donaturId: $dnr->donatur_id
+            );
+
+            if (!empty($res['user']) && !isset($seenUserIds[$res['user']->id])) {
+                $seenUserIds[$res['user']->id] = true;
+                $syncedDonors++;
+            }
+        }
+
+        return [
+            'synced_donors'    => $syncedDonors,
+            'synced_donations' => $syncedDonations,
         ];
     }
 }
