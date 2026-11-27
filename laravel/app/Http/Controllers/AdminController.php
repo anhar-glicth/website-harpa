@@ -3436,12 +3436,57 @@ class AdminController extends Controller
         return $query;
     }
 
+    /**
+     * Hitung donatur unik dari query donasi (baik user terdaftar maupun donatur tamu/guest)
+     */
+    private function countUniqueDonorsFromQuery($query): int
+    {
+        $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+        if ($driver === 'mysql' || $driver === 'mariadb') {
+            try {
+                return (int)(clone $query)
+                    ->selectRaw("COUNT(DISTINCT COALESCE(
+                        CASE WHEN user_id IS NOT NULL THEN CONCAT('uid_', user_id) ELSE NULL END,
+                        NULLIF(TRIM(donor_phone), ''),
+                        NULLIF(TRIM(donor_email), ''),
+                        NULLIF(TRIM(donor_name), '')
+                    )) as aggregate")
+                    ->value('aggregate');
+            } catch (\Throwable $e) {
+                // Fallback ke collection jika query SQL gagal
+            }
+        }
+
+        return (clone $query)
+            ->select(['user_id', 'donor_name', 'donor_phone', 'donor_email'])
+            ->get()
+            ->unique(function ($item) {
+                if (!empty($item->user_id)) {
+                    return 'uid_' . $item->user_id;
+                }
+                $phone = trim($item->donor_phone ?? '');
+                if ($phone !== '') {
+                    return 'phone_' . $phone;
+                }
+                $email = trim($item->donor_email ?? '');
+                if ($email !== '') {
+                    return 'email_' . strtolower($email);
+                }
+                $name = trim($item->donor_name ?? '');
+                if ($name !== '') {
+                    return 'name_' . strtolower($name);
+                }
+                return 'id_' . ($item->id ?? uniqid());
+            })
+            ->count();
+    }
+
     public function transactionsList(Request $request)
     {
         $query = $this->buildTransactionsQuery($request);
 
         $totalQuantity   = (clone $query)->count();
-        $totalDonorsCount= (clone $query)->whereNotNull('user_id')->distinct('user_id')->count('user_id');
+        $totalDonorsCount= $this->countUniqueDonorsFromQuery($query);
         $totalCapaian    = (clone $query)->where('payment_status', 'Success')->sum('amount');
 
         $donations     = $query->latest('donation_date')->paginate(10)->withQueryString();
@@ -4439,7 +4484,7 @@ class AdminController extends Controller
         }
 
         $totalCapaian          = (float)(clone $query)->sum('amount');
-        $totalDonorsCount      = (clone $query)->whereNotNull('user_id')->distinct('user_id')->count('user_id');
+        $totalDonorsCount      = $this->countUniqueDonorsFromQuery($query);
         $totalTransactionsCount= (clone $query)->count();
         $averageDonation       = $totalTransactionsCount > 0 ? round($totalCapaian / $totalTransactionsCount) : 0;
 
