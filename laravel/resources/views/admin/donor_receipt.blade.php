@@ -1,37 +1,42 @@
 @php
     // Helper fungsi Terbilang Rupiah
+    if (!function_exists('terbilangPenyebut')) {
+        function terbilangPenyebut($nilai) {
+            $nilai = abs($nilai);
+            $huruf = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+            $temp = "";
+            if ($nilai < 12) {
+                $temp = " " . $huruf[(int)$nilai];
+            } else if ($nilai < 20) {
+                $temp = terbilangPenyebut($nilai - 10) . " Belas";
+            } else if ($nilai < 100) {
+                $temp = terbilangPenyebut(intval($nilai / 10)) . " Puluh" . terbilangPenyebut($nilai % 10);
+            } else if ($nilai < 200) {
+                $temp = " Seratus" . terbilangPenyebut($nilai - 100);
+            } else if ($nilai < 1000) {
+                $temp = terbilangPenyebut(intval($nilai / 100)) . " Ratus" . terbilangPenyebut($nilai % 100);
+            } else if ($nilai < 2000) {
+                $temp = " Seribu" . terbilangPenyebut($nilai - 1000);
+            } else if ($nilai < 1000000) {
+                $temp = terbilangPenyebut(intval($nilai / 1000)) . " Ribu" . terbilangPenyebut($nilai % 1000);
+            } else if ($nilai < 1000000000) {
+                $temp = terbilangPenyebut(intval($nilai / 1000000)) . " Juta" . terbilangPenyebut($nilai % 1000000);
+            } else if ($nilai < 1000000000000) {
+                $temp = terbilangPenyebut(intval($nilai / 1000000000)) . " Miliar" . terbilangPenyebut(fmod($nilai, 1000000000));
+            } else {
+                $temp = terbilangPenyebut(intval($nilai / 1000000000000)) . " Triliun" . terbilangPenyebut(fmod($nilai, 1000000000000));
+            }
+            return $temp;
+        }
+    }
+
     if (!function_exists('terbilangRupiah')) {
         function terbilangRupiah($number) {
-            $number = abs((float)$number);
+            $number = (float)$number;
             if ($number == 0) {
                 return 'Nol';
             }
-            $words = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
-            $result = "";
-
-            if ($number < 12) {
-                $result = " " . $words[(int)$number];
-            } else if ($number < 20) {
-                $result = terbilangRupiah($number - 10) . " Belas";
-            } else if ($number < 100) {
-                $result = terbilangRupiah(intval($number / 10)) . " Puluh" . terbilangRupiah($number % 10);
-            } else if ($number < 200) {
-                $result = " Seratus" . terbilangRupiah($number - 100);
-            } else if ($number < 1000) {
-                $result = terbilangRupiah(intval($number / 100)) . " Ratus" . terbilangRupiah($number % 100);
-            } else if ($number < 2000) {
-                $result = " Seribu" . terbilangRupiah($number - 1000);
-            } else if ($number < 1000000) {
-                $result = terbilangRupiah(intval($number / 1000)) . " Ribu" . terbilangRupiah($number % 1000);
-            } else if ($number < 1000000000) {
-                $result = terbilangRupiah(intval($number / 1000000)) . " Juta" . terbilangRupiah($number % 1000000);
-            } else if ($number < 1000000000000) {
-                $result = terbilangRupiah(intval($number / 1000000000)) . " Miliar" . terbilangRupiah(fmod($number, 1000000000));
-            } else {
-                $result = terbilangRupiah(intval($number / 1000000000000)) . " Triliun" . terbilangRupiah(fmod($number, 1000000000000));
-            }
-
-            return trim($result);
+            return trim(preg_replace('/\s+/', ' ', terbilangPenyebut($number)));
         }
     }
 
@@ -335,10 +340,10 @@
         <div class="h-1.5 w-full bg-[#f7ad1a]"></div>
 
         {{-- Top Right Decorative Corner Badge --}}
-        <div class="absolute top-0 right-0 w-36 h-12 pointer-events-none z-10">
-            <svg class="w-full h-full" viewBox="0 0 144 48" preserveAspectRatio="none" fill="none">
-                <polygon points="35,0 144,0 144,48 0,0" fill="#063f5c"/>
-                <line x1="0" y1="0" x2="144" y2="48" stroke="#f7ad1a" stroke-width="4"/>
+        <div style="position: absolute; top: 0; right: 0; width: 110px; height: 32px; pointer-events: none; z-index: 10;">
+            <svg style="width: 100%; height: 100%;" viewBox="0 0 110 32" preserveAspectRatio="none" fill="none">
+                <polygon points="28,0 110,0 110,32 0,0" fill="#063f5c"/>
+                <line x1="0" y1="0" x2="110" y2="32" stroke="#f7ad1a" stroke-width="3"/>
             </svg>
         </div>
 
@@ -352,56 +357,59 @@
 
         <div class="relative z-10 p-7 sm:p-9 space-y-5">
 
-            {{-- 1. HEADER ROW (4 COLUMNS) --}}
-            <div class="grid grid-cols-12 items-center gap-3">
-                {{-- Col 1: Diselenggarakan Oleh --}}
-                <div class="col-span-3">
-                    <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">DISELENGGARAKAN OLEH</span>
-                    <div class="flex items-center gap-2 mt-1">
-                        <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 sm:h-12 w-auto object-contain max-w-[160px]" alt="Indonesia Madani">
+            {{-- 1. HEADER ROW (3 GROUPS: LOGOS, TITLE, KWITANSI NUMBER) --}}
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%;">
+                {{-- Col 1 & 2: Diselenggarakan Oleh + Program --}}
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <div>
+                        <span style="display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; color: #64748b; text-transform: uppercase;">DISELENGGARAKAN OLEH</span>
+                        <div style="display: flex; align-items: center; margin-top: 4px;">
+                            <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" style="height: 42px; width: auto; max-width: 140px; object-fit: contain;" alt="Indonesia Madani">
+                        </div>
                     </div>
-                </div>
 
-                {{-- Col 2: Program Harapan Palestina --}}
-                <div class="col-span-3">
-                    <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">PROGRAM</span>
-                    <div class="flex items-center gap-2 mt-1">
-                        <svg class="w-9 h-9 shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="50" r="46" fill="#0b5563" stroke="#f7ad1a" stroke-width="3"/>
-                            <circle cx="50" cy="50" r="14" fill="#063f5c" stroke="#f7ad1a" stroke-width="2.5"/>
-                            <g stroke="#ffffff" stroke-width="3.5" stroke-linecap="round">
-                                <path d="M50 14 V32 M50 68 V86 M14 50 H32 M68 50 H86" />
-                                <path d="M24 24 L38 38 M62 62 L76 76 M76 24 L62 38 M38 62 L24 76" stroke="#f7ad1a" stroke-width="2.5"/>
-                            </g>
-                        </svg>
-                        <div class="leading-none">
-                            <span class="block font-montserrat font-black text-sm text-[#063f5c]">Harapan</span>
-                            <span class="block font-montserrat font-black text-sm text-[#063f5c]">Palestina</span>
+                    <div style="width: 1px; height: 36px; background-color: #cbd5e1;"></div>
+
+                    <div>
+                        <span style="display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; color: #64748b; text-transform: uppercase;">PROGRAM</span>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                            <svg style="width: 34px; height: 34px; flex-shrink: 0;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="46" fill="#0b5563" stroke="#f7ad1a" stroke-width="3"/>
+                                <circle cx="50" cy="50" r="14" fill="#063f5c" stroke="#f7ad1a" stroke-width="2.5"/>
+                                <g stroke="#ffffff" stroke-width="3.5" stroke-linecap="round">
+                                    <path d="M50 14 V32 M50 68 V86 M14 50 H32 M68 50 H86" />
+                                    <path d="M24 24 L38 38 M62 62 L76 76 M76 24 L62 38 M38 62 L24 76" stroke="#f7ad1a" stroke-width="2.5"/>
+                                </g>
+                            </svg>
+                            <div style="line-height: 1.15;">
+                                <span style="display: block; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 13px; color: #063f5c;">Harapan</span>
+                                <span style="display: block; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 13px; color: #063f5c;">Palestina</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- Col 3: Center Title --}}
-                <div class="col-span-3 text-center">
-                    <h1 class="font-montserrat font-black text-xl sm:text-2xl tracking-wide uppercase">
-                        <span class="text-[#063f5c]">KWITANSI</span> <span class="text-[#f7ad1a]">DONASI</span>
+                {{-- Center: KWITANSI DONASI --}}
+                <div style="text-align: center;">
+                    <h1 style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 24px; letter-spacing: 0.05em; text-transform: uppercase; margin: 0; line-height: 1.1;">
+                        <span style="color: #063f5c;">KWITANSI</span> <span style="color: #f7ad1a;">DONASI</span>
                     </h1>
-                    <p class="font-montserrat font-extrabold text-[9px] sm:text-[10px] text-slate-700 tracking-[0.16em] uppercase mt-0.5">
+                    <p style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 10px; color: #334155; letter-spacing: 0.16em; text-transform: uppercase; margin-top: 3px;">
                         YAYASAN HARPA INDONESIA MADANI
                     </p>
                 </div>
 
-                {{-- Col 4: No Kwitansi & Tanggal --}}
-                <div class="col-span-3 text-right pr-4 space-y-1">
-                    <div>
-                        <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">NO. KWITANSI</span>
-                        <span class="font-montserrat font-black text-sm sm:text-base text-slate-900 tracking-wider">
+                {{-- Right: No Kwitansi & Tanggal Donasi --}}
+                <div style="text-align: right; padding-right: 8px; margin-top: 4px;">
+                    <div style="margin-bottom: 4px;">
+                        <span style="display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; color: #64748b; text-transform: uppercase;">NO. KWITANSI</span>
+                        <span style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 15px; color: #0f172a; letter-spacing: 0.05em;">
                             {{ $kwitansiNo }}
                         </span>
                     </div>
                     <div>
-                        <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">TANGGAL DONASI</span>
-                        <span class="font-montserrat font-black text-xs sm:text-sm text-slate-900">
+                        <span style="display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; color: #64748b; text-transform: uppercase;">TANGGAL DONASI</span>
+                        <span style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 12px; color: #0f172a;">
                             {{ $tglDonasi }}
                         </span>
                     </div>
@@ -409,14 +417,14 @@
             </div>
 
             {{-- 2. RECEIPT FORM FIELDS --}}
-            <div class="space-y-3.5 pt-1 text-sm">
+            <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 4px;">
                 
                 {{-- Diterima dengan syukur dari Row --}}
-                <div class="flex items-baseline gap-3 w-full">
-                    <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                <div style="display: flex; align-items: baseline; width: 100%; gap: 12px;">
+                    <span style="width: 175px; min-width: 175px; flex-shrink: 0;" class="font-medium text-xs text-slate-600">
                         Diterima dengan syukur dari
                     </span>
-                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
+                    <div style="flex-grow: 1; border-bottom: 2px dotted #f7ad1a; padding-bottom: 2px; padding-left: 4px;">
                         <span class="font-black text-slate-900 text-base tracking-wide" x-text="receiptDonorName">
                             {{ $donorName }}
                         </span>
@@ -424,39 +432,40 @@
                 </div>
 
                 {{-- Terbilang Row --}}
-                <div class="flex items-baseline gap-3 w-full">
-                    <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                <div style="display: flex; align-items: baseline; width: 100%; gap: 12px;">
+                    <span style="width: 175px; min-width: 175px; flex-shrink: 0;" class="font-medium text-xs text-slate-600">
                         Terbilang
                     </span>
-                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
+                    <div style="flex-grow: 1; border-bottom: 2px dotted #f7ad1a; padding-bottom: 2px; padding-left: 4px;">
                         <span class="font-bold text-slate-900 text-sm tracking-wide italic">
                             {{ $amountInWords }}
                         </span>
                     </div>
                 </div>
 
-                {{-- Metode Pembayaran Checkboxes & Bank Row --}}
-                <div class="grid grid-cols-1 sm:grid-cols-12 items-baseline gap-3 w-full">
-                    <div class="sm:col-span-8 flex items-center gap-6">
-                        <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                {{-- Metode Pembayaran Checkboxes & Bank Row (All on one row) --}}
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 16px;">
+                    {{-- Left: Label + Checkboxes --}}
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <span style="width: 175px; min-width: 175px; flex-shrink: 0;" class="font-medium text-xs text-slate-600">
                             Metode pembayaran
                         </span>
-                        <div class="flex items-center gap-6">
+                        <div style="display: flex; align-items: center; gap: 20px; white-space: nowrap;">
                             {{-- Tunai --}}
-                            <label class="inline-flex items-center gap-2 cursor-default select-none">
-                                <span class="w-4 h-4 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-white">
+                            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: default; user-select: none;">
+                                <span style="width: 16px; height: 16px; border-radius: 3px; border: 2px solid #f7ad1a; display: flex; align-items: center; justify-content: center; background-color: {{ $isCash ? '#f7ad1a' : '#ffffff' }}; color: white;">
                                     @if($isCash)
-                                        <i class="fa-solid fa-check text-[#f7ad1a] text-[10px]"></i>
+                                        <i class="fa-solid fa-check" style="font-size: 10px; line-height: 1;"></i>
                                     @endif
                                 </span>
                                 <span class="font-medium text-xs text-slate-700">Tunai</span>
                             </label>
 
                             {{-- Transfer / non-tunai --}}
-                            <label class="inline-flex items-center gap-2 cursor-default select-none">
-                                <span class="w-4 h-4 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-[#f7ad1a] text-white">
+                            <label style="display: inline-flex; align-items: center; gap: 8px; cursor: default; user-select: none;">
+                                <span style="width: 16px; height: 16px; border-radius: 3px; border: 2px solid #f7ad1a; display: flex; align-items: center; justify-content: center; background-color: {{ $isElectronic ? '#f7ad1a' : '#ffffff' }}; color: white;">
                                     @if($isElectronic)
-                                        <i class="fa-solid fa-check text-white text-[10px]"></i>
+                                        <i class="fa-solid fa-check" style="font-size: 10px; line-height: 1;"></i>
                                     @endif
                                 </span>
                                 <span class="font-medium text-xs text-slate-700">Transfer / non-tunai</span>
@@ -464,10 +473,10 @@
                         </div>
                     </div>
 
-                    {{-- Bank on the right --}}
-                    <div class="sm:col-span-4 flex items-baseline gap-2">
-                        <span class="font-medium text-xs text-slate-600 whitespace-nowrap">Bank</span>
-                        <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
+                    {{-- Right: Bank on the right --}}
+                    <div style="display: flex; align-items: baseline; gap: 8px; min-width: 220px; flex-grow: 1; max-width: 320px;">
+                        <span class="font-medium text-xs text-slate-600" style="flex-shrink: 0;">Bank</span>
+                        <div style="flex-grow: 1; border-bottom: 2px dotted #f7ad1a; padding-bottom: 2px; padding-left: 6px;">
                             <span class="font-black text-slate-900 text-xs tracking-wider uppercase" x-text="receiptBank">
                                 {{ $bankName }}
                             </span>
@@ -476,11 +485,11 @@
                 </div>
 
                 {{-- Untuk program Row --}}
-                <div class="flex items-baseline gap-3 w-full">
-                    <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                <div style="display: flex; align-items: baseline; width: 100%; gap: 12px;">
+                    <span style="width: 175px; min-width: 175px; flex-shrink: 0;" class="font-medium text-xs text-slate-600">
                         Untuk program
                     </span>
-                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
+                    <div style="flex-grow: 1; border-bottom: 2px dotted #f7ad1a; padding-bottom: 2px; padding-left: 4px;">
                         <span class="font-black text-slate-900 text-sm tracking-wide" x-text="receiptPurpose">
                             {{ $purpose }}
                         </span>
@@ -500,10 +509,10 @@
             </div>
 
             {{-- 4. BOTTOM SECTION: IDR BADGE & SIGNATURES --}}
-            <div class="grid grid-cols-1 md:grid-cols-12 items-end gap-6 pt-1">
+            <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-top: 4px; width: 100%;">
                 
                 {{-- Left: IDR Box / Amount Badge --}}
-                <div class="md:col-span-5 flex items-center">
+                <div style="flex-shrink: 0;">
                     <div class="bg-[#063f5c] text-white px-6 py-3 rounded-2xl shadow-md border-l-4 border-[#f7ad1a] min-w-[220px]">
                         <span class="text-[#f7ad1a] font-montserrat font-black text-[10px] tracking-widest uppercase block">IDR</span>
                         <span class="font-montserrat font-black text-2xl tracking-tight text-white block mt-0.5">
@@ -513,10 +522,10 @@
                 </div>
 
                 {{-- Right: Dual Signature Block --}}
-                <div class="md:col-span-7 grid grid-cols-2 gap-6 text-center">
+                <div style="display: flex; align-items: flex-end; gap: 32px; min-width: 440px; justify-content: flex-end;">
                     
                     {{-- Signature 1: Finance --}}
-                    <div class="flex flex-col items-center justify-end">
+                    <div style="width: 190px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
                         <div class="flex items-center justify-center relative w-full" :style="`height: ${sigSize}px;`">
                             <template x-if="receiverSigType === 'digital'">
                                 <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#063f5c]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
@@ -542,10 +551,10 @@
                     </div>
 
                     {{-- Signature 2: CEO + Stamp --}}
-                    <div class="flex flex-col items-center justify-end relative">
+                    <div style="width: 190px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative;">
                         <!-- Official Stamp Watermark overlapping signature -->
                         <template x-if="showStamp">
-                            <div class="absolute -top-6 -right-2 sm:-right-4 pointer-events-none opacity-85 transform -rotate-6 z-20"
+                            <div style="position: absolute; right: 6px; top: -14px; pointer-events: none; opacity: 0.88; transform: rotate(-5deg); z-index: 20;"
                                  :style="`width: ${stampSize}px; height: ${stampSize}px;`">
                                 <template x-if="customStampImage">
                                     <img :src="customStampImage" class="w-full h-full object-contain" alt="Stempel">

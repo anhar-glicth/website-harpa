@@ -162,6 +162,12 @@ class HarpaDataController extends Controller
      */
     public function storeManualDonation(Request $request)
     {
+        // Sanitasi input nominal dari titik, koma, spasi, atau format Rp
+        if ($request->has('nominal')) {
+            $rawNominal = preg_replace('/[^0-9]/', '', (string)$request->nominal);
+            $request->merge(['nominal' => $rawNominal !== '' ? (float)$rawNominal : 0]);
+        }
+
         $request->validate([
             'nama_lengkap'       => 'required|string|max:255',
             'no_hp'              => 'required|string|max:50',

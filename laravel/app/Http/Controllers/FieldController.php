@@ -336,6 +336,11 @@ class FieldController extends Controller
 
     public function storeManualDonation(Request $request)
     {
+        if ($request->has('amount')) {
+            $rawAmount = preg_replace('/[^0-9]/', '', (string)$request->amount);
+            $request->merge(['amount' => $rawAmount !== '' ? (float)$rawAmount : 0]);
+        }
+
         $request->validate([
             'campaign_id'    => 'required|exists:campaigns,id',
             'donor_name'     => 'required|string|max:255',
