@@ -39,19 +39,18 @@
     $amount = $lastDonation ? (float)$lastDonation->amount : 0;
     $amountInWords = ucwords(strtolower(terbilangRupiah($amount))) . ' Rupiah';
     
-    // Format MR. No
-    $mrNo = '108808';
+    // Format No Kwitansi
+    $kwitansiNo = 'W0638';
     if ($lastDonation) {
         if (!empty($lastDonation->receipt_no)) {
-            $mrNo = $lastDonation->receipt_no;
+            $kwitansiNo = $lastDonation->receipt_no;
         } elseif (!empty($lastDonation->transaction_id)) {
-            $digits = preg_replace('/[^0-9]/', '', $lastDonation->transaction_id);
-            $mrNo = strlen($digits) >= 6 ? substr($digits, -6) : $lastDonation->transaction_id;
+            $kwitansiNo = $lastDonation->transaction_id;
         } else {
-            $mrNo = str_pad($lastDonation->id, 6, '0', STR_PAD_LEFT);
+            $kwitansiNo = 'W' . str_pad($lastDonation->id, 4, '0', STR_PAD_LEFT);
         }
     } else {
-        $mrNo = 'D-' . str_pad($donor?->id ?? '0', 6, '0', STR_PAD_LEFT);
+        $kwitansiNo = 'W' . str_pad($donor?->id ?? '638', 4, '0', STR_PAD_LEFT);
     }
 
     // Tanggal Donasi
@@ -70,25 +69,25 @@
     $isCash = in_array(strtolower($paymentMethod), ['cash', 'tunai']);
     $isElectronic = !$isCash;
 
-    $bankName = 'MANDIRI';
+    $bankName = 'BSI';
     if ($lastDonation && $lastDonation->paymentVia) {
-        $bankName = strtoupper($lastDonation->paymentVia->name ?? $lastDonation->paymentVia->provider ?? 'MANDIRI');
+        $bankName = strtoupper($lastDonation->paymentVia->name ?? $lastDonation->paymentVia->provider ?? 'BSI');
     }
 
     // Peruntukan / Program
-    $purpose = 'Sedekah';
+    $purpose = 'DARURAT! Penuhi Kebutuhan Mendesak Palestina';
     if ($lastDonation && $lastDonation->campaign) {
         $purpose = $lastDonation->campaign->title;
     }
 
-    $defaultReceiver = $lastDonation?->collector?->name ?? (Auth::check() ? Auth::user()->name : 'Staff Harapan Palestina');
+    $defaultReceiver = 'Putri Yulia Indrawati';
 @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Money Receipt - {{ $mrNo }} - {{ $donorName }}</title>
+    <title>Kwitansi Donasi - {{ $kwitansiNo }} - {{ $donorName }}</title>
 
     <!-- Favicon & App Icons -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -105,6 +104,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- html2canvas for Download Image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         [x-cloak] {
@@ -156,13 +157,13 @@
 </head>
 <body x-data="{
     showCustomModal: false,
-    receiptLogo: localStorage.getItem('receipt_logo') || '{{ asset('images/logo.jpeg') }}',
+    receiptLogo: localStorage.getItem('receipt_logo') || '{{ asset('images/logo.png') }}',
     receiverName: localStorage.getItem('receipt_receiver_name') || '{{ addslashes($defaultReceiver) }}',
-    receiverTitle: localStorage.getItem('receipt_receiver_title') || 'RECEIVED BY',
+    receiverTitle: localStorage.getItem('receipt_receiver_title') || 'Diterima oleh Finance',
     receiverSigType: localStorage.getItem('receipt_receiver_sig_type') || 'digital',
     receiverSigImage: localStorage.getItem('receipt_receiver_sig_image') || '',
-    authorizedName: localStorage.getItem('receipt_authorized_name') || 'Djihan Ramadhan',
-    authorizedTitle: localStorage.getItem('receipt_authorized_title') || 'AUTHORIZED SIGNATURE',
+    authorizedName: localStorage.getItem('receipt_authorized_name') || 'Fadli Manrulanggi',
+    authorizedTitle: localStorage.getItem('receipt_authorized_title') || 'Chief Executive Officer',
     authorizedSigType: localStorage.getItem('receipt_authorized_sig_type') || 'digital',
     authorizedSigImage: localStorage.getItem('receipt_authorized_sig_image') || '',
     showStamp: localStorage.getItem('receipt_show_stamp') !== 'false',
@@ -172,8 +173,31 @@
     receiptDonorName: '{{ addslashes($donorName) }}',
     receiptPurpose: '{{ addslashes($purpose) }}',
     receiptBank: '{{ addslashes($bankName) }}',
-    footerWebsite: localStorage.getItem('receipt_footer_website') || 'www.harapanpalestina.com',
-    footerSocial: localStorage.getItem('receipt_footer_social') || 'Find Us On: @harapanpalestina',
+    footerWebsite: localStorage.getItem('receipt_footer_website') || 'indonesiamadani.org',
+    footerSocial: localStorage.getItem('receipt_footer_social') || 'Ikuti kami: @indonesiamadani',
+    isDownloading: false,
+
+    async downloadImage() {
+        this.isDownloading = true;
+        try {
+            const element = document.querySelector('.receipt-wrapper');
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff'
+            });
+            const link = document.createElement('a');
+            link.download = 'Kwitansi-' + '{{ $kwitansiNo }}' + '-' + '{{ Str::slug($donorName) }}' + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.error('Error generating image:', err);
+            alert('Gagal mengunduh gambar. Silakan gunakan tombol Cetak Kwitansi lalu pilih Simpan sebagai PDF.');
+        } finally {
+            this.isDownloading = false;
+        }
+    },
 
     handleLogoUpload(e) {
         const file = e.target.files[0];
@@ -241,13 +265,13 @@
         this.showCustomModal = false;
     },
     resetToDefault() {
-        this.receiptLogo = '{{ asset('images/logo.jpeg') }}';
+        this.receiptLogo = '{{ asset('images/logo.png') }}';
         this.receiverName = '{{ addslashes($defaultReceiver) }}';
-        this.receiverTitle = 'RECEIVED BY';
+        this.receiverTitle = 'Diterima oleh Finance';
         this.receiverSigType = 'digital';
         this.receiverSigImage = '';
-        this.authorizedName = 'Djihan Ramadhan';
-        this.authorizedTitle = 'AUTHORIZED SIGNATURE';
+        this.authorizedName = 'Fadli Manrulanggi';
+        this.authorizedTitle = 'Chief Executive Officer';
         this.authorizedSigType = 'digital';
         this.authorizedSigImage = '';
         this.showStamp = true;
@@ -257,8 +281,8 @@
         this.receiptDonorName = '{{ addslashes($donorName) }}';
         this.receiptPurpose = '{{ addslashes($purpose) }}';
         this.receiptBank = '{{ addslashes($bankName) }}';
-        this.footerWebsite = 'www.harapanpalestina.com';
-        this.footerSocial = 'Find Us On: @harapanpalestina';
+        this.footerWebsite = 'indonesiamadani.org';
+        this.footerSocial = 'Ikuti kami: @indonesiamadani';
         localStorage.removeItem('receipt_logo');
         localStorage.removeItem('receipt_receiver_name');
         localStorage.removeItem('receipt_receiver_title');
@@ -282,6 +306,11 @@
         <button onclick="window.print()" class="bg-[#063f5c] hover:bg-[#04324a] text-white font-extrabold px-6 py-2.5 rounded-xl shadow-lg shadow-sky-200 text-xs flex items-center gap-2 transition-all active:scale-95">
             <i class="fa-solid fa-print"></i> Cetak Kwitansi
         </button>
+        <button type="button" @click="downloadImage()" :disabled="isDownloading" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-200 text-xs flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50">
+            <i class="fa-solid fa-image" x-show="!isDownloading"></i>
+            <i class="fa-solid fa-spinner fa-spin" x-show="isDownloading" x-cloak></i>
+            <span x-text="isDownloading ? 'Memproses Gambar...' : 'Download Gambar (PNG)'"></span>
+        </button>
         <button @click="showCustomModal = true" class="bg-amber-500 hover:bg-amber-600 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-amber-200 text-xs flex items-center gap-2 transition-all active:scale-95">
             <i class="fa-solid fa-pen-ruler"></i> Kustomisasi Logo, TTD & Penerima
         </button>
@@ -302,42 +331,77 @@
     {{-- Printable Money Receipt Container --}}
     <div class="receipt-wrapper relative bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden w-full max-w-[1020px] transition-all">
 
+        {{-- Top Accent Gold Line --}}
+        <div class="h-1.5 w-full bg-[#f7ad1a]"></div>
+
+        {{-- Top Right Decorative Corner Badge --}}
+        <div class="absolute top-0 right-0 w-36 h-12 pointer-events-none z-10">
+            <svg class="w-full h-full" viewBox="0 0 144 48" preserveAspectRatio="none" fill="none">
+                <polygon points="35,0 144,0 144,48 0,0" fill="#063f5c"/>
+                <line x1="0" y1="0" x2="144" y2="48" stroke="#f7ad1a" stroke-width="4"/>
+            </svg>
+        </div>
+
         {{-- Background Logo Watermark --}}
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] select-none z-0">
             <div class="flex flex-col items-center text-center">
                 <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="w-[280px] h-auto object-contain grayscale" alt="">
-                <span class="font-montserrat font-black text-4xl tracking-tight text-slate-800 mt-2">Harapan Palestina</span>
+                <span class="font-montserrat font-black text-3xl tracking-tight text-slate-800 mt-2">Yayasan Harpa Indonesia Madani</span>
             </div>
         </div>
 
-        {{-- Top Right Decorative Corner Badge --}}
-        <div class="absolute top-0 right-0 w-24 h-24 overflow-hidden pointer-events-none z-10">
-            <div class="absolute -top-10 -right-10 w-28 h-28 rounded-3xl bg-[#063f5c] shadow-md transform rotate-12"></div>
-        </div>
+        <div class="relative z-10 p-7 sm:p-9 space-y-5">
 
-        <div class="relative z-10 p-8 sm:p-10 space-y-6">
-
-            {{-- 1. HEADER ROW --}}
-            <div class="grid grid-cols-12 items-center gap-4">
-                {{-- Logo Top Left --}}
-                <div class="col-span-4 flex items-center gap-3">
-                    <div class="flex items-center gap-2">
-                        <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-12 sm:h-14 w-auto object-contain max-w-[200px]" alt="Harapan Palestina">
+            {{-- 1. HEADER ROW (4 COLUMNS) --}}
+            <div class="grid grid-cols-12 items-center gap-3">
+                {{-- Col 1: Diselenggarakan Oleh --}}
+                <div class="col-span-3">
+                    <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">DISELENGGARAKAN OLEH</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        <img :src="receiptLogo" onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';" class="h-10 sm:h-12 w-auto object-contain max-w-[160px]" alt="Indonesia Madani">
                     </div>
                 </div>
 
-                {{-- Center Title: MONEY RECEIPT --}}
-                <div class="col-span-5 text-center">
-                    <h1 class="font-montserrat font-black text-2xl sm:text-3xl text-[#063f5c] tracking-[0.18em] uppercase drop-shadow-sm">
-                        MONEY RECEIPT
-                    </h1>
+                {{-- Col 2: Program Harapan Palestina --}}
+                <div class="col-span-3">
+                    <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">PROGRAM</span>
+                    <div class="flex items-center gap-2 mt-1">
+                        <svg class="w-9 h-9 shrink-0" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="46" fill="#0b5563" stroke="#f7ad1a" stroke-width="3"/>
+                            <circle cx="50" cy="50" r="14" fill="#063f5c" stroke="#f7ad1a" stroke-width="2.5"/>
+                            <g stroke="#ffffff" stroke-width="3.5" stroke-linecap="round">
+                                <path d="M50 14 V32 M50 68 V86 M14 50 H32 M68 50 H86" />
+                                <path d="M24 24 L38 38 M62 62 L76 76 M76 24 L62 38 M38 62 L24 76" stroke="#f7ad1a" stroke-width="2.5"/>
+                            </g>
+                        </svg>
+                        <div class="leading-none">
+                            <span class="block font-montserrat font-black text-sm text-[#063f5c]">Harapan</span>
+                            <span class="block font-montserrat font-black text-sm text-[#063f5c]">Palestina</span>
+                        </div>
+                    </div>
                 </div>
 
-                {{-- Top Right: Date Field --}}
-                <div class="col-span-3 text-right pr-6">
-                    <div class="inline-flex items-baseline gap-2">
-                        <span class="font-montserrat font-black text-xs text-[#063f5c]">Date</span>
-                        <span class="font-bold text-xs text-slate-900 border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2 min-w-[130px] text-center">
+                {{-- Col 3: Center Title --}}
+                <div class="col-span-3 text-center">
+                    <h1 class="font-montserrat font-black text-xl sm:text-2xl tracking-wide uppercase">
+                        <span class="text-[#063f5c]">KWITANSI</span> <span class="text-[#f7ad1a]">DONASI</span>
+                    </h1>
+                    <p class="font-montserrat font-extrabold text-[9px] sm:text-[10px] text-slate-700 tracking-[0.16em] uppercase mt-0.5">
+                        YAYASAN HARPA INDONESIA MADANI
+                    </p>
+                </div>
+
+                {{-- Col 4: No Kwitansi & Tanggal --}}
+                <div class="col-span-3 text-right pr-4 space-y-1">
+                    <div>
+                        <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">NO. KWITANSI</span>
+                        <span class="font-montserrat font-black text-sm sm:text-base text-slate-900 tracking-wider">
+                            {{ $kwitansiNo }}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="block text-[9px] font-bold tracking-wider text-slate-500 uppercase">TANGGAL DONASI</span>
+                        <span class="font-montserrat font-black text-xs sm:text-sm text-slate-900">
                             {{ $tglDonasi }}
                         </span>
                     </div>
@@ -345,95 +409,79 @@
             </div>
 
             {{-- 2. RECEIPT FORM FIELDS --}}
-            <div class="space-y-4 pt-2 text-sm">
+            <div class="space-y-3.5 pt-1 text-sm">
                 
-                {{-- MR. No Row --}}
-                <div class="flex items-baseline gap-2">
-                    <span class="font-montserrat font-black text-xl sm:text-2xl text-[#063f5c] tracking-tight">MR. No</span>
-                    <span class="font-montserrat font-black text-lg sm:text-xl text-slate-900 tracking-wider px-2">
-                        {{ $mrNo }}
+                {{-- Diterima dengan syukur dari Row --}}
+                <div class="flex items-baseline gap-3 w-full">
+                    <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                        Diterima dengan syukur dari
                     </span>
-                </div>
-
-                {{-- Received with thanks from Row --}}
-                <div class="flex items-baseline gap-2 w-full">
-                    <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap min-w-[165px]">
-                        Received with thanks from
-                    </span>
-                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
-                        <span class="font-bold text-slate-900 text-sm tracking-wide" x-text="receiptDonorName">
+                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
+                        <span class="font-black text-slate-900 text-base tracking-wide" x-text="receiptDonorName">
                             {{ $donorName }}
                         </span>
                     </div>
                 </div>
 
-                {{-- Amount in word Row --}}
-                <div class="flex items-baseline gap-2 w-full">
-                    <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap min-w-[165px]">
-                        Amount in word
+                {{-- Terbilang Row --}}
+                <div class="flex items-baseline gap-3 w-full">
+                    <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                        Terbilang
                     </span>
-                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
+                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
                         <span class="font-bold text-slate-900 text-sm tracking-wide italic">
                             {{ $amountInWords }}
                         </span>
                     </div>
                 </div>
 
-                {{-- Payment Method Checkboxes & Bank & Date Row --}}
-                <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-4 pt-1">
-                    
-                    {{-- Checkboxes By cash / Electronic --}}
-                    <div class="sm:col-span-5 flex items-center gap-6">
-                        {{-- By cash --}}
-                        <label class="inline-flex items-center gap-2 cursor-default select-none">
-                            <span class="w-5 h-5 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-white">
-                                @if($isCash)
-                                    <i class="fa-solid fa-check text-[#f7ad1a] text-xs"></i>
-                                @endif
-                            </span>
-                            <span class="font-semibold text-xs text-[#063f5c]">By cash</span>
-                        </label>
+                {{-- Metode Pembayaran Checkboxes & Bank Row --}}
+                <div class="grid grid-cols-1 sm:grid-cols-12 items-baseline gap-3 w-full">
+                    <div class="sm:col-span-8 flex items-center gap-6">
+                        <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                            Metode pembayaran
+                        </span>
+                        <div class="flex items-center gap-6">
+                            {{-- Tunai --}}
+                            <label class="inline-flex items-center gap-2 cursor-default select-none">
+                                <span class="w-4 h-4 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-white">
+                                    @if($isCash)
+                                        <i class="fa-solid fa-check text-[#f7ad1a] text-[10px]"></i>
+                                    @endif
+                                </span>
+                                <span class="font-medium text-xs text-slate-700">Tunai</span>
+                            </label>
 
-                        {{-- Electronic Payment --}}
-                        <label class="inline-flex items-center gap-2 cursor-default select-none">
-                            <span class="w-5 h-5 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-white shadow-sm">
-                                @if($isElectronic)
-                                    <i class="fa-solid fa-check text-[#f7ad1a] text-xs"></i>
-                                @endif
-                            </span>
-                            <span class="font-semibold text-xs text-[#063f5c]">Electronic Payment</span>
-                        </label>
+                            {{-- Transfer / non-tunai --}}
+                            <label class="inline-flex items-center gap-2 cursor-default select-none">
+                                <span class="w-4 h-4 rounded border-2 border-[#f7ad1a] flex items-center justify-center bg-[#f7ad1a] text-white">
+                                    @if($isElectronic)
+                                        <i class="fa-solid fa-check text-white text-[10px]"></i>
+                                    @endif
+                                </span>
+                                <span class="font-medium text-xs text-slate-700">Transfer / non-tunai</span>
+                            </label>
+                        </div>
                     </div>
 
-                    {{-- Bank Field --}}
+                    {{-- Bank on the right --}}
                     <div class="sm:col-span-4 flex items-baseline gap-2">
-                        <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap">Bank</span>
-                        <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
-                            <span class="font-extrabold text-slate-900 text-xs tracking-wider uppercase" x-text="receiptBank">
+                        <span class="font-medium text-xs text-slate-600 whitespace-nowrap">Bank</span>
+                        <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
+                            <span class="font-black text-slate-900 text-xs tracking-wider uppercase" x-text="receiptBank">
                                 {{ $bankName }}
                             </span>
                         </div>
                     </div>
-
-                    {{-- Date Field --}}
-                    <div class="sm:col-span-3 flex items-baseline gap-2">
-                        <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap">Date</span>
-                        <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2 text-right">
-                            <span class="font-bold text-slate-900 text-xs">
-                                {{ $tglDonasi }}
-                            </span>
-                        </div>
-                    </div>
-
                 </div>
 
-                {{-- For the purpose Row --}}
-                <div class="flex items-baseline gap-2 w-full pt-1">
-                    <span class="font-semibold text-xs text-[#063f5c] whitespace-nowrap min-w-[165px]">
-                        For the purpose
+                {{-- Untuk program Row --}}
+                <div class="flex items-baseline gap-3 w-full">
+                    <span class="font-medium text-xs text-slate-600 whitespace-nowrap min-w-[170px]">
+                        Untuk program
                     </span>
-                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-2">
-                        <span class="font-extrabold text-slate-900 text-sm tracking-wide" x-text="receiptPurpose">
+                    <div class="flex-grow border-b-2 border-dotted border-[#f7ad1a] pb-0.5 px-1">
+                        <span class="font-black text-slate-900 text-sm tracking-wide" x-text="receiptPurpose">
                             {{ $purpose }}
                         </span>
                     </div>
@@ -441,74 +489,77 @@
 
             </div>
 
-            {{-- 3. BOTTOM SECTION: IDR BADGE, DOA ARAB, SIGNATURES --}}
-            <div class="grid grid-cols-1 md:grid-cols-12 items-end gap-6 pt-3">
+            {{-- 3. ARABIC DOA CARD (FULL WIDTH) --}}
+            <div class="w-full bg-[#fef9ee] border border-[#f5dfaa] rounded-2xl py-3.5 px-6 text-center space-y-1.5 shadow-xs">
+                <p class="font-amiri font-bold text-lg text-[#063f5c] leading-relaxed dir-rtl" dir="rtl">
+                    أَجَرَكَ اللهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ لَكَ فِيمَا أَبْقَيْتَ وَجَعَلَهُ لَكَ طَهُورًا
+                </p>
+                <p class="text-[11px] text-slate-600 leading-normal font-medium max-w-2xl mx-auto">
+                    Semoga Allah memberi pahala atas apa yang engkau berikan, memberkahi harta yang masih engkau sisakan, dan menjadikannya pembersih dosa bagimu.
+                </p>
+            </div>
+
+            {{-- 4. BOTTOM SECTION: IDR BADGE & SIGNATURES --}}
+            <div class="grid grid-cols-1 md:grid-cols-12 items-end gap-6 pt-1">
                 
                 {{-- Left: IDR Box / Amount Badge --}}
-                <div class="md:col-span-4 flex items-center gap-3">
-                    <span class="font-montserrat font-black text-xl text-[#063f5c] tracking-tight">IDR</span>
-                    <div class="bg-[#063f5c] text-white px-6 py-2.5 rounded-2xl shadow-lg shadow-sky-100 flex items-center justify-center">
-                        <span class="font-montserrat font-black text-xl sm:text-2xl tracking-wide whitespace-nowrap">
-                            Rp.{{ number_format($amount, 0, ',', '.') }},-
+                <div class="md:col-span-5 flex items-center">
+                    <div class="bg-[#063f5c] text-white px-6 py-3 rounded-2xl shadow-md border-l-4 border-[#f7ad1a] min-w-[220px]">
+                        <span class="text-[#f7ad1a] font-montserrat font-black text-[10px] tracking-widest uppercase block">IDR</span>
+                        <span class="font-montserrat font-black text-2xl tracking-tight text-white block mt-0.5">
+                            Rp {{ number_format($amount, 0, ',', '.') }}
                         </span>
                     </div>
                 </div>
 
-                {{-- Center: Doa dalam Bahasa Arab & Terjemahan --}}
-                <div class="md:col-span-4 text-center space-y-1.5 px-2">
-                    <p class="font-amiri font-bold text-base text-[#063f5c] leading-relaxed dir-rtl" dir="rtl">
-                        أَجَرَكَ اللهُ فِيمَا أَعْطَيْتَ، وَبَارَكَ لَكَ فِيمَا أَبْقَيْتَ وَجَعَلَهُ لَكَ طَهُورًا
-                    </p>
-                    <p class="text-[9px] text-slate-600 leading-normal italic font-medium">
-                        &ldquo;Semoga Allah memberikan pahala kepadamu pada harta yang engkau berikan, dan semoga Allah memberkahimu dalam harta-harta yang masih engkau sisakan, dan semoga pula menjadikannya sebagai pembersih (dosa) bagimu.&rdquo;
-                    </p>
-                </div>
-
-                {{-- Right: Signatures (Received By & Authorized Signature) --}}
-                <div class="md:col-span-4 grid grid-cols-2 gap-4 text-center">
+                {{-- Right: Dual Signature Block --}}
+                <div class="md:col-span-7 grid grid-cols-2 gap-6 text-center">
                     
-                    {{-- Signature 1: Received By --}}
+                    {{-- Signature 1: Finance --}}
                     <div class="flex flex-col items-center justify-end">
                         <div class="flex items-center justify-center relative w-full" :style="`height: ${sigSize}px;`">
                             <template x-if="receiverSigType === 'digital'">
-                                <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#063f5c]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M10 38 C 20 20, 25 10, 30 25 C 35 40, 40 5, 45 35 C 50 35, 60 25, 75 28 C 85 30, 90 20, 95 35" stroke-linecap="round"/>
                                     <path d="M22 28 L 65 30" stroke-width="1.5"/>
                                 </svg>
                             </template>
                             <template x-if="receiverSigType === 'image' && receiverSigImage">
-                                <img :src="receiverSigImage" :style="`max-height: ${sigSize}px;`" class="max-w-full object-contain" alt="TTD Penerima">
+                                <img :src="receiverSigImage" :style="`max-height: ${sigSize}px;`" class="max-w-full object-contain" alt="TTD Finance">
                             </template>
                             <template x-if="receiverSigType === 'blank'">
                                 <div :style="`height: ${sigSize}px;`" class="w-full"></div>
                             </template>
                         </div>
                         <div class="w-full border-t border-slate-400 pt-1 mt-1">
-                            <span class="font-bold text-xs text-slate-900 block truncate underline" x-text="receiverName">
+                            <span class="font-bold text-xs text-slate-900 block truncate" x-text="receiverName">
                                 {{ $defaultReceiver }}
                             </span>
                             <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider" x-text="receiverTitle">
-                                RECEIVED BY
+                                Diterima oleh Finance
                             </span>
                         </div>
                     </div>
 
-                    {{-- Signature 2: Authorized Signature + Stamp --}}
+                    {{-- Signature 2: CEO + Stamp --}}
                     <div class="flex flex-col items-center justify-end relative">
-                        <!-- Official Stamp Watermark behind signature -->
+                        <!-- Official Stamp Watermark overlapping signature -->
                         <template x-if="showStamp">
-                            <div class="absolute -top-7 -right-2 sm:-right-4 pointer-events-none opacity-85 transform -rotate-12 z-20"
+                            <div class="absolute -top-6 -right-2 sm:-right-4 pointer-events-none opacity-85 transform -rotate-6 z-20"
                                  :style="`width: ${stampSize}px; height: ${stampSize}px;`">
                                 <template x-if="customStampImage">
                                     <img :src="customStampImage" class="w-full h-full object-contain" alt="Stempel">
                                 </template>
                                 <template x-if="!customStampImage">
-                                    <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
-                                        <circle cx="50" cy="50" r="46" stroke="#f7ad1a" stroke-width="3" stroke-dasharray="4 2"/>
-                                        <circle cx="50" cy="50" r="38" stroke="#063f5c" stroke-width="2"/>
-                                        <text x="50" y="32" font-size="7" font-weight="900" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">HARAPAN PALESTINA</text>
-                                        <text x="50" y="52" font-size="7" font-weight="bold" fill="#063f5c" text-anchor="middle" font-family="Montserrat">VERIFIED</text>
-                                        <text x="50" y="70" font-size="8" font-weight="900" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">YAYASAN</text>
+                                    <svg viewBox="0 0 160 110" class="w-full h-full" fill="none">
+                                        <g opacity="0.88">
+                                            <circle cx="56" cy="30" r="14" fill="#f7ad1a"/>
+                                            <circle cx="104" cy="30" r="14" fill="#063f5c"/>
+                                            <path d="M42 54 C42 42, 70 42, 70 54 V78 H42 Z" fill="#f7ad1a"/>
+                                            <path d="M90 54 C90 42, 118 42, 118 54 V78 H90 Z" fill="#063f5c"/>
+                                            <text x="80" y="93" font-size="12" font-weight="900" letter-spacing="1" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">INDONESIA</text>
+                                            <text x="80" y="106" font-size="12" font-weight="900" letter-spacing="2" fill="#063f5c" text-anchor="middle" font-family="Montserrat">MADANI</text>
+                                        </g>
                                     </svg>
                                 </template>
                             </div>
@@ -516,7 +567,7 @@
 
                         <div class="flex items-center justify-center relative z-10 w-full" :style="`height: ${sigSize}px;`">
                             <template x-if="authorizedSigType === 'digital'">
-                                <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#1e1b4b]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
+                                <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#063f5c]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M15 40 C 25 15, 30 8, 38 20 C 45 32, 50 12, 60 28 C 70 35, 80 18, 90 25" stroke-linecap="round"/>
                                     <path d="M10 32 L 85 24" stroke-width="1.5"/>
                                 </svg>
@@ -529,11 +580,11 @@
                             </template>
                         </div>
                         <div class="w-full border-t border-slate-400 pt-1 mt-1 relative z-10">
-                            <span class="font-bold text-xs text-slate-900 block truncate underline" x-text="authorizedName">
-                                Djihan Ramadhan
+                            <span class="font-bold text-xs text-slate-900 block truncate" x-text="authorizedName">
+                                Fadli Manrulanggi
                             </span>
                             <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider" x-text="authorizedTitle">
-                                AUTHORIZED SIGNATURE
+                                Chief Executive Officer
                             </span>
                         </div>
                     </div>
@@ -544,13 +595,26 @@
 
         </div>
 
-        {{-- 4. BOTTOM BANNER (Full Width Bar) --}}
+        {{-- 5. LEGAL & DISCLAIMER BOX --}}
+        <div class="bg-[#fefaf3] border-t border-b border-[#f5dfaa]/60 py-2.5 px-6 text-center text-slate-700 text-[10px] sm:text-[11px] space-y-0.5">
+            <p class="font-bold text-slate-800">
+                Harapan Palestina adalah program kemanusiaan Yayasan Harpa Indonesia Madani — HARPA singkatan dari HARapan PAlestina.
+            </p>
+            <p class="font-semibold text-slate-700">
+                <span class="text-rose-600 font-black">Disclaimer*</span> Kami tidak menerima donasi dari hasil korupsi, penjualan narkoba, dan penjualan minuman keras.
+            </p>
+            <p class="text-[10px] text-slate-500 font-medium">
+                Kwitansi ini diterbitkan secara elektronik oleh Yayasan Harpa Indonesia Madani dan sah tanpa tanda tangan basah. Simpan atau bagikan tautan halaman ini sebagai bukti donasi Anda.
+            </p>
+        </div>
+
+        {{-- 6. BOTTOM BANNER (Full Width Bar) --}}
         <div class="w-full bg-[#063f5c] py-2.5 px-8 sm:px-10 flex flex-wrap items-center justify-between text-white text-xs font-montserrat font-bold tracking-wide">
             <div class="flex items-center gap-2">
-                <span x-text="footerWebsite">www.harapanpalestina.com</span>
+                <span x-text="footerWebsite">indonesiamadani.org</span>
             </div>
             <div class="flex items-center gap-2">
-                <span x-text="footerSocial">Find Us On: @harapanpalestina</span>
+                <span x-text="footerSocial">Ikuti kami: @indonesiamadani</span>
             </div>
         </div>
 
@@ -589,8 +653,8 @@
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-2">
                             <i class="fa-solid fa-image text-sky-600"></i> Logo Kwitansi
                         </span>
-                        <button type="button" @click="receiptLogo = '{{ asset('images/logo.jpeg') }}'; localStorage.removeItem('receipt_logo');" class="text-[10px] font-bold text-sky-600 hover:underline flex items-center gap-1">
-                            <i class="fa-solid fa-rotate-left"></i> Reset ke Logo Harapan Palestina
+                        <button type="button" @click="receiptLogo = '{{ asset('images/logo.png') }}'; localStorage.removeItem('receipt_logo');" class="text-[10px] font-bold text-sky-600 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-left"></i> Reset ke Logo Indonesia Madani
                         </button>
                     </div>
                     <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -622,7 +686,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">Label Jabatan</label>
-                            <input type="text" x-model="receiverTitle" placeholder="RECEIVED BY" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
+                            <input type="text" x-model="receiverTitle" placeholder="Diterima oleh Finance" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all">
                         </div>
                     </div>
 
@@ -673,11 +737,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label for="donor_auth_name" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Nama Pimpinan / Pejabat</label>
-                            <input id="donor_auth_name" type="text" x-model="authorizedName" placeholder="Djihan Ramadhan" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors">
+                            <input id="donor_auth_name" type="text" x-model="authorizedName" placeholder="Fadli Manrulanggi" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors">
                         </div>
                         <div>
                             <label for="donor_auth_title" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Label Jabatan</label>
-                            <input id="donor_auth_title" type="text" x-model="authorizedTitle" placeholder="AUTHORIZED SIGNATURE" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors">
+                            <input id="donor_auth_title" type="text" x-model="authorizedTitle" placeholder="Chief Executive Officer" class="w-full min-h-[44px] bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors">
                         </div>
                     </div>
 
@@ -817,11 +881,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label for="receipt_footer_website" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">Website Resmi</label>
-                            <input id="receipt_footer_website" type="text" x-model="footerWebsite" placeholder="www.harapanpalestina.com" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-[#063f5c] focus:ring-2 focus:ring-[#063f5c]/20 transition-all">
+                            <input id="receipt_footer_website" type="text" x-model="footerWebsite" placeholder="indonesiamadani.org" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-[#063f5c] focus:ring-2 focus:ring-[#063f5c]/20 transition-all">
                         </div>
                         <div>
                             <label for="receipt_footer_social" class="block text-xs font-black uppercase tracking-wider text-slate-600 mb-1">Media Sosial</label>
-                            <input id="receipt_footer_social" type="text" x-model="footerSocial" placeholder="Find Us On: @harapanpalestina" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-[#063f5c] focus:ring-2 focus:ring-[#063f5c]/20 transition-all">
+                            <input id="receipt_footer_social" type="text" x-model="footerSocial" placeholder="Ikuti kami: @indonesiamadani" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 min-h-[44px] text-xs font-bold text-slate-800 focus:border-[#063f5c] focus:ring-2 focus:ring-[#063f5c]/20 transition-all">
                         </div>
                     </div>
                 </div>
