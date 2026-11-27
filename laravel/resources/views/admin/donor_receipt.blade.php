@@ -256,32 +256,38 @@
     async downloadImage() {
         this.isDownloading = true;
         try {
-            // Scroll to top to ensure complete coordinate alignment in html2canvas
             window.scrollTo(0, 0);
 
             const element = document.querySelector('.receipt-wrapper');
-            const fullHeight = element.scrollHeight || element.offsetHeight;
-            const fullWidth = element.scrollWidth || element.offsetWidth;
 
             const canvas = await html2canvas(element, {
                 scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                scrollX: 0,
-                scrollY: 0,
-                width: fullWidth,
-                height: fullHeight,
-                windowWidth: document.documentElement.offsetWidth,
-                windowHeight: document.documentElement.scrollHeight,
+                logging: false,
                 onclone: (clonedDoc) => {
+                    // Remove top controls and notifications to avoid layout shift in clone
+                    const noPrintEls = clonedDoc.querySelectorAll('.no-print');
+                    noPrintEls.forEach(el => el.remove());
+
+                    const clonedBody = clonedDoc.body;
+                    if (clonedBody) {
+                        clonedBody.style.padding = '0';
+                        clonedBody.style.margin = '0';
+                        clonedBody.style.minHeight = 'auto';
+                        clonedBody.style.display = 'block';
+                        clonedBody.style.background = '#ffffff';
+                    }
+
                     const clonedEl = clonedDoc.querySelector('.receipt-wrapper');
                     if (clonedEl) {
-                        clonedEl.style.overflow = 'visible';
+                        clonedEl.style.margin = '0 auto';
+                        clonedEl.style.boxShadow = 'none';
                         clonedEl.style.transform = 'none';
-                        clonedEl.style.maxHeight = 'none';
-                        clonedEl.style.height = 'auto';
-                        clonedEl.style.margin = '0';
+                        clonedEl.style.overflow = 'visible';
+                        clonedEl.style.maxWidth = '1020px';
+                        clonedEl.style.width = '1020px';
                     }
                 }
             });
@@ -546,9 +552,11 @@
                         <div style="display: flex; align-items: center; gap: 20px; white-space: nowrap;">
                             {{-- Tunai --}}
                             <label style="display: inline-flex; align-items: center; gap: 8px; cursor: default; user-select: none;">
-                                <span style="width: 16px; height: 16px; border-radius: 3px; border: 2px solid #f7ad1a; display: flex; align-items: center; justify-content: center; background-color: {{ $isCash ? '#f7ad1a' : '#ffffff' }}; color: white;">
+                                <span style="width: 16px; height: 16px; min-width: 16px; border-radius: 3px; border: 2px solid #f7ad1a; display: flex; align-items: center; justify-content: center; background-color: {{ $isCash ? '#f7ad1a' : '#ffffff' }}; box-sizing: border-box;">
                                     @if($isCash)
-                                        <i class="fa-solid fa-check" style="font-size: 10px; line-height: 1;"></i>
+                                        <svg style="width: 10px; height: 10px; display: block;" viewBox="0 0 12 12" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="2.5 6 5 8.5 9.5 3.5"></polyline>
+                                        </svg>
                                     @endif
                                 </span>
                                 <span class="font-medium text-xs text-slate-700">Tunai</span>
@@ -556,9 +564,11 @@
 
                             {{-- Transfer / non-tunai --}}
                             <label style="display: inline-flex; align-items: center; gap: 8px; cursor: default; user-select: none;">
-                                <span style="width: 16px; height: 16px; border-radius: 3px; border: 2px solid #f7ad1a; display: flex; align-items: center; justify-content: center; background-color: {{ $isElectronic ? '#f7ad1a' : '#ffffff' }}; color: white;">
+                                <span style="width: 16px; height: 16px; min-width: 16px; border-radius: 3px; border: 2px solid #f7ad1a; display: flex; align-items: center; justify-content: center; background-color: {{ $isElectronic ? '#f7ad1a' : '#ffffff' }}; box-sizing: border-box;">
                                     @if($isElectronic)
-                                        <i class="fa-solid fa-check" style="font-size: 10px; line-height: 1;"></i>
+                                        <svg style="width: 10px; height: 10px; display: block;" viewBox="0 0 12 12" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="2.5 6 5 8.5 9.5 3.5"></polyline>
+                                        </svg>
                                     @endif
                                 </span>
                                 <span class="font-medium text-xs text-slate-700">Transfer / non-tunai</span>
@@ -618,74 +628,66 @@
                 <div style="display: flex; align-items: flex-end; gap: 32px; min-width: 440px; justify-content: flex-end;">
                     
                     {{-- Signature 1: Finance --}}
-                    <div style="width: 190px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
+                    <div style="width: 195px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
                         <div class="flex items-center justify-center relative w-full" :style="`height: ${sigSize}px;`">
-                            <template x-if="receiverSigType === 'digital'">
-                                <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#063f5c]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M10 38 C 20 20, 25 10, 30 25 C 35 40, 40 5, 45 35 C 50 35, 60 25, 75 28 C 85 30, 90 20, 95 35" stroke-linecap="round"/>
-                                    <path d="M22 28 L 65 30" stroke-width="1.5"/>
+                            <div x-show="receiverSigType === 'digital'" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+                                <svg style="width: 140px; height: 55px; max-height: 100%;" viewBox="0 0 100 50" fill="none" stroke="#063f5c" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10 38 C 20 20, 25 10, 30 25 C 35 40, 40 5, 45 35 C 50 35, 60 25, 75 28 C 85 30, 90 20, 95 35"/>
+                                    <path d="M22 28 L 65 30" stroke-width="2"/>
                                 </svg>
-                            </template>
-                            <template x-if="receiverSigType === 'image' && receiverSigImage">
+                            </div>
+                            <div x-show="receiverSigType === 'image' && receiverSigImage" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
                                 <img :src="receiverSigImage" :style="`max-height: ${sigSize}px;`" class="max-w-full object-contain" alt="TTD Finance">
-                            </template>
-                            <template x-if="receiverSigType === 'blank'">
-                                <div :style="`height: ${sigSize}px;`" class="w-full"></div>
-                            </template>
+                            </div>
+                            <div x-show="receiverSigType === 'blank'" :style="`height: ${sigSize}px;`" class="w-full"></div>
                         </div>
-                        <div class="w-full border-t border-slate-400 pt-1 mt-1">
-                            <span class="font-bold text-xs text-slate-900 block truncate" x-text="receiverName">
+                        <div style="width: 100%; border-top: 1.5px solid #64748b; padding-top: 8px; margin-top: 6px; position: relative; z-index: 10;">
+                            <span style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13px; color: #0f172a; display: block; line-height: 1.4; overflow: visible;" x-text="receiverName">
                                 {{ $defaultReceiver }}
                             </span>
-                            <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider" x-text="receiverTitle">
+                            <span style="font-size: 10px; color: #64748b; font-weight: 700; display: block; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.3; margin-top: 2px;" x-text="receiverTitle">
                                 Diterima oleh Finance
                             </span>
                         </div>
                     </div>
 
                     {{-- Signature 2: CEO + Stamp --}}
-                    <div style="width: 190px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative;">
+                    <div style="width: 195px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative;">
                         <!-- Official Stamp Watermark overlapping signature -->
-                        <template x-if="showStamp">
-                            <div style="position: absolute; right: 6px; top: -14px; pointer-events: none; opacity: 0.88; transform: rotate(-5deg); z-index: 20;"
-                                 :style="`width: ${stampSize}px; height: ${stampSize}px;`">
-                                <template x-if="customStampImage">
-                                    <img :src="customStampImage" class="w-full h-full object-contain" alt="Stempel">
-                                </template>
-                                <template x-if="!customStampImage">
-                                    <svg viewBox="0 0 160 110" class="w-full h-full" fill="none">
-                                        <g opacity="0.88">
-                                            <circle cx="56" cy="30" r="14" fill="#f7ad1a"/>
-                                            <circle cx="104" cy="30" r="14" fill="#063f5c"/>
-                                            <path d="M42 54 C42 42, 70 42, 70 54 V78 H42 Z" fill="#f7ad1a"/>
-                                            <path d="M90 54 C90 42, 118 42, 118 54 V78 H90 Z" fill="#063f5c"/>
-                                            <text x="80" y="93" font-size="12" font-weight="900" letter-spacing="1" fill="#f7ad1a" text-anchor="middle" font-family="Montserrat">INDONESIA</text>
-                                            <text x="80" y="106" font-size="12" font-weight="900" letter-spacing="2" fill="#063f5c" text-anchor="middle" font-family="Montserrat">MADANI</text>
-                                        </g>
-                                    </svg>
-                                </template>
+                        <div x-show="showStamp" style="position: absolute; right: 4px; top: -16px; pointer-events: none; opacity: 0.9; transform: rotate(-5deg); z-index: 20;"
+                             :style="`width: ${stampSize}px;`">
+                            <div x-show="customStampImage">
+                                <img :src="customStampImage" style="width: 100%; height: auto; object-fit: contain;" alt="Stempel">
                             </div>
-                        </template>
+                            <div x-show="!customStampImage" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                                <svg style="width: 48px; height: 34px;" viewBox="0 0 160 85" fill="none">
+                                    <circle cx="56" cy="22" r="16" fill="#f7ad1a"/>
+                                    <circle cx="104" cy="22" r="16" fill="#063f5c"/>
+                                    <path d="M38 48 C38 36, 74 36, 74 48 V76 H38 Z" fill="#f7ad1a"/>
+                                    <path d="M86 48 C86 36, 122 36, 122 48 V76 H86 Z" fill="#063f5c"/>
+                                </svg>
+                                <span style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 11px; letter-spacing: 0.12em; color: #f7ad1a; line-height: 1.1; display: block; margin-top: 2px;">INDONESIA</span>
+                                <span style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 11px; letter-spacing: 0.18em; color: #063f5c; line-height: 1.1; display: block; margin-top: 1px;">MADANI</span>
+                            </div>
+                        </div>
 
                         <div class="flex items-center justify-center relative z-10 w-full" :style="`height: ${sigSize}px;`">
-                            <template x-if="authorizedSigType === 'digital'">
-                                <svg :style="`height: ${Math.round(sigSize * 0.85)}px; width: ${Math.round(sigSize * 1.8)}px;`" class="text-[#063f5c]" viewBox="0 0 100 50" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M15 40 C 25 15, 30 8, 38 20 C 45 32, 50 12, 60 28 C 70 35, 80 18, 90 25" stroke-linecap="round"/>
-                                    <path d="M10 32 L 85 24" stroke-width="1.5"/>
+                            <div x-show="authorizedSigType === 'digital'" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
+                                <svg style="width: 140px; height: 55px; max-height: 100%;" viewBox="0 0 100 50" fill="none" stroke="#063f5c" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M15 40 C 25 15, 30 8, 38 20 C 45 32, 50 12, 60 28 C 70 35, 80 18, 90 25"/>
+                                    <path d="M10 32 L 85 24" stroke-width="2"/>
                                 </svg>
-                            </template>
-                            <template x-if="authorizedSigType === 'image' && authorizedSigImage">
+                            </div>
+                            <div x-show="authorizedSigType === 'image' && authorizedSigImage" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
                                 <img :src="authorizedSigImage" :style="`max-height: ${sigSize}px;`" class="max-w-full object-contain" alt="TTD Pimpinan">
-                            </template>
-                            <template x-if="authorizedSigType === 'blank'">
-                                <div :style="`height: ${sigSize}px;`" class="w-full"></div>
-                            </template>
+                            </div>
+                            <div x-show="authorizedSigType === 'blank'" :style="`height: ${sigSize}px;`" class="w-full"></div>
                         </div>
-                        <div class="w-full border-t border-slate-400 pt-1 mt-1 relative z-10">
-                            <span class="font-bold text-xs text-slate-900 block truncate" x-text="authorizedName">
+                        <div style="width: 100%; border-top: 1.5px solid #64748b; padding-top: 8px; margin-top: 6px; position: relative; z-index: 10;">
+                            <span style="font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13px; color: #0f172a; display: block; line-height: 1.4; overflow: visible;" x-text="authorizedName">
                                 Fadli Manrulanggi
                             </span>
-                            <span class="text-[10px] text-slate-500 font-semibold block uppercase tracking-wider" x-text="authorizedTitle">
+                            <span style="font-size: 10px; color: #64748b; font-weight: 700; display: block; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.3; margin-top: 2px;" x-text="authorizedTitle">
                                 Chief Executive Officer
                             </span>
                         </div>
